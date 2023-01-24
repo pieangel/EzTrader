@@ -1,0 +1,53 @@
+#include "stdafx.h"
+#include "SmTotalManager.h"
+#include "../Client/ViStockClient.h"
+#include "../Login/SmLoginManager.h"
+#include "../Task/SmServerDataReceiver.h"
+#include "../Task/SmTaskRequestMaker.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Symbol/SmSymbolReader.h"
+#include "../Account/SmAccountManager.h"
+#include "../Order/SmTotalOrderManager.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Hoga/SmHogaManager.h"
+#include "../Position/SmTotalPositionManager.h"
+#include "../Chart/SmChartDataManager.h"
+#include "../Event/SmCallbackManager.h"
+#include "../Order/SmOrderRequestManager.h"
+#include "../Fund/SmFundManager.h"
+#include "../Archieve/SmSaveManager.h"
+#include "../Task/SmTaskRequestManager.h"
+#include "../TimeData/SmTimeDataManager.h"
+#include "../Pnf/PnfManager.h"
+#include "../System/SmSystemManager.h"
+#include <string>
+
+using namespace DarkHorse;
+
+DarkHorse::SmTotalManager mainApp;
+
+void SmTotalManager::CreateManagers()
+{
+	_Client = std::make_shared<ViStockClient>();
+	_LoginMgr = std::make_shared<SmLoginManager>();
+	_ReqMkr = std::make_shared<SmTaskRequestMaker>();
+	_SvrDataRcvr = std::make_shared<SmServerDataReceiver>();
+	_SymMgr = std::make_shared<SmSymbolManager>();
+	_SymRdr = std::make_shared<SmSymbolReader>();
+	_AcntMgr = std::make_shared<SmAccountManager>();
+	_TotalOrderMgr = std::make_shared<SmTotalOrderManager>();
+	_TotalPosiMgr = std::make_shared<SmTotalPositionManager>();
+	_ChartDataMgr = std::make_shared<SmChartDataManager>();
+	_QuoteMgr = std::make_shared<SmQuoteManager>();
+	_QuoteMgr->StartProcess();
+	_HogaMgr = std::make_shared<SmHogaManager>();
+	_HogaMgr->StartProcess();
+	_CallbackMgr = std::make_shared<SmCallbackManager>();
+	_OrderReqMgr = std::make_shared<SmOrderRequestManager>();
+	_FundMgr = std::make_shared<SmFundManager>();
+	_SaveMgr = std::make_shared<SmSaveManager>();
+	_TaskReqMgr = std::make_shared<SmTaskRequestManager>();
+	_TimeDataMgr = std::make_shared<SmTimeDataManager>();
+	_PnfMgr = std::make_shared<PnfManager>();
+	_SystemMgr = std::make_shared<SmSystemManager>();
+}

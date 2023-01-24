@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{E7851E19-6C03-424C-BF32-4AB55E34D084}</ProjectGuid>
+    <RootNamespace>DarkHorse</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\vcpkg-master\installed\x86-windows\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\vcpkg-master\installed\x86-windows\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\vcpkg-master\installed\x86-windows\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\vcpkg-master\installed\x86-windows\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_76_0;../include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <BrowseInformation>false</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Project\DarkHorse\Debug;C:\Project\BCGControlBarPro\Bin;../lib;C:\boost_1_76_0\stage\lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ta_abstract_cdr.lib;ta_common_cdr.lib;ta_func_cdr.lib;ta_libc_cdr.lib;chartdir70.lib;Iphlpapi.lib;PEGRP32G.lib;HTMLHELP.lib;</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Bscmake>
+      <PreserveSbr>false</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_76_0;../include;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Project\DarkHorse\Debug;C:\Project\BCGControlBarPro\Bin;../lib;C:\boost_1_76_0\stage\lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ta_abstract_cdr.lib;ta_common_cdr.lib;ta_func_cdr.lib;ta_libc_cdr.lib;chartdir70.lib;Iphlpapi.lib;PEGRP32G.lib;HTMLHELP.lib;libboost_date_time-vc142-mt-gd-x32-1_76.lib</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>copy "$(TargetDir)$(TargetName)$(TargetExt)" "..\Setup"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Account\SmAccount.h" />
+    <ClInclude Include="Account\SmAccountAsset.h" />
+    <ClInclude Include="Account\SmAccountManager.h" />
+    <ClInclude Include="Account\SmAccountPwdDlg.h" />
+    <ClInclude Include="Archieve\SmSaveManager.h" />
+    <ClInclude Include="ChartDialog\GaSpreadChart.h" />
+    <ClInclude Include="ChartDialog\RealTimeMultiChart.h" />
+    <ClInclude Include="ChartDialog\SetSpreadDialog.h" />
+    <ClInclude Include="ChartDialog\SetSpreadHsDialog.h" />
+    <ClInclude Include="ChartDialog\SmChartStorage.h" />
+    <ClInclude Include="ChartDialog\SmCompChart.h" />
+    <ClInclude Include="ChartDialog\SmGigaCompChart.h" />
+    <ClInclude Include="ChartDialog\SmGigaSpreadChart.h" />
+    <ClInclude Include="ChartDialog\SmMultiChart.h" />
+    <ClInclude Include="ChartDialog\SmMultiSpreadChart.h" />
+    <ClInclude Include="ChartDialog\SmSetSpread.h" />
+    <ClInclude Include="ChartDialog\SmSpreadView.h" />
+    <ClInclude Include="ChartDialog\SmStockChart.h" />
+    <ClInclude Include="ChartDialog\SmTrendChart.h" />
+    <ClInclude Include="Chart\ChartViewer.h" />
+    <ClInclude Include="Chart\SmChartConsts.h" />
+    <ClInclude Include="Chart\SmChartData.h" />
+    <ClInclude Include="Chart\SmChartDataManager.h" />
+    <ClInclude Include="Chart\SmChartFrame.h" />
+    <ClInclude Include="Chart\SmChartFrameManager.h" />
+    <ClInclude Include="Chart\SmExternalStorage.h" />
+    <ClInclude Include="Chart\SmStockSeries.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="Client\ClientConst.h" />
+    <ClInclude Include="Client\hdfcommagent.h" />
+    <ClInclude Include="Client\ViClient.h" />
+    <ClInclude Include="Client\ViStockClient.h" />
+    <ClInclude Include="Common\BlockingCollection.h" />
+    <ClInclude Include="Common\common.h" />
+    <ClInclude Include="Common\Queue.h" />
+    <ClInclude Include="CompOrder\SmCompOrderArea.h" />
+    <ClInclude Include="CompOrder\SmCompOrderDialog.h" />
+    <ClInclude Include="CompOrder\SmFundCompLeftDialog.h" />
+    <ClInclude Include="CompOrder\SmFundCompMainDialog.h" />
+    <ClInclude Include="CompOrder\SmFundCompRightDialog.h" />
+    <ClInclude Include="CompOrder\SmOrderButton.h" />
+    <ClInclude Include="CompOrder\SmOrderCompMainDialog.h" />
+    <ClInclude Include="CompOrder\SmOrderLeftComp.h" />
+    <ClInclude Include="CompOrder\SmOrderRightComp.h" />
+    <ClInclude Include="Config\SmConfigManager.h" />
+    <ClInclude Include="DataFrame\DataFrame.h" />
+    <ClInclude Include="DataFrame\DataFrameExports.h" />
+    <ClInclude Include="DataFrame\DataFrameFinancialVisitors.h" />
+    <ClInclude Include="DataFrame\DataFrameMLVisitors.h" />
+    <ClInclude Include="DataFrame\DataFrameOperators.h" />
+    <ClInclude Include="DataFrame\DataFrameStatsVisitors.h" />
+    <ClInclude Include="DataFrame\DataFrameTransformVisitors.h" />
+    <ClInclude Include="DataFrame\DataFrameTypes.h" />
+    <ClInclude Include="DataFrame\Internals\DataFrame_functors.h" />
+    <ClInclude Include="DataFrame\Internals\DataFrame_private_decl.h" />
+    <ClInclude Include="DataFrame\RandGen.h" />
+    <ClInclude Include="DataFrame\Utils\Aggregenerator.h" />
+    <ClInclude Include="DataFrame\Utils\DateTime.h" />
+    <ClInclude Include="DataFrame\Utils\FixedSizePriorityQueue.h" />
+    <ClInclude Include="DataFrame\Utils\FixedSizeString.h" />
+    <ClInclude Include="DataFrame\Utils\ThreadGranularity.h" />
+    <ClInclude Include="DataFrame\Utils\Utils.h" />
+    <ClInclude Include="DataFrame\Vectors\HeteroPtrView.h" />
+    <ClInclude Include="DataFrame\Vectors\HeteroVector.h" />
+    <ClInclude Include="DataFrame\Vectors\HeteroView.h" />
+    <ClInclude Include="DataFrame\Vectors\VectorPtrView.h" />
+    <ClInclude Include="DataFrame\Vectors\VectorView.h" />
+    <ClInclude Include="Drawing\VtBaseTracker.h" />
+    <ClInclude Include="Drawing\VtDrawingConstants.h" />
+    <ClInclude Include="Drawing\VtElement.h" />
+    <ClInclude Include="Drawing\VtEllipse.h" />
+    <ClInclude Include="Drawing\VtFibo.h" />
+    <ClInclude Include="Drawing\VtFiboTracker.h" />
+    <ClInclude Include="Drawing\VtHandle.h" />
+    <ClInclude Include="Drawing\VtHLine.h" />
+    <ClInclude Include="Drawing\VtHLineHandle.h" />
+    <ClInclude Include="Drawing\VtHLineTracker.h" />
+    <ClInclude Include="Drawing\VtLine.h" />
+    <ClInclude Include="Drawing\VtLineTracker.h" />
+    <ClInclude Include="Drawing\VtMultiLine.h" />
+    <ClInclude Include="Drawing\VtMultiLineTracker.h" />
+    <ClInclude Include="Drawing\VtPoint.h" />
+    <ClInclude Include="Drawing\VtPointHandle.h" />
+    <ClInclude Include="Drawing\VtRect.h" />
+    <ClInclude Include="Drawing\VtRectTracker.h" />
+    <ClInclude Include="Drawing\VtRedimHandle.h" />
+    <ClInclude Include="Drawing\VtShapesCollection.h" />
+    <ClInclude Include="Drawing\VtText.h" />
+    <ClInclude Include="Drawing\VtUndoBuffer.h" />
+    <ClInclude Include="Drawing\VtUniqueID.h" />
+    <ClInclude Include="Drawing\VtValue.h" />
+    <ClInclude Include="Drawing\VtVLine.h" />
+    <ClInclude Include="Drawing\VtVLineHandle.h" />
+    <ClInclude Include="Drawing\VtVLineTracker.h" />
+    <ClInclude Include="Dump\CrashHandler.h" />
+    <ClInclude Include="Event\SmCallbackManager.h" />
+    <ClInclude Include="Fund\SmAccountGrid.h" />
+    <ClInclude Include="Fund\SmAccountItem.h" />
+    <ClInclude Include="Fund\SmEditItem.h" />
+    <ClInclude Include="Fund\SmFund.h" />
+    <ClInclude Include="Fund\SmFundAccountGrid.h" />
+    <ClInclude Include="Fund\SmFundDialog.h" />
+    <ClInclude Include="Fund\SmFundEditDialog.h" />
+    <ClInclude Include="Fund\SmFundGrid.h" />
+    <ClInclude Include="Fund\SmFundItem.h" />
+    <ClInclude Include="Fund\SmFundManager.h" />
+    <ClInclude Include="Fund\SmFundNewDialog.h" />
+    <ClInclude Include="Fund\SmFundOrderArea.h" />
+    <ClInclude Include="Fund\SmFundOrderCenterWnd.h" />
+    <ClInclude Include="Fund\SmFundOrderDialog.h" />
+    <ClInclude Include="Fund\SmFundOrderLeft.h" />
+    <ClInclude Include="Fund\SmFundOrderRight.h" />
+    <ClInclude Include="Fund\SmFundPositionArea.h" />
+    <ClInclude Include="Global\SmTotalManager.h" />
+    <ClInclude Include="GridDefine.h" />
+    <ClInclude Include="Grid\CellRange.h" />
+    <ClInclude Include="Grid\customcells.h" />
+    <ClInclude Include="Grid\GridCell.h" />
+    <ClInclude Include="Grid\GridCellBase.h" />
+    <ClInclude Include="Grid\GridCtrl.h" />
+    <ClInclude Include="Grid\GridDropTarget.h" />
+    <ClInclude Include="Grid\InPlaceEdit.h" />
+    <ClInclude Include="Grid\MemDC.h" />
+    <ClInclude Include="Grid\TitleTip.h" />
+    <ClInclude Include="Hoga\SmHoga.h" />
+    <ClInclude Include="Hoga\SmHogaManager.h" />
+    <ClInclude Include="Hoga\SmHogaProcessor.h" />
+    <ClInclude Include="Json\json.hpp" />
+    <ClInclude Include="Login\SmLoginDlg.h" />
+    <ClInclude Include="Login\SmLoginManager.h" />
+    <ClInclude Include="Log\MyLogger.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MfcMdiAppGlue.h" />
+    <ClInclude Include="Mongodb\MongoDBInstance.h" />
+    <ClInclude Include="OrderState\SmFilledGrid.h" />
+    <ClInclude Include="OrderState\SmFilledListDialog.h" />
+    <ClInclude Include="Order\CTestDialog.h" />
+    <ClInclude Include="Order\OrderLeftDialog.h" />
+    <ClInclude Include="Order\OrderRightDialog.h" />
+    <ClInclude Include="Order\OrderWndConst.h" />
+    <ClInclude Include="Order\SmAcceptedGrid.h" />
+    <ClInclude Include="Order\SmAccountOrderManager.h" />
+    <ClInclude Include="Order\SmCheckGrid.h" />
+    <ClInclude Include="Order\SmFavoriteGrid.h" />
+    <ClInclude Include="Order\SmFilledRemainButton.h" />
+    <ClInclude Include="Order\SmLineGrid.h" />
+    <ClInclude Include="Order\SmListCtrl.h" />
+    <ClInclude Include="Order\SmMainOrderDialog.h" />
+    <ClInclude Include="Order\SmOrder.h" />
+    <ClInclude Include="Order\SmOrderConst.h" />
+    <ClInclude Include="Order\SmOrderGridConst.h" />
+    <ClInclude Include="Order\SmOrderRequest.h" />
+    <ClInclude Include="Order\SmOrderRequestManager.h" />
+    <ClInclude Include="Order\SmOrderSetDialog.h" />
+    <ClInclude Include="Order\SmOrderSetGrid.h" />
+    <ClInclude Include="Order\SmOrderSettings.h" />
+    <ClInclude Include="Order\SmOrderViewer.h" />
+    <ClInclude Include="Order\SmOrderWnd.h" />
+    <ClInclude Include="Order\SmPositionGrid.h" />
+    <ClInclude Include="Order\SmRemainButton.h" />
+    <ClInclude Include="Order\SmStopOrderManager.h" />
+    <ClInclude Include="Order\SmSymbolOrderManager.h" />
+    <ClInclude Include="Order\SmTotalOrderManager.h" />
+    <ClInclude Include="OutputBar.h" />
+    <ClInclude Include="Pnf\pnfDefine.h" />
+    <ClInclude Include="Pnf\PnfMaker.h" />
+    <ClInclude Include="Pnf\PnfManager.h" />
+    <ClInclude Include="Position\SmAccountPositionManager.h" />
+    <ClInclude Include="Position\SmPosition.h" />
+    <ClInclude Include="Position\SmTotalPositionManager.h" />
+    <ClInclude Include="PropertiesViewBar.h" />
+    <ClInclude Include="Quote\SmQuote.h" />
+    <ClInclude Include="Quote\SmQuoteManager.h" />
+    <ClInclude Include="Quote\SmQuoteProcessor.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="DarkHorse.h" />
+    <ClInclude Include="DarkHorseDoc.h" />
+    <ClInclude Include="DarkHorseView.h" />
+    <ClInclude Include="SmCenterValueMap.h" />
+    <ClInclude Include="SmGrid\SmAcceptedArea.h" />
+    <ClInclude Include="SmGrid\SmAccountArea.h" />
+    <ClInclude Include="SmGrid\SmAssetArea.h" />
+    <ClInclude Include="SmGrid\SmButtonId.h" />
+    <ClInclude Include="SmGrid\SmCell.h" />
+    <ClInclude Include="SmGrid\SmCellType.h" />
+    <ClInclude Include="SmGrid\SmFavoriteArea.h" />
+    <ClInclude Include="SmGrid\SmFilledArea.h" />
+    <ClInclude Include="SmGrid\SmGrid.h" />
+    <ClInclude Include="SmGrid\SmGridConsts.h" />
+    <ClInclude Include="SmGrid\SmGridResource.h" />
+    <ClInclude Include="SmGrid\SmJangoAccountArea.h" />
+    <ClInclude Include="SmGrid\SmJangoPositionArea.h" />
+    <ClInclude Include="SmGrid\SmOrderArea.h" />
+    <ClInclude Include="SmGrid\SmPositionArea.h" />
+    <ClInclude Include="SmGrid\SmQuoteArea.h" />
+    <ClInclude Include="SmGrid\SmRow.h" />
+    <ClInclude Include="SmGrid\SmSymbolArea.h" />
+    <ClInclude Include="SmGrid\SmSymbolTableArea.h" />
+    <ClInclude Include="SmGrid\SmTotalAssetArea.h" />
+    <ClInclude Include="SmJangGoDialog.h" />
+    <ClInclude Include="SmMenuDefine.h" />
+    <ClInclude Include="SmTotalAssetDialog.h" />
+    <ClInclude Include="StatusBar\ExtLabel.h" />
+    <ClInclude Include="StatusBar\extstatuscontrolbar.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SymbolBar.h" />
+    <ClInclude Include="Symbol\SmMarket.h" />
+    <ClInclude Include="Symbol\SmMarketConst.h" />
+    <ClInclude Include="Symbol\SmProduct.h" />
+    <ClInclude Include="Symbol\SmProductYearMonth.h" />
+    <ClInclude Include="Symbol\SmSymbol.h" />
+    <ClInclude Include="Symbol\SmSymbolManager.h" />
+    <ClInclude Include="Symbol\SmSymbolReader.h" />
+    <ClInclude Include="Symbol\SmSymbolTableDialog.h" />
+    <ClInclude Include="System\SmArrayMath.h" />
+    <ClInclude Include="System\SmSignal.h" />
+    <ClInclude Include="System\SmSystem.h" />
+    <ClInclude Include="System\SmSystemData.h" />
+    <ClInclude Include="System\SmSystemFactor.h" />
+    <ClInclude Include="System\SmSystemManager.h" />
+    <ClInclude Include="TaLib\tapp.h" />
+    <ClInclude Include="Task\DataProgressDialog.h" />
+    <ClInclude Include="Task\IProgressDialog.h" />
+    <ClInclude Include="Task\SmServerDataReceiver.h" />
+    <ClInclude Include="Task\SmTaskArg.h" />
+    <ClInclude Include="Task\SmTaskConst.h" />
+    <ClInclude Include="Task\SmTaskInfo.h" />
+    <ClInclude Include="Task\SmTaskRequestMaker.h" />
+    <ClInclude Include="Task\SmTaskRequestManager.h" />
+    <ClInclude Include="Task\SmTaskTypeDef.h" />
+    <ClInclude Include="TimeData\SmCompData.h" />
+    <ClInclude Include="TimeData\SmTimeData.h" />
+    <ClInclude Include="TimeData\SmTimeDataManager.h" />
+    <ClInclude Include="time\cpptime.h" />
+    <ClInclude Include="Util\conversion.hpp" />
+    <ClInclude Include="Util\cryptor.hpp" />
+    <ClInclude Include="Util\Delegate.h" />
+    <ClInclude Include="Util\DHTime.h" />
+    <ClInclude Include="Util\formatstdstring.h" />
+    <ClInclude Include="Util\Signal.h" />
+    <ClInclude Include="Util\SmButton.h" />
+    <ClInclude Include="Util\SmButtonResource.h" />
+    <ClInclude Include="Util\SmNumberFunc.h" />
+    <ClInclude Include="Util\SmUtil.h" />
+    <ClInclude Include="Util\SmWndEventDefine.h" />
+    <ClInclude Include="Util\SmWndManager.h" />
+    <ClInclude Include="Util\SmWndRefreshManager.h" />
+    <ClInclude Include="Util\VtStringUtil.h" />
+    <ClInclude Include="Util\VtTime.h" />
+    <ClInclude Include="WorkSpaceBar.h" />
+    <ClInclude Include="WorkSpaceBar2.h" />
+    <ClInclude Include="Xml\pugiconfig.hpp" />
+    <ClInclude Include="Xml\pugixml.hpp" />
+    <ClInclude Include="Xml\tinyxml2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Account\SmAccount.cpp" />
+    <ClCompile Include="Account\SmAccountAsset.cpp" />
+    <ClCompile Include="Account\SmAccountManager.cpp" />
+    <ClCompile Include="Account\SmAccountPwdDlg.cpp" />
+    <ClCompile Include="Archieve\SmSaveManager.cpp" />
+    <ClCompile Include="ChartDialog\GaSpreadChart.cpp" />
+    <ClCompile Include="ChartDialog\RealTimeMultiChart.cpp" />
+    <ClCompile Include="ChartDialog\SetSpreadDialog.cpp" />
+    <ClCompile Include="ChartDialog\SetSpreadHsDialog.cpp" />
+    <ClCompile Include="ChartDialog\SmCompChart.cpp" />
+    <ClCompile Include="ChartDialog\SmGigaCompChart.cpp" />
+    <ClCompile Include="ChartDialog\SmGigaSpreadChart.cpp" />
+    <ClCompile Include="ChartDialog\SmMultiChart.cpp" />
+    <ClCompile Include="ChartDialog\SmMultiSpreadChart.cpp" />
+    <ClCompile Include="ChartDialog\SmSetSpread.cpp" />
+    <ClCompile Include="ChartDialog\SmSpreadView.cpp" />
+    <ClCompile Include="ChartDialog\SmStockChart.cpp" />
+    <ClCompile Include="ChartDialog\SmTrendChart.cpp" />
+    <ClCompile Include="Chart\ChartViewer.cpp" />
+    <ClCompile Include="Chart\SmChartData.cpp" />
+    <ClCompile Include="Chart\SmChartDataManager.cpp" />
+    <ClCompile Include="Chart\SmChartFrame.cpp" />
+    <ClCompile Include="Chart\SmChartFrameManager.cpp" />
+    <ClCompile Include="Chart\SmExternalStorage.cpp" />
+    <ClCompile Include="Chart\SmStockSeries.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="Client\hdfcommagent.cpp" />
+    <ClCompile Include="Client\ViClient.cpp" />
+    <ClCompile Include="Client\ViStockClient.cpp" />
+    <ClCompile Include="CompOrder\SmCompOrderArea.cpp" />
+    <ClCompile Include="CompOrder\SmCompOrderDialog.cpp" />
+    <ClCompile Include="CompOrder\SmFundCompLeftDialog.cpp" />
+    <ClCompile Include="CompOrder\SmFundCompMainDialog.cpp" />
+    <ClCompile Include="CompOrder\SmFundCompRightDialog.cpp" />
+    <ClCompile Include="CompOrder\SmOrderButton.cpp" />
+    <ClCompile Include="CompOrder\SmOrderCompMainDialog.cpp" />
+    <ClCompile Include="CompOrder\SmOrderLeftComp.cpp" />
+    <ClCompile Include="CompOrder\SmOrderRightComp.cpp" />
+    <ClCompile Include="Config\SmConfigManager.cpp" />
+    <ClCompile Include="DataFrame\Utils\DateTime.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DataFrame\Vectors\HeteroPtrView.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DataFrame\Vectors\HeteroVector.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DataFrame\Vectors\HeteroView.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtBaseTracker.cpp" />
+    <ClCompile Include="Drawing\VtElement.cpp" />
+    <ClCompile Include="Drawing\VtEllipse.cpp" />
+    <ClCompile Include="Drawing\VtFibo.cpp" />
+    <ClCompile Include="Drawing\VtFiboTracker.cpp" />
+    <ClCompile Include="Drawing\VtHandle.cpp" />
+    <ClCompile Include="Drawing\VtHLine.cpp" />
+    <ClCompile Include="Drawing\VtHLineHandle.cpp" />
+    <ClCompile Include="Drawing\VtHLineTracker.cpp" />
+    <ClCompile Include="Drawing\VtLine.cpp" />
+    <ClCompile Include="Drawing\VtLineTracker.cpp" />
+    <ClCompile Include="Drawing\VtMultiLine.cpp" />
+    <ClCompile Include="Drawing\VtMultiLineTracker.cpp" />
+    <ClCompile Include="Drawing\VtPoint.cpp" />
+    <ClCompile Include="Drawing\VtPointHandle.cpp" />
+    <ClCompile Include="Drawing\VtRect.cpp" />
+    <ClCompile Include="Drawing\VtRectTracker.cpp" />
+    <ClCompile Include="Drawing\VtRedimHandle.cpp" />
+    <ClCompile Include="Drawing\VtShapesCollection.cpp" />
+    <ClCompile Include="Drawing\VtText.cpp" />
+    <ClCompile Include="Drawing\VtUndoBuffer.cpp" />
+    <ClCompile Include="Drawing\VtUniqueID.cpp" />
+    <ClCompile Include="Drawing\VtVLine.cpp" />
+    <ClCompile Include="Drawing\VtVLineHandle.cpp" />
+    <ClCompile Include="Drawing\VtVLineTracker.cpp" />
+    <ClCompile Include="Dump\CrashHandler.cpp" />
+    <ClCompile Include="Event\SmCallbackManager.cpp" />
+    <ClCompile Include="Fund\SmAccountGrid.cpp" />
+    <ClCompile Include="Fund\SmAccountItem.cpp" />
+    <ClCompile Include="Fund\SmEditItem.cpp" />
+    <ClCompile Include="Fund\SmFund.cpp" />
+    <ClCompile Include="Fund\SmFundAccountGrid.cpp" />
+    <ClCompile Include="Fund\SmFundDialog.cpp" />
+    <ClCompile Include="Fund\SmFundEditDialog.cpp" />
+    <ClCompile Include="Fund\SmFundGrid.cpp" />
+    <ClCompile Include="Fund\SmFundItem.cpp" />
+    <ClCompile Include="Fund\SmFundManager.cpp" />
+    <ClCompile Include="Fund\SmFundNewDialog.cpp" />
+    <ClCompile Include="Fund\SmFundOrderArea.cpp" />
+    <ClCompile Include="Fund\SmFundOrderCenterWnd.cpp" />
+    <ClCompile Include="Fund\SmFundOrderDialog.cpp" />
+    <ClCompile Include="Fund\SmFundOrderLeft.cpp" />
+    <ClCompile Include="Fund\SmFundOrderRight.cpp" />
+    <ClCompile Include="Fund\SmFundPositionArea.cpp" />
+    <ClCompile Include="Global\SmTotalManager.cpp" />
+    <ClCompile Include="Grid\customcells.cpp" />
+    <ClCompile Include="Grid\GridCell.cpp" />
+    <ClCompile Include="Grid\GridCellBase.cpp" />
+    <ClCompile Include="Grid\GridCtrl.cpp" />
+    <ClCompile Include="Grid\GridDropTarget.cpp" />
+    <ClCompile Include="Grid\InPlaceEdit.cpp" />
+    <ClCompile Include="Grid\TitleTip.cpp" />
+    <ClCompile Include="Hoga\SmHoga.cpp" />
+    <ClCompile Include="Hoga\SmHogaManager.cpp" />
+    <ClCompile Include="Hoga\SmHogaProcessor.cpp" />
+    <ClCompile Include="Login\SmLoginDlg.cpp" />
+    <ClCompile Include="Login\SmLoginManager.cpp" />
+    <ClCompile Include="Log\MyLogger.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MfcMdiAppGlue.cpp" />
+    <ClCompile Include="Mongodb\MongoDBInstance.cpp" />
+    <ClCompile Include="OrderState\SmFilledGrid.cpp" />
+    <ClCompile Include="OrderState\SmFilledListDialog.cpp" />
+    <ClCompile Include="Order\CTestDialog.cpp" />
+    <ClCompile Include="Order\OrderLeftDialog.cpp" />
+    <ClCompile Include="Order\OrderRightDialog.cpp" />
+    <ClCompile Include="Order\SmAcceptedGrid.cpp" />
+    <ClCompile Include="Order\SmAccountOrderManager.cpp" />
+    <ClCompile Include="Order\SmCheckGrid.cpp" />
+    <ClCompile Include="Order\SmFavoriteGrid.cpp" />
+    <ClCompile Include="Order\SmFilledRemainButton.cpp" />
+    <ClCompile Include="Order\SmLineGrid.cpp" />
+    <ClCompile Include="Order\SmListCtrl.cpp" />
+    <ClCompile Include="Order\SmMainOrderDialog.cpp" />
+    <ClCompile Include="Order\SmOrder.cpp" />
+    <ClCompile Include="Order\SmOrderRequestManager.cpp" />
+    <ClCompile Include="Order\SmOrderSetDialog.cpp" />
+    <ClCompile Include="Order\SmOrderSetGrid.cpp" />
+    <ClCompile Include="Order\SmOrderViewer.cpp" />
+    <ClCompile Include="Order\SmOrderWnd.cpp" />
+    <ClCompile Include="Order\SmPositionGrid.cpp" />
+    <ClCompile Include="Order\SmRemainButton.cpp" />
+    <ClCompile Include="Order\SmStopOrderManager.cpp" />
+    <ClCompile Include="Order\SmSymbolOrderManager.cpp" />
+    <ClCompile Include="Order\SmTotalOrderManager.cpp" />
+    <ClCompile Include="OutputBar.cpp" />
+    <ClCompile Include="Pnf\PnfMaker.cpp" />
+    <ClCompile Include="Pnf\PnfManager.cpp" />
+    <ClCompile Include="Position\SmAccountPositionManager.cpp" />
+    <ClCompile Include="Position\SmPosition.cpp" />
+    <ClCompile Include="Position\SmTotalPositionManager.cpp" />
+    <ClCompile Include="PropertiesViewBar.cpp" />
+    <ClCompile Include="DarkHorse.cpp" />
+    <ClCompile Include="DarkHorseDoc.cpp" />
+    <ClCompile Include="DarkHorseView.cpp" />
+    <ClCompile Include="Quote\SmQuote.cpp" />
+    <ClCompile Include="Quote\SmQuoteManager.cpp" />
+    <ClCompile Include="Quote\SmQuoteProcessor.cpp" />
+    <ClCompile Include="SmCenterValueMap.cpp" />
+    <ClCompile Include="SmGrid\SmAcceptedArea.cpp" />
+    <ClCompile Include="SmGrid\SmAccountArea.cpp" />
+    <ClCompile Include="SmGrid\SmAssetArea.cpp" />
+    <ClCompile Include="SmGrid\SmCell.cpp" />
+    <ClCompile Include="SmGrid\SmFavoriteArea.cpp" />
+    <ClCompile Include="SmGrid\SmFilledArea.cpp" />
+    <ClCompile Include="SmGrid\SmGrid.cpp" />
+    <ClCompile Include="SmGrid\SmJangoAccountArea.cpp" />
+    <ClCompile Include="SmGrid\SmJangoPositionArea.cpp" />
+    <ClCompile Include="SmGrid\SmOrderArea.cpp" />
+    <ClCompile Include="SmGrid\SmPositionArea.cpp" />
+    <ClCompile Include="SmGrid\SmQuoteArea.cpp" />
+    <ClCompile Include="SmGrid\SmRow.cpp" />
+    <ClCompile Include="SmGrid\SmSymbolArea.cpp" />
+    <ClCompile Include="SmGrid\SmSymbolTableArea.cpp" />
+    <ClCompile Include="SmGrid\SmTotalAssetArea.cpp" />
+    <ClCompile Include="SmJangGoDialog.cpp" />
+    <ClCompile Include="SmTotalAssetDialog.cpp" />
+    <ClCompile Include="StatusBar\ExtLabel.cpp" />
+    <ClCompile Include="StatusBar\ExtStatusControlBar.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SymbolBar.cpp" />
+    <ClCompile Include="Symbol\SmMarket.cpp" />
+    <ClCompile Include="Symbol\SmProduct.cpp" />
+    <ClCompile Include="Symbol\SmProductYearMonth.cpp" />
+    <ClCompile Include="Symbol\SmSymbol.cpp" />
+    <ClCompile Include="Symbol\SmSymbolManager.cpp" />
+    <ClCompile Include="Symbol\SmSymbolReader.cpp" />
+    <ClCompile Include="Symbol\SmSymbolTableDialog.cpp" />
+    <ClCompile Include="System\SmArrayMath.cpp" />
+    <ClCompile Include="System\SmSignal.cpp" />
+    <ClCompile Include="System\SmSystem.cpp" />
+    <ClCompile Include="System\SmSystemData.cpp" />
+    <ClCompile Include="System\SmSystemFactor.cpp" />
+    <ClCompile Include="System\SmSystemManager.cpp" />
+    <ClCompile Include="Task\DataProgressDialog.cpp" />
+    <ClCompile Include="Task\IProgressDialog.cpp" />
+    <ClCompile Include="Task\SmServerDataReceiver.cpp" />
+    <ClCompile Include="Task\SmTaskRequestMaker.cpp" />
+    <ClCompile Include="Task\SmTaskRequestManager.cpp" />
+    <ClCompile Include="TimeData\SmCompData.cpp" />
+    <ClCompile Include="TimeData\SmTimeData.cpp" />
+    <ClCompile Include="TimeData\SmTimeDataManager.cpp" />
+    <ClCompile Include="Util\SmButton.cpp" />
+    <ClCompile Include="Util\SmNumberFunc.cpp" />
+    <ClCompile Include="Util\SmUtil.cpp" />
+    <ClCompile Include="Util\SmWndManager.cpp" />
+    <ClCompile Include="Util\SmWndRefreshManager.cpp" />
+    <ClCompile Include="Util\VtStringUtil.cpp" />
+    <ClCompile Include="WorkSpaceBar.cpp" />
+    <ClCompile Include="WorkSpaceBar2.cpp" />
+    <ClCompile Include="Xml\pugixml.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Xml\tinyxml2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EzTrader.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\arrow.png" />
+    <Image Include="res\background.png" />
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\DarkHorse.ico" />
+    <Image Include="res\DarkHorseDoc.ico" />
+    <Image Include="res\texture1.png" />
+    <Image Include="res\texture2.png" />
+    <Image Include="res\texture3.png" />
+    <Image Include="res\texture4.png" />
+    <Image Include="res\texture5.png" />
+    <Image Include="res\Thumbnails.png" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar.png" />
+    <Image Include="res\Toolbar_hc.png" />
+    <Image Include="res\wall.png" />
+    <Image Include="UserImages.png" />
+    <Image Include="res\Workspace.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DataFrame\Internals\DataFrame.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_get.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_join.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_misc.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_opt.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_read.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_set.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_shift.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_standalone.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_visit.tcc" />
+    <None Include="DataFrame\Internals\DataFrame_write.tcc" />
+    <None Include="DataFrame\Internals\RandGen.tcc" />
+    <None Include="DataFrame\Vectors\HeteroPtrView.tcc" />
+    <None Include="DataFrame\Vectors\HeteroVector.tcc" />
+    <None Include="DataFrame\Vectors\HeteroView.tcc" />
+    <None Include="res\DarkHorse.rc2" />
+    <None Include="res\DarkHorse.toolbar.rc2" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

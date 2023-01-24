@@ -1,0 +1,48 @@
+#pragma once
+#include <unordered_map>
+#include <memory>
+#include <string>
+#include <map>
+#include <vector>
+namespace DarkHorse {
+	class SmAccount;
+	// 계좌 관리자
+	class SmAccountManager
+	{
+	public:
+		// 생성자
+		SmAccountManager();
+		// 소멸자
+		~SmAccountManager();
+		// Static Members
+		static int _Id;
+		static int GetId() { return _Id++; }
+		/// <summary>
+		/// 계좌를 추가한다.
+		/// </summary>
+		/// <param name="account">계좌 객체</param>
+		void AddAccount(std::shared_ptr<SmAccount> account);
+		/// <summary>
+		/// 계좌 목록을 가져옵니다.
+		/// </summary>
+		/// <returns></returns>
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& GetAccountMap() {
+			return _AccountMap;
+		}
+		void GetUnusedAccountForFund(std::vector<std::shared_ptr<SmAccount>>& unused_acnt_vector);
+		std::shared_ptr<SmAccount> FindAccount(const std::string& account_no);
+		std::shared_ptr<SmAccount> FindAccountById(const int& account_id);
+		void AddTestAccounts();
+		void SetPassword(const std::string& account_no, const std::string& pwd);
+	private:
+		
+		/// <summary>
+		/// Account map
+		/// Key : Account No, Value : Account Object Pointer.
+		/// </summary>
+		std::unordered_map<std::string, std::shared_ptr<SmAccount>> _AccountMap;
+		// key : account id, value : account object
+		std::map<int, std::shared_ptr<SmAccount>> _AccountIdMap;
+	};
+}
+
