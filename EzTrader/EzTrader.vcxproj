@@ -432,6 +432,8 @@
     <ClInclude Include="Symbol\SmSymbolManager.h" />
     <ClInclude Include="Symbol\SmSymbolReader.h" />
     <ClInclude Include="Symbol\SmSymbolTableDialog.h" />
+    <ClInclude Include="Symbol\Symbol.h" />
+    <ClInclude Include="Symbol\SymbolManager.h" />
     <ClInclude Include="System\SmArrayMath.h" />
     <ClInclude Include="System\SmSignal.h" />
     <ClInclude Include="System\SmSystem.h" />
@@ -662,6 +664,7 @@
     <ClCompile Include="Symbol\SmSymbolManager.cpp" />
     <ClCompile Include="Symbol\SmSymbolReader.cpp" />
     <ClCompile Include="Symbol\SmSymbolTableDialog.cpp" />
+    <ClCompile Include="Symbol\SymbolManager.cpp" />
     <ClCompile Include="System\SmArrayMath.cpp" />
     <ClCompile Include="System\SmSignal.cpp" />
     <ClCompile Include="System\SmSystem.cpp" />

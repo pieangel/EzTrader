@@ -10,6 +10,7 @@
 #include "../Symbol/SmSymbolManager.h"
 #include "../MainFrm.h"
 #include "../Log/MyLogger.h"
+#include "../Symbol/SymbolManager.h"
 
 using namespace std::chrono;
 class CMainFrame;
@@ -210,6 +211,8 @@ void DarkHorse::SmServerDataReceiver::DoPostTask(const std::shared_ptr<SmTaskInf
 	{
 		mainApp.SymMgr()->MakeDomesticMarket();
 		mainApp.SymMgr()->ReadAbroadSymbols();
+		SymbolManager symbol_manager;
+		symbol_manager.readDomesticMasterFile();
 		//((CMainFrame*)AfxGetMainWnd())->SetMarketTree();
 		std::vector<std::shared_ptr<SmTaskInfo>> task_list;
 		SmTaskRequestMaker::MaketInitialBatchTask(task_list);
