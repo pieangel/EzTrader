@@ -28,6 +28,8 @@ namespace DarkHorse {
 	class ViStockClient;
 	struct SmOrderRequest;
 	typedef std::map<std::string, std::any> task_arg;
+	struct OrderRequest;
+	using order_request_p = std::shared_ptr<OrderRequest>;
 	class ViClient : public CDialog
 	{
 
@@ -89,6 +91,10 @@ namespace DarkHorse {
 		void NewOrder(const std::shared_ptr<SmOrderRequest>& order_req);
 		void ChangeOrder(const std::shared_ptr<SmOrderRequest>& order_req);
 		void CancelOrder(const std::shared_ptr<SmOrderRequest>& order_req);
+
+		void NewOrder(order_request_p order_req);
+		void ChangeOrder(order_request_p order_req);
+		void CancelOrder(order_request_p order_req);
 
 		int ConnectToServer();
 		void Client(std::weak_ptr<ViStockClient> wp)
@@ -184,7 +190,8 @@ namespace DarkHorse {
 		std::map<int, std::shared_ptr<SmOrderRequest>> _OrderReqMap;
 		// Key : req id, value : chart argument.
 		std::map<int, SmChartDataReq> _ChartReqMap;
-
+		// Key : 선물사 요청 번호, value : order request object.
+		std::map<int, order_request_p> order_request_map;
 		std::set<std::string> _RegSymbolSet;
 		std::set<std::string> _RegAccountSet;
 	};

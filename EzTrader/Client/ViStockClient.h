@@ -7,10 +7,13 @@
 #include "../Task/SmTaskArg.h"
 
 namespace DarkHorse {
+
 	typedef std::map<std::string, std::any> task_arg;
 	class ViClient;
 	class SmOrder;
 	struct SmOrderRequest;
+	struct OrderRequest;
+	using order_request_p = std::shared_ptr<OrderRequest>;
 	class ViStockClient : public std::enable_shared_from_this<ViStockClient>
 	{
 	public:
@@ -53,6 +56,10 @@ namespace DarkHorse {
 		void NewOrder(const std::shared_ptr<SmOrderRequest>& order_req);
 		void ChangeOrder(const std::shared_ptr<SmOrderRequest>& order_req);
 		void CancelOrder(const std::shared_ptr<SmOrderRequest>& order_req);
+
+		void NewOrder(order_request_p order_req);
+		void ChangeOrder(order_request_p order_req);
+		void CancelOrder(order_request_p order_req);
 
 		void SendOrderAcceptedData(const std::shared_ptr<SmOrderRequest>& order_req);
 		void SendOrderUnfilledData();

@@ -5,7 +5,7 @@
 #include "SymbolManager.h"
 #include "../Util/VtStringUtil.h"
 namespace DarkHorse {
-void SymbolManager::readDomesticMasterFile()
+void SymbolManager::read_domestic_masterfile()
 {
 	try {
 		std::string file_path;
@@ -64,7 +64,7 @@ void SymbolManager::readDomesticMasterFile()
 			symbol.recent_month = _ttoi(value.c_str());
 			value = line.substr(index, 8);
 			symbol.expire_day = value;
-			addSymbol(std::move(symbol));
+			add_symbol(std::move(symbol));
 			index = 0;
 			LOGINFO(CMyLogger::getInstance(), "read symbol %s complete!", symbol.symbol_code.c_str());
 		}
@@ -77,9 +77,9 @@ void SymbolManager::readDomesticMasterFile()
 	}
 }
 
-void SymbolManager::addSymbol(Symbol&& symbol)
+void SymbolManager::add_symbol(Symbol&& symbol)
 {
-	_SymbolMap[symbol.symbol_code] = std::move(symbol);
+	symbol_map_[symbol.symbol_code] = std::move(symbol);
 }
 
 }

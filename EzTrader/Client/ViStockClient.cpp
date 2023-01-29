@@ -152,6 +152,21 @@ int DarkHorse::ViStockClient::GetFilledOrderList(const std::string& account_no, 
 	return _ViCtrol->GetFilledOrderList(account_no, pwd);
 }
 
+void ViStockClient::ChangeOrder(order_request_p order_req)
+{
+	_ViCtrol->ChangeOrder(order_req);
+}
+
+void ViStockClient::NewOrder(order_request_p order_req)
+{
+	_ViCtrol->NewOrder(order_req);
+}
+
+void ViStockClient::CancelOrder(order_request_p order_req)
+{
+	_ViCtrol->CancelOrder(order_req);
+}
+
 void DarkHorse::ViStockClient::NewOrder(const std::shared_ptr<SmOrderRequest>& order_req)
 {
 	if (_TestMode) SendOrderAcceptedData(order_req);

@@ -6,14 +6,14 @@ namespace DarkHorse {
 	class SymbolManager
 	{
 	public:
-		static int createId() { return ++_id; }
+		static int create_id() { return ++_id; }
 	private:
 		static int _id;
 	public:
-		void readDomesticMasterFile();
-		void addSymbol(Symbol&& symbol);
+		void read_domestic_masterfile();
+		void add_symbol(Symbol&& symbol);
 	private:
-		std::map<std::string, Symbol> _SymbolMap;
+		std::map<std::string, Symbol> symbol_map_;
 	};
 }
 

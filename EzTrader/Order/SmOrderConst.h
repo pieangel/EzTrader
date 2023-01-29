@@ -51,6 +51,13 @@ namespace DarkHorse {
 		Day = 4
 	};
 
+	enum class SmCutMode
+	{
+		None = 0,
+		ProfitCut,
+		LossCut,
+		BothCut
+	};
 	enum class SmOrderState
 	{
 		None,

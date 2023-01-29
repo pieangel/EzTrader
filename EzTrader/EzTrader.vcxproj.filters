@@ -589,6 +589,9 @@
     <ClCompile Include="Symbol\SymbolManager.cpp">
       <Filter>Symbol</Filter>
     </ClCompile>
+    <ClCompile Include="Order\OrderRequest\OrderRequestManager.cpp">
+      <Filter>Order\OrderRequest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1359,6 +1362,12 @@
     <ClInclude Include="Symbol\SymbolManager.h">
       <Filter>Symbol</Filter>
     </ClInclude>
+    <ClInclude Include="Order\OrderRequest\OrderRequest.h">
+      <Filter>Order\OrderRequest</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderRequest\OrderRequestManager.h">
+      <Filter>Order\OrderRequest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -1590,6 +1599,9 @@
     </Filter>
     <Filter Include="System">
       <UniqueIdentifier>{80635e55-ba61-4882-b2a2-f04c4e52c157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Order\OrderRequest">
+      <UniqueIdentifier>{da3d86cf-7a66-4d28-8ac4-781f1beb6de2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

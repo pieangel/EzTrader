@@ -71,10 +71,7 @@ END_MESSAGE_MAP()
 
 BOOL DataProgressDialog::OnInitDialog()
 {
-	__super::OnInitDialog();
-
-	CenterWindow();
-
+	CBCGPDialog::OnInitDialog();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

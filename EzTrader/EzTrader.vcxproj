@@ -356,6 +356,8 @@
     <ClInclude Include="OrderState\SmFilledListDialog.h" />
     <ClInclude Include="Order\CTestDialog.h" />
     <ClInclude Include="Order\OrderLeftDialog.h" />
+    <ClInclude Include="Order\OrderRequest\OrderRequest.h" />
+    <ClInclude Include="Order\OrderRequest\OrderRequestManager.h" />
     <ClInclude Include="Order\OrderRightDialog.h" />
     <ClInclude Include="Order\OrderWndConst.h" />
     <ClInclude Include="Order\SmAcceptedGrid.h" />
@@ -596,6 +598,7 @@
     <ClCompile Include="OrderState\SmFilledListDialog.cpp" />
     <ClCompile Include="Order\CTestDialog.cpp" />
     <ClCompile Include="Order\OrderLeftDialog.cpp" />
+    <ClCompile Include="Order\OrderRequest\OrderRequestManager.cpp" />
     <ClCompile Include="Order\OrderRightDialog.cpp" />
     <ClCompile Include="Order\SmAcceptedGrid.cpp" />
     <ClCompile Include="Order\SmAccountOrderManager.cpp" />

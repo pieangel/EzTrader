@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "../DarkHorse.h"
+#include "../Order/OrderRequest/OrderRequest.h"
 #include "ViClient.h"
 #include "../Log/MyLogger.h"
 #include "../Global/SmTotalManager.h"
@@ -927,6 +928,75 @@ void DarkHorse::ViClient::NewOrder(task_arg&& arg)
 }
 
 
+void ViClient::ChangeOrder(order_request_p order_req)
+{
+	if (!order_req) return;
+
+	std::string orderString;
+	std::string temp;
+	// 계좌 번호
+	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
+	orderString.append(temp);
+	// 비밀번호
+	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
+	orderString.append(temp);
+	// 종목 코드
+	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
+	orderString.append(temp);
+
+	// 가격 조건
+	if (order_req->price_type == SmPriceType::Price)
+		orderString.append(_T("1"));
+	else if (order_req->price_type == SmPriceType::Market)
+		orderString.append(_T("2"));
+	// 체결 조건
+	if (order_req->fill_condition == SmFilledCondition::Fas)
+		orderString.append(_T("1"));
+	else if (order_req->fill_condition == SmFilledCondition::Fok)
+		orderString.append(_T("2"));
+	else if (order_req->fill_condition == SmFilledCondition::Fak)
+		orderString.append(_T("3"));
+	else if (order_req->fill_condition == SmFilledCondition::Day)
+		orderString.append(_T("0"));
+
+	// 주문 가격
+	if (order_req->price_type == SmPriceType::Price)
+		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 15);
+	else if (order_req->price_type == SmPriceType::Market)
+		temp = VtStringUtil::PadRight(0, ' ', 15);
+	orderString.append(temp);
+
+	// 정정 수량
+	temp = VtStringUtil::PadRight(order_req->order_amount, ' ', 10);
+	orderString.append(temp);
+	// 정정이나 취소시 원주문 번호
+	temp = VtStringUtil::PadRight(order_req->original_order_no, ' ', 10);
+	orderString.append(temp);
+	// 기타설정
+	temp = VtStringUtil::PadRight(1, ' ', 26);
+	orderString.append(temp);
+
+	std::string userDefined;
+	std::string req_id = std::to_string(order_req->request_id);
+	req_id = VtStringUtil::PadLeft(req_id, '0', 10);
+	userDefined.append(req_id);
+	userDefined.append("k");
+
+	std::string mac_address;
+	mac_address = SmUtil::GetMacAddress();
+	userDefined.append(mac_address);
+	userDefined.append("m");
+
+	temp = VtStringUtil::PadRight(userDefined, '0', 60);
+
+	orderString.append(temp);
+
+	CString sTrCode = "g12003.AO0402%";
+	CString sInput = orderString.c_str();
+	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
+	order_request_map[nRqID] = order_req;
+}
+
 void DarkHorse::ViClient::NewOrder(const std::shared_ptr<SmOrderRequest>& order_req)
 {
 	const std::string account_no = order_req->AccountNo;
@@ -1099,6 +1169,73 @@ void DarkHorse::ViClient::ChangeOrder(task_arg&& arg)
 }
 
 
+void ViClient::CancelOrder(order_request_p order_req)
+{
+	if (!order_req) return;
+
+	std::string orderString;
+	std::string temp;
+	// 계좌 번호
+	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
+	orderString.append(temp);
+	// 비밀번호
+	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
+	orderString.append(temp);
+	// 종목 코드
+	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
+	orderString.append(temp);
+
+	// 가격 조건
+	if (order_req->price_type == SmPriceType::Price)
+		orderString.append(_T("1"));
+	else if (order_req->price_type == SmPriceType::Market)
+		orderString.append(_T("2"));
+	// 체결 조건
+	if (order_req->fill_condition == SmFilledCondition::Fas)
+		orderString.append(_T("1"));
+	else if (order_req->fill_condition == SmFilledCondition::Fok)
+		orderString.append(_T("2"));
+	else if (order_req->fill_condition == SmFilledCondition::Fak)
+		orderString.append(_T("3"));
+	else if (order_req->fill_condition == SmFilledCondition::Day)
+		orderString.append(_T("0"));
+
+	// 주문 가격 15
+	temp = "               ";
+	orderString.append(temp);
+
+	// 정정 수량 10
+	temp = "          ";
+	orderString.append(temp);
+	// 정정이나 취소시 원주문 번호
+	temp = VtStringUtil::PadRight(order_req->original_order_no, ' ', 10);
+	orderString.append(temp);
+
+	// 기타설정 26
+	temp = "                          ";
+	orderString.append(temp);
+
+	std::string userDefined;
+	std::string req_id = std::to_string(order_req->request_id);
+	req_id = VtStringUtil::PadLeft(req_id, '0', 10);
+	userDefined.append(req_id);
+	userDefined.append("k");
+
+	std::string mac_address;
+	mac_address = SmUtil::GetMacAddress();
+	userDefined.append(mac_address);
+	userDefined.append("m");
+
+	temp = VtStringUtil::PadRight(userDefined, '0', 60);
+	orderString.append(temp);
+
+	CString sTrCode = "g12003.AO0403%";
+	CString sInput = orderString.c_str();
+	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
+
+	order_request_map[nRqID] = order_req;
+}
+
 void DarkHorse::ViClient::ChangeOrder(const std::shared_ptr<SmOrderRequest>& order_req)
 {
 	if (!order_req) return;
@@ -1261,6 +1398,78 @@ void DarkHorse::ViClient::CancelOrder(task_arg&& arg)
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
 
+}
+
+void ViClient::NewOrder(order_request_p order_req)
+{
+	if (!order_req) return;
+
+	std::string orderString;
+	std::string temp;
+	// 계좌 번호
+	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
+	orderString.append(temp);
+	// 비밀번호
+	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
+	orderString.append(temp);
+	// 종목 코드
+	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
+	orderString.append(temp);
+
+	// 매매구분
+	if (order_req->position_type == SmPositionType::Buy)
+		orderString.append("1");
+	else if (order_req->position_type == SmPositionType::Sell)
+		orderString.append("2");
+
+	// 가격 조건
+	if (order_req->price_type == SmPriceType::Price)
+		orderString.append("1");
+	else if (order_req->price_type == SmPriceType::Market)
+		orderString.append("2");
+	// 체결 조건
+	if (order_req->fill_condition == SmFilledCondition::Fas)
+		orderString.append("1");
+	else if (order_req->fill_condition == SmFilledCondition::Fok)
+		orderString.append("2");
+	else if (order_req->fill_condition == SmFilledCondition::Fak)
+		orderString.append("3");
+	else if (order_req->fill_condition == SmFilledCondition::Day)
+		orderString.append("0");
+
+	// 주문 가격
+	if (order_req->price_type == SmPriceType::Price)
+		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 15);
+	else if (order_req->price_type == SmPriceType::Market)
+		temp = VtStringUtil::PadRight(0, ' ', 15);
+	orderString.append(temp);
+
+	// 주문 수량
+	temp = VtStringUtil::PadRight(order_req->order_amount, ' ', 10);
+	orderString.append(temp);
+	// 기타 설정
+	temp = VtStringUtil::PadRight(1, ' ', 35);
+	orderString.append(temp);
+
+	std::string userDefined;
+	std::string req_id = std::to_string(order_req->request_id);
+	req_id = VtStringUtil::PadLeft(req_id, '0', 10);
+	userDefined.append(req_id);
+	userDefined.append("k");
+
+	std::string mac_address;
+	mac_address = SmUtil::GetMacAddress();
+	userDefined.append(mac_address);
+	userDefined.append("m");
+
+	temp = VtStringUtil::PadRight(userDefined, '0', 60);
+
+	orderString.append(temp);
+
+	CString sTrCode = "g12003.AO0401%";
+	CString sInput = orderString.c_str();
+	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
+	order_request_map[nRqID] = order_req;
 }
 
 int DarkHorse::ViClient::ConvertToInt(CString& strSymbolCode, CString& strValue)
