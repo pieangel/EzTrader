@@ -37,7 +37,7 @@ namespace DarkHorse {
 			const SmPositionType& position_type,
 			const SmOrderType& order_type,
 			const SmPriceType& price_type,
-			const SmFilledCondition& fill_cond = SmFilledCondition::Day);
+			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 
 		static order_request_p make_order_request(
 			const std::string& account_no,
@@ -48,7 +48,7 @@ namespace DarkHorse {
 			const SmPositionType& position_type,
 			const SmOrderType& order_type,
 			const SmPriceType& price_type,
-			const SmFilledCondition& fill_cond = SmFilledCondition::Day);
+			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 
 		static order_request_p make_default_sell_order_request(
 			const std::string& symbol_code,
@@ -57,7 +57,7 @@ namespace DarkHorse {
 			int order_amount = 1,
 			const SmOrderType& order_type = SmOrderType::New,
 			const SmPriceType& price_type = SmPriceType::Price,
-			const SmFilledCondition& fill_cond = SmFilledCondition::Day);
+			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 
 		static order_request_p make_default_sell_order_request(
 			const std::string& account_no,
@@ -68,7 +68,7 @@ namespace DarkHorse {
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmPositionType& position_type = SmPositionType::Sell,
 			const SmOrderType& order_type = SmOrderType::New,
-			const SmFilledCondition& fill_cond = SmFilledCondition::Day);
+			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 
 		static order_request_p make_default_buy_order_request(
 			const std::string& symbol_code,
@@ -77,7 +77,7 @@ namespace DarkHorse {
 			int order_amount = 1,
 			const SmOrderType& order_type = SmOrderType::New,
 			const SmPriceType& price_type = SmPriceType::Price,
-			const SmFilledCondition& fill_cond = SmFilledCondition::Day);
+			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 
 		static order_request_p make_default_buy_order_request(
 			const std::string& account_no,
@@ -88,7 +88,7 @@ namespace DarkHorse {
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmPositionType& position_type = SmPositionType::Buy,
 			const SmOrderType& order_type = SmOrderType::New,
-			const SmFilledCondition& fill_cond = SmFilledCondition::Day);
+			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 
 		static order_request_p  make_change_order_request(
 			const std::string& account_no,
@@ -100,7 +100,7 @@ namespace DarkHorse {
 			int order_amount = 1,
 			const SmOrderType& order_type = SmOrderType::Modify,
 			const SmPriceType& price_type = SmPriceType::Price,
-			const SmFilledCondition& fill_cond = SmFilledCondition::Day);
+			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 
 		static order_request_p make_cancel_order_request(
 			const std::string& account_no,
@@ -112,7 +112,7 @@ namespace DarkHorse {
 			int order_amount = 1,
 			const SmOrderType& order_type = SmOrderType::Cancel,
 			const SmPriceType& price_type = SmPriceType::Price,
-			const SmFilledCondition& fill_cond = SmFilledCondition::Day);
+			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 	private:
 		void clear_order_requests() noexcept;
 		bool enable_{ true };

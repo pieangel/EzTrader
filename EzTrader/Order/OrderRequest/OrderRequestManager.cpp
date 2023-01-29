@@ -4,6 +4,7 @@
 #include "../../Global/SmTotalManager.h"
 #include "../../Client/ViStockClient.h"
 namespace DarkHorse {
+int OrderRequestManager::id_ = 0;
 using order_request_p = std::shared_ptr<OrderRequest>;
 order_request_p OrderRequestManager::find_order_request(int req_id)
 {
@@ -110,9 +111,18 @@ order_request_p OrderRequestManager::make_order_request(
 	const SmPositionType& position_type, 
 	const SmOrderType& order_type, 
 	const SmPriceType& price_type, 
-	const SmFilledCondition& fill_cond )
+	const SmFilledCondition& fill_condition)
 {
-	return nullptr;
+	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
+	order_req->request_id = get_id();
+	order_req->order_price = order_price;
+	order_req->order_amount = order_amount;
+	order_req->symbol_code = symbol_code;
+	order_req->position_type = position_type;
+	order_req->order_type = order_type;
+	order_req->price_type = price_type;
+	order_req->fill_condition = fill_condition;
+	return order_req;
 }
 
 order_request_p OrderRequestManager::make_order_request(
@@ -124,9 +134,18 @@ order_request_p OrderRequestManager::make_order_request(
 	const SmPositionType& position_type, 
 	const SmOrderType& order_type, 
 	const SmPriceType& price_type, 
-	const SmFilledCondition& fill_cond )
+	const SmFilledCondition& fill_condition)
 {
-	return nullptr;
+	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
+	order_req->request_id = get_id();
+	order_req->order_price = order_price;
+	order_req->order_amount = order_amount;
+	order_req->symbol_code = symbol_code;
+	order_req->position_type = position_type;
+	order_req->order_type = order_type;
+	order_req->price_type = price_type;
+	order_req->fill_condition = fill_condition;
+	return order_req;
 }
 
 order_request_p OrderRequestManager::make_default_sell_order_request(
@@ -136,9 +155,18 @@ order_request_p OrderRequestManager::make_default_sell_order_request(
 	int order_amount /*= 1*/, 
 	const SmOrderType& order_type /*= SmOrderType::New*/, 
 	const SmPriceType& price_type /*= SmPriceType::Price*/, 
-	const SmFilledCondition& fill_cond /*= SmFilledCondition::Day*/)
+	const SmFilledCondition& fill_condition /*= SmFilledCondition::Day*/)
 {
-	return nullptr;
+	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
+	order_req->request_id = get_id();
+	order_req->order_price = order_price;
+	order_req->order_amount = order_amount;
+	order_req->symbol_code = symbol_code;
+	order_req->position_type = position_type;
+	order_req->order_type = order_type;
+	order_req->price_type = price_type;
+	order_req->fill_condition = fill_condition;
+	return order_req;
 }
 
 order_request_p OrderRequestManager::make_default_sell_order_request(
@@ -150,9 +178,18 @@ order_request_p OrderRequestManager::make_default_sell_order_request(
 	const SmPriceType& price_type /*= SmPriceType::Price*/, 
 	const SmPositionType& position_type /*= SmPositionType::Sell*/, 
 	const SmOrderType& order_type /*= SmOrderType::New*/, 
-	const SmFilledCondition& fill_cond /*= SmFilledCondition::Day*/)
+	const SmFilledCondition& fill_condition /*= SmFilledCondition::Day*/)
 {
-	return nullptr;
+	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
+	order_req->request_id = get_id();
+	order_req->order_price = order_price;
+	order_req->order_amount = order_amount;
+	order_req->symbol_code = symbol_code;
+	order_req->position_type = position_type;
+	order_req->order_type = order_type;
+	order_req->price_type = price_type;
+	order_req->fill_condition = fill_condition;
+	return order_req;
 }
 
 order_request_p OrderRequestManager::make_default_buy_order_request(
@@ -162,9 +199,18 @@ order_request_p OrderRequestManager::make_default_buy_order_request(
 	int order_amount /*= 1*/, 
 	const SmOrderType& order_type /*= SmOrderType::New*/, 
 	const SmPriceType& price_type /*= SmPriceType::Price*/, 
-	const SmFilledCondition& fill_cond /*= SmFilledCondition::Day*/)
+	const SmFilledCondition& fill_condition /*= SmFilledCondition::Day*/)
 {
-	return nullptr;
+	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
+	order_req->request_id = get_id();
+	order_req->order_price = order_price;
+	order_req->order_amount = order_amount;
+	order_req->symbol_code = symbol_code;
+	order_req->position_type = position_type;
+	order_req->order_type = order_type;
+	order_req->price_type = price_type;
+	order_req->fill_condition = fill_condition;
+	return order_req;
 }
 
 order_request_p OrderRequestManager::make_default_buy_order_request(
@@ -176,9 +222,18 @@ order_request_p OrderRequestManager::make_default_buy_order_request(
 	const SmPriceType& price_type /*= SmPriceType::Price*/, 
 	const SmPositionType& position_type /*= SmPositionType::Buy*/, 
 	const SmOrderType& order_type /*= SmOrderType::New*/, 
-	const SmFilledCondition& fill_cond /*= SmFilledCondition::Day*/)
+	const SmFilledCondition& fill_condition /*= SmFilledCondition::Day*/)
 {
-	return nullptr;
+	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
+	order_req->request_id = get_id();
+	order_req->order_price = order_price;
+	order_req->order_amount = order_amount;
+	order_req->symbol_code = symbol_code;
+	order_req->position_type = position_type;
+	order_req->order_type = order_type;
+	order_req->price_type = price_type;
+	order_req->fill_condition = fill_condition;
+	return order_req;
 }
 
 order_request_p OrderRequestManager::make_change_order_request(
@@ -191,9 +246,18 @@ order_request_p OrderRequestManager::make_change_order_request(
 	int order_amount /*= 1*/, 
 	const SmOrderType& order_type /*= SmOrderType::Modify*/, 
 	const SmPriceType& price_type /*= SmPriceType::Price*/, 
-	const SmFilledCondition& fill_cond /*= SmFilledCondition::Day*/)
+	const SmFilledCondition& fill_condition /*= SmFilledCondition::Day*/)
 {
-	return nullptr;
+	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
+	order_req->request_id = get_id();
+	order_req->order_price = order_price;
+	order_req->order_amount = order_amount;
+	order_req->symbol_code = symbol_code;
+	order_req->position_type = position_type;
+	order_req->order_type = order_type;
+	order_req->price_type = price_type;
+	order_req->fill_condition = fill_condition;
+	return order_req;
 }
 
 order_request_p OrderRequestManager::make_cancel_order_request(
@@ -206,8 +270,17 @@ order_request_p OrderRequestManager::make_cancel_order_request(
 	int order_amount /*= 1*/, 
 	const SmOrderType& order_type /*= SmOrderType::Cancel*/, 
 	const SmPriceType& price_type /*= SmPriceType::Price*/, 
-	const SmFilledCondition& fill_cond /*= SmFilledCondition::Day*/)
+	const SmFilledCondition& fill_condition /*= SmFilledCondition::Day*/)
 {
-	return nullptr;
+	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
+	order_req->request_id = get_id();
+	order_req->order_price = order_price;
+	order_req->order_amount = order_amount;
+	order_req->symbol_code = symbol_code;
+	order_req->position_type = position_type;
+	order_req->order_type = order_type;
+	order_req->price_type = price_type;
+	order_req->fill_condition = fill_condition;
+	return order_req;
 }
 }
