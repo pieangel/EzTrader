@@ -8,7 +8,7 @@
 #include "../SmOrderConst.h"
 using namespace code_machina;
 namespace DarkHorse {
-	const int BulkOrderRequestSize = 500;
+	constexpr int BulkOrderRequestSize = 500;
 	struct OrderRequest;
 	class OrderRequestManager : public Runnable
 	{

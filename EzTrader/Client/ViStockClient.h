@@ -5,7 +5,6 @@
 #include "../Task/SmTaskConst.h"
 #include "../Json/json.hpp"
 #include "../Task/SmTaskArg.h"
-
 namespace DarkHorse {
 
 	typedef std::map<std::string, std::any> task_arg;
