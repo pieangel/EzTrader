@@ -58,8 +58,8 @@ B. 주문 체결 처리 순서.
 10. order 주문이 부분 체결인가 완벽 체결인가를 판단한다. 
 11. order가 주문 수량과 체결 수량이 일치하지 않을 때는 부분 체결로 상태를 설정한다.
     그리고 order의 주문수량을 갱신한다. 
-12. order가 체결되었을 때 주문 수량을 알 수 없을 때는 주문 상태를 Half_Filled로 설정한다. 
-13. 주문상태가 Half_Filled일 때는 접수확인에서 이 부분을 확인하여 별도로 처리한다. 
+12. order가 체결되었을 때 주문 수량을 알 수 없을 때는 주문 상태를 Unresolved_Filled로 설정한다. 
+13. 주문상태가 Unresolved_Filled일 때는 접수확인에서 이 부분을 확인하여 별도로 처리한다. 
 14. 찾은 position과 filled_order로 다음의 값들을 계산한다. 
 15. trade_count, open_count, average_price, open_price, settled_count를 계산한다. 
 16. trade_price를 계산하고 position trade_profit_loss를 갱신한다. 
@@ -67,5 +67,10 @@ B. 주문 체결 처리 순서.
 18. order의 settled_count를 기반으로 cut_stop_order를 설정한다. 
 19. account_position_manager의 trade_profit_loss, open_profit_loss를 갱신한다. 
 20. order_view, account_position_view에 event를 보낸다. 
+21. order_account_type이 sub_account 인 경우
+  21.1. order_request_id 정보로 main_account_no를 얻어 account_order_manager를 찾는다.
+  21.2. account_order_manager에서 symbol_order_manager를 찾는다. 
+  21.3. account_position_manager의 trade_profit_loss, open_profit_loss를 갱신한다. 
+  21.4. order_view, account_position_view에 event를 보낸다. 
 
 
