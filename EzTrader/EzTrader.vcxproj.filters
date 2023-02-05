@@ -592,6 +592,9 @@
     <ClCompile Include="Order\OrderRequest\OrderRequestManager.cpp">
       <Filter>Order\OrderRequest</Filter>
     </ClCompile>
+    <ClCompile Include="Order\OrderProcess\OrderProcessor.cpp">
+      <Filter>Order\OrderProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1368,6 +1371,9 @@
     <ClInclude Include="Order\OrderRequest\OrderRequestManager.h">
       <Filter>Order\OrderRequest</Filter>
     </ClInclude>
+    <ClInclude Include="Order\OrderProcess\OrderProcessor.h">
+      <Filter>Order\OrderProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -1603,10 +1609,18 @@
     <Filter Include="Order\OrderRequest">
       <UniqueIdentifier>{da3d86cf-7a66-4d28-8ac4-781f1beb6de2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Order\OrderProcess">
+      <UniqueIdentifier>{834125ae-ffa5-4b50-aed6-80f9e823ec11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EzTrader.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Order\OrderProcess\ReadMe.txt">
+      <Filter>Order\OrderProcess</Filter>
+    </Text>
   </ItemGroup>
 </Project>

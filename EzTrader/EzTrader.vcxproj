@@ -356,6 +356,7 @@
     <ClInclude Include="OrderState\SmFilledListDialog.h" />
     <ClInclude Include="Order\CTestDialog.h" />
     <ClInclude Include="Order\OrderLeftDialog.h" />
+    <ClInclude Include="Order\OrderProcess\OrderProcessor.h" />
     <ClInclude Include="Order\OrderRequest\OrderRequest.h" />
     <ClInclude Include="Order\OrderRequest\OrderRequestManager.h" />
     <ClInclude Include="Order\OrderRightDialog.h" />
@@ -598,6 +599,7 @@
     <ClCompile Include="OrderState\SmFilledListDialog.cpp" />
     <ClCompile Include="Order\CTestDialog.cpp" />
     <ClCompile Include="Order\OrderLeftDialog.cpp" />
+    <ClCompile Include="Order\OrderProcess\OrderProcessor.cpp" />
     <ClCompile Include="Order\OrderRequest\OrderRequestManager.cpp" />
     <ClCompile Include="Order\OrderRightDialog.cpp" />
     <ClCompile Include="Order\SmAcceptedGrid.cpp" />
@@ -740,6 +742,9 @@
     <None Include="DataFrame\Vectors\HeteroView.tcc" />
     <None Include="res\DarkHorse.rc2" />
     <None Include="res\DarkHorse.toolbar.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Order\OrderProcess\ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

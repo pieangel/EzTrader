@@ -31,8 +31,8 @@ namespace DarkHorse {
 		void enable(bool val) { enable_ = val; }
 
 		static order_request_p make_order_request(
-			int order_price,
-			int order_amount,
+			const int order_price,
+			const int order_amount,
 			const std::string& symbol_code,
 			const SmPositionType& position_type,
 			const SmOrderType& order_type,
@@ -42,8 +42,8 @@ namespace DarkHorse {
 		static order_request_p make_order_request(
 			const std::string& account_no,
 			const std::string& password,
-			int order_price,
-			int order_amount,
+			const int order_price,
+			const int order_amount,
 			const std::string& symbol_code,
 			const SmPositionType& position_type,
 			const SmOrderType& order_type,
@@ -52,9 +52,9 @@ namespace DarkHorse {
 
 		static order_request_p make_default_sell_order_request(
 			const std::string& symbol_code,
-			int order_price,
+			const int order_price,
 			const SmPositionType& position_type = SmPositionType::Sell,
-			int order_amount = 1,
+			const int order_amount = 1,
 			const SmOrderType& order_type = SmOrderType::New,
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
@@ -63,8 +63,8 @@ namespace DarkHorse {
 			const std::string& account_no,
 			const std::string& password,
 			const std::string& symbol_code,
-			int order_price,
-			int order_amount = 1,
+			const int order_price,
+			const int order_amount = 1,
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmPositionType& position_type = SmPositionType::Sell,
 			const SmOrderType& order_type = SmOrderType::New,
@@ -72,9 +72,9 @@ namespace DarkHorse {
 
 		static order_request_p make_default_buy_order_request(
 			const std::string& symbol_code,
-			int order_price,
+			const int order_price,
 			const SmPositionType& position_type = SmPositionType::Buy,
-			int order_amount = 1,
+			const int order_amount = 1,
 			const SmOrderType& order_type = SmOrderType::New,
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
@@ -83,8 +83,8 @@ namespace DarkHorse {
 			const std::string& account_no,
 			const std::string& password,
 			const std::string& symbol_code,
-			int order_price,
-			int order_amount = 1,
+			const int order_price,
+			const int order_amount = 1,
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmPositionType& position_type = SmPositionType::Buy,
 			const SmOrderType& order_type = SmOrderType::New,
@@ -95,9 +95,9 @@ namespace DarkHorse {
 			const std::string& password,
 			const std::string& symbol_code,
 			const std::string& ori_order_no,
-			int order_price,
+			const int order_price,
 			const SmPositionType& position_type = SmPositionType::Buy,
-			int order_amount = 1,
+			const int order_amount = 1,
 			const SmOrderType& order_type = SmOrderType::Modify,
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
@@ -107,9 +107,9 @@ namespace DarkHorse {
 			const std::string& password,
 			const std::string& symbol_code,
 			const std::string& ori_order_no,
-			int order_price,
+			const int order_price,
 			const SmPositionType& position_type = SmPositionType::Buy,
-			int order_amount = 1,
+			const int order_amount = 1,
 			const SmOrderType& order_type = SmOrderType::Cancel,
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmFilledCondition& fill_condition = SmFilledCondition::Day);

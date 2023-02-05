@@ -62,6 +62,7 @@ namespace DarkHorse {
 		void CheckStopOrder(const int& close);
 		void CheckStopOrder(std::shared_ptr<SmSymbol> symbol);
 	private:
+		int get_order_request_id();
 		void RemoveFilledOrder(int remove_count);
 		void ClearFilledOrder();
 		std::map<std::string, std::shared_ptr<SmOrder>> _HistoryOrderMap;
