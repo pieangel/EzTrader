@@ -6,38 +6,37 @@ SI 증권은 주문을 변경하거나 처리할 때 항상 새로운 주문 번호가 온다.
 그리고 나중에 OrderUnfilled Event가 올 때는 취소나 정정에 대한 확인만 진행한다. 
 
 취소나 정정을 할 때 먼저 화면에서 없애고 취소확인이나 정정확인은 나중에 처리하는 것으로 한다. 
-주문을 낼 때도 주문 객체를 먼저 만들고 먼저 화면에 표시하고 주문 상태를 Ledge상태로 변경한다.
-Ledge상태의 주문은 취소하거나 정정할 수 없다. 
+주문을 낼 때 order_request는 주문창에 표시한다. 그리고 주문을 전송한다. 
+주문이 접수확인되거나 체결되었을 때 order_request를 주문창에서 없애 준다. 
 
 A. 주문 확인 처리 순서.
 1. 증권사에서 주문 정보를 받는다.
 2. 주문정보를 파싱하여 order_info json 객체를 만든다.
 3. order_processor 큐에 넣는다.
 4. order_processor는 큐에서 꺼내어 주문을 처리하기 시작한다.
-5. order_info를 꺼낸 이후에 order_request_id가 있는지 파악한다.
-6. order_request_id  정보가 있는 경우 
-  6.1. order_request_list에서 order_request를 찾아 본다. 
-  6.2. order_request_list에 있는 경우
-    6.2.1. order_request를 바탕으로 order객체를 만든다.
-    6.2.2. order에  order_request_id, order_no, accepted_count, accepted_time, original_order_no, first_order_no을 넣어준다. 
-    6.2.3. order_account_type이 sub_account 인 경우 order_account_type을 넣어준다.  
-  6.3. order_request_list에 없는 경우는 7로가 외부주문을 처리한다. 
-7. order_request_list에 없는 경우 나 order_request_id 정보가 없는 경우 - 무조건 외부 주문(현재 사용자가 주문을 내는 주문창 외에 다른 process, 다른 ip애서 온 주문)으로 간주
-  7.1. order_info를 바탕으로 order 객체를 만든다. 
-  7.2. order에 account_no, symbol_code, order_no, accepted_count, accepted_time, original_order_no, first_order_no을 넣어준다.
-8. account_no를 얻어 account_order_manager를 찾는다.
-9. account_order_manager에서 symbol_order_manager를 찾는다. 
-9. symbol_order_manager accepted_order_list에 추가해 준다. 
-10. symbol_order_manager buy_order_manager/sell_order_manager에 order를 추가해 준다. 
-11. account_accepted_order_view에 accepted_order_list가 갱신되었다는 event를 보낸다. 
-12. order_view에 accepted_order_list가 갱신되었다는 event를 보낸다. 
-13. order_account_type이 sub_account 인 경우
-  13.1. order_request_id 정보로 main_account_no를 얻어 account_order_manager를 찾는다.
-  13.2. account_order_manager에서 symbol_order_manager를 찾는다. 
-  13.3. symbol_order_manager accepted_order_list에 추가해 준다. 
-  13.4. symbol_order_manager buy_order_manager/sell_order_manager에 order를 추가해 준다. 
-  13.5. order_view에 accepted_order_list가 갱신되었다는 event를 보낸다. 
-  13.6. account_accepted_order_view에 accepted_order_list가 갱신되었다는 event를 보낸다. 
+5. order_info를 꺼낸 이후에 order_info에 custom 정보를 살펴보아 order_request_id를 추출한다.
+6. order_request_id가 order_request_list에 있는지 살펴 본다. 
+7. order_request_id가 order_request_list에 있는 경우 
+  7.1. order_info를 바탕으로 order객체를 만든다.
+  7.2. order에 account_no, symbol_code, order_no, accepted_price, accepted_count, accepted_time, original_order_no, first_order_no을 넣어준다. 
+  7.3. order에 order_request_id를 넣어준다. 
+  7.3. order_account_type이 sub_account 인 경우 order_account_type을 넣어준다.  
+8. order_request_list에 없는 경우 나 order_request_id 정보가 없는 경우 - 무조건 외부 주문(현재 사용자가 주문을 내는 주문창 외에 다른 process, 다른 ip애서 온 주문)으로 간주
+  8.1. order_info를 바탕으로 order 객체를 만든다. 
+  8.2. order에 account_no, symbol_code, order_no, accepted_price, accepted_count, accepted_time, original_order_no, first_order_no을 넣어준다.
+9. account_no를 얻어 account_order_manager를 찾는다.
+10. account_order_manager에서 symbol_order_manager를 찾는다. 
+11. symbol_order_manager accepted_order_list에 추가해 준다. 
+12. symbol_order_manager buy_order_manager/sell_order_manager에 order를 추가해 준다. 
+13. account_accepted_order_view에 accepted_order_list가 갱신되었다는 event를 보낸다. 
+14. order_view에 accepted_order_list가 갱신되었다는 event를 보낸다. 
+15. order_account_type이 sub_account 인 경우
+  15.1. order_request_id 정보로 main_account_no를 얻어 account_order_manager를 찾는다.
+  15.2. account_order_manager에서 symbol_order_manager를 찾는다. 
+  15.3. symbol_order_manager accepted_order_list에 추가해 준다. 
+  15.4. symbol_order_manager buy_order_manager/sell_order_manager에 order를 추가해 준다. 
+  15.5. order_view에 accepted_order_list가 갱신되었다는 event를 보낸다. 
+  15.6. account_accepted_order_view에 accepted_order_list가 갱신되었다는 event를 보낸다. 
 
 
 B. 주문 체결 처리 순서.
@@ -45,12 +44,28 @@ B. 주문 체결 처리 순서.
 2. 주문정보를 파싱하여 order_info json 객체를 만든다.
 3. order_processor 큐에 넣는다.
 4. order_processor는 큐에서 꺼내어 주문을 처리하기 시작한다.
-5. order_info를 꺼낸 이후에 order_request_id가 있는지 파악한다.
-6. order_request_id  정보가 있는 경우 
-6.1. order_request_list에서 order_request를 찾아 본다. 
-  6.2. order_request_list에 있는 경우
-    6.2.1. order_request를 바탕으로 order객체를 만든다.
-    6.2.2. order에  order_request_id, order_no, accepted_count, accepted_time, original_order_no, first_order_no을 넣어준다. 
-    6.2.3. order_account_type이 sub_account 인 경우 order_account_type을 넣어준다.  
-  6.3. order_request_list에 없는 경우는 7로가 외부주문을 처리한다. 
+5. order_info를 꺼낸 이후에 order_info에 custom 정보를 살펴보아 order_request_id를 추출한다.
+6. order_request_id가 order_request_list에 있는지 살펴 본다. 
+7. order_request_id가 order_request_list에 있는 경우 
+  7.1. order_info를 바탕으로 order객체를 만든다.
+  7.2. order에 account_no, symbol_code, order_no, filled_price, filled_count, filled_time를 넣어준다. 
+  7.3. order에 order_request_id를 넣어준다. 
+  7.3. order_account_type이 sub_account 인 경우 order_account_type을 넣어준다.  
+8. order_request_list에 없는 경우 나 order_request_id 정보가 없는 경우 - 무조건 외부 주문(현재 사용자가 주문을 내는 주문창 외에 다른 process, 다른 ip애서 온 주문)으로 간주
+  8.1. order_info를 바탕으로 order 객체를 만든다. 
+  8.2. order에 account_no, symbol_code, order_no, filled_price, filled_count, filled_time를 넣어준다. 
+9. account_no, symbol_code로 total_position_manager에서 position을 찾는다. 
+10. order 주문이 부분 체결인가 완벽 체결인가를 판단한다. 
+11. order가 주문 수량과 체결 수량이 일치하지 않을 때는 부분 체결로 상태를 설정한다.
+    그리고 order의 주문수량을 갱신한다. 
+12. order가 체결되었을 때 주문 수량을 알 수 없을 때는 주문 상태를 Half_Filled로 설정한다. 
+13. 주문상태가 Half_Filled일 때는 접수확인에서 이 부분을 확인하여 별도로 처리한다. 
+14. 찾은 position과 filled_order로 다음의 값들을 계산한다. 
+15. trade_count, open_count, average_price, open_price, settled_count를 계산한다. 
+16. trade_price를 계산하고 position trade_profit_loss를 갱신한다. 
+17. position open_count, average_price, open_price를 갱신한다. 
+18. order의 settled_count를 기반으로 cut_stop_order를 설정한다. 
+19. account_position_manager의 trade_profit_loss, open_profit_loss를 갱신한다. 
+20. order_view, account_position_view에 event를 보낸다. 
+
 
