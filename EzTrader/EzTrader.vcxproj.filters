@@ -595,6 +595,159 @@
     <ClCompile Include="Order\OrderProcess\OrderProcessor.cpp">
       <Filter>Order\OrderProcess</Filter>
     </ClCompile>
+    <ClCompile Include="ViewModel\AccountOrderControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\AccountPositionControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\AccountState.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\Asset.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\BuyHogaControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\BuyOrderControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\BuyStopOrderControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\FavoriteSymbol.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\FutureClose.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\FutureExpected.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\FuturePosition.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\OptionClose.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\OptionExpected.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\OptionPosition.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\OrderableInfo.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\PriceRange.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\SellHogaControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\SellOrderControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\SellStopOrderControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\SymbolInfo.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\SymbolPosition.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\SymbolTickControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\FilledOrderInfo.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="View\AccountOrderView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\AccountPositionView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\AccountStateView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\AssetView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\BuyHogaView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\BuyOrderView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\BuyStopOrderView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\FavoriteSymbolView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\FilledOrderInfoView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\FutureCloseView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\FutureExpectedView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\FuturePositionView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\OptionCloseView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\OptionExpectedView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\OptionPositionView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\OrderableInfoView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\PriceRangeView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\SellHogaView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\SellOrderView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\SellStopOrderView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\SymbolPositionView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\SymbolTickView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\TotalHogaInfo.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="View\TotalHogaInfoView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="Event\EventHub.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\SymbolProfitLoss.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="View\SymbolProfitLossView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\SymbolInfoView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1374,6 +1527,159 @@
     <ClInclude Include="Order\OrderProcess\OrderProcessor.h">
       <Filter>Order\OrderProcess</Filter>
     </ClInclude>
+    <ClInclude Include="ViewModel\AccountOrderControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\AccountPositionControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\AccountState.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\Asset.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\BuyHogaControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\BuyOrderControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\BuyStopOrderControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\FavoriteSymbol.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\FutureClose.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\FutureExpected.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\FuturePosition.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\OptionClose.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\OptionExpected.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\OptionPosition.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\OrderableInfo.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\PriceRange.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\SellHogaControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\SellOrderControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\SellStopOrderControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\SymbolInfo.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\SymbolPosition.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\SymbolTickControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\FilledOrderInfo.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="View\AccountOrderView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\AccountPositionView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\AccountStateView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\AssetView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\BuyHogaView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\BuyOrderView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\BuyStopOrderView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\FavoriteSymbolView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\FilledOrderInfoView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\FutureCloseView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\FutureExpectedView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\FuturePositionView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\OptionCloseView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\OptionExpectedView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\OptionPositionView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\OrderableInfoView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\PriceRangeView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\SellHogaView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\SellOrderView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\SellStopOrderView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\SymbolPositionView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\SymbolTickView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\TotalHogaInfo.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="View\TotalHogaInfoView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="Event\EventHub.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\SymbolProfitLoss.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="View\SymbolProfitLossView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\SymbolInfoView.h">
+      <Filter>View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -1611,6 +1917,12 @@
     </Filter>
     <Filter Include="Order\OrderProcess">
       <UniqueIdentifier>{834125ae-ffa5-4b50-aed6-80f9e823ec11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="View">
+      <UniqueIdentifier>{26091d7d-2635-462b-9955-d226b992dae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ViewModel">
+      <UniqueIdentifier>{efabd45b-371a-44f0-a74b-85b250651aa8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
