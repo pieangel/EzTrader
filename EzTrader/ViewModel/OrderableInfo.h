@@ -1,5 +1,6 @@
 #pragma once
-class OrderableInfo
-{
-};
-
+namespace DarkHorse {
+	class OrderableInfo
+	{
+	};
+}

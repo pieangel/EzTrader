@@ -1,5 +1,7 @@
 #pragma once
-class FutureExpected
-{
-};
+namespace DarkHorse {
+	class FutureExpected
+	{
+	};
 
+}

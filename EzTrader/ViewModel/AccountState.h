@@ -1,5 +1,7 @@
 #pragma once
-class AccountState
-{
-};
+namespace DarkHorse {
+	class AccountState
+	{
+	};
 
+}

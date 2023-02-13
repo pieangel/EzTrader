@@ -1,5 +1,6 @@
 #pragma once
-class SymbolProfitLoss
-{
-};
-
+namespace DarkHorse {
+	class SymbolProfitLoss
+	{
+	};
+}

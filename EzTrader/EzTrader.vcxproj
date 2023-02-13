@@ -356,7 +356,10 @@
     <ClInclude Include="OrderState\SmFilledListDialog.h" />
     <ClInclude Include="Order\CTestDialog.h" />
     <ClInclude Include="Order\OrderLeftDialog.h" />
+    <ClInclude Include="Order\OrderProcess\AccountOrderManager.h" />
     <ClInclude Include="Order\OrderProcess\OrderProcessor.h" />
+    <ClInclude Include="Order\OrderProcess\SymbolOrderManager.h" />
+    <ClInclude Include="Order\OrderProcess\TotalOrderManager.h" />
     <ClInclude Include="Order\OrderRequest\OrderRequest.h" />
     <ClInclude Include="Order\OrderRequest\OrderRequestManager.h" />
     <ClInclude Include="Order\OrderRightDialog.h" />
@@ -388,9 +391,11 @@
     <ClInclude Include="Pnf\pnfDefine.h" />
     <ClInclude Include="Pnf\PnfMaker.h" />
     <ClInclude Include="Pnf\PnfManager.h" />
+    <ClInclude Include="Position\AccountPositionManager.h" />
     <ClInclude Include="Position\SmAccountPositionManager.h" />
     <ClInclude Include="Position\SmPosition.h" />
     <ClInclude Include="Position\SmTotalPositionManager.h" />
+    <ClInclude Include="Position\TotalPositionManager.h" />
     <ClInclude Include="PropertiesViewBar.h" />
     <ClInclude Include="Quote\SmQuote.h" />
     <ClInclude Include="Quote\SmQuoteManager.h" />
@@ -649,7 +654,10 @@
     <ClCompile Include="OrderState\SmFilledListDialog.cpp" />
     <ClCompile Include="Order\CTestDialog.cpp" />
     <ClCompile Include="Order\OrderLeftDialog.cpp" />
+    <ClCompile Include="Order\OrderProcess\AccountOrderManager.cpp" />
     <ClCompile Include="Order\OrderProcess\OrderProcessor.cpp" />
+    <ClCompile Include="Order\OrderProcess\SymbolOrderManager.cpp" />
+    <ClCompile Include="Order\OrderProcess\TotalOrderManager.cpp" />
     <ClCompile Include="Order\OrderRequest\OrderRequestManager.cpp" />
     <ClCompile Include="Order\OrderRightDialog.cpp" />
     <ClCompile Include="Order\SmAcceptedGrid.cpp" />
@@ -674,9 +682,11 @@
     <ClCompile Include="OutputBar.cpp" />
     <ClCompile Include="Pnf\PnfMaker.cpp" />
     <ClCompile Include="Pnf\PnfManager.cpp" />
+    <ClCompile Include="Position\AccountPositionManager.cpp" />
     <ClCompile Include="Position\SmAccountPositionManager.cpp" />
     <ClCompile Include="Position\SmPosition.cpp" />
     <ClCompile Include="Position\SmTotalPositionManager.cpp" />
+    <ClCompile Include="Position\TotalPositionManager.cpp" />
     <ClCompile Include="PropertiesViewBar.cpp" />
     <ClCompile Include="DarkHorse.cpp" />
     <ClCompile Include="DarkHorseDoc.cpp" />

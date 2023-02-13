@@ -1,5 +1,7 @@
 #pragma once
-class OptionPosition
-{
-};
+namespace DarkHorse {
+	class OptionPosition
+	{
+	};
 
+}

@@ -1,5 +1,6 @@
 #pragma once
-class AccountPositionControl
-{
-};
-
+namespace DarkHorse {
+	class AccountPositionControl
+	{
+	};
+}

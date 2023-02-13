@@ -1,5 +1,7 @@
 #pragma once
-class FuturePosition
-{
-};
+namespace DarkHorse {
+	class FuturePosition
+	{
+	};
+}
 

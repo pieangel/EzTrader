@@ -1,5 +1,7 @@
 #pragma once
-class SellHogaControl
-{
-};
+namespace DarkHorse {
+	class SellHogaControl
+	{
+	};
 
+}

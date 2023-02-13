@@ -1,5 +1,7 @@
 #pragma once
-class FutureClose
-{
-};
+namespace DarkHorse {
+	class FutureClose
+	{
+	};
 
+}

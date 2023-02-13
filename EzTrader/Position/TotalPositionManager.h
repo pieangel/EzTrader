@@ -1,7 +1,7 @@
 #pragma once
 namespace DarkHorse {
-	class SellStopOrderControl
+	class TotalPositionManager
 	{
 	};
-
 }
+

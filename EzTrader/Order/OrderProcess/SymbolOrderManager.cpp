@@ -1,4 +1,4 @@
 #include "stdafx.h"
-#include "SellHogaControl.h"
+#include "SymbolOrderManager.h"
 namespace DarkHorse {
 }

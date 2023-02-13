@@ -1,5 +1,6 @@
 #pragma once
-class TotalHogaInfo
-{
-};
-
+namespace DarkHorse {
+	class TotalHogaInfo
+	{
+	};
+}

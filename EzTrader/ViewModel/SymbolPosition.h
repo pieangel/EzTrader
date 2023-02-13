@@ -1,5 +1,6 @@
 #pragma once
-class SymbolPosition
-{
-};
-
+namespace DarkHorse {
+	class SymbolPosition
+	{
+	};
+}

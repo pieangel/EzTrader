@@ -1,5 +1,6 @@
 #pragma once
-class AccountOrderControl
-{
-};
-
+namespace DarkHorse {
+	class AccountOrderControl
+	{
+	};
+}

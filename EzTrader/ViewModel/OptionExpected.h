@@ -1,5 +1,6 @@
 #pragma once
-class OptionExpected
-{
-};
-
+namespace DarkHorse {
+	class OptionExpected
+	{
+	};
+}

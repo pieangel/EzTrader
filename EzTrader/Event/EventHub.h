@@ -1,5 +1,7 @@
 #pragma once
-class EventHub
-{
-};
+namespace DarkHorse {
+	class EventHub
+	{
+	};
+}
 

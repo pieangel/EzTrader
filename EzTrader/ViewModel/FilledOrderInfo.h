@@ -1,5 +1,7 @@
 #pragma once
-class FilledOrderInfo
-{
-};
+namespace DarkHorse {
+	class FilledOrderInfo
+	{
+	};
 
+}

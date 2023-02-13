@@ -1,5 +1,6 @@
 #pragma once
-class SymbolInfo
-{
-};
-
+namespace DarkHorse {
+	class SymbolInfo
+	{
+	};
+}

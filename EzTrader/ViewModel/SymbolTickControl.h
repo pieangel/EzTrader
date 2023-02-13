@@ -1,5 +1,6 @@
 #pragma once
-class SymbolTickControl
-{
-};
-
+namespace DarkHorse {
+	class SymbolTickControl
+	{
+	};
+}

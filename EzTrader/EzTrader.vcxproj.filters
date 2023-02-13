@@ -745,6 +745,21 @@
     <ClCompile Include="View\SymbolInfoView.cpp">
       <Filter>View</Filter>
     </ClCompile>
+    <ClCompile Include="Position\AccountPositionManager.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Position\TotalPositionManager.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderProcess\AccountOrderManager.cpp">
+      <Filter>Order\OrderProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderProcess\SymbolOrderManager.cpp">
+      <Filter>Order\OrderProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderProcess\TotalOrderManager.cpp">
+      <Filter>Order\OrderProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1673,6 +1688,21 @@
     </ClInclude>
     <ClInclude Include="View\SymbolInfoView.h">
       <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\AccountPositionManager.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\TotalPositionManager.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderProcess\AccountOrderManager.h">
+      <Filter>Order\OrderProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderProcess\SymbolOrderManager.h">
+      <Filter>Order\OrderProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderProcess\TotalOrderManager.h">
+      <Filter>Order\OrderProcess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

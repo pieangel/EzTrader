@@ -1,5 +1,7 @@
 #pragma once
-class PriceRange
-{
-};
+namespace DarkHorse {
+	class PriceRange
+	{
+	};
 
+}
