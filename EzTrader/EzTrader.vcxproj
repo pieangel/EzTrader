@@ -99,7 +99,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_76_0;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
       <BrowseInformation>false</BrowseInformation>
@@ -107,7 +107,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Project\DarkHorse\Debug;C:\Project\BCGControlBarPro\Bin;../lib;C:\boost_1_76_0\stage\lib;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Project\DarkHorse\Debug;C:\Project\BCGControlBarPro\Bin;../lib;C:\boost_1_78_0\stage\lib;</AdditionalLibraryDirectories>
       <AdditionalDependencies>ta_abstract_cdr.lib;ta_common_cdr.lib;ta_func_cdr.lib;ta_libc_cdr.lib;chartdir70.lib;Iphlpapi.lib;PEGRP32G.lib;HTMLHELP.lib;</AdditionalDependencies>
     </Link>
     <Midl>
