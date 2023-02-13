@@ -20,6 +20,8 @@
 #include "../TimeData/SmTimeDataManager.h"
 #include "../Pnf/PnfManager.h"
 #include "../System/SmSystemManager.h"
+#include "../Order//OrderProcess/TotalOrderManager.h"
+#include "../Position/TotalPositionManager.h"
 #include <string>
 
 using namespace DarkHorse;
@@ -50,4 +52,7 @@ void SmTotalManager::CreateManagers()
 	_TimeDataMgr = std::make_shared<SmTimeDataManager>();
 	_PnfMgr = std::make_shared<PnfManager>();
 	_SystemMgr = std::make_shared<SmSystemManager>();
+
+	total_order_manager_ = std::make_shared<TotalOrderManager>();
+	total_position_manager_ = std::make_shared<TotalPositionManager>();
 }

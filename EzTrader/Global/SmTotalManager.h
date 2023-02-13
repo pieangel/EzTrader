@@ -22,6 +22,8 @@ namespace DarkHorse {
 	class SmTimeDataManager;
 	class PnfManager;
 	class SmSystemManager;
+	class TotalOrderManager;
+	class TotalPositionManager;
 	class SmTotalManager
 	{
 	public:
@@ -46,6 +48,9 @@ namespace DarkHorse {
 		std::shared_ptr<SmTimeDataManager> TimeDataMgr() { return _TimeDataMgr; }
 		std::shared_ptr<PnfManager> PnfMgr() { return _PnfMgr; }
 		std::shared_ptr<SmSystemManager> SystemMgr() { return _SystemMgr; }
+
+		std::shared_ptr<TotalOrderManager> total_order_manager() { return total_order_manager_; }
+		std::shared_ptr<TotalPositionManager> total_position_manager() { return total_position_manager_; }
 	private:
 		std::shared_ptr<SmCallbackManager> _CallbackMgr = nullptr;
 		std::shared_ptr<ViStockClient> _Client = nullptr;
@@ -67,6 +72,9 @@ namespace DarkHorse {
 		std::shared_ptr<SmTimeDataManager> _TimeDataMgr = nullptr;
 		std::shared_ptr<PnfManager> _PnfMgr = nullptr;
 		std::shared_ptr<SmSystemManager> _SystemMgr = nullptr;
+
+		std::shared_ptr<TotalOrderManager> total_order_manager_ = nullptr;
+		std::shared_ptr<TotalPositionManager> total_position_manager_ = nullptr;
 	};
 }
 
