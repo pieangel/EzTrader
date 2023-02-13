@@ -559,9 +559,6 @@
     <ClCompile Include="ChartDialog\SetSpreadDialog.cpp">
       <Filter>ChartDialog</Filter>
     </ClCompile>
-    <ClCompile Include="Mongodb\MongoDBInstance.cpp">
-      <Filter>Mongodb</Filter>
-    </ClCompile>
     <ClCompile Include="ChartDialog\SetSpreadHsDialog.cpp">
       <Filter>ChartDialog</Filter>
     </ClCompile>
@@ -1484,9 +1481,6 @@
     </ClInclude>
     <ClInclude Include="TaLib\tapp.h">
       <Filter>TaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="Mongodb\MongoDBInstance.h">
-      <Filter>Mongodb</Filter>
     </ClInclude>
     <ClInclude Include="ChartDialog\SetSpreadHsDialog.h">
       <Filter>ChartDialog</Filter>

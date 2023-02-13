@@ -352,7 +352,6 @@
     <ClInclude Include="Log\MyLogger.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MfcMdiAppGlue.h" />
-    <ClInclude Include="Mongodb\MongoDBInstance.h" />
     <ClInclude Include="OrderState\SmFilledGrid.h" />
     <ClInclude Include="OrderState\SmFilledListDialog.h" />
     <ClInclude Include="Order\CTestDialog.h" />
@@ -646,7 +645,6 @@
     <ClCompile Include="Log\MyLogger.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MfcMdiAppGlue.cpp" />
-    <ClCompile Include="Mongodb\MongoDBInstance.cpp" />
     <ClCompile Include="OrderState\SmFilledGrid.cpp" />
     <ClCompile Include="OrderState\SmFilledListDialog.cpp" />
     <ClCompile Include="Order\CTestDialog.cpp" />
