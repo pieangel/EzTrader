@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "OrderProcessor.h"
 #include "../../Log/MyLogger.h"
+#include "../../Global/SmTotalManager.h"
 namespace DarkHorse {
 bool OrderProcessor::handle_order_info(const std::array<order_info, BulkOrderProcessSize>& arr, int taken)
 {
