@@ -1,8 +1,11 @@
 #include "stdafx.h"
+#include <memory>
 #include "OrderProcessor.h"
 #include "../../Log/MyLogger.h"
 #include "../../Global/SmTotalManager.h"
+#include "TotalOrderManager.h"
 namespace DarkHorse {
+using total_order_manager_p = std::shared_ptr<TotalOrderManager>;
 bool OrderProcessor::handle_order_info(const std::array<order_info, BulkOrderProcessSize>& arr, int taken)
 {
 	if (taken == 0) return true;
@@ -17,6 +20,8 @@ bool OrderProcessor::handle_order_info(const order_info& order_info_item)
 	try {
 		const std::string custom_info = order_info_item["custom"];
 		const int order_request_id = get_order_request_id(custom_info);
+		total_order_manager_p total_order_manager = mainApp.total_order_manager();
+		total_order_manager->on_order_event(order_info_item);
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
