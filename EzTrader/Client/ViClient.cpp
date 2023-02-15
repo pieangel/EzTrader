@@ -3317,7 +3317,7 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
 	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
 
-	order_info["custom"] = static_cast<const char*>(strCustom.Trim());
+	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
 	if (auto wp = _Client.lock()) {
 		wp->OnOrderAccepted(std::move(order_info));
@@ -3401,7 +3401,7 @@ void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRe
 	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
 	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
 
-	order_info["custom"] = static_cast<const char*>(strCustom.Trim());
+	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
 	if (auto wp = _Client.lock()) {
 		wp->OnOrderUnfilled(std::move(order_info));
@@ -3476,7 +3476,7 @@ void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nReal
 	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
 	order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
 
-	order_info["custom"] = static_cast<const char*>(strCustom.Trim());
+	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
 	if (auto wp = _Client.lock()) {
 		wp->OnOrderFilled(std::move(order_info));

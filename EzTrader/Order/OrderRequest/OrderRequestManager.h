@@ -10,9 +10,9 @@ using namespace code_machina;
 namespace DarkHorse {
 	constexpr int BulkOrderRequestSize = 500;
 	struct OrderRequest;
+	using order_request_p = std::shared_ptr<OrderRequest>;
 	class OrderRequestManager : public Runnable
 	{
-		using order_request_p = std::shared_ptr<OrderRequest>;
 	public:
 		OrderRequestManager() {};
 		virtual ~OrderRequestManager() {};
@@ -21,9 +21,9 @@ namespace DarkHorse {
 		static int id_;
 		static int get_id() { return id_++; }
 
-		order_request_p find_order_request(int req_id);
-		void add_order_request(order_request_p order_req);
-		void remove_order_request(int req_id);
+		order_request_p find_order_request(const int order_request_id);
+		void add_order_request(order_request_p order_request);
+		void remove_order_request(const int order_request_id);
 		void start_handle_order_request() noexcept;
 		void stop_handle_order_request() noexcept;
 		unsigned int ThreadHandlerProc(void) override;
@@ -125,5 +125,8 @@ namespace DarkHorse {
 		bool handle_order_request(std::array<order_request_p, BulkOrderRequestSize>& arr, int taken);
 		order_request_p make_dummy_order_request();
 		void add_order_request_map(order_request_p order_request);
+
+	public:
+		order_request_p find_order_request(const std::string& custom_info); 
 	};
 }

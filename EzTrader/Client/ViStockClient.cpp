@@ -217,7 +217,7 @@ void DarkHorse::ViStockClient::SendOrderAcceptedData(const std::shared_ptr<SmOrd
 	order_info["first_order_no"] = "";
 	order_info["order_time"] = "";
 	order_info["order_type"] = "1"; // Order Type New
-	order_info["custom"] = "";
+	order_info["custom_info"] = "";
 
 	OnOrderAccepted(std::move(order_info));
 }
@@ -239,7 +239,7 @@ void DarkHorse::ViStockClient::SendOrderUnfilledData()
 	order_info["modified_count"] = 0;
 	order_info["filled_count"] = 0;
 
-	order_info["custom"] = "";
+	order_info["custom_info"] = "";
 }
 
 void DarkHorse::ViStockClient::SendOrderFilledData()
@@ -257,7 +257,7 @@ void DarkHorse::ViStockClient::SendOrderFilledData()
 
 	order_info["filled_time"] = "";
 
-	order_info["custom"] = "";
+	order_info["custom_info"] = "";
 }
 
 int DarkHorse::ViStockClient::CheckAccountPassword(task_arg&& arg)

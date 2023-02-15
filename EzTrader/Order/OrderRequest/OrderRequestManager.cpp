@@ -5,27 +5,27 @@
 #include "../../Client/ViStockClient.h"
 namespace DarkHorse {
 int OrderRequestManager::id_ = 0;
-using order_request_p = std::shared_ptr<OrderRequest>;
-order_request_p OrderRequestManager::find_order_request(int req_id)
+//using order_request_p = std::shared_ptr<OrderRequest>;
+order_request_p OrderRequestManager::find_order_request(const int order_request_id)
 {
 	std::unique_lock<std::mutex> lock(order_request_map_mutex_);
-	auto found = order_request_map.find(req_id);
+	auto found = order_request_map.find(order_request_id);
 	return (found != order_request_map.end()) ? found->second : nullptr;
 }
 
-void OrderRequestManager::add_order_request(order_request_p order_req)
+void OrderRequestManager::add_order_request(order_request_p order_request)
 {
-	if (!order_req) return;
+	if (!order_request) return;
 	// q 내부에 mutex 장치가 있음. 
-	order_request_q.add(order_req);
+	order_request_q.add(order_request);
 	// 추후 재사용을 위해서 맵에 넣어 줌. 
-	add_order_request_map(order_req);
+	add_order_request_map(order_request);
 }
 
-void OrderRequestManager::remove_order_request(int req_id)
+void OrderRequestManager::remove_order_request(int order_request_id)
 {
 	std::unique_lock<std::mutex> lock(order_request_map_mutex_);
-	auto found = order_request_map.find(req_id);
+	auto found = order_request_map.find(order_request_id);
 	if (found == order_request_map.end()) return;
 	order_request_map.erase(found);
 }
@@ -282,5 +282,17 @@ order_request_p OrderRequestManager::make_cancel_order_request(
 	order_req->price_type = price_type;
 	order_req->fill_condition = fill_condition;
 	return order_req;
+}
+
+order_request_p OrderRequestManager::find_order_request(const std::string& custom_info)
+{
+	if (custom_info.empty()) return nullptr;
+
+	const int zero_pos = custom_info.find_first_of('0');
+	const int order_request_position = custom_info.find_first_of('k');
+	const std::string order_request_string = custom_info.substr(zero_pos, order_request_position - zero_pos);
+	const int order_request_id = std::stoi(order_request_string);
+	
+	return find_order_request(order_request_id);
 }
 }
