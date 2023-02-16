@@ -8,6 +8,16 @@ namespace DarkHorse {
 		OrderMove
 	};
 
+	enum OrderEvent {
+		None,
+		DM_Accepted,
+		DM_Unfilled,
+		DM_Filled,
+		AB_Accepted,
+		AB_Unfilled,
+		AB_Filled
+	};
+
 	enum class SmOrderError {
 		None,
 		BadAccount,

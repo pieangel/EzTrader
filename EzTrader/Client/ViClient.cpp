@@ -29,6 +29,7 @@
 #include "../DataFrame/Utils/FixedSizePriorityQueue.h"
 #include "../DataFrame/Utils/FixedSizeString.h"
 #include "../Config/SmConfigManager.h"
+#include "../Order/SmOrderConst.h"
 #include <chartdir.h>
 
 
@@ -3299,14 +3300,15 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	strOrderAmount.TrimRight();
 
 	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::AB_Accepted;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["order_position"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
-	order_info["ori_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
 	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
 	order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
@@ -3377,18 +3379,19 @@ void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRe
 	strCancelCnt.TrimRight();
 
 	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::AB_Unfilled;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["order_position"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
-	order_info["ori_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
 	//order_info["order_type"] = static_cast<const char*>(strMan.Trim());
 	order_info["remain_count"] = _ttoi(strRemain.Trim());
-	order_info["canceled_count"] = _ttoi(strCancelCnt.Trim());
+	order_info["cancelled_count"] = _ttoi(strCancelCnt.Trim());
 	order_info["modified_count"] = _ttoi(strModyCnt.Trim());
 	order_info["filled_count"] = _ttoi(strFilledCnt.Trim());
 	order_info["order_sequence"] = _ttoi(strOrderSeq.Trim());
@@ -3456,12 +3459,13 @@ void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nReal
 	strFilledTime.TrimRight();
 
 	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::AB_Filled;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["order_position"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	//order_info["ori_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	//order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());

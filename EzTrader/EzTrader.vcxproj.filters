@@ -1704,6 +1704,9 @@
     <ClInclude Include="Order\OrderProcess\TotalOrderManager.h">
       <Filter>Order\OrderProcess</Filter>
     </ClInclude>
+    <ClInclude Include="Order\Order.h">
+      <Filter>Order</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

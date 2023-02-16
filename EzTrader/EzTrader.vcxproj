@@ -355,6 +355,7 @@
     <ClInclude Include="OrderState\SmFilledGrid.h" />
     <ClInclude Include="OrderState\SmFilledListDialog.h" />
     <ClInclude Include="Order\CTestDialog.h" />
+    <ClInclude Include="Order\Order.h" />
     <ClInclude Include="Order\OrderLeftDialog.h" />
     <ClInclude Include="Order\OrderProcess\AccountOrderManager.h" />
     <ClInclude Include="Order\OrderProcess\OrderProcessor.h" />
