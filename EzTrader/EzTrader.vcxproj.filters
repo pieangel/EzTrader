@@ -1707,6 +1707,9 @@
     <ClInclude Include="Order\Order.h">
       <Filter>Order</Filter>
     </ClInclude>
+    <ClInclude Include="Position\Position.h">
+      <Filter>Position</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

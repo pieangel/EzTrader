@@ -393,6 +393,7 @@
     <ClInclude Include="Pnf\PnfMaker.h" />
     <ClInclude Include="Pnf\PnfManager.h" />
     <ClInclude Include="Position\AccountPositionManager.h" />
+    <ClInclude Include="Position\Position.h" />
     <ClInclude Include="Position\SmAccountPositionManager.h" />
     <ClInclude Include="Position\SmPosition.h" />
     <ClInclude Include="Position\SmTotalPositionManager.h" />
