@@ -12,8 +12,7 @@ void TotalOrderManager::on_order_event(const order_event& order_info)
 {
 	order_p order = make_order(order_info);
 	const std::string custom_info = order_info["custom_info"];
-	order_request_p order_request = mainApp.order_request_manager()->find_order_request(custom_info);
-	set_order_request_info(order_request, order);
+	set_order_request_info(custom_info, order);
 	const int order_event = order_info["order_event"];
 	dispatch_order(order_event, order);
 	write_order_history(order_event, order);
@@ -115,9 +114,11 @@ order_p TotalOrderManager::make_order(const order_event& order_info)
 	return order;
 }
 
-void TotalOrderManager::set_order_request_info(order_request_p order_request, order_p order)
+void TotalOrderManager::set_order_request_info(const std::string& custom_info, order_p order)
 {
-	if (!order_request || !order) return;
+	if (!order) return;
+	order_request_p order_request = mainApp.order_request_manager()->find_order_request(custom_info);
+	if (!order_request) return;
 
 	order->order_type = order_request->order_type;
 	order->order_request_id = order_request->request_id;
