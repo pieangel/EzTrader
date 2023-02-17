@@ -3,6 +3,7 @@
 #include "../SmOrderConst.h"
 namespace DarkHorse {
 	struct OrderRequest {
+		int order_source{ 0 };
 		int request_id{ 0 };
 		// 반대 포지션 스탑 요청 아이디. 스탑이 없어질 때 반드시 이것도 없애야 한다.
 		int counter_request_id{ 0 };

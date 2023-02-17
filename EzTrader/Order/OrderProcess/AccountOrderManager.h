@@ -7,14 +7,16 @@
 namespace DarkHorse {
 	using order_event = nlohmann::json;
 	class SymbolOrderManager;
+	struct Order;
+	using order_p = std::shared_ptr<Order>;
 class AccountOrderManager
 {
 	using symbol_order_manager_p = std::shared_ptr<SymbolOrderManager>;
 public:
-	void on_order_event(const order_event& order_info);
+	void dispatch_order(const int order_event, order_p order);
 	symbol_order_manager_p get_order_manager(const std::string& symbol_code);
 private:
-	std::map<std::string, symbol_order_manager_p> symbol_order_manager_map_;
+	std::map<std::string, symbol_order_manager_p> order_manager_map_;
 	symbol_order_manager_p find_order_manager(const std::string& symbol_code);
 	symbol_order_manager_p create_order_manager(const std::string& symbol_code);
 };
