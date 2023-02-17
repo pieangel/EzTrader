@@ -31,8 +31,8 @@ void TotalOrderManager::write_order_history(const int order_event, order_p order
 
 account_order_manager_p TotalOrderManager::find_order_manager(const std::string& account_no) 
 {
-	auto it = account_order_manager_map_.find(account_no);
-	return it != account_order_manager_map_.end() ? it->second : nullptr;
+	auto it = order_manager_map_.find(account_no);
+	return it != order_manager_map_.end() ? it->second : nullptr;
 }
 account_order_manager_p TotalOrderManager::create_order_manager(const std::string& account_no)
 {
