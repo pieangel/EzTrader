@@ -39,6 +39,7 @@ void SymbolOrderManager::on_order_filled(order_p order)
 	order->order_state = SmOrderState::Filled;
 	update_accepted_order(order);
 	total_position_manager_p total_position_manager = mainApp.total_position_manager();
+	total_position_manager->update_position(order);
 }
 
 void SymbolOrderManager::add_accepted_order(order_p order)
