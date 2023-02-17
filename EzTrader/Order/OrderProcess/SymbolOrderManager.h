@@ -12,12 +12,9 @@ class SymbolOrderManager
 public:
     void dispatch_order(const int order_event, order_p order);
 private:
-	void on_ab_order_accepted(order_p order);
-	void on_ab_order_unfilled(order_p order);
-	void on_ab_order_filled(order_p order);
-	void on_dm_order_accepted(order_p order);
-	void on_dm_order_unfilled(order_p order);
-	void on_dm_order_filled(order_p order);
+	void on_order_accepted(order_p order);
+	void on_order_unfilled(order_p order);
+	void on_order_filled(order_p order);
 	// 접수확인 주문을 추가한다.
 	void add_accepted_order(order_p order);
 	// 접수확인 주문에 변화가 생겼을 때 이를 반영한다.
