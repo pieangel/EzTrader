@@ -41,6 +41,10 @@ public:
 	{
 		remove_order_event_queue_.appendListener(order_source_id, handler);
 	}
+	void unsubscribe_remove_order_event_handler(const int order_source_id)
+	{
+		//remove_order_event_queue_.removeListener(order_source_id, );
+	}
 	void process_remove_order_event()
 	{
 		remove_order_event_queue_.process();
