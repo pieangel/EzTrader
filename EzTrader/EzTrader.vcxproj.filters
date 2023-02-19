@@ -760,6 +760,18 @@
     <ClCompile Include="Order\OrderProcess\TotalOrderManager.cpp">
       <Filter>Order\OrderProcess</Filter>
     </ClCompile>
+    <ClCompile Include="Util\IdGenerator.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\OrderWindowControl.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\FundOrderWindow.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\AccountOrderWindow.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1710,6 +1722,21 @@
     <ClInclude Include="Position\Position.h">
       <Filter>Position</Filter>
     </ClInclude>
+    <ClInclude Include="Util\IdGenerator.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\AccountOrderWindow.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\OrderWindowControl.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\FundOrderWindow.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\ControlId.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -1953,6 +1980,9 @@
     </Filter>
     <Filter Include="ViewModel">
       <UniqueIdentifier>{efabd45b-371a-44f0-a74b-85b250651aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Order\OrderUi">
+      <UniqueIdentifier>{108da138-840e-4fae-b1a9-2b6e91c71ea1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

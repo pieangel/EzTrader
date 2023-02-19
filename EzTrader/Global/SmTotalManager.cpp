@@ -22,6 +22,7 @@
 #include "../System/SmSystemManager.h"
 #include "../Order//OrderProcess/TotalOrderManager.h"
 #include "../Position/TotalPositionManager.h"
+#include "../Event/EventHub.h"
 #include <string>
 
 using namespace DarkHorse;
@@ -55,4 +56,5 @@ void SmTotalManager::CreateManagers()
 
 	total_order_manager_ = std::make_shared<TotalOrderManager>();
 	total_position_manager_ = std::make_shared<TotalPositionManager>();
+	event_hub_ = std::make_shared<EventHub>();
 }

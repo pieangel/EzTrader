@@ -25,6 +25,7 @@ namespace DarkHorse {
 	class TotalOrderManager;
 	class TotalPositionManager;
 	class OrderRequestManager;
+	class EventHub;
 	class SmTotalManager
 	{
 	public:
@@ -53,6 +54,7 @@ namespace DarkHorse {
 		std::shared_ptr<TotalOrderManager> total_order_manager() { return total_order_manager_; }
 		std::shared_ptr<TotalPositionManager> total_position_manager() { return total_position_manager_; }
 		std::shared_ptr<OrderRequestManager> order_request_manager() { return order_request_manager_; }
+		std::shared_ptr<EventHub> event_hub() { return event_hub_; }
 	private:
 		std::shared_ptr<SmCallbackManager> _CallbackMgr = nullptr;
 		std::shared_ptr<ViStockClient> _Client = nullptr;
@@ -78,6 +80,7 @@ namespace DarkHorse {
 		std::shared_ptr<TotalOrderManager> total_order_manager_ = nullptr;
 		std::shared_ptr<TotalPositionManager> total_position_manager_ = nullptr;
 		std::shared_ptr<OrderRequestManager> order_request_manager_ = nullptr;
+		std::shared_ptr<EventHub> event_hub_ = nullptr;
 	};
 }
 

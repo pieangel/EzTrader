@@ -364,6 +364,10 @@
     <ClInclude Include="Order\OrderRequest\OrderRequest.h" />
     <ClInclude Include="Order\OrderRequest\OrderRequestManager.h" />
     <ClInclude Include="Order\OrderRightDialog.h" />
+    <ClInclude Include="Order\OrderUi\AccountOrderWindow.h" />
+    <ClInclude Include="Order\OrderUi\ControlId.h" />
+    <ClInclude Include="Order\OrderUi\OrderWindowControl.h" />
+    <ClInclude Include="Order\OrderUi\FundOrderWindow.h" />
     <ClInclude Include="Order\OrderWndConst.h" />
     <ClInclude Include="Order\SmAcceptedGrid.h" />
     <ClInclude Include="Order\SmAccountOrderManager.h" />
@@ -469,6 +473,7 @@
     <ClInclude Include="Util\Delegate.h" />
     <ClInclude Include="Util\DHTime.h" />
     <ClInclude Include="Util\formatstdstring.h" />
+    <ClInclude Include="Util\IdGenerator.h" />
     <ClInclude Include="Util\Signal.h" />
     <ClInclude Include="Util\SmButton.h" />
     <ClInclude Include="Util\SmButtonResource.h" />
@@ -662,6 +667,9 @@
     <ClCompile Include="Order\OrderProcess\TotalOrderManager.cpp" />
     <ClCompile Include="Order\OrderRequest\OrderRequestManager.cpp" />
     <ClCompile Include="Order\OrderRightDialog.cpp" />
+    <ClCompile Include="Order\OrderUi\AccountOrderWindow.cpp" />
+    <ClCompile Include="Order\OrderUi\OrderWindowControl.cpp" />
+    <ClCompile Include="Order\OrderUi\FundOrderWindow.cpp" />
     <ClCompile Include="Order\SmAcceptedGrid.cpp" />
     <ClCompile Include="Order\SmAccountOrderManager.cpp" />
     <ClCompile Include="Order\SmCheckGrid.cpp" />
@@ -746,6 +754,7 @@
     <ClCompile Include="TimeData\SmCompData.cpp" />
     <ClCompile Include="TimeData\SmTimeData.cpp" />
     <ClCompile Include="TimeData\SmTimeDataManager.cpp" />
+    <ClCompile Include="Util\IdGenerator.cpp" />
     <ClCompile Include="Util\SmButton.cpp" />
     <ClCompile Include="Util\SmNumberFunc.cpp" />
     <ClCompile Include="Util\SmUtil.cpp" />

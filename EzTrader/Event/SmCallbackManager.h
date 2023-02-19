@@ -9,7 +9,8 @@
 //#include "../Global/TemplateSingleton.h"
 // WM_USER + 3
 
-
+// 뮤텍스를 추가하고 실행하기 전에 복사해서 실행하는 루틴 추가할 필요가 있다. 
+// 쓰레드 동기화를 반드시 적용할 것. 
 namespace DarkHorse {
 
 	class SmSymbol;
