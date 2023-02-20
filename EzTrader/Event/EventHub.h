@@ -19,39 +19,35 @@ int main (int argc, const char * argv[])
    return 0;
 }
 */
-#include "eventpp/eventdispatcher.h"
-#include "eventpp/eventqueue.h"
+#include "eventpp/callbacklist.h"
 #include <functional>
 #include <map>
 #include "../Order/OrderUi/ControlId.h"
 
 namespace DarkHorse {
-	using event_dispatcher = eventpp::EventDispatcher<int, void()>;
+	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
+	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
 class EventHub
 {
 public:
-	const event_dispatcher& sample_dispatcher() const {
-		return sample_dispatcher_;
-	}
-	void push_remove_order_event(const int order_source_id, const std::string& order_no)
-	{
-		remove_order_event_queue_.enqueue(order_source_id, order_no);
-	}
 	void subscribe_remove_order_event_handler(const int order_source_id, std::function<void(const std::string&)>&& handler)
 	{
-		remove_order_event_queue_.appendListener(order_source_id, handler);
+		RemoveOrderCBH handle = remove_order_callback_list_.append(handler);
+		remove_order_callback_handle_map_[order_source_id] = handle;
 	}
 	void unsubscribe_remove_order_event_handler(const int order_source_id)
 	{
-		//remove_order_event_queue_.removeListener(order_source_id, );
+		auto found = remove_order_callback_handle_map_.find(order_source_id);
+		if (found == remove_order_callback_handle_map_.end()) return;
+		remove_order_callback_list_.remove(found->second);
 	}
-	void process_remove_order_event()
+	void process_remove_order_event(const std::string& order_no)
 	{
-		remove_order_event_queue_.process();
+		remove_order_callback_list_(order_no);
 	}
 private:
-	event_dispatcher sample_dispatcher_;
-	eventpp::EventQueue<int, void(const std::string& order_no)> remove_order_event_queue_;
+	RemoveOrderCBL remove_order_callback_list_;
+	std::map<int, RemoveOrderCBH> remove_order_callback_handle_map_;
 };
 }
 

@@ -31,7 +31,7 @@ void OrderWindowControl::subscribe_remove_order_event()
 {
 	mainApp.event_hub()->subscribe_remove_order_event_handler
 	(
-		_id, 
+		_id,
 		std::bind(&OrderWindowControl::remove_order_event, this, std::placeholders::_1)
 	);
 }
