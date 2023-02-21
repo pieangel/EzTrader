@@ -1,4 +1,4 @@
 #include "stdafx.h"
-#include "FutureClose.h"
+#include "FavoriteSymbolControl.h"
 namespace DarkHorse {
 }

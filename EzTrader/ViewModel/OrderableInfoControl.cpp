@@ -1,4 +1,4 @@
 #include "stdafx.h"
-#include "FavoriteSymbol.h"
+#include "OrderableInfoControl.h"
 namespace DarkHorse {
 }

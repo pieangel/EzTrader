@@ -1,4 +1,4 @@
 #include "stdafx.h"
-#include "FilledOrderInfo.h"
+#include "SymbolInfoControl.h"
 namespace DarkHorse {
 }

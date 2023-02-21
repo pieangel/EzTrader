@@ -1,4 +1,4 @@
 #include "stdafx.h"
-#include "SymbolInfo.h"
+#include "FuturePositionControl.h"
 namespace DarkHorse {
 }

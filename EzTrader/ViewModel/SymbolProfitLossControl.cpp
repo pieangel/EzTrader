@@ -1,4 +1,4 @@
 #include "stdafx.h"
-#include "SymbolPosition.h"
+#include "SymbolProfitLossControl.h"
 namespace DarkHorse {
 }

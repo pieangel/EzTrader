@@ -1,4 +1,4 @@
 #include "stdafx.h"
-#include "FuturePosition.h"
+#include "PriceRangeControl.h"
 namespace DarkHorse {
 }
