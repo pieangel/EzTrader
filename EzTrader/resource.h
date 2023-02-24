@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by DarkHorse.rc
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// EzTrader.rc에서 사용되고 있습니다.
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
@@ -81,6 +81,15 @@
 #define IDD_GA_MULTI_SPREAD_CHART       269
 #define IDD_ABROAD_SET_HS               270
 #define IDD_SYSTEM_CHART                271
+#define IDD_DM_ACNT_ORDER_LEFT          272
+#define IDD_DM_ORDER_RIGHT              273
+#define IDD_DM_ACNT_ORDER_RIGHT         273
+#define IDD_DM_ACNT_ORDER_CENTER        274
+#define IDD_DM_ACNT_ORDER_MAIN          275
+#define IDD_DM_FUND_ORDER_RIGHT         276
+#define IDD_DM_FUND_ORDER_MAIN          277
+#define IDD_DM_FUND_ORDER_LEFT          278
+#define IDD_DM_FUND_ORDER_CENTER        279
 #define IDC_STATIC_ID                   1003
 #define IDC_STATIC_PWD                  1006
 #define IDC_STATIC_CERT                 1009

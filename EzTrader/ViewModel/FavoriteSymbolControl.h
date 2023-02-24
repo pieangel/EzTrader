@@ -1,6 +1,6 @@
 #pragma once
 namespace DarkHorse {
-	class FavoriteSymbol
+	class FavoriteSymbolControl
 	{
 	};
 }

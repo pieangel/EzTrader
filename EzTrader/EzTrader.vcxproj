@@ -364,10 +364,10 @@
     <ClInclude Include="Order\OrderRequest\OrderRequest.h" />
     <ClInclude Include="Order\OrderRequest\OrderRequestManager.h" />
     <ClInclude Include="Order\OrderRightDialog.h" />
-    <ClInclude Include="Order\OrderUi\AccountOrderWindow.h" />
+    <ClInclude Include="Order\OrderUi\DmAccountOrderWindow.h" />
     <ClInclude Include="Order\OrderUi\ControlId.h" />
     <ClInclude Include="Order\OrderUi\OrderWindowControl.h" />
-    <ClInclude Include="Order\OrderUi\FundOrderWindow.h" />
+    <ClInclude Include="Order\OrderUi\DmFundOrderWindow.h" />
     <ClInclude Include="Order\OrderWndConst.h" />
     <ClInclude Include="Order\SmAcceptedGrid.h" />
     <ClInclude Include="Order\SmAccountOrderManager.h" />
@@ -508,7 +508,7 @@
     <ClInclude Include="ViewModel\SymbolPositionControl.h" />
     <ClInclude Include="ViewModel\SymbolProfitLossControl.h" />
     <ClInclude Include="ViewModel\SymbolTickControl.h" />
-    <ClInclude Include="ViewModel\TotalHogaInfo.h" />
+    <ClInclude Include="ViewModel\TotalHogaInfoControl.h" />
     <ClInclude Include="View\AccountOrderView.h" />
     <ClInclude Include="View\AccountPositionView.h" />
     <ClInclude Include="View\AccountStateView.h" />
@@ -667,9 +667,9 @@
     <ClCompile Include="Order\OrderProcess\TotalOrderManager.cpp" />
     <ClCompile Include="Order\OrderRequest\OrderRequestManager.cpp" />
     <ClCompile Include="Order\OrderRightDialog.cpp" />
-    <ClCompile Include="Order\OrderUi\AccountOrderWindow.cpp" />
+    <ClCompile Include="Order\OrderUi\DmAccountOrderWindow.cpp" />
     <ClCompile Include="Order\OrderUi\OrderWindowControl.cpp" />
-    <ClCompile Include="Order\OrderUi\FundOrderWindow.cpp" />
+    <ClCompile Include="Order\OrderUi\DmFundOrderWindow.cpp" />
     <ClCompile Include="Order\SmAcceptedGrid.cpp" />
     <ClCompile Include="Order\SmAccountOrderManager.cpp" />
     <ClCompile Include="Order\SmCheckGrid.cpp" />
@@ -785,7 +785,7 @@
     <ClCompile Include="ViewModel\SymbolPositionControl.cpp" />
     <ClCompile Include="ViewModel\SymbolProfitLossControl.cpp" />
     <ClCompile Include="ViewModel\SymbolTickControl.cpp" />
-    <ClCompile Include="ViewModel\TotalHogaInfo.cpp" />
+    <ClCompile Include="ViewModel\TotalHogaInfoControl.cpp" />
     <ClCompile Include="View\AccountOrderView.cpp" />
     <ClCompile Include="View\AccountPositionView.cpp" />
     <ClCompile Include="View\AccountStateView.cpp" />

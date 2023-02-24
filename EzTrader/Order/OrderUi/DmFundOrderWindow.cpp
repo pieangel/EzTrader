@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "FundOrderWindow.h"
+#include "DmFundOrderWindow.h"
 #include "../../Util/IdGenerator.h"
 namespace DarkHorse {
 
-FundOrderWindow::FundOrderWindow()
+DmFundOrderWindow::DmFundOrderWindow()
 {
 	_id = DarkHorse::IdGenerator::get_id();
 }
 
-FundOrderWindow::~FundOrderWindow()
+DmFundOrderWindow::~DmFundOrderWindow()
 {
 
 }

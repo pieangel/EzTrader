@@ -727,7 +727,7 @@
     <ClCompile Include="View\SymbolTickView.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="ViewModel\TotalHogaInfo.cpp">
+    <ClCompile Include="ViewModel\TotalHogaInfoControl.cpp">
       <Filter>ViewModel</Filter>
     </ClCompile>
     <ClCompile Include="View\TotalHogaInfoView.cpp">
@@ -766,10 +766,10 @@
     <ClCompile Include="Order\OrderUi\OrderWindowControl.cpp">
       <Filter>Order\OrderUi</Filter>
     </ClCompile>
-    <ClCompile Include="Order\OrderUi\FundOrderWindow.cpp">
+    <ClCompile Include="Order\OrderUi\DmFundOrderWindow.cpp">
       <Filter>Order\OrderUi</Filter>
     </ClCompile>
-    <ClCompile Include="Order\OrderUi\AccountOrderWindow.cpp">
+    <ClCompile Include="Order\OrderUi\DmAccountOrderWindow.cpp">
       <Filter>Order\OrderUi</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1683,7 +1683,7 @@
     <ClInclude Include="View\SymbolTickView.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="ViewModel\TotalHogaInfo.h">
+    <ClInclude Include="ViewModel\TotalHogaInfoControl.h">
       <Filter>ViewModel</Filter>
     </ClInclude>
     <ClInclude Include="View\TotalHogaInfoView.h">
@@ -1725,13 +1725,13 @@
     <ClInclude Include="Util\IdGenerator.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="Order\OrderUi\AccountOrderWindow.h">
+    <ClInclude Include="Order\OrderUi\DmAccountOrderWindow.h">
       <Filter>Order\OrderUi</Filter>
     </ClInclude>
     <ClInclude Include="Order\OrderUi\OrderWindowControl.h">
       <Filter>Order\OrderUi</Filter>
     </ClInclude>
-    <ClInclude Include="Order\OrderUi\FundOrderWindow.h">
+    <ClInclude Include="Order\OrderUi\DmFundOrderWindow.h">
       <Filter>Order\OrderUi</Filter>
     </ClInclude>
     <ClInclude Include="Order\OrderUi\ControlId.h">

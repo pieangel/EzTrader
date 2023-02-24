@@ -27,6 +27,29 @@ int main (int argc, const char * argv[])
 namespace DarkHorse {
 	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
 	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
+	class AccountOrderControl;
+	class AccountPositionControl;
+	class AccountProfitLossControl;
+	class AssetControl;
+	class BuyHogaControl;
+	class BuyOrderControl;
+	class BuyStopOrderControl;
+	class FavoriteSymbolControl;
+	class FutureCloseControl;
+	class FuturePositionControl;
+	class FutureExpectedControl;
+	class OptionCloseControl;
+	class OptionPositionControl;
+	class OptionExpectedControl;
+	class PriceRangeControl;
+	class SellHogaControl;
+	class SellOrderControl;
+	class SellStopOrderControl;
+	class SymbolInfoControl;
+	class SymbolPositionControl;
+	class SymbolProfitLossControl;
+	class SymbolTickControl;
+	class TotalHogaInfoControl;
 class EventHub
 {
 public:

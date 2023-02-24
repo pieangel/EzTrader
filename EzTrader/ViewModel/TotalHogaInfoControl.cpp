@@ -1,4 +1,4 @@
 #include "stdafx.h"
-#include "TotalHogaInfo.h"
+#include "TotalHogaInfoControl.h"
 namespace DarkHorse {
 }
