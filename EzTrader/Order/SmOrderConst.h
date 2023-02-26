@@ -110,4 +110,11 @@ namespace DarkHorse {
 		// 청산됨 - 다른 주문에 의해서 혹은 잔고를 청산하는 용도로
 		Settled
 	};
+
+	enum class AccountType {
+		None = 0,
+		SubAccount,
+		MainAccount,
+		Fund
+	};
 }

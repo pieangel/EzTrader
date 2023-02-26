@@ -2,6 +2,7 @@
 #include <string>
 #include <memory>
 #include "SmOrderConst.h"
+#include "OrderContext.h"
 namespace DarkHorse {
 struct Order {
 	// 주문번호
@@ -50,5 +51,7 @@ struct Order {
 	SmPriceType price_type = SmPriceType::None;
 	// 주문 상태
 	SmOrderState order_state = SmOrderState::None;
+	// 주문이 나온 상황에 대한 정보를 가지고 있다.
+	OrderContext order_context;
 };
 }

@@ -23,10 +23,15 @@ int main (int argc, const char * argv[])
 #include <functional>
 #include <map>
 #include "../Order/OrderUi/ControlId.h"
+#include "../Json/json.hpp"
 
 namespace DarkHorse {
 	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
 	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
+
+	using AddOrderCBL = eventpp::CallbackList<void(const std::string&)>;
+	using AddOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
+
 	class AccountOrderControl;
 	class AccountPositionControl;
 	class AccountProfitLossControl;

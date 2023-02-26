@@ -73,4 +73,11 @@ B. 주문 체결 처리 순서.
   21.3. account_position_manager의 trade_profit_loss, open_profit_loss를 갱신한다. 
   21.4. order_view, account_position_view에 event를 보낸다. 
 
-
+주문은 반드시 한번만 처리한다.
+그러나 주문 이벤트는 관련된 모든 것에 알려야 한다.
+서브계좌 주문은 자신의 본계좌와 자신이 속한 펀드에 이벤트로 알려야 한다.
+이벤트를 받은 본계좌나 펀드는 그 이벤트를 처리한다.
+각 컨트롤은 계좌 번호와 펀드 이름으로 키를 삼는다. 
+이벤트가 올 때 이 키로 이벤트를 처리할 것인지 말 것인지 결정한다.
+다만 StopOrder는 Window id 로 키를 삼는다.
+Stop Order는 오로지 그 주문을 낸 창에만 해당되기 때문이다. 

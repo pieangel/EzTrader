@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "../SmOrderConst.h"
+#include "../OrderContext.h"
 namespace DarkHorse {
 	struct OrderRequest {
 		/// <summary>
@@ -33,5 +34,8 @@ namespace DarkHorse {
 		SmOrderType order_type{ SmOrderType::None };
 		SmPriceType price_type{ SmPriceType::None };
 		SmFilledCondition fill_condition{ SmFilledCondition::Fas };
+
+		// 주문이 나온 상황에 대한 정보를 가지고 있다.
+		OrderContext order_context;
 	};
 }

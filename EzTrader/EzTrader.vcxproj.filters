@@ -667,7 +667,7 @@
     <ClCompile Include="View\AccountPositionView.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="View\AccountStateView.cpp">
+    <ClCompile Include="View\AccountProfitLossView.cpp">
       <Filter>View</Filter>
     </ClCompile>
     <ClCompile Include="View\AssetView.cpp">
@@ -771,6 +771,33 @@
     </ClCompile>
     <ClCompile Include="Order\OrderUi\DmAccountOrderWindow.cpp">
       <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\DmAccountOrderCenterWindow.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\DmAccountOrderLeftWindow.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\DmAccountOrderRightWindow.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\DmFundOrderCenterWindow.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\DmFundOrderLeftWindow.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\OrderUi\DmFundOrderRightWindow.cpp">
+      <Filter>Order\OrderUi</Filter>
+    </ClCompile>
+    <ClCompile Include="View\SymbolOrderView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\FutureView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\OptionView.cpp">
+      <Filter>View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1623,7 +1650,7 @@
     <ClInclude Include="View\AccountPositionView.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="View\AccountStateView.h">
+    <ClInclude Include="View\AccountProfitLossView.h">
       <Filter>View</Filter>
     </ClInclude>
     <ClInclude Include="View\AssetView.h">
@@ -1736,6 +1763,36 @@
     </ClInclude>
     <ClInclude Include="Order\OrderUi\ControlId.h">
       <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderContext.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\DmAccountOrderCenterWindow.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\DmAccountOrderLeftWindow.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\DmAccountOrderRightWindow.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\DmFundOrderCenterWindow.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\DmFundOrderLeftWindow.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\DmFundOrderRightWindow.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="View\SymbolOrderView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\FutureView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\OptionView.h">
+      <Filter>View</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
