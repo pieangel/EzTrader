@@ -52,12 +52,10 @@ void OptionView::SetUp()
 	CreateResource();
 	//InitHeader();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
-	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 4, 2);
-
-	int colWidth[2] = { 60, 97 };
-
+	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 90, 3);
+	int colWidth[3] = { 73, 50, 73 };
 	int width_sum = 0;
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		_Grid->SetColWidth(i, colWidth[i]);
 		width_sum += colWidth[i];
 	}
@@ -70,12 +68,10 @@ void OptionView::SetUp()
 
 	_Grid->CreateGrids();
 	{
-		_HeaderTitles.push_back("평가손익");
-		_HeaderTitles.push_back("청산손익");
-		_HeaderTitles.push_back("수수료");
-		_HeaderTitles.push_back("총손익");
-
-		_Grid->SetRowHeaderTitles(_HeaderTitles);
+		_HeaderTitles.push_back("CALL");
+		_HeaderTitles.push_back("행사가");
+		_HeaderTitles.push_back("PUT");
+		_Grid->SetColHeaderTitles(_HeaderTitles);
 	}
 
 	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&OptionView::OnQuoteEvent, this, _1));

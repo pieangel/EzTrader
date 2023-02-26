@@ -48,33 +48,31 @@ void FutureView::SetUp()
 	GetClientRect(rect);
 
 	CreateResource();
-	//InitHeader();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
-	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 4, 2);
-
-	int colWidth[2] = { 60, 97 };
-
+	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 5, 3);
+	int colWidth[3] = { 60, 55, 41 };
 	int width_sum = 0;
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		_Grid->SetColWidth(i, colWidth[i]);
 		width_sum += colWidth[i];
 	}
-	width_sum -= colWidth[1];
-	_Grid->SetColWidth(1, rect.Width() - width_sum);
+	width_sum -= colWidth[2];
+	_Grid->SetColWidth(2, rect.Width() - width_sum);
 
 	_Grid->MakeRowHeightMap();
 	_Grid->MakeColWidthMap();
 	_Grid->RecalRowCount(rect.Height(), true);
 
 	_Grid->CreateGrids();
-	{
-		_HeaderTitles.push_back("평가손익");
-		_HeaderTitles.push_back("청산손익");
-		_HeaderTitles.push_back("수수료");
-		_HeaderTitles.push_back("총손익");
 
-		_Grid->SetRowHeaderTitles(_HeaderTitles);
-	}
+	_Grid->HeaderMode(SmHeaderMode::None);
+
+// 	{
+// 		_HeaderTitles.push_back("시각");
+// 		_HeaderTitles.push_back("체결가");
+// 		_HeaderTitles.push_back("체결");
+// 		_Grid->SetColHeaderTitles(_HeaderTitles);
+// 	}
 
 	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&FutureView::OnQuoteEvent, this, _1));
 	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&FutureView::OnOrderEvent, this, _1, _2));
