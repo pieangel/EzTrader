@@ -209,6 +209,35 @@ void DarkHorse::SmSymbolManager::MakeDomesticMarket()
 	std::shared_ptr<SmMarket> market = mainApp.SymMgr()->AddMarket(market_name);
 	std::shared_ptr<SmProduct> product = market->AddProduct("101");
 	product->MarketName(market_name);
+	product = market->AddProduct("105");
+	product->MarketName(market_name);
+	product = market->AddProduct("106");
+	product->MarketName(market_name);
+	product = market->AddProduct("167");
+	product->MarketName(market_name);
+	product = market->AddProduct("175");
+	product->MarketName(market_name);
+	market_name = "국내옵션";
+	market = mainApp.SymMgr()->AddMarket(market_name);
+	product = market->AddProduct("201");
+	product->MarketName(market_name);
+	product = market->AddProduct("301");
+	product->MarketName(market_name);
+
+	product = market->AddProduct("205");
+	product->MarketName(market_name);
+	product = market->AddProduct("305");
+	product->MarketName(market_name);
+
+	product = market->AddProduct("209");
+	product->MarketName(market_name);
+	product = market->AddProduct("309");
+	product->MarketName(market_name);
+
+	product = market->AddProduct("206");
+	product->MarketName(market_name);
+	product = market->AddProduct("306");
+	product->MarketName(market_name);
 }
 
 void DarkHorse::SmSymbolManager::RegisterSymbolToServer(const std::string& symbol_code, const bool& reg)

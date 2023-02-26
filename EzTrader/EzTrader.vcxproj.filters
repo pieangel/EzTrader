@@ -2054,5 +2054,8 @@
     <Text Include="Order\OrderUi\ReadMe.txt">
       <Filter>Order\OrderUi</Filter>
     </Text>
+    <Text Include="Symbol\ReadMe.txt">
+      <Filter>Symbol</Filter>
+    </Text>
   </ItemGroup>
 </Project>

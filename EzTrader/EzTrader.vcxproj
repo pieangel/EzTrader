@@ -886,6 +886,7 @@
   <ItemGroup>
     <Text Include="Order\OrderProcess\ReadMe.txt" />
     <Text Include="Order\OrderUi\ReadMe.txt" />
+    <Text Include="Symbol\ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
