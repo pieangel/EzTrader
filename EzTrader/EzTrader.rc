@@ -967,19 +967,17 @@ IDD_DM_ACNT_ORDER_LEFT DIALOGEX 0, 0, 133, 551
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_CLIPCHILDREN
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "미체결",IDC_STATIC,3,82,26,8
-    PUSHBUTTON      "선택취소",IDC_BTN_CANCEL_SEL,32,80,36,12,BS_FLAT
-    LTEXT           "잔고",IDC_STATIC,3,210,16,8
-    PUSHBUTTON      "선택청산",IDC_BTN_LIQ_SEL,32,208,36,12,BS_FLAT
-    PUSHBUTTON      "일괄취소",IDC_BTN_CANCEL_ALL,72,80,36,12,BS_FLAT
-    PUSHBUTTON      "일괄청산",IDC_BTN_LIQ_ALL,72,208,36,12,BS_FLAT
-    LTEXT           "즐겨찾기",IDC_STATIC_FAV,4,337,35,8
-    PUSHBUTTON      "추가",IDC_BTN_ADD_FAV,58,335,50,12
-    CONTROL         "",IDC_STATIC_ACCEPTED,"Static",SS_BLACKRECT | SS_NOTIFY | NOT WS_VISIBLE,0,94,133,103
-    CONTROL         "",IDC_STATIC_FILLED,"Static",SS_BLACKRECT | SS_NOTIFY | NOT WS_VISIBLE,0,222,133,109
-    CONTROL         "",IDC_STATIC_ACCOUNT,"Static",SS_BLACKRECT,0,18,133,58
-    CONTROL         "",IDC_STATIC_FAVORITE,"Static",SS_BLACKRECT | SS_NOTIFY | NOT WS_VISIBLE,0,350,133,157
+    CONTROL         "",IDC_STATIC_ASSET,"Static",SS_BLACKRECT,0,94,133,75
+    CONTROL         "",IDC_STATIC_FUTURE,"Static",SS_BLACKRECT,0,188,133,66
+    CONTROL         "",IDC_STATIC_ACCOUNT_PROFIT_LOSS,"Static",SS_BLACKRECT,0,18,133,58
+    CONTROL         "",IDC_STATIC_OPTION,"Static",SS_BLACKRECT,0,274,133,276
     LTEXT           "계좌현황",IDC_STATIC,4,7,33,8
+    LTEXT           "자산현황",IDC_STATIC,2,81,33,8
+    CONTROL         "현재가",IDC_RADIO_CLOSE,"Button",BS_AUTORADIOBUTTON,2,174,38,10
+    CONTROL         "잔고",IDC_RADIO_POSITION,"Button",BS_AUTORADIOBUTTON,48,174,31,10
+    CONTROL         "예상가",IDC_RADIO_EXPECTED,"Button",BS_AUTORADIOBUTTON,92,174,38,10
+    COMBOBOX        IDC_COMBO_OPTION_MARKET,0,257,68,218,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_OPTION_MONTH,70,257,62,222,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_DM_ACNT_ORDER_RIGHT DIALOGEX 0, 0, 116, 557
@@ -1799,6 +1797,8 @@ BEGIN
         MENUITEM "복수주문일괄주문창",                   ID_COMPLEX_ORDER
         MENUITEM "미니잔고",                        ID_ORDER_REMAIN
         MENUITEM "체결내역",                        ID_FILLED_LIST
+        MENUITEM "DomesticAccountOrder",        ID_32927
+        MENUITEM "DomesticAccountPosition",     ID_32928
     END
     POPUP "펀드", INACTIVE
     BEGIN
@@ -1807,6 +1807,8 @@ BEGIN
         MENUITEM "펀드미니잔고",                      ID_FUND_REMAIN
         MENUITEM "펀드손익",                        ID_FUND_PL
         MENUITEM "펀드복수주문일괄주문창",                 ID_FUND_COMPLEX_ORDER
+        MENUITEM "DomesticFundOrder",           ID_32929
+        MENUITEM "DomesticFundPosition",        ID_32930
     END
     POPUP "차트"
     BEGIN
@@ -1843,6 +1845,8 @@ BEGIN
         MENUITEM "복수주문일괄주문창",                   ID_COMPLEX_ORDER
         MENUITEM "미니잔고",                        ID_ORDER_REMAIN
         MENUITEM "체결내역",                        ID_FILLED_LIST
+        MENUITEM "DomesticAccountOrder",        ID_32927
+        MENUITEM "DomesticAccountPosition",     ID_32928
     END
     POPUP "펀드", INACTIVE
     BEGIN
@@ -1851,6 +1855,8 @@ BEGIN
         MENUITEM "펀드미니잔고",                      ID_FUND_REMAIN
         MENUITEM "펀드손익",                        ID_FUND_PL
         MENUITEM "펀드복수주문일괄주문창",                 ID_FUND_COMPLEX_ORDER
+        MENUITEM "DomesticFundOrder",           ID_32929
+        MENUITEM "DomesticFundPosition",        ID_32930
     END
     POPUP "차트"
     BEGIN
@@ -2036,10 +2042,8 @@ BEGIN
     IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
     IDS_MAIN_TOOLBAR        "Standard"
     IDS_WINDOWS_MANAGER     "&Windows..."
-END
-
-STRINGTABLE
-BEGIN
+    ID_INDICATOR_NISH       "Nish"
+    ID_INDICATOR_TIME       "Time"
     IDR_MAINFRAME           "DarkHorse"
     IDR_DarkHorseTYPE       "\nDarkHorse\nDarkHorse\n\n\nDarkHorse.Document\nDarkHorse.Document"
 END
@@ -2186,12 +2190,6 @@ BEGIN
     ID_USER_TOOL8           "Activates user-defined tool\nUser Tool"
     ID_USER_TOOL9           "Activates user-defined tool\nUser Tool"
     ID_USER_TOOL10          "Activates user-defined tool\nUser Tool"
-END
-
-STRINGTABLE
-BEGIN
-    ID_INDICATOR_NISH       "Nish"
-    ID_INDICATOR_TIME       "Time"
 END
 
 #endif    // 한국어(대한민국) resources

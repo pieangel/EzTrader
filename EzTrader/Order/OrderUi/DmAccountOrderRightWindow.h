@@ -6,8 +6,10 @@ class DmAccountOrderRightWindow
 */
 #pragma once
 
-#include "../../SmGrid/SmAssetArea.h"
-#include "../../SmGrid/SmSymbolArea.h"
+//#include "../../SmGrid/SmAssetArea.h"
+//#include "../../SmGrid/SmSymbolArea.h"
+#include "../../View/AssetView.h"
+#include "../../View/SymbolInfoView.h"
 #include <memory>
 
 // DmAccountOrderRightWindow dialog
@@ -37,8 +39,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	SmAssetArea _AssetArea;
-	SmSymbolArea _SymbolArea;
+	AssetView _AssetArea;
+	SymbolInfoView _SymbolArea;
 public:
 	void SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account);
 	void SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol);

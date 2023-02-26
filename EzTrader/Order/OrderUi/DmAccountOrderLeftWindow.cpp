@@ -34,15 +34,12 @@ DmAccountOrderLeftWindow::~DmAccountOrderLeftWindow()
 void DmAccountOrderLeftWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
-	//DDX_Control(pDX, IDC_STATIC_ACCEPTED, _AcceptedArea);
-	//DDX_Control(pDX, IDC_STATIC_FILLED, _FilledArea);
-	//DDX_Control(pDX, IDC_STATIC_FAVORITE, _FavoriteArea);
-	DDX_Control(pDX, IDC_STATIC_ACCOUNT, _AccountArea);
-	//DDX_Control(pDX, IDC_SCROLLBAR_VER_ACPT, _VScrollBarAcpt);
-	//DDX_Control(pDX, IDC_SCROLLBAR_VER_POSI, _VScrollBarPosi);
-	//DDX_Control(pDX, IDC_SCROLLBAR_VER_FAV, _VScrollBarFav);
-	DDX_Control(pDX, IDC_BTN_ADD_FAV, _BtnAddFav);
-	DDX_Control(pDX, IDC_STATIC_FAV, _StaticFav);
+	DDX_Control(pDX, IDC_STATIC_ACCOUNT_PROFIT_LOSS, account_profit_loss_view_);
+	DDX_Control(pDX, IDC_STATIC_ASSET, asset_view_);
+	DDX_Control(pDX, IDC_STATIC_FUTURE, future_view_);
+	DDX_Control(pDX, IDC_STATIC_OPTION, option_view_);
+	DDX_Control(pDX, IDC_COMBO_OPTION_MARKET, combo_option_market_);
+	DDX_Control(pDX, IDC_COMBO_OPTION_MONTH, combo_option_month_);
 }
 
 
@@ -62,8 +59,8 @@ END_MESSAGE_MAP()
 
 void DmAccountOrderLeftWindow::SetMainWnd(DmAccountOrderWindow* main_wnd)
 {
-	_AcceptedGrid.SetMainWnd(main_wnd);
-	_PositionGrid.SetMainWnd(main_wnd);
+	//_AcceptedGrid.SetMainWnd(main_wnd);
+	//_PositionGrid.SetMainWnd(main_wnd);
 	//_FavoriteGrid.SetMainWnd(main_wnd);
 }
 
@@ -74,11 +71,14 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 	//_AcceptedArea.SetUp();
 	//_FilledArea.SetUp();
 	//_FavoriteArea.SetUp();
-	_AccountArea.SetUp();
+	account_profit_loss_view_.SetUp();
+	asset_view_.SetUp();
+	option_view_.SetUp();
+	future_view_.SetUp();
 
 
 
-
+	/*
 	CRect rect;
 	CWnd* pWnd = GetDlgItem(IDC_STATIC_ACCEPTED);
 	pWnd->GetWindowRect(&rect);
@@ -93,7 +93,7 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 
 	// Create the Windows control and attach it to the Grid object
 	_PositionGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID2);
-	//_PositionGrid.ShowWindow(SW_HIDE);
+	_PositionGrid.ShowWindow(SW_HIDE);
 
 
 	pWnd = GetDlgItem(IDC_STATIC_FAVORITE);
@@ -103,7 +103,7 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 	// Create the Windows control and attach it to the Grid object
 	_FavoriteGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID3);
 
-
+	*/
 	SetTimer(1, 100, NULL);
 
 	/*
@@ -144,12 +144,12 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 	*/
 
 
-	_AcceptedGrid.UpdateAcceptedOrder();
-	_PositionGrid.UpdatePositionInfo();
+	//_AcceptedGrid.UpdateAcceptedOrder();
+	//_PositionGrid.UpdatePositionInfo();
 
 	//_AcceptedGrid.StartTimer();
 
-	_FavoriteGrid.SetFavorite();
+	//_FavoriteGrid.SetFavorite();
 
 	//_AcceptedGrid.UpdateAcceptedOrder();
 	//_PositionGrid.UpdatePositionInfo();
@@ -174,9 +174,9 @@ void DmAccountOrderLeftWindow::OnBnClickedBtnAddFav()
 
 void DmAccountOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 {
-	_AcceptedGrid.Update();
-	_PositionGrid.Update();
-	_FavoriteGrid.Update();
+	//_AcceptedGrid.Update();
+	//_PositionGrid.Update();
+	//_FavoriteGrid.Update();
 	//_AcceptedGrid.UpdateAcceptedOrder();
 	//_PositionGrid.UpdatePositionInfo();
 	//_AccountArea.UpdateAssetInfo();
@@ -185,10 +185,10 @@ void DmAccountOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 
 void DmAccountOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> account)
 {
-	_AcceptedGrid.Account(account);
-	_PositionGrid.Account(account);
-	_AccountArea.Account(account);
-	_AccountArea.UpdateAssetInfo();
+	//_AcceptedGrid.Account(account);
+	//_PositionGrid.Account(account);
+	account_profit_loss_view_.Account(account);
+	account_profit_loss_view_.UpdateAssetInfo();
 	//_FilledArea.Account(account);
 	//_AcceptedArea.Account(account);
 }
@@ -208,23 +208,23 @@ void DmAccountOrderLeftWindow::OnOrderChanged(const int& account_id, const int& 
 
 void DmAccountOrderLeftWindow::OnBnClickedBtnCancelSel()
 {
-	_AcceptedGrid.CancelSelOrders();
+	//_AcceptedGrid.CancelSelOrders();
 }
 
 
 void DmAccountOrderLeftWindow::OnBnClickedBtnCancelAll()
 {
-	_AcceptedGrid.CancelAll();
+	//_AcceptedGrid.CancelAll();
 }
 
 
 void DmAccountOrderLeftWindow::OnBnClickedBtnLiqSel()
 {
-	_PositionGrid.LiqSelPositions();
+	//_PositionGrid.LiqSelPositions();
 }
 
 
 void DmAccountOrderLeftWindow::OnBnClickedBtnLiqAll()
 {
-	_PositionGrid.LiqAll();
+	//_PositionGrid.LiqAll();
 }

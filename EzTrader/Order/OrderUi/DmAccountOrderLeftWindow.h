@@ -20,6 +20,7 @@ class DmAccountOrderLeftWindow
 #include "../../View/AccountProfitLossView.h"
 #include "../../View/OptionView.h"
 #include "../../View/FutureView.h"
+#include "../../View/AssetView.h"
 
 // DmAccountOrderLeftWindow dialog
 
@@ -49,10 +50,11 @@ protected:
 
 private:
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
-	AccountProfitLossView _AccountArea;
-	AccountOrderView _AcceptedGrid;
-	AccountPositionView _PositionGrid;
-	SmFavoriteGrid _FavoriteGrid;
+	AccountProfitLossView account_profit_loss_view_;
+	AssetView asset_view_;
+	//AccountOrderView _AcceptedGrid;
+	//AccountPositionView _PositionGrid;
+	//SmFavoriteGrid _FavoriteGrid;
 	OptionView option_view_;
 	FutureView future_view_;
 
@@ -77,6 +79,8 @@ public:
 	afx_msg void OnBnClickedBtnLiqAll();
 	CBCGPButton _BtnAddFav;
 	CBCGPStatic _StaticFav;
+	CBCGPComboBox combo_option_market_;
+	CBCGPComboBox combo_option_month_;
 };
 
 

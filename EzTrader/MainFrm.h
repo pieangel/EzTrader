@@ -33,6 +33,8 @@ class SmGigaCompChart;
 class RealTimeMultiChart;
 class SmStockChart;
 class SmTrendChart;
+class DmAccountOrderWindow;
+class DmFundOrderWindow;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -122,6 +124,11 @@ public:
 	std::shared_ptr< SmJangGoDialog> _FundJangoDialog = nullptr;
 	std::shared_ptr< SmFundCompMainDialog> _FundCompOrderDialog = nullptr;
 
+	std::shared_ptr<DmAccountOrderWindow> dm_account_order_wnd_p_ = nullptr;
+	std::shared_ptr<DmFundOrderWindow> dm_fund_order_wnd_p = nullptr;
+	std::map<HWND, std::shared_ptr<DmAccountOrderWindow>> dm_account_order_wnd_map_;
+	std::map<HWND, std::shared_ptr<DmFundOrderWindow>> dm_fund_order_wnd_map_;
+
 	std::map<HWND, std::shared_ptr<SmMainOrderDialog>> _OrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmOrderCompMainDialog>> _CompOrderWndMap;
@@ -184,4 +191,6 @@ public:
 	afx_msg void OnStockChart();
 	afx_msg void OnRealtimeMultiChart();
 	afx_msg void OnMulticolorChart();
+	afx_msg void OnDomesticAccountOrder();
+	afx_msg void OnDomesticFundOrder();
 };

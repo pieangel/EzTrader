@@ -109,7 +109,7 @@ void DmFundOrderWindow::SetFund()
 IMPLEMENT_DYNAMIC(DmFundOrderWindow, CBCGPDialog)
 
 DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent /*=nullptr*/)
-	: CBCGPDialog(IDD_ORDER_FUND, pParent)
+	: CBCGPDialog(IDD_DM_FUND_ORDER_MAIN, pParent)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
@@ -229,13 +229,13 @@ BOOL DmFundOrderWindow::OnInitDialog()
 
 
 	_LeftWnd = std::make_shared<DmFundOrderLeftWindow>(this);
-	_LeftWnd->Create(IDD_ORDER_LEFT_FUND, this);
+	_LeftWnd->Create(IDD_DM_FUND_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
 	//_LeftWnd->SetFundOrderWnd(this);
 
 
 	std::shared_ptr<DmFundOrderCenterWindow> center_wnd = std::make_shared<DmFundOrderCenterWindow>(this);
-	center_wnd->Create(IDD_ORDER_CENTER, this);
+	center_wnd->Create(IDD_DM_FUND_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_SHOW);
 	//center_wnd->SetFundDialog(this);
 	center_wnd->Selected(true);
@@ -244,7 +244,7 @@ BOOL DmFundOrderWindow::OnInitDialog()
 	center_wnd->GetWindowRect(rcWnd);
 
 	_RightWnd = std::make_shared<DmFundOrderRightWindow>(this);
-	_RightWnd->Create(IDD_ORDER_RIGHT_FUND, this);
+	_RightWnd->Create(IDD_DM_FUND_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
 
 
