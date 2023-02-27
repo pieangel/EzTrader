@@ -2,9 +2,10 @@
 #include "SmProduct.h"
 #include "SmSymbol.h"
 #include "SmSymbolManager.h"
+#include "SmProductYearMonth.h"
 #include "../Global/SmTotalManager.h"
 #include "../Log/MyLogger.h"
-using namespace DarkHorse;
+namespace DarkHorse {
 
 std::shared_ptr<DarkHorse::SmSymbol> SmProduct::AddSymbol(std::string&& symbol_code)
 {
@@ -19,8 +20,16 @@ std::shared_ptr<DarkHorse::SmSymbol> SmProduct::AddSymbol(std::string&& symbol_c
 	}
 	catch (const std::exception& e) {
 		const std::string& error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s",	error);
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error);
 	}
 
 	return nullptr;
+}
+
+std::shared_ptr<SmProductYearMonth> SmProduct::add_year_month(const std::string& year_month_name)
+{
+	auto it = _YearMonthMap.find(year_month_name);
+	if (it != _YearMonthMap.end()) return it->second;
+	return std::make_shared<SmProductYearMonth>(year_month_name);
+}
 }

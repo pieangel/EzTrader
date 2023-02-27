@@ -8,6 +8,9 @@
 #include "../Task/SmTaskRequestMaker.h"
 #include "../Task/SmServerDataReceiver.h"
 #include "../Client/ViStockClient.h"
+#include "../Config/SmConfigManager.h"
+#include "../Log/MyLogger.h"
+#include "../Util/VtStringUtil.h"
 using namespace DarkHorse;
 int SmSymbolManager::_Id = 0;
 
@@ -36,6 +39,126 @@ SmSymbolManager::~SmSymbolManager()
 void DarkHorse::SmSymbolManager::InitDomesticProducts()
 {
 	_DomesticProductVec.push_back("101F");
+}
+
+void SmSymbolManager::ParseYearMonth(
+	const std::string product_code, 
+	const std::string symbol_name_en, 
+	std::shared_ptr<SmSymbol>)
+{
+	if (product_code == "101") { // KOSPI 200 F 202303
+		;
+	}
+	else if (product_code == "105") { // MINI KOSPI F 202303
+		;
+	}
+	else if (product_code == "106") { // KOSDAQ150 F 202303
+		;
+	}
+	else if (product_code == "167") { // KTB10      F 202303
+		;
+	}
+	else if (product_code == "175") { // USD F 202303
+		;
+	}
+	else if (product_code == "201") { // KOSPI 200 C 202303 160.0 
+		;
+	}
+	else if (product_code == "301") { // KOSPI 200 P 202303 340.0
+		;
+	}
+	else if (product_code == "205") { // MINI KOSPI C 202303 200.0 
+		;
+	}
+	else if (product_code == "305") { // MINI KOSPI P 202303 200.0
+		;
+	}
+	else if (product_code == "209") { // KOSPI WEEKLY C 2303W1 275.0
+		;
+	}
+	else if (product_code == "309") { // KOSPI WEEKLY P 2303W1 337.5
+		;
+	}
+	else if (product_code == "206") { // KOSDAQ150 C 202303 1,275
+		;
+	}
+	else if (product_code == "306") { // KOSDAQ150 P 202303 1,275
+		;
+	}
+}
+
+void SmSymbolManager::read_domestic_masterfile()
+{
+	try {
+		std::string file_path;
+		file_path = SmConfigManager::GetApplicationPath();
+		file_path.append(_T("\\"));
+		file_path.append(_T("mst"));
+		file_path.append(_T("\\"));
+		std::string file_name = "chocode.cod";
+		//TRACE(file_name.c_str());
+		std::string full_name = file_path + file_name;
+		std::ifstream infile(full_name);
+		std::string line;
+		int index = 0;
+		std::string value;
+		while (std::getline(infile, line)) {
+			std::istringstream iss(line);
+			
+			value = line.substr(index, 9); index += 9;
+			VtStringUtil::trim(value);
+			std::string symbol_code = value;
+			std::shared_ptr<SmSymbol> symbol = std::make_shared<SmSymbol>(std::move(symbol_code));
+			symbol->SymbolCode(value);
+			value = line.substr(index, 12); index += 12;
+			VtStringUtil::trim(value);
+			symbol->FullCode(value);
+			value = line.substr(index, 30); index += 30;
+			VtStringUtil::trim(value);
+			symbol->SymbolNameKr(value);
+			value = line.substr(index, 30); index += 30;
+			VtStringUtil::trim(value);
+			symbol->SymbolNameEn(value);
+			value = line.substr(index, 5); index += 5;
+			VtStringUtil::trim(value);
+			symbol->RemainDays(_ttoi(value.c_str()));
+			value = line.substr(index, 8); index += 8;
+			VtStringUtil::trim(value);
+			symbol->LastTradeDay(value);
+			value = line.substr(index, 12); index += 12;
+			VtStringUtil::trim(value);
+			symbol->HighLimitPrice(value);
+			value = line.substr(index, 12); index += 12;
+			VtStringUtil::trim(value);
+			symbol->LowLimitPrice(value);
+			value = line.substr(index, 12); index += 12;
+			VtStringUtil::trim(value);
+			symbol->PreDayClose(value);
+			value = line.substr(index, 12); index += 12;
+			VtStringUtil::trim(value);
+			symbol->StandardPrice(value);
+			value = line.substr(index, 17); index += 17;
+			VtStringUtil::trim(value);
+			symbol->Strike(value);
+			value = line.substr(index, 1); index += 1;
+			VtStringUtil::trim(value);
+			symbol->AtmType(_ttoi(value.c_str()));
+			value = line.substr(index, 1); index += 1;
+			VtStringUtil::trim(value);
+			symbol->RecentMonth(_ttoi(value.c_str()));
+			value = line.substr(index, 8);
+			symbol->ExpireDate(value);
+			AddSymbol(symbol);
+			index = 0;
+			LOGINFO(CMyLogger::getInstance(), "read symbol %s complete!", symbol->SymbolCode().c_str());
+		}
+
+		LOGINFO(CMyLogger::getInstance(), "read %s file complete!", full_name.c_str());
+	}
+	catch (std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error : %s", error.c_str());
+	}
 }
 
 void DarkHorse::SmSymbolManager::AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code)

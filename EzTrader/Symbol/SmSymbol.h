@@ -60,13 +60,50 @@ namespace DarkHorse {
 		int PreDayVolume() const { return _PreDayVolume; }
 		void PreDayVolume(int val) { _PreDayVolume = val; }
 
+		std::string FullCode() const { return _FullCode; }
+		void FullCode(std::string val) { _FullCode = val; }
+		int RemainDays() const { return _RemainDays; }
+		void RemainDays(int val) { _RemainDays = val; }
+		std::string LastTradeDay() const { return _LastTradeDay; }
+		void LastTradeDay(std::string val) { _LastTradeDay = val; }
+		std::string HighLimitPrice() const { return _HighLimitPrice; }
+		void HighLimitPrice(std::string val) { _HighLimitPrice = val; }
+		std::string LowLimitPrice() const { return _LowLimitPrice; }
+		void LowLimitPrice(std::string val) { _LowLimitPrice = val; }
+		std::string PreDayClose() const { return _PreDayClose; }
+		void PreDayClose(std::string val) { _PreDayClose = val; }
+		std::string StandardPrice() const { return _StandardPrice; }
+		void StandardPrice(std::string val) { _StandardPrice = val; }
+		std::string Strike() const { return _Strike; }
+		void Strike(std::string val) { _Strike = val; }
+		int AtmType() const { return _AtmType; }
+		void AtmType(int val) { _AtmType = val; }
+		int RecentMonth() const { return _RecentMonth; }
+		void RecentMonth(int val) { _RecentMonth = val; }
 	private:
+		/// <summary>
+		/// 0 : future, 1 : atm , 2 : itm, 3 : otm
+		/// </summary>
+		int _AtmType;
+		/// <summary>
+		/// 1 : 최근원물, 선물 스프레드, 2 : 2째월물, 3등등.
+		/// </summary>
+		int _RecentMonth;
+		std::string _Strike;
+		std::string _StandardPrice;
+		std::string _PreDayClose;
+		std::string _LowLimitPrice;
+		std::string _HighLimitPrice;
+		std::string _LastTradeDay;
+		int _RemainDays{ 0 };
+		
 		int _Id{ 0 };
 		int _SeungSu{ 250000 };
 		int _Decimal{ 2 };
 		double _CtrtSize{ 0.05 };
 		double _TickValue{ 12500 };
 		double _TickSize{ 0.05 };
+		std::string _FullCode;
 		std::string _SymbolNameKr;
 		std::string _SymbolNameEn;
 		std::string _SymbolCode;

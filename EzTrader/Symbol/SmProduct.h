@@ -2,9 +2,11 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <map>
 
 namespace DarkHorse {
 	class SmSymbol;
+	class SmProductYearMonth;
 	class SmProduct
 	{
 	public:
@@ -22,12 +24,16 @@ namespace DarkHorse {
 		void MarketName(std::string val) { _MarketName = val; }
 		std::string ExchangeName() const { return _ExchangeName; }
 		void ExchangeName(std::string val) { _ExchangeName = val; }
+		std::shared_ptr<SmProductYearMonth> add_year_month(const std::string& year_month_name);
 	private:
 		std::string _ProductCode;
 		std::string _ProductNameEn;
 		std::string _ProductNameKr;
 		std::string _MarketName;
 		std::string _ExchangeName;
+		// key : year month name, value : year month object.
+		std::map<std::string, std::shared_ptr<SmProductYearMonth>> _YearMonthMap;
+		// symbol vector for the future product.
 		std::vector<std::shared_ptr<DarkHorse::SmSymbol>> _SymbolVec;
 	};
 }

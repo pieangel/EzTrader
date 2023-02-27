@@ -37,10 +37,17 @@ namespace DarkHorse {
 		std::vector<std::string> _DomesticProductVec;
 	private:
 		void InitDomesticProducts();
+		void ParseYearMonth
+		(
+			const std::string product_code, 
+			const std::string symbol_name_en,
+			std::shared_ptr<SmSymbol>
+		);
 	public:
 		const std::vector<std::string> GetDomesticProductVec() {
 			return _DomesticProductVec;
 		}
+		void read_domestic_masterfile();
 		void AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code);
 		void MakeFavorite();
 		void InitFavoriteProduct();
