@@ -51,6 +51,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	void set_option_view();
 	// key : option year-month combo index, value : year-month name
 	std::map<int, std::string> option_yearmonth_index_map;
 	int year_month_index{ 0 };

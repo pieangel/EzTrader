@@ -200,6 +200,14 @@ void SmSymbolManager::add_to_yearmonth(std::shared_ptr<SmSymbol> symbol)
 	}
 }
 
+void SmSymbolManager::sort_dm_option_symbol_vector()
+{
+	for (size_t i = 0; i < _DomesticOptionVec.size(); i++) {
+		_DomesticOptionVec[i].call_product->sort_dm_option_symbol_vector();
+		_DomesticOptionVec[i].put_product->sort_dm_option_symbol_vector();
+	}
+}
+
 void SmSymbolManager::read_domestic_masterfile()
 {
 	try {

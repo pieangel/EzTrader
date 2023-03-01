@@ -11,7 +11,12 @@
 
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
+#include "../Global/SmTotalManager.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Symbol/SmProduct.h"
+#include "../Symbol/SmProductYearMonth.h"
 #include <format>
+#include <algorithm>
 
 #include <functional>
 #include "../Fund/SmFund.h"
@@ -25,6 +30,7 @@ BEGIN_MESSAGE_MAP(DmOptionView, CBCGPStatic)
 	//{{AFX_MSG_MAP(CBCGPTextPreviewCtrl)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 DmOptionView::DmOptionView()
@@ -117,6 +123,50 @@ void DmOptionView::OnPaint()
 	m_pGM->EndDraw();
 }
 
+void DmOptionView::set_option_view(
+	const int option_market_index, 
+	const std::string& year_month_name)
+{
+	option_market_index_ = option_market_index;
+	year_month_name_ = year_month_name;
+	strike_start_index_ = 0;
+	
+	std::vector<DarkHorse::DmOption>& option_vec = mainApp.SymMgr()->get_dm_option_vec();
+	if (option_market_index_ < 0 || option_market_index_ >= static_cast<const int>(option_vec.size())) return;
+	const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& call_year_month_map = option_vec[option_market_index_].call_product->get_yearmonth_map();
+	auto it = call_year_month_map.find(year_month_name_);
+	if (it == call_year_month_map.end()) return;
+
+	const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& call_symbol_vec = it->second->get_symbol_vector();
+	call_symbol_vector_.clear();
+	std::copy(call_symbol_vec.begin(), call_symbol_vec.end(), std::back_inserter(call_symbol_vector_));
+
+	//std::reverse_copy(call_symbol_vec.begin(), call_symbol_vec.end(), std::back_inserter(call_symbol_vector_));
+
+
+	const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& put_year_month_map = option_vec[option_market_index_].put_product->get_yearmonth_map();
+	it = put_year_month_map.find(year_month_name_);
+	if (it == put_year_month_map.end()) return;
+
+	const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& put_symbol_vec = it->second->get_symbol_vector();
+	put_symbol_vector_.clear();
+	std::copy(put_symbol_vec.begin(), put_symbol_vec.end(), std::back_inserter(put_symbol_vector_));
+	//std::reverse_copy(put_symbol_vec.begin(), put_symbol_vec.end(), std::back_inserter(put_symbol_vector_));
+
+	const int atm_index = get_atm_index(call_symbol_vector_);
+	strike_start_index_ = get_atm_index(call_symbol_vector_) - static_cast<int>(_Grid->RowCount() / 2);
+	strike_start_index_--;
+	if (strike_start_index_ < 1) strike_start_index_ = 1;
+
+	set_option_view();
+}
+
+void DmOptionView::set_option_view()
+{
+	set_strike(call_symbol_vector_);
+	Invalidate();
+}
+
 void DmOptionView::UpdateSymbolInfo()
 {
 	if (!_Symbol) return;
@@ -142,6 +192,51 @@ void DmOptionView::OnQuoteEvent(const std::string& symbol_code)
 void DmOptionView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
 	_EnableOrderShow = true;
+}
+
+int DmOptionView::get_atm_index(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec)
+{
+	if (symbol_vec.size() == 0) return -1;
+	for (size_t i = 0; i < symbol_vec.size(); i++) {
+		if (symbol_vec[i]->AtmType() == 1) return i;
+	}
+	return -1;
+}
+
+void DmOptionView::set_strike_start_index(const int distance)
+{
+	strike_start_index_ += distance;
+	if (strike_start_index_ < 1)
+		strike_start_index_ = 1;
+	if (max_symbol_count <= static_cast<size_t>(_Grid->RowCount()))
+		strike_start_index_ = 1;
+	const size_t diff = max_symbol_count - _Grid->RowCount();
+	if (strike_start_index_ >= static_cast<int>(diff))
+		strike_start_index_ = diff - 2;
+}
+
+void DmOptionView::set_strike(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec)
+{
+	if (symbol_vec.size() == 0) return;
+	symbol_index_map_.clear();
+	for (int i = 1; i < _Grid->RowCount(); i++) {
+		auto cell = _Grid->FindCell(i, 1);
+		int new_strike_index = strike_start_index_ + i - 1;
+		if (new_strike_index >= static_cast<int>(symbol_vec.size()))
+			new_strike_index = symbol_vec.size() - 1;
+		if (new_strike_index < 0)
+			new_strike_index = 0;
+		if (cell) {
+			symbol_index_map_[i] = new_strike_index;
+			if (symbol_vec[new_strike_index]->AtmType() == 1)
+				cell->CellType(CT_BUTTON_BUY);
+			else 
+				cell->CellType(CT_NORMAL);
+			cell->Text(symbol_vec[new_strike_index]->Strike().c_str());
+		}
+	}
+
+	max_symbol_count = symbol_vec.size();
 }
 
 void DmOptionView::UpdateAccountAssetInfo()
@@ -237,4 +332,16 @@ void DmOptionView::OnTimer(UINT_PTR nIDEvent)
 	if (needDraw) Invalidate();
 
 	CBCGPStatic::OnTimer(nIDEvent);
+}
+
+BOOL DmOptionView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	int distance = zDelta / 60;
+	if (abs(zDelta) > 120)
+		distance = zDelta / 120;
+	else
+		distance = zDelta / 40;
+	set_strike_start_index(distance);
+	set_option_view();
+	return TRUE;
 }

@@ -19,6 +19,7 @@ namespace DarkHorse {
 		const std::string& get_name() {
 			return _Name;
 		}
+		void sort_symbol_vector();
 	private:
 		std::string _Name;
 		std::vector<std::shared_ptr<DarkHorse::SmSymbol>> _SymbolVec;

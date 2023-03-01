@@ -53,6 +53,7 @@ namespace DarkHorse {
 		const std::vector<std::string> GetDomesticProductVec() {
 			return _DomesticProductVec;
 		}
+		void sort_dm_option_symbol_vector();
 		void read_domestic_masterfile();
 		void AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code);
 		void MakeFavorite();

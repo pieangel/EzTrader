@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <map>
 
 #include "../SmGrid/SmGridResource.h"
 namespace DarkHorse {
@@ -29,6 +30,9 @@ public:
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
 public:
+	void set_option_view(
+		const int option_market_index, 
+		const std::string& year_month_name);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
@@ -38,10 +42,18 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	void set_option_view();
+	int get_atm_index(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec);
+	void set_strike_start_index(const int distance);
+	void set_strike(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec);
 	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
 	// 0 : account, 1 : fund
 	int _Mode = 0;
+	int option_market_index_ = 0;
+	std::string year_month_name_;
+	int strike_start_index_ = 1;
+	size_t max_symbol_count = 0;
 	bool _EnableOrderShow = false;
 	bool _EnableQuoteShow = false;
 	SmOrderGridResource _Resource;
@@ -50,6 +62,13 @@ private:
 	std::vector<std::string> _HeaderTitles;
 	std::shared_ptr<DarkHorse::SmGrid> _Grid = nullptr;
 
+	std::vector<std::shared_ptr<DarkHorse::SmSymbol>> call_symbol_vector_;
+	std::vector<std::shared_ptr<DarkHorse::SmSymbol>> put_symbol_vector_;
+	/// <summary>
+	/// key : row index, value : the index of the symbol vector.
+	/// </summary>
+	std::map<int, int> symbol_index_map_;
+
 	CBCGPGraphicsManager* m_pGM = nullptr;
 
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
@@ -57,6 +76,7 @@ private:
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
 
 

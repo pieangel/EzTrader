@@ -128,5 +128,13 @@ namespace DarkHorse {
 		SmQuote Qoute;
 		std::vector<SmTick> TickVec;
 	};
+
+	struct strike_less_than_key
+	{
+		inline bool operator() (const std::shared_ptr<SmSymbol> struct1, const std::shared_ptr<SmSymbol> struct2)
+		{
+			return (struct1->Strike() < struct2->Strike());
+		}
+	};
 }
 

@@ -28,6 +28,7 @@ namespace DarkHorse {
 		const std::map<std::string, std::shared_ptr<SmProductYearMonth>>& get_yearmonth_map() {
 			return _YearMonthMap;
 		}
+		void sort_dm_option_symbol_vector();
 	private:
 		std::string _ProductCode;
 		std::string _ProductNameEn;

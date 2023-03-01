@@ -47,6 +47,11 @@ void DmAccountOrderLeftWindow::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_OPTION_MONTH, combo_option_month_);
 }
 
+void DmAccountOrderLeftWindow::set_option_view()
+{
+	const std::string year_month_name = option_yearmonth_index_map[year_month_index];
+	option_view_.set_option_view(option_market_index, year_month_name);
+}
 
 void DmAccountOrderLeftWindow::init_option_market()
 {
@@ -99,6 +104,7 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 	future_view_.SetUp();
 	future_view_.init_dm_future();
 	init_option_market();
+	set_option_view();
 
 	SetTimer(1, 100, NULL);
 
@@ -190,6 +196,7 @@ void DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMarket()
 	}
 	year_month_index = 0;
 	combo_option_month_.SetCurSel(year_month_index);
+	set_option_view();
 }
 
 
@@ -198,4 +205,5 @@ void DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMonth()
 	if (option_market_index < 0) return;
 
 	year_month_index = combo_option_month_.GetCurSel();
+	set_option_view();
 }

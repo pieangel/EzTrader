@@ -34,4 +34,14 @@ std::shared_ptr<SmProductYearMonth> SmProduct::add_year_month(const std::string&
 	_YearMonthMap[year_month_name] = year_month;
 	return year_month;
 }
+
+void SmProduct::sort_dm_option_symbol_vector()
+{
+	if (_YearMonthMap.size() == 0) return;
+
+	for (auto it = _YearMonthMap.begin(); it != _YearMonthMap.end(); ++it) {
+		it->second->sort_symbol_vector();
+	}
+}
+
 }
