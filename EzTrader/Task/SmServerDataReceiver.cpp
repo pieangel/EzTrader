@@ -211,8 +211,7 @@ void DarkHorse::SmServerDataReceiver::DoPostTask(const std::shared_ptr<SmTaskInf
 	{
 		mainApp.SymMgr()->MakeDomesticMarket();
 		mainApp.SymMgr()->ReadAbroadSymbols();
-		SymbolManager symbol_manager;
-		symbol_manager.read_domestic_masterfile();
+		mainApp.SymMgr()->read_domestic_masterfile();
 		//((CMainFrame*)AfxGetMainWnd())->SetMarketTree();
 		std::vector<std::shared_ptr<SmTaskInfo>> task_list;
 		SmTaskRequestMaker::MaketInitialBatchTask(task_list);

@@ -30,6 +30,8 @@ std::shared_ptr<SmProductYearMonth> SmProduct::add_year_month(const std::string&
 {
 	auto it = _YearMonthMap.find(year_month_name);
 	if (it != _YearMonthMap.end()) return it->second;
-	return std::make_shared<SmProductYearMonth>(year_month_name);
+	std::shared_ptr<SmProductYearMonth> year_month = std::make_shared<SmProductYearMonth>(year_month_name);
+	_YearMonthMap[year_month_name] = year_month;
+	return year_month;
 }
 }

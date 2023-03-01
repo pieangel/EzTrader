@@ -11,7 +11,8 @@
 #include "../Config/SmConfigManager.h"
 #include "../Log/MyLogger.h"
 #include "../Util/VtStringUtil.h"
-using namespace DarkHorse;
+#include "SmProductYearMonth.h"
+namespace DarkHorse {
 int SmSymbolManager::_Id = 0;
 
 std::shared_ptr<SmMarket> SmSymbolManager::AddMarket(const std::string& market_name)
@@ -33,7 +34,7 @@ SmSymbolManager::SmSymbolManager()
 
 SmSymbolManager::~SmSymbolManager()
 {
-	
+
 }
 
 void DarkHorse::SmSymbolManager::InitDomesticProducts()
@@ -41,49 +42,161 @@ void DarkHorse::SmSymbolManager::InitDomesticProducts()
 	_DomesticProductVec.push_back("101F");
 }
 
-void SmSymbolManager::ParseYearMonth(
-	const std::string product_code, 
-	const std::string symbol_name_en, 
-	std::shared_ptr<SmSymbol>)
+void SmSymbolManager::add_to_yearmonth(std::shared_ptr<SmSymbol> symbol)
 {
-	if (product_code == "101") { // KOSPI 200 F 202303
-		;
+	const std::string product_code = symbol->ProductCode();
+	const std::string symbol_name_en = symbol->SymbolNameEn();
+	const std::string market_name = symbol->MarketName();
+	if (symbol->ProductCode() == "101") { // KOSPI 200 F 202303
+		std::string year = symbol_name_en.substr(12, 4);
+		std::string month = symbol_name_en.substr(16, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "105") { // MINI KOSPI F 202303
-		;
+		std::string year = symbol_name_en.substr(13, 4);
+		std::string month = symbol_name_en.substr(17, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "106") { // KOSDAQ150 F 202303
-		;
+		std::string year = symbol_name_en.substr(12, 4);
+		std::string month = symbol_name_en.substr(16, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "167") { // KTB10      F 202303
-		;
+		std::string year = symbol_name_en.substr(13, 4);
+		std::string month = symbol_name_en.substr(17, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "175") { // USD F 202303
-		;
+		std::string year = symbol_name_en.substr(6, 4);
+		std::string month = symbol_name_en.substr(10, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "201") { // KOSPI 200 C 202303 160.0 
-		;
+		std::string year = symbol_name_en.substr(12, 4);
+		std::string month = symbol_name_en.substr(16, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "301") { // KOSPI 200 P 202303 340.0
-		;
+		std::string year = symbol_name_en.substr(12, 4);
+		std::string month = symbol_name_en.substr(16, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "205") { // MINI KOSPI C 202303 200.0 
-		;
+		std::string year = symbol_name_en.substr(13, 4);
+		std::string month = symbol_name_en.substr(17, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "305") { // MINI KOSPI P 202303 200.0
-		;
+		std::string year = symbol_name_en.substr(13, 4);
+		std::string month = symbol_name_en.substr(17, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "209") { // KOSPI WEEKLY C 2303W1 275.0
-		;
+		std::string year = symbol_name_en.substr(15, 2);
+		std::string month = symbol_name_en.substr(17, 2);
+		std::string week = symbol_name_en.substr(19, 2);
+		std::string year_month_name("20");
+		year_month_name.append(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		year_month_name.append("-");
+		year_month_name.append(week);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "309") { // KOSPI WEEKLY P 2303W1 337.5
-		;
+		std::string year = symbol_name_en.substr(15, 2);
+		std::string month = symbol_name_en.substr(17, 2);
+		std::string week = symbol_name_en.substr(19, 2);
+		std::string year_month_name("20");
+		year_month_name.append(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		year_month_name.append("-");
+		year_month_name.append(week);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "206") { // KOSDAQ150 C 202303 1,275
-		;
+		std::string year = symbol_name_en.substr(12, 4);
+		std::string month = symbol_name_en.substr(16, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 	else if (product_code == "306") { // KOSDAQ150 P 202303 1,275
-		;
+		std::string year = symbol_name_en.substr(12, 4);
+		std::string month = symbol_name_en.substr(16, 2);
+		std::string year_month_name(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
 	}
 }
 
@@ -104,12 +217,15 @@ void SmSymbolManager::read_domestic_masterfile()
 		std::string value;
 		while (std::getline(infile, line)) {
 			std::istringstream iss(line);
-			
+
 			value = line.substr(index, 9); index += 9;
 			VtStringUtil::trim(value);
 			std::string symbol_code = value;
 			std::shared_ptr<SmSymbol> symbol = std::make_shared<SmSymbol>(std::move(symbol_code));
 			symbol->SymbolCode(value);
+			const std::string market_name = value.substr(1, 1).at(0) == '1' ? DmFutureMarketName : DmOptionMarketName;
+			symbol->MarketName(market_name);
+			symbol->ProductCode(value.substr(1, 3));
 			value = line.substr(index, 12); index += 12;
 			VtStringUtil::trim(value);
 			symbol->FullCode(value);
@@ -151,6 +267,7 @@ void SmSymbolManager::read_domestic_masterfile()
 			AddSymbol(symbol);
 			index = 0;
 			LOGINFO(CMyLogger::getInstance(), "read symbol %s complete!", symbol->SymbolCode().c_str());
+			add_to_yearmonth(symbol);
 		}
 
 		LOGINFO(CMyLogger::getInstance(), "read %s file complete!", full_name.c_str());
@@ -161,7 +278,7 @@ void SmSymbolManager::read_domestic_masterfile()
 	}
 }
 
-void DarkHorse::SmSymbolManager::AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code)
+void SmSymbolManager::AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code)
 {
 	auto found = _DomesticSymbolCodeMap.find(product_code);
 	if (found != _DomesticSymbolCodeMap.end()) {
@@ -175,7 +292,7 @@ void DarkHorse::SmSymbolManager::AddDomesticSymbolCode(const std::string& produc
 	}
 }
 
-void DarkHorse::SmSymbolManager::MakeFavorite()
+void SmSymbolManager::MakeFavorite()
 {
 	for (auto it = _FavoriteProduct.begin(); it != _FavoriteProduct.end(); it++) {
 		std::string product_code = *it;
@@ -186,7 +303,7 @@ void DarkHorse::SmSymbolManager::MakeFavorite()
 	}
 }
 
-void DarkHorse::SmSymbolManager::InitFavoriteProduct()
+void SmSymbolManager::InitFavoriteProduct()
 {
 	std::string section = _T("FAVORITE");
 	std::string favorite;
@@ -204,14 +321,14 @@ void DarkHorse::SmSymbolManager::InitFavoriteProduct()
 	}
 }
 
-void DarkHorse::SmSymbolManager::AddFavorite(const int& symbol_id)
+void SmSymbolManager::AddFavorite(const int& symbol_id)
 {
 	auto symbol = FindSymbolById(symbol_id);
 	if (!symbol) return;
 	_FavoriteMap[symbol_id] = symbol;
 }
 
-void DarkHorse::SmSymbolManager::RemoveFavorite(const std::string& symbol_code)
+void SmSymbolManager::RemoveFavorite(const std::string& symbol_code)
 {
 	auto symbol = FindSymbol(symbol_code);
 	if (!symbol) return;
@@ -221,7 +338,7 @@ void DarkHorse::SmSymbolManager::RemoveFavorite(const std::string& symbol_code)
 	}
 }
 
-std::shared_ptr<DarkHorse::SmSymbol> DarkHorse::SmSymbolManager::FindSymbolById(const int& id)
+std::shared_ptr<SmSymbol> SmSymbolManager::FindSymbolById(const int& id)
 {
 	auto found = _SymbolIdMap.find(id);
 	if (found != _SymbolIdMap.end())
@@ -230,14 +347,14 @@ std::shared_ptr<DarkHorse::SmSymbol> DarkHorse::SmSymbolManager::FindSymbolById(
 		return nullptr;
 }
 
-void DarkHorse::SmSymbolManager::AddSymbol(std::shared_ptr<SmSymbol> symbol)
+void SmSymbolManager::AddSymbol(std::shared_ptr<SmSymbol> symbol)
 {
 	if (!symbol) return;
 	SymbolMap_[symbol->SymbolCode()] = symbol;
 	_SymbolIdMap[symbol->Id()] = symbol;
 }
 
-std::shared_ptr<DarkHorse::SmSymbol> DarkHorse::SmSymbolManager::FindSymbol(const std::string& symbol_code) const
+std::shared_ptr<SmSymbol> SmSymbolManager::FindSymbol(const std::string& symbol_code) const
 {
 	const auto it = SymbolMap_.find(symbol_code);
 	if (it != SymbolMap_.end())
@@ -246,11 +363,11 @@ std::shared_ptr<DarkHorse::SmSymbol> DarkHorse::SmSymbolManager::FindSymbol(cons
 		return nullptr;
 }
 
-void DarkHorse::SmSymbolManager::GetRecentSymbolVector(std::vector<std::shared_ptr<SmSymbol>>& symbol_list)
+void SmSymbolManager::GetRecentSymbolVector(std::vector<std::shared_ptr<SmSymbol>>& symbol_list)
 {
 	for (auto it = _MarketMap.begin(); it != _MarketMap.end(); ++it) {
 		const auto market = it->second;
-		const std::map<std::string, std::shared_ptr<DarkHorse::SmProduct>>& product_map = market->GetProductMap();
+		const std::map<std::string, std::shared_ptr<SmProduct>>& product_map = market->GetProductMap();
 		for (auto it2 = product_map.begin(); it2 != product_map.end(); ++it2) {
 			const auto product = it2->second;
 			const auto symbol = GetRecentSymbol(product->ProductCode());
@@ -260,14 +377,14 @@ void DarkHorse::SmSymbolManager::GetRecentSymbolVector(std::vector<std::shared_p
 	}
 }
 
-std::shared_ptr<DarkHorse::SmSymbol> SmSymbolManager::GetRecentSymbol(const std::string& product_code)
+std::shared_ptr<SmSymbol> SmSymbolManager::GetRecentSymbol(const std::string& product_code)
 {
-	std::shared_ptr<DarkHorse::SmProduct> product = FindProduct(product_code);
+	std::shared_ptr<SmProduct> product = FindProduct(product_code);
 
-	const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec = product->GetSymbolVec();
+	const std::vector<std::shared_ptr<SmSymbol>>& symbol_vec = product->GetSymbolVec();
 	if (symbol_vec.empty()) return nullptr;
 	int preday_volume = symbol_vec.front()->PreDayVolume();
-	std::shared_ptr<DarkHorse::SmSymbol> symbol = symbol_vec.front();
+	std::shared_ptr<SmSymbol> symbol = symbol_vec.front();
 	for (size_t i = 0; i < symbol_vec.size(); i++) {
 		if (symbol_vec[i]->PreDayVolume() > preday_volume) {
 			symbol = symbol_vec[i];
@@ -279,9 +396,9 @@ std::shared_ptr<DarkHorse::SmSymbol> SmSymbolManager::GetRecentSymbol(const std:
 	return symbol;
 }
 
-std::string DarkHorse::SmSymbolManager::GetRecentSymbolCode(const std::string& product_code)
+std::string SmSymbolManager::GetRecentSymbolCode(const std::string& product_code)
 {
-	std::shared_ptr<DarkHorse::SmProduct> product = FindProduct(product_code);
+	std::shared_ptr<SmProduct> product = FindProduct(product_code);
 
 	const auto& symbol = GetRecentSymbol(product->ProductCode());
 	if (symbol) return symbol->SymbolCode();
@@ -292,17 +409,17 @@ std::string SmSymbolManager::GetNextSymbolCode(const std::string& product_code)
 {
 	std::string symbol_code("");
 
-	std::shared_ptr<DarkHorse::SmProduct> product = FindProduct(product_code);
+	std::shared_ptr<SmProduct> product = FindProduct(product_code);
 
-	const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec = product->GetSymbolVec();
+	const std::vector<std::shared_ptr<SmSymbol>>& symbol_vec = product->GetSymbolVec();
 	if (symbol_vec.empty() || symbol_vec.size() == 1) symbol_code;
 
-	return (* (symbol_vec.begin() + 1))->SymbolCode();
+	return (*(symbol_vec.begin() + 1))->SymbolCode();
 }
 
-std::shared_ptr<DarkHorse::SmProduct> DarkHorse::SmSymbolManager::FindProduct(const std::string& product_code)
+std::shared_ptr<SmProduct> SmSymbolManager::FindProduct(const std::string& product_code)
 {
-	for(auto it = _MarketMap.begin(); it != _MarketMap.end(); ++it) {
+	for (auto it = _MarketMap.begin(); it != _MarketMap.end(); ++it) {
 		const auto found = it->second->FindProduct(product_code);
 		if (found) return found;
 	}
@@ -310,7 +427,7 @@ std::shared_ptr<DarkHorse::SmProduct> DarkHorse::SmSymbolManager::FindProduct(co
 	return nullptr;
 }
 
-std::shared_ptr<DarkHorse::SmMarket> DarkHorse::SmSymbolManager::FindMarket(const std::string& market_name)
+std::shared_ptr<SmMarket> SmSymbolManager::FindMarket(const std::string& market_name)
 {
 	auto found = _MarketMap.find(market_name);
 	if (found != _MarketMap.end())
@@ -319,51 +436,89 @@ std::shared_ptr<DarkHorse::SmMarket> DarkHorse::SmSymbolManager::FindMarket(cons
 		return nullptr;
 }
 
-void DarkHorse::SmSymbolManager::ReadAbroadSymbols() const noexcept
+void SmSymbolManager::ReadAbroadSymbols() const noexcept
 {
 	mainApp.SymRdr()->ReadAbroadMarketFile();
 	Sleep(500);
 	mainApp.SymRdr()->ReadAbroadSymbolFile();
 }
 
-void DarkHorse::SmSymbolManager::MakeDomesticMarket()
+void SmSymbolManager::MakeDomesticMarket()
 {
-	std::string market_name = "국내선물";
+	DmFuture future;
+	DmOption option;
+	std::string market_name = DmFutureMarketName;
 	std::shared_ptr<SmMarket> market = mainApp.SymMgr()->AddMarket(market_name);
 	std::shared_ptr<SmProduct> product = market->AddProduct("101");
+	future.product_code = "101F";
+	future.future_name = "지수선물";
+	future.product = product;
+	_DomesticFutureVec.push_back(future);
 	product->MarketName(market_name);
 	product = market->AddProduct("105");
+	future.product_code = "105F";
+	future.future_name = "미니선물";
+	future.product = product;
+	_DomesticFutureVec.push_back(future);
 	product->MarketName(market_name);
 	product = market->AddProduct("106");
+	future.product_code = "106F";
+	future.future_name = "코닥선물";
+	future.product = product;
+	_DomesticFutureVec.push_back(future);
 	product->MarketName(market_name);
 	product = market->AddProduct("167");
+	future.product_code = "167F";
+	future.future_name = "국채선물";
+	future.product = product;
+	_DomesticFutureVec.push_back(future);
 	product->MarketName(market_name);
 	product = market->AddProduct("175");
+	future.product_code = "175F";
+	future.future_name = "달러선물";
+	future.product = product;
+	_DomesticFutureVec.push_back(future);
 	product->MarketName(market_name);
-	market_name = "국내옵션";
+	market_name = DmOptionMarketName;
 	market = mainApp.SymMgr()->AddMarket(market_name);
+	option.option_name = "코스피옵션";
 	product = market->AddProduct("201");
+	option.call_product = product;
 	product->MarketName(market_name);
 	product = market->AddProduct("301");
+	option.put_product = product;
 	product->MarketName(market_name);
+	_DomesticOptionVec.push_back(option);
 
+	option.option_name = "민코스피옵션";
 	product = market->AddProduct("205");
+	option.call_product = product;
 	product->MarketName(market_name);
 	product = market->AddProduct("305");
+	option.put_product = product;
 	product->MarketName(market_name);
+	_DomesticOptionVec.push_back(option);
 
+	option.option_name = "코스피위클리옵션";
 	product = market->AddProduct("209");
+	option.call_product = product;
 	product->MarketName(market_name);
 	product = market->AddProduct("309");
+	option.put_product = product;
 	product->MarketName(market_name);
+	_DomesticOptionVec.push_back(option);
 
+	option.option_name = "코스닥옵션";
 	product = market->AddProduct("206");
+	option.call_product = product;
 	product->MarketName(market_name);
 	product = market->AddProduct("306");
+	option.put_product = product;
 	product->MarketName(market_name);
+	_DomesticOptionVec.push_back(option);
 }
 
-void DarkHorse::SmSymbolManager::RegisterSymbolToServer(const std::string& symbol_code, const bool& reg)
+void SmSymbolManager::RegisterSymbolToServer(const std::string& symbol_code, const bool& reg)
 {
 	if (reg) {
 		auto found = _RegisteredSymbolMap.find(symbol_code);
@@ -375,4 +530,15 @@ void DarkHorse::SmSymbolManager::RegisterSymbolToServer(const std::string& symbo
 		auto found = _RegisteredSymbolMap.find(symbol_code);
 		if (found == _RegisteredSymbolMap.end()) return;
 	}
+}
+
+std::shared_ptr<SmProduct> SmSymbolManager::find_product(
+	const std::string& market_name,
+	const std::string& product_code)
+{
+	std::shared_ptr<SmMarket> market = FindMarket(market_name);
+	if (!market) return nullptr;
+	return FindProduct(product_code);
+}
+
 }

@@ -5,6 +5,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include "DomesticMarketDefine.h"
 
 namespace DarkHorse {
 	class SmSymbol;
@@ -35,15 +36,20 @@ namespace DarkHorse {
 		// key : domestic product code, value : symbol code list
 		std::map<std::string, std::vector<std::string>> _DomesticSymbolCodeMap;
 		std::vector<std::string> _DomesticProductVec;
+		std::vector<DmFuture> _DomesticFutureVec;
+		std::vector<DmOption> _DomesticOptionVec;
 	private:
 		void InitDomesticProducts();
-		void ParseYearMonth
-		(
-			const std::string product_code, 
-			const std::string symbol_name_en,
-			std::shared_ptr<SmSymbol>
-		);
+		void add_to_yearmonth(std::shared_ptr<SmSymbol> symbol);
 	public:
+		const std::vector<DmFuture>& get_dm_future_vec()
+		{
+			return _DomesticFutureVec;
+		}
+		const std::vector<DmOption>& get_dm_option_vec()
+		{
+			return _DomesticOptionVec;
+		}
 		const std::vector<std::string> GetDomesticProductVec() {
 			return _DomesticProductVec;
 		}
@@ -73,6 +79,9 @@ namespace DarkHorse {
 		void ReadAbroadSymbols() const noexcept;
 		void MakeDomesticMarket();
 		void RegisterSymbolToServer(const std::string& symbol_code, const bool& reg);
+		std::shared_ptr<SmProduct> find_product(
+			const std::string& market_name, 
+			const std::string& product_code);
 	};
 }
 

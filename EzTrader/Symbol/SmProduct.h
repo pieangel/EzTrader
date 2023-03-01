@@ -13,7 +13,7 @@ namespace DarkHorse {
 		const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& GetSymbolVec() const { return _SymbolVec; }
 		std::shared_ptr<DarkHorse::SmSymbol> AddSymbol(std::string&& symbol_code);
 		
-		SmProduct(std::string&& product_code) : _ProductCode(product_code) {}
+		SmProduct(const std::string& product_code) : _ProductCode(product_code) {}
 		std::string ProductCode() const { return _ProductCode; }
 		void ProductCode(std::string val) { _ProductCode = val; }
 		std::string ProductNameEn() const { return _ProductNameEn; }

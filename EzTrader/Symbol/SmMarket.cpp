@@ -3,13 +3,13 @@
 #include "SmProduct.h"
 using namespace DarkHorse;
 
-std::shared_ptr<SmProduct> SmMarket::AddProduct(std::string&& product_code)
+std::shared_ptr<SmProduct> SmMarket::AddProduct(const std::string& product_code)
 {
 	const auto found = _ProductMap.find(product_code);
 	if (found != _ProductMap.end())
 		return found->second;
 	else {
-		auto product = std::make_shared<SmProduct>(std::move(product_code));
+		auto product = std::make_shared<SmProduct>(product_code);
 		_ProductMap[product_code] = product;
 		return product;
 	}

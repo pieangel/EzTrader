@@ -1794,6 +1794,9 @@
     <ClInclude Include="View\OptionView.h">
       <Filter>View</Filter>
     </ClInclude>
+    <ClInclude Include="Symbol\DomesticMarketDefine.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

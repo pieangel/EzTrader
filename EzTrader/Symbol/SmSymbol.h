@@ -84,11 +84,11 @@ namespace DarkHorse {
 		/// <summary>
 		/// 0 : future, 1 : atm , 2 : itm, 3 : otm
 		/// </summary>
-		int _AtmType;
+		int _AtmType{ 0 };
 		/// <summary>
 		/// 1 : 최근원물, 선물 스프레드, 2 : 2째월물, 3등등.
 		/// </summary>
-		int _RecentMonth;
+		int _RecentMonth{ 1 };
 		std::string _Strike;
 		std::string _StandardPrice;
 		std::string _PreDayClose;
