@@ -16,6 +16,9 @@ namespace DarkHorse {
 		{
 			return _SymbolVec;
 		}
+		const std::string& get_name() {
+			return _Name;
+		}
 	private:
 		std::string _Name;
 		std::vector<std::shared_ptr<DarkHorse::SmSymbol>> _SymbolVec;

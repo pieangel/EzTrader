@@ -4,11 +4,13 @@
 
 #include "../SmGrid/SmGrid.h"
 #include "../Symbol/SmSymbol.h"
+#include "../Symbol/SmProduct.h"
 #include "../SmGrid/SmCell.h"
 #include "../Account/SmAccount.h"
 
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
+#include "../Symbol/SmSymbolManager.h"
 #include <format>
 
 #include <functional>
@@ -66,13 +68,6 @@ void DmFutureView::SetUp()
 	_Grid->CreateGrids();
 
 	_Grid->HeaderMode(SmHeaderMode::None);
-
-// 	{
-// 		_HeaderTitles.push_back("시각");
-// 		_HeaderTitles.push_back("체결가");
-// 		_HeaderTitles.push_back("체결");
-// 		_Grid->SetColHeaderTitles(_HeaderTitles);
-// 	}
 
 	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&DmFutureView::OnQuoteEvent, this, _1));
 	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&DmFutureView::OnOrderEvent, this, _1, _2));
@@ -142,6 +137,19 @@ void DmFutureView::OnQuoteEvent(const std::string& symbol_code)
 void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
 	_EnableOrderShow = true;
+}
+
+void DmFutureView::init_dm_future()
+{
+	const std::vector<DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
+	for (size_t i = 0; i < future_vec.size(); i++) {
+		auto cell = _Grid->FindCell(i, 0);
+		std::string value = future_vec[i].future_name;
+		if (cell) cell->Text(value);
+		cell = _Grid->FindCell(i, 1);
+		value = future_vec[i].product_code;
+		if (cell) cell->Text(value);
+	}
 }
 
 void DmFutureView::UpdateAccountAssetInfo()

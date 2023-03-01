@@ -21,6 +21,8 @@ class DmAccountOrderLeftWindow
 #include "../../View/DmOptionView.h"
 #include "../../View/DmFutureView.h"
 #include "../../View/AssetView.h"
+#include <map>
+#include <string>
 
 // DmAccountOrderLeftWindow dialog
 
@@ -49,6 +51,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	// key : option year-month combo index, value : year-month name
+	std::map<int, std::string> option_yearmonth_index_map;
+	int year_month_index{ 0 };
+	int option_market_index{ 0 };
+	void init_option_market();
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
 	AccountProfitLossView account_profit_loss_view_;
 	AssetView asset_view_;
@@ -81,6 +88,8 @@ public:
 	CBCGPStatic _StaticFav;
 	CBCGPComboBox combo_option_market_;
 	CBCGPComboBox combo_option_month_;
+	afx_msg void OnCbnSelchangeComboOptionMarket();
+	afx_msg void OnCbnSelchangeComboOptionMonth();
 };
 
 

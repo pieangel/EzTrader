@@ -25,6 +25,9 @@ namespace DarkHorse {
 		std::string ExchangeName() const { return _ExchangeName; }
 		void ExchangeName(std::string val) { _ExchangeName = val; }
 		std::shared_ptr<SmProductYearMonth> add_year_month(const std::string& year_month_name);
+		const std::map<std::string, std::shared_ptr<SmProductYearMonth>>& get_yearmonth_map() {
+			return _YearMonthMap;
+		}
 	private:
 		std::string _ProductCode;
 		std::string _ProductNameEn;

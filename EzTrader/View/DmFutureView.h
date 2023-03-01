@@ -28,6 +28,7 @@ public:
 	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
+	void init_dm_future();
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }

@@ -9,6 +9,11 @@
 //#include "OrderLeftDialog.h"
 #include "afxdialogex.h"
 #include "../../Symbol/SmSymbolTableDialog.h"
+#include "../../Global/SmTotalManager.h"
+#include "../../Symbol/SmSymbolManager.h"
+#include "../../Symbol/SmProduct.h"
+#include "../../Symbol/SmProductYearMonth.h"
+#include "../../Symbol/SmSymbol.h"
 
 #define WND_ID1 0x00000001
 #define WND_ID2 0x00000002
@@ -43,6 +48,24 @@ void DmAccountOrderLeftWindow::DoDataExchange(CDataExchange* pDX)
 }
 
 
+void DmAccountOrderLeftWindow::init_option_market()
+{
+	std::vector<DarkHorse::DmOption>& option_vec = mainApp.SymMgr()->get_dm_option_vec();
+	for (size_t i = 0; i < option_vec.size(); i++) {
+		int index = combo_option_market_.AddString(option_vec[i].option_name.c_str());
+	}
+	option_market_index = 0;
+	combo_option_market_.SetCurSel(option_market_index);
+	const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = option_vec[option_market_index].call_product->get_yearmonth_map();
+	for (auto it = year_month_map.begin(); it != year_month_map.end(); it++) {
+		const std::string& name = it->second->get_name();
+		int index = combo_option_month_.AddString(name.c_str());
+		option_yearmonth_index_map[index] = name;
+	}
+	year_month_index = 0;
+	combo_option_month_.SetCurSel(year_month_index);
+}
+
 BEGIN_MESSAGE_MAP(DmAccountOrderLeftWindow, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTN_ADD_FAV, &DmAccountOrderLeftWindow::OnBnClickedBtnAddFav)
 	ON_MESSAGE(UM_SYMBOL_SELECTED, &DmAccountOrderLeftWindow::OnUmSymbolSelected)
@@ -51,6 +74,8 @@ BEGIN_MESSAGE_MAP(DmAccountOrderLeftWindow, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTN_CANCEL_ALL, &DmAccountOrderLeftWindow::OnBnClickedBtnCancelAll)
 	ON_BN_CLICKED(IDC_BTN_LIQ_SEL, &DmAccountOrderLeftWindow::OnBnClickedBtnLiqSel)
 	ON_BN_CLICKED(IDC_BTN_LIQ_ALL, &DmAccountOrderLeftWindow::OnBnClickedBtnLiqAll)
+	ON_CBN_SELCHANGE(IDC_COMBO_OPTION_MARKET, &DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMarket)
+	ON_CBN_SELCHANGE(IDC_COMBO_OPTION_MONTH, &DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMonth)
 END_MESSAGE_MAP()
 
 
@@ -72,6 +97,8 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 	asset_view_.SetUp();
 	option_view_.SetUp();
 	future_view_.SetUp();
+	future_view_.init_dm_future();
+	init_option_market();
 
 	SetTimer(1, 100, NULL);
 
@@ -144,4 +171,31 @@ void DmAccountOrderLeftWindow::OnBnClickedBtnLiqSel()
 void DmAccountOrderLeftWindow::OnBnClickedBtnLiqAll()
 {
 	//_PositionGrid.LiqAll();
+}
+
+
+void DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMarket()
+{
+	option_market_index = combo_option_market_.GetCurSel();
+	if (option_market_index < 0) return;
+
+	combo_option_month_.ResetContent();
+	option_yearmonth_index_map.clear();
+	std::vector<DarkHorse::DmOption>& option_vec = mainApp.SymMgr()->get_dm_option_vec();
+	const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = option_vec[option_market_index].call_product->get_yearmonth_map();
+	for (auto it = year_month_map.begin(); it != year_month_map.end(); it++) {
+		const std::string& name = it->second->get_name();
+		int index = combo_option_month_.AddString(name.c_str());
+		option_yearmonth_index_map[index] = name;
+	}
+	year_month_index = 0;
+	combo_option_month_.SetCurSel(year_month_index);
+}
+
+
+void DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMonth()
+{
+	if (option_market_index < 0) return;
+
+	year_month_index = combo_option_month_.GetCurSel();
 }

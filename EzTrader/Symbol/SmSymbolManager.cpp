@@ -490,7 +490,7 @@ void SmSymbolManager::MakeDomesticMarket()
 	product->MarketName(market_name);
 	_DomesticOptionVec.push_back(option);
 
-	option.option_name = "민코스피옵션";
+	option.option_name = "미니코스피옵션";
 	product = market->AddProduct("205");
 	option.call_product = product;
 	product->MarketName(market_name);

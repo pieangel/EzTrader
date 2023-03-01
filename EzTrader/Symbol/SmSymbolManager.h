@@ -46,7 +46,7 @@ namespace DarkHorse {
 		{
 			return _DomesticFutureVec;
 		}
-		const std::vector<DmOption>& get_dm_option_vec()
+		std::vector<DmOption>& get_dm_option_vec()
 		{
 			return _DomesticOptionVec;
 		}
