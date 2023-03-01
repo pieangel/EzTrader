@@ -68,95 +68,12 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
-	//_AcceptedArea.SetUp();
-	//_FilledArea.SetUp();
-	//_FavoriteArea.SetUp();
 	account_profit_loss_view_.SetUp();
 	asset_view_.SetUp();
 	option_view_.SetUp();
 	future_view_.SetUp();
 
-
-
-	/*
-	CRect rect;
-	CWnd* pWnd = GetDlgItem(IDC_STATIC_ACCEPTED);
-	pWnd->GetWindowRect(&rect);
-	ScreenToClient(&rect);
-
-	// Create the Windows control and attach it to the Grid object
-	_AcceptedGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID1);
-
-	pWnd = GetDlgItem(IDC_STATIC_FILLED);
-	pWnd->GetWindowRect(&rect);
-	ScreenToClient(&rect);
-
-	// Create the Windows control and attach it to the Grid object
-	_PositionGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID2);
-	_PositionGrid.ShowWindow(SW_HIDE);
-
-
-	pWnd = GetDlgItem(IDC_STATIC_FAVORITE);
-	pWnd->GetWindowRect(&rect);
-	ScreenToClient(&rect);
-
-	// Create the Windows control and attach it to the Grid object
-	_FavoriteGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID3);
-
-	*/
 	SetTimer(1, 100, NULL);
-
-	/*
-	_VScrollBarAcpt.ShowWindow(SW_SHOW);
-	SCROLLINFO  scrinfo;
-	scrinfo.cbSize = sizeof(scrinfo);
-	scrinfo.fMask = SIF_ALL;
-	scrinfo.nMin = 0;          // 최소값
-	scrinfo.nMax = 200;      // 최대값
-	scrinfo.nPage = _AcceptedArea.GetRowCount();      // 전체 스크롤바에서 스크롤박스가 차지하는 범위
-	scrinfo.nTrackPos = 0;  // 트랙바가 움직일때의 위치값
-	scrinfo.nPos = 0;        // 위치
-	_VScrollBarAcpt.SetScrollInfo(&scrinfo);
-
-
-	_VScrollBarPosi.ShowWindow(SW_SHOW);
-
-	scrinfo.cbSize = sizeof(scrinfo);
-	scrinfo.fMask = SIF_ALL;
-	scrinfo.nMin = 0;          // 최소값
-	scrinfo.nMax = 200;      // 최대값
-	scrinfo.nPage = _FilledArea.GetRowCount();      // 전체 스크롤바에서 스크롤박스가 차지하는 범위
-	scrinfo.nTrackPos = 0;  // 트랙바가 움직일때의 위치값
-	scrinfo.nPos = 0;        // 위치
-	_VScrollBarPosi.SetScrollInfo(&scrinfo);
-
-
-	_VScrollBarFav.ShowWindow(SW_SHOW);
-
-	scrinfo.cbSize = sizeof(scrinfo);
-	scrinfo.fMask = SIF_ALL;
-	scrinfo.nMin = 0;          // 최소값
-	scrinfo.nMax = 200;      // 최대값
-	scrinfo.nPage = _FavoriteArea.GetRowCount();      // 전체 스크롤바에서 스크롤박스가 차지하는 범위
-	scrinfo.nTrackPos = 0;  // 트랙바가 움직일때의 위치값
-	scrinfo.nPos = 0;        // 위치
-	_VScrollBarFav.SetScrollInfo(&scrinfo);
-	*/
-
-
-	//_AcceptedGrid.UpdateAcceptedOrder();
-	//_PositionGrid.UpdatePositionInfo();
-
-	//_AcceptedGrid.StartTimer();
-
-	//_FavoriteGrid.SetFavorite();
-
-	//_AcceptedGrid.UpdateAcceptedOrder();
-	//_PositionGrid.UpdatePositionInfo();
-
-	//_FavoriteArea.SetFavorite();
-	//_AcceptedArea.UpdateAcceptedOrder();
-	//_FilledArea.UpdatePositionInfo();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

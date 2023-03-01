@@ -18,8 +18,8 @@ class DmAccountOrderLeftWindow
 #include "../../View/AccountOrderView.h"
 #include "../../View/AccountPositionView.h"
 #include "../../View/AccountProfitLossView.h"
-#include "../../View/OptionView.h"
-#include "../../View/FutureView.h"
+#include "../../View/DmOptionView.h"
+#include "../../View/DmFutureView.h"
 #include "../../View/AssetView.h"
 
 // DmAccountOrderLeftWindow dialog
@@ -55,8 +55,8 @@ private:
 	//AccountOrderView _AcceptedGrid;
 	//AccountPositionView _PositionGrid;
 	//SmFavoriteGrid _FavoriteGrid;
-	OptionView option_view_;
-	FutureView future_view_;
+	DmOptionView option_view_;
+	DmFutureView future_view_;
 
 
 	//SmFilledArea _FilledArea;

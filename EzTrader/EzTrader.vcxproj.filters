@@ -793,10 +793,10 @@
     <ClCompile Include="View\SymbolOrderView.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="View\FutureView.cpp">
+    <ClCompile Include="View\DmFutureView.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="View\OptionView.cpp">
+    <ClCompile Include="View\DmOptionView.cpp">
       <Filter>View</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1788,10 +1788,10 @@
     <ClInclude Include="View\SymbolOrderView.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="View\FutureView.h">
+    <ClInclude Include="View\DmFutureView.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="View\OptionView.h">
+    <ClInclude Include="View\DmOptionView.h">
       <Filter>View</Filter>
     </ClInclude>
     <ClInclude Include="Symbol\DomesticMarketDefine.h">

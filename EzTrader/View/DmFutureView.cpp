@@ -1,8 +1,6 @@
-//#include "stdafx.h"
-//#include "OptionView.h"
 
 #include "stdafx.h"
-#include "OptionView.h"
+#include "DmFutureView.h"
 
 #include "../SmGrid/SmGrid.h"
 #include "../Symbol/SmSymbol.h"
@@ -21,18 +19,18 @@ using namespace std::placeholders;
 
 using namespace DarkHorse;
 
-BEGIN_MESSAGE_MAP(OptionView, CBCGPStatic)
+BEGIN_MESSAGE_MAP(DmFutureView, CBCGPStatic)
 	//{{AFX_MSG_MAP(CBCGPTextPreviewCtrl)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
-OptionView::OptionView()
+DmFutureView::DmFutureView()
 {
 
 }
 
-OptionView::~OptionView()
+DmFutureView::~DmFutureView()
 {
 	KillTimer(1);
 	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
@@ -44,44 +42,46 @@ OptionView::~OptionView()
 	}
 }
 
-void OptionView::SetUp()
+void DmFutureView::SetUp()
 {
 	CRect rect;
 	GetClientRect(rect);
 
 	CreateResource();
-	//InitHeader();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
-	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 90, 3);
-	int colWidth[3] = { 73, 50, 73 };
+	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 5, 3);
+	int colWidth[3] = { 60, 55, 41 };
 	int width_sum = 0;
 	for (int i = 0; i < 3; i++) {
 		_Grid->SetColWidth(i, colWidth[i]);
 		width_sum += colWidth[i];
 	}
-	width_sum -= colWidth[1];
-	_Grid->SetColWidth(1, rect.Width() - width_sum);
+	width_sum -= colWidth[2];
+	_Grid->SetColWidth(2, rect.Width() - width_sum);
 
 	_Grid->MakeRowHeightMap();
 	_Grid->MakeColWidthMap();
 	_Grid->RecalRowCount(rect.Height(), true);
 
 	_Grid->CreateGrids();
-	{
-		_HeaderTitles.push_back("CALL");
-		_HeaderTitles.push_back("행사가");
-		_HeaderTitles.push_back("PUT");
-		_Grid->SetColHeaderTitles(_HeaderTitles);
-	}
 
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&OptionView::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&OptionView::OnOrderEvent, this, _1, _2));
+	_Grid->HeaderMode(SmHeaderMode::None);
+
+// 	{
+// 		_HeaderTitles.push_back("시각");
+// 		_HeaderTitles.push_back("체결가");
+// 		_HeaderTitles.push_back("체결");
+// 		_Grid->SetColHeaderTitles(_HeaderTitles);
+// 	}
+
+	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&DmFutureView::OnQuoteEvent, this, _1));
+	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&DmFutureView::OnOrderEvent, this, _1, _2));
 
 
 	SetTimer(1, 40, NULL);
 }
 
-void OptionView::OnPaint()
+void DmFutureView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 
@@ -117,7 +117,7 @@ void OptionView::OnPaint()
 	m_pGM->EndDraw();
 }
 
-void OptionView::UpdateSymbolInfo()
+void DmFutureView::UpdateSymbolInfo()
 {
 	if (!_Symbol) return;
 
@@ -129,22 +129,22 @@ void OptionView::UpdateSymbolInfo()
 	Invalidate();
 }
 
-void OptionView::UpdateAssetInfo()
+void DmFutureView::UpdateAssetInfo()
 {
 	_Mode == 0 ? UpdateAccountAssetInfo() : UpdateFundAssetInfo();
 }
 
-void OptionView::OnQuoteEvent(const std::string& symbol_code)
+void DmFutureView::OnQuoteEvent(const std::string& symbol_code)
 {
 	_EnableQuoteShow = true;
 }
 
-void OptionView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
+void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
 	_EnableOrderShow = true;
 }
 
-void OptionView::UpdateAccountAssetInfo()
+void DmFutureView::UpdateAccountAssetInfo()
 {
 	if (!_Account) return;
 
@@ -164,7 +164,7 @@ void OptionView::UpdateAccountAssetInfo()
 	if (cell) cell->Text(value);
 }
 
-void OptionView::UpdateFundAssetInfo()
+void DmFutureView::UpdateFundAssetInfo()
 {
 	if (!_Fund) return;
 
@@ -193,7 +193,7 @@ void OptionView::UpdateFundAssetInfo()
 	if (cell) cell->Text(value);
 }
 
-void OptionView::CreateResource()
+void DmFutureView::CreateResource()
 {
 	_Resource.OrderStroke.SetStartCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_ROUND);
 	_Resource.OrderStroke.SetEndCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_TRIANGLE);
@@ -208,7 +208,7 @@ void OptionView::CreateResource()
 	_Resource.TextFormat = fmt3;
 }
 
-void OptionView::InitHeader()
+void DmFutureView::InitHeader()
 {
 	_HeaderTitles.push_back("평가손익");
 	_HeaderTitles.push_back("실현손익");
@@ -218,7 +218,7 @@ void OptionView::InitHeader()
 
 
 
-void OptionView::OnTimer(UINT_PTR nIDEvent)
+void DmFutureView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
 	if (_EnableQuoteShow) {

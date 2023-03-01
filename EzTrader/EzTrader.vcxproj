@@ -529,11 +529,11 @@
     <ClInclude Include="View\FutureCloseView.h" />
     <ClInclude Include="View\FutureExpectedView.h" />
     <ClInclude Include="View\FuturePositionView.h" />
-    <ClInclude Include="View\FutureView.h" />
+    <ClInclude Include="View\DmFutureView.h" />
     <ClInclude Include="View\OptionCloseView.h" />
     <ClInclude Include="View\OptionExpectedView.h" />
     <ClInclude Include="View\OptionPositionView.h" />
-    <ClInclude Include="View\OptionView.h" />
+    <ClInclude Include="View\DmOptionView.h" />
     <ClInclude Include="View\OrderableInfoView.h" />
     <ClInclude Include="View\PriceRangeView.h" />
     <ClInclude Include="View\SellHogaView.h" />
@@ -815,11 +815,11 @@
     <ClCompile Include="View\FutureCloseView.cpp" />
     <ClCompile Include="View\FutureExpectedView.cpp" />
     <ClCompile Include="View\FuturePositionView.cpp" />
-    <ClCompile Include="View\FutureView.cpp" />
+    <ClCompile Include="View\DmFutureView.cpp" />
     <ClCompile Include="View\OptionCloseView.cpp" />
     <ClCompile Include="View\OptionExpectedView.cpp" />
     <ClCompile Include="View\OptionPositionView.cpp" />
-    <ClCompile Include="View\OptionView.cpp" />
+    <ClCompile Include="View\DmOptionView.cpp" />
     <ClCompile Include="View\OrderableInfoView.cpp" />
     <ClCompile Include="View\PriceRangeView.cpp" />
     <ClCompile Include="View\SellHogaView.cpp" />

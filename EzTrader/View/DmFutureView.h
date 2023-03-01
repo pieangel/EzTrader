@@ -14,11 +14,11 @@ namespace DarkHorse {
 	class SmFund;
 }
 
-class FutureView : public CBCGPStatic
+class DmFutureView : public CBCGPStatic
 {
 public:
-	FutureView();
-	~FutureView();
+	DmFutureView();
+	~DmFutureView();
 	void SetUp();
 
 	afx_msg void OnPaint();

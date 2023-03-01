@@ -14,11 +14,11 @@ namespace DarkHorse {
 	class SmFund;
 }
 
-class OptionView : public CBCGPStatic
+class DmOptionView : public CBCGPStatic
 {
 public:
-	OptionView();
-	~OptionView();
+	DmOptionView();
+	~DmOptionView();
 	void SetUp();
 
 	afx_msg void OnPaint();
