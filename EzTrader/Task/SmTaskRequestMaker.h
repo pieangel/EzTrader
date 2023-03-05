@@ -54,7 +54,10 @@ namespace DarkHorse {
 		/// </summary>
 		/// <returns></returns>
 		static std::shared_ptr<SmTaskInfo> MakeAccountAssetRequest();
-		static task_arg MakeAccountAssetRequest(const std::string& account_no, const std::string& pwd);
+		static task_arg MakeAccountAssetRequest(
+			const std::string& account_no, 
+			const std::string& pwd,
+			const std::string& type);
 		/// <summary>
 		/// 계좌별 손익을 요청한다.
 		/// </summary>

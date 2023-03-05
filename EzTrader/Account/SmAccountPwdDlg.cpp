@@ -172,16 +172,22 @@ void SmAccountPwdDlg::OnBnClickedBtnSave()
 		strValue = pRow->GetItem(2)->GetValue();
 		pwd = static_cast<const char*>(strValue);
 		_ReqQ.push_back(std::make_pair(account_no, pwd));
+
+		std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
+		if (!account) continue;
+		account->Pwd(pwd);
 		//task_arg arg = DarkHorse::SmTaskRequestMaker::MakeAccountAssetRequest(account_no, pwd);
 		//mainApp.Client()->CheckAccountPassword(std::move(arg));
 	}
 	
 	//CBCGPDialog::EndDialog(IDOK);
-
+	/*
+	mainApp.AcntMgr()->FindAccount(account_no);
 	auto account_pwd = _ReqQ.front();
 	task_arg arg = DarkHorse::SmTaskRequestMaker::MakeAccountAssetRequest(account_pwd.first, account_pwd.second);
 	mainApp.Client()->CheckAccountPassword(std::move(arg));
 	_ReqQ.pop_front();
+	*/
 
 	SetTimer(1, 700, NULL);
 }
@@ -227,8 +233,15 @@ void SmAccountPwdDlg::OnTimer(UINT_PTR nIDEvent)
 	if (_ReqQ.empty()) { KillTimer(1); }
 	else {
 		auto account_pwd = _ReqQ.front();
-		task_arg arg = DarkHorse::SmTaskRequestMaker::MakeAccountAssetRequest(account_pwd.first, account_pwd.second);
-		mainApp.Client()->CheckAccountPassword(std::move(arg));
+
+		std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_pwd.first);
+		if (!account) return;
+				
+		task_arg arg = DarkHorse::SmTaskRequestMaker::MakeAccountAssetRequest(account_pwd.first, account_pwd.second, account->Type());
+		//if (account->Type() == "1")
+			mainApp.Client()->CheckAccountPassword(std::move(arg));
+		//else if (account->Type() == "9")
+		//	mainApp.Client()->CheckDmAccountPassword(std::move(arg));
 		_ReqQ.pop_front();
 	}
 	CBCGPDialog::OnTimer(nIDEvent);

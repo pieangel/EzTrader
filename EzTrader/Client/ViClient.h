@@ -61,6 +61,7 @@ namespace DarkHorse {
 		int GetDomesticSymbolCode(task_arg&& arg);
 		int GetFilledOrderList(const std::string& account_no, const std::string& pwd);
 		int CheckAccountPassword(task_arg&& arg);
+		int CheckDmAccountPassword(task_arg&& arg);
 		void RemoveTask(const int& task_id);
 		int DownloadFile(task_arg&& arg);
 		int DownloadMasterFile(task_arg&& arg);
@@ -108,6 +109,9 @@ namespace DarkHorse {
 		bool Enable() const { return _Enable; }
 		void Enable(bool val) { _Enable = val; }
 	private:
+		int CheckDmAccountPassword(const std::string& account_no, const std::string& pwd);
+		int CheckAbAccountPassword(const std::string& account_no, const std::string& pwd);
+
 		bool _Enable{ true };
 
 		int _CheckPwdReqId{ -1 };
@@ -139,6 +143,7 @@ namespace DarkHorse {
 		void OnSymbolQuote(const CString& sTrCode, const LONG& nRqID);
 		void OnSymbolHoga(const CString& sTrCode, const LONG& nRqID);
 		void OnAccountAsset(const CString& sTrCode, const LONG& nRqID);
+		void OnDmAccountAsset(const CString& sTrCode, const LONG& nRqID);
 		void OnAccountProfitLoss(const CString& sTrCode, const LONG& nRqID);
 		void OnSymbolProfitLoss(const CString& sTrCode, const LONG& nRqID);
 		void OnAcceptedList(const CString& sTrCode, const LONG& nRqID);

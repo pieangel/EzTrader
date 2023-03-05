@@ -99,3 +99,6 @@ const CString DEF_FX_FID_CODE = "x00001";				// FX마스터
 const CString DEF_FX_ORD_CODE_NEW = "g12003.AO0501%";	// 예약,시장가,청산주문
 const CString DEF_FX_ORD_CODE_MOD = "g12003.AO0502%";	// 정정
 const CString DEF_FX_ORD_CODE_CNL = "g12003.AO0503%";	// 취소주문
+
+// 계좌별 자산
+const CString DefDmAsset = "g11002.DQ0217&";

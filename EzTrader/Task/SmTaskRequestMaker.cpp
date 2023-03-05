@@ -50,13 +50,13 @@ std::shared_ptr<SmTaskInfo> SmTaskRequestMaker::MakeFileDownloadRequest()
 void DarkHorse::SmTaskRequestMaker::MaketInitialBatchTask(std::vector<std::shared_ptr<SmTaskInfo>>& task_list)
 {
 	//task_list.push_back(MakeTaskRequest(SmTaskType::FileDownload));
-	task_list.push_back(MakeTaskRequest(SmTaskType::DomesticSymbolCode));
-	task_list.push_back(MakeTaskRequest(SmTaskType::SymbolMaster));
-	task_list.push_back(MakeTaskRequest(SmTaskType::SymbolQuote));
-	task_list.push_back(MakeTaskRequest(SmTaskType::SymbolHoga));
-	task_list.push_back(MakeTaskRequest(SmTaskType::AccountAsset));
-	task_list.push_back(MakeTaskRequest(SmTaskType::AccountProfitLoss));
-	task_list.push_back(MakeTaskRequest(SmTaskType::SymbolProfitLoss));
+	//task_list.push_back(MakeTaskRequest(SmTaskType::DomesticSymbolCode));
+	//task_list.push_back(MakeTaskRequest(SmTaskType::SymbolMaster));
+	//task_list.push_back(MakeTaskRequest(SmTaskType::SymbolQuote));
+	//task_list.push_back(MakeTaskRequest(SmTaskType::SymbolHoga));
+	//task_list.push_back(MakeTaskRequest(SmTaskType::AccountAsset));
+	//task_list.push_back(MakeTaskRequest(SmTaskType::AccountProfitLoss));
+	//task_list.push_back(MakeTaskRequest(SmTaskType::SymbolProfitLoss));
 	task_list.push_back(MakeTaskRequest(SmTaskType::AcceptedOrderList));
 	//task_list.push_back(MakeTaskRequest(SmTaskType::ChartData));
 }
@@ -246,6 +246,7 @@ std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeAccoun
 		req["task_id"] = task_id;
 		req["account_no"] = account.second->No();
 		req["account_name"] = account.second->Name();
+		req["type"] = account.second->Type();
 		req["password"] = account.second->Pwd();
 		req["requested"] = false;
 		task_info->argMap[task_id] = std::move(req);
@@ -257,7 +258,10 @@ std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeAccoun
 	return task_info;
 }
 
-task_arg DarkHorse::SmTaskRequestMaker::MakeAccountAssetRequest(const std::string& account_no, const std::string& pwd)
+task_arg DarkHorse::SmTaskRequestMaker::MakeAccountAssetRequest(
+	const std::string& account_no, 
+	const std::string& pwd,
+	const std::string& type)
 {
 	const int task_id = SmServerDataReceiver::GetId();
 	task_arg req;
@@ -266,6 +270,7 @@ task_arg DarkHorse::SmTaskRequestMaker::MakeAccountAssetRequest(const std::strin
 	req["account_name"] = "";
 	req["password"] = pwd;
 	req["requested"] = false;
+	req["type"] = type;
 
 	return req;
 }
@@ -283,6 +288,7 @@ std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeAccoun
 		req["task_id"] = task_id;
 		req["account_no"] = account.second->No();
 		req["account_name"] = account.second->Name();
+		req["type"] = account.second->Type();
 		req["password"] = account.second->Pwd();
 		req["requested"] = false;
 		task_info->argMap[task_id] = std::move(req);
@@ -308,6 +314,7 @@ std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeSymbol
 		req["account_no"] = account.second->No();
 		req["account_name"] = account.second->Name();
 		req["password"] = account.second->Pwd();
+		req["type"] = account.second->Type();
 		req["requested"] = false;
 		task_info->argMap[task_id] = std::move(req);
 	}
@@ -332,7 +339,7 @@ std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeAccept
 		req["account_no"] = account.second->No();
 		req["account_name"] = account.second->Name();
 		req["password"] = account.second->Pwd();
-		req["gubun"] = "0";
+		req["type"] = account.second->Type();
 		req["requested"] = false;
 		task_info->argMap[task_id] = std::move(req);
 	}
@@ -357,7 +364,7 @@ std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeFilled
 		req["account_no"] = account.second->No();
 		req["account_name"] = account.second->Name();
 		req["password"] = account.second->Pwd();
-		req["gubun"] = 1;
+		req["type"] = account.second->Type();
 		req["requested"] = false;
 		task_info->argMap[task_id] = std::move(req);
 	}

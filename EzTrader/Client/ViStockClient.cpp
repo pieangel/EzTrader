@@ -265,6 +265,11 @@ int DarkHorse::ViStockClient::CheckAccountPassword(task_arg&& arg)
 	return _ViCtrol->CheckAccountPassword(std::move(arg));
 }
 
+int DarkHorse::ViStockClient::CheckDmAccountPassword(task_arg&& arg)
+{
+	return _ViCtrol->CheckDmAccountPassword(std::move(arg));
+}
+
 void DarkHorse::ViStockClient::Enable(bool val)
 {
 	_ViCtrol->Enable(val);
@@ -394,7 +399,8 @@ void DarkHorse::ViStockClient::OnAccountReceived(nlohmann::json&& arg)
 	try {
 		std::shared_ptr<SmAccount> account = std::make_shared<SmAccount>();
 		const std::string account_type = arg["account_type"];
-		if (account_type.compare("1") == 0) {
+		if (account_type.compare("1") == 0 || 
+			account_type.compare("9") == 0) {
 			account->No(arg["account_no"]);
 			account->Name(arg["account_name"]);
 			account->Type(account_type);
@@ -514,6 +520,22 @@ void DarkHorse::ViStockClient::OnAccountAsset(nlohmann::json&& arg)
 		account->Asset.OpenTrustTotal = arg["open_trust_total"];
 		account->Asset.AdditionalMargin = arg["additional_margin"];
 		account->Asset.OrderMargin = arg["order_margin"];
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+}
+
+
+void DarkHorse::ViStockClient::OnDmAccountAsset(nlohmann::json&& arg)
+{
+	const std::string account_no = arg["account_no"];
+	const auto account = mainApp.AcntMgr()->FindAccount(account_no);
+	if (!account) return;
+
+	try {
+		account->Asset.Balance = arg["balance"];
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();

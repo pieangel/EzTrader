@@ -100,6 +100,9 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 	else if (code == DefAbAsset) {
 		OnAccountAsset(code, req_id);
 	}
+	else if (code == DefDmAsset) {
+		OnDmAccountAsset(code, req_id);
+	}
 	else if (code == DefAbAccountProfitLoss) {
 		OnAccountProfitLoss(code, req_id);
 	}
@@ -294,7 +297,7 @@ int DarkHorse::ViClient::Login(task_arg&& arg)
 	return result;
 }
 
-int DarkHorse::ViClient::CheckAccountPassword(task_arg&& arg)
+int DarkHorse::ViClient::CheckDmAccountPassword(task_arg&& arg)
 {
 	int nRqID = -1;
 	try {
@@ -305,7 +308,7 @@ int DarkHorse::ViClient::CheckAccountPassword(task_arg&& arg)
 		std::string reqString;
 		std::string temp;
 		// 계좌 번호
-		temp = VtStringUtil::PadRight(account_no, ' ', 6);
+		temp = VtStringUtil::PadRight(account_no, ' ', 11);
 		reqString.append(temp);
 		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
@@ -316,7 +319,7 @@ int DarkHorse::ViClient::CheckAccountPassword(task_arg&& arg)
 		const CString sInput = reqString.c_str();
 		//LOG_F(INFO, _T("AbGetAsset code = %s, input = %s"), DEF_Ab_Asset, sInput);
 		const CString strNextKey = _T("");
-		nRqID = m_CommAgent.CommRqData(DefAbAsset, sInput, sInput.GetLength(), strNextKey);
+		nRqID = m_CommAgent.CommRqData(DefDmAsset, sInput, sInput.GetLength(), strNextKey);
 		_ReqMap[nRqID] = arg;
 		_CheckPwdReqId = nRqID;
 	}
@@ -325,6 +328,102 @@ int DarkHorse::ViClient::CheckAccountPassword(task_arg&& arg)
 		LOGINFO(CMyLogger::getInstance(), error = "%s", error.c_str());
 	}
 
+	return nRqID;
+}
+
+int DarkHorse::ViClient::CheckAccountPassword(task_arg&& arg)
+{
+	int nRqID = -1;
+	try {
+		const std::string account_no = std::any_cast<std::string>(arg["account_no"]);
+		const std::string password = std::any_cast<std::string>(arg["password"]);
+		const std::string type = std::any_cast<std::string>(arg["type"]);
+
+		std::string reqString;
+		std::string temp;
+
+		if (type == "1") {
+			// 계좌 번호
+			temp = VtStringUtil::PadRight(account_no, ' ', 6);
+			reqString.append(temp);
+			// 비밀번호
+			temp = VtStringUtil::PadRight(password, ' ', 8);
+			reqString.append(temp);
+
+			const CString sInput = reqString.c_str();
+			//LOG_F(INFO, _T("AbGetAsset code = %s, input = %s"), DEF_Ab_Asset, sInput);
+			const CString strNextKey = _T("");
+
+			nRqID = m_CommAgent.CommRqData(DefAbAsset, sInput, sInput.GetLength(), strNextKey);
+			_ReqMap[nRqID] = arg;
+			_CheckPwdReqId = nRqID;
+		}
+		else if (type == "9") {
+			// 계좌 번호
+			temp = VtStringUtil::PadRight(account_no, ' ', 11);
+			reqString.append(temp);
+			// 비밀번호
+			temp = VtStringUtil::PadRight(password, ' ', 8);
+			reqString.append(temp);
+
+
+
+			const CString sInput = reqString.c_str();
+			//LOG_F(INFO, _T("AbGetAsset code = %s, input = %s"), DEF_Ab_Asset, sInput);
+			const CString strNextKey = _T("");
+			nRqID = m_CommAgent.CommRqData(DefDmAsset, sInput, sInput.GetLength(), strNextKey);
+			_ReqMap[nRqID] = arg;
+			_CheckPwdReqId = nRqID;
+		}
+	}
+	catch (const std::exception& e) {
+		std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), error = "%s", error.c_str());
+	}
+
+	return nRqID;
+}
+
+int DarkHorse::ViClient::CheckDmAccountPassword(const std::string& account_no, const std::string& password)
+{
+	std::string reqString;
+	std::string temp;
+	// 계좌 번호
+	temp = VtStringUtil::PadRight(account_no, ' ', 11);
+	reqString.append(temp);
+	// 비밀번호
+	temp = VtStringUtil::PadRight(password, ' ', 8);
+	reqString.append(temp);
+
+
+
+	const CString sInput = reqString.c_str();
+	//LOG_F(INFO, _T("AbGetAsset code = %s, input = %s"), DEF_Ab_Asset, sInput);
+	const CString strNextKey = _T("");
+	int nRqID = m_CommAgent.CommRqData(DefDmAsset, sInput, sInput.GetLength(), strNextKey);
+	//_ReqMap[nRqID] = arg;
+	_CheckPwdReqId = nRqID;
+	return nRqID;
+}
+int DarkHorse::ViClient::CheckAbAccountPassword(const std::string& account_no, const std::string& password)
+{
+	std::string reqString;
+	std::string temp;
+	// 계좌 번호
+	temp = VtStringUtil::PadRight(account_no, ' ', 6);
+	reqString.append(temp);
+	// 비밀번호
+	temp = VtStringUtil::PadRight(password, ' ', 8);
+	reqString.append(temp);
+
+
+
+	const CString sInput = reqString.c_str();
+	//LOG_F(INFO, _T("AbGetAsset code = %s, input = %s"), DEF_Ab_Asset, sInput);
+	const CString strNextKey = _T("");
+	int nRqID = m_CommAgent.CommRqData(DefAbAsset, sInput, sInput.GetLength(), strNextKey);
+	//_ReqMap[nRqID] = arg;
+	_CheckPwdReqId = nRqID;
 	return nRqID;
 }
 
@@ -2553,6 +2652,46 @@ void DarkHorse::ViClient::OnAccountAsset(const CString& sTrCode, const LONG& nRq
 
 	OnTaskComplete(nRqID);
 }
+
+void DarkHorse::ViClient::OnDmAccountAsset(const CString& sTrCode, const LONG& nRqID)
+{
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+	for (int i = 0; i < nRepeatCnt; i++)
+	{
+		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "예탁총액");
+		strEntrustTotal.Trim();
+		if (strEntrustTotal.Compare("0") == 0) {
+			continue;
+		}
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "계좌번호");
+		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문증거금");
+		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "위탁증거금");
+		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "장중선물옵션수수료");
+		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "평가손익");
+		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "평가예탁총액");
+		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문가능금액");
+
+		
+
+		CString msg;
+		nlohmann::json account_asset;
+		account_asset["account_no"] = std::string(strAccountNo.Trim());
+		account_asset["entrust_total"] = _ttof(strEntrustTotal.Trim());
+		account_asset["order_deposit"] = _ttof(strOrderMargin.Trim());
+		account_asset["entrust_deposit"] = _ttof(strEntrustMargin.Trim());
+		account_asset["fee"] = _ttof(strFee.Trim());
+		account_asset["open_profit_loss"] = _ttof(strOpenProfitLoss.Trim());
+		account_asset["open_trust_total"] = _ttof(strOpenTrustTotal.Trim());
+		account_asset["order_margin"] = _ttof(strOrderableAmount.Trim());
+
+		if (auto wp = _Client.lock()) {
+			wp->OnDmAccountAsset(std::move(account_asset));
+		}
+	}
+
+	OnTaskComplete(nRqID);
+}
+
 
 void DarkHorse::ViClient::OnAccountProfitLoss(const CString& sTrCode, const LONG& nRqID)
 {

@@ -38,6 +38,7 @@ namespace DarkHorse {
 		void OnRealtimeHoga(nlohmann::json&& arg);
 
 		void OnAccountAsset(nlohmann::json&& arg);
+		void OnDmAccountAsset(nlohmann::json&& arg);
 		void OnAccountProfitLoss(nlohmann::json&& arg);
 		void OnSymbolProfitLoss(nlohmann::json&& arg);
 		void OnAcceptedList(nlohmann::json&& arg);
@@ -70,6 +71,7 @@ namespace DarkHorse {
 		int GetSymbolQuote(task_arg&& arg) ;
 		int GetSymbolHoga(task_arg&& arg) ;
 		int CheckAccountPassword(task_arg&& arg);
+		int CheckDmAccountPassword(task_arg&& arg);
 		bool Enable() const { return _Enable; }
 		void Enable(bool val);
 		void UnRegAll();
