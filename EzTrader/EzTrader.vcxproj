@@ -504,11 +504,13 @@
     <ClInclude Include="ViewModel\FutureCloseControl.h" />
     <ClInclude Include="ViewModel\FutureExpectedControl.h" />
     <ClInclude Include="ViewModel\FuturePositionControl.h" />
+    <ClInclude Include="ViewModel\HogaControl.h" />
     <ClInclude Include="ViewModel\OptionCloseControl.h" />
     <ClInclude Include="ViewModel\OptionExpectedControl.h" />
     <ClInclude Include="ViewModel\OptionPositionControl.h" />
     <ClInclude Include="ViewModel\OrderableInfoControl.h" />
     <ClInclude Include="ViewModel\PriceRangeControl.h" />
+    <ClInclude Include="ViewModel\QuoteControl.h" />
     <ClInclude Include="ViewModel\SellHogaControl.h" />
     <ClInclude Include="ViewModel\SellOrderControl.h" />
     <ClInclude Include="ViewModel\SellStopOrderControl.h" />
@@ -790,11 +792,13 @@
     <ClCompile Include="ViewModel\FutureCloseControl.cpp" />
     <ClCompile Include="ViewModel\FutureExpectedControl.cpp" />
     <ClCompile Include="ViewModel\FuturePositionControl.cpp" />
+    <ClCompile Include="ViewModel\HogaControl.cpp" />
     <ClCompile Include="ViewModel\OptionCloseControl.cpp" />
     <ClCompile Include="ViewModel\OptionExpectedControl.cpp" />
     <ClCompile Include="ViewModel\OptionPositionControl.cpp" />
     <ClCompile Include="ViewModel\OrderableInfoControl.cpp" />
     <ClCompile Include="ViewModel\PriceRangeControl.cpp" />
+    <ClCompile Include="ViewModel\QuoteControl.cpp" />
     <ClCompile Include="ViewModel\SellHogaControl.cpp" />
     <ClCompile Include="ViewModel\SellOrderControl.cpp" />
     <ClCompile Include="ViewModel\SellStopOrderControl.cpp" />

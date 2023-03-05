@@ -11,6 +11,9 @@
 #include "../../Global/SmTotalManager.h"
 #include "../../Symbol/SmSymbolManager.h"
 #include "../../Symbol/SmSymbol.h"
+#include "../../Symbol/SmProduct.h"
+#include "../../Symbol/SmProductYearMonth.h"
+#include "../../Symbol/DomesticMarketDefine.h"
 #include "BCGPGridCtrl.h"
 #include <format>
 #include "../../Log/MyLogger.h"
@@ -32,6 +35,7 @@
 #include "../../Client/ViStockClient.h"
 #include "../../Order/SmOrderRequestManager.h"
 #include "../SmOrderSetDialog.h"
+#include "../../Global/SmTotalManager.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -209,6 +213,18 @@ void DmAccountOrderCenterWindow::CreateResource()
 
 }
 
+void DmAccountOrderCenterWindow::init_dm_symbol()
+{
+	const std::vector<DarkHorse::DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
+	for (size_t i = 0; i < future_vec.size(); i++) {
+		std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
+		if (year_month_map.size() == 0) continue;
+		std::shared_ptr<DarkHorse::SmSymbol> symbol = year_month_map.begin()->second->get_first_symbol();
+		if (!symbol) continue;
+		SetSymbolInfo(symbol);
+	}
+}
+
 BOOL DmAccountOrderCenterWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
@@ -289,6 +305,8 @@ BOOL DmAccountOrderCenterWindow::OnInitDialog()
 	_RemainButton.SetUp();
 	_RemainButton.Text("¿‹∞Ì");
 	//_RemainButton.OrderCenterWnd(this);
+
+	init_dm_symbol();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

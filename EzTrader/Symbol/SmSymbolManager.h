@@ -41,6 +41,8 @@ namespace DarkHorse {
 	private:
 		void InitDomesticProducts();
 		void add_to_yearmonth(std::shared_ptr<SmSymbol> symbol);
+		void set_product_info(std::shared_ptr<SmSymbol> symbol);
+		void set_quote_preday_close(std::shared_ptr<SmSymbol> symbol, const std::string& pre_day_str);
 	public:
 		const std::vector<DmFuture>& get_dm_future_vec()
 		{
@@ -53,8 +55,10 @@ namespace DarkHorse {
 		const std::vector<std::string> GetDomesticProductVec() {
 			return _DomesticProductVec;
 		}
+		std::shared_ptr<SmMarket> get_dm_market_by_product_code(const std::string& product_code);
 		void sort_dm_option_symbol_vector();
 		void read_domestic_masterfile();
+		void read_domestic_productfile();
 		void AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code);
 		void MakeFavorite();
 		void InitFavoriteProduct();
@@ -77,6 +81,7 @@ namespace DarkHorse {
 		std::shared_ptr<SmProduct> FindProduct(const std::string& product_code);
 		std::shared_ptr<SmMarket> AddMarket(const std::string& market_name);
 		std::shared_ptr<SmMarket> FindMarket(const std::string& market_name);
+		std::shared_ptr<SmMarket> get_market(const std::string& market_name);
 		void ReadAbroadSymbols() const noexcept;
 		void MakeDomesticMarket();
 		void RegisterSymbolToServer(const std::string& symbol_code, const bool& reg);

@@ -12,6 +12,8 @@
 #include "../Log/MyLogger.h"
 #include "../Util/VtStringUtil.h"
 #include "SmProductYearMonth.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Quote/SmQuote.h"
 namespace DarkHorse {
 int SmSymbolManager::_Id = 0;
 
@@ -19,11 +21,9 @@ std::shared_ptr<SmMarket> SmSymbolManager::AddMarket(const std::string& market_n
 {
 	const auto found = _MarketMap.find(market_name);
 	if (found != _MarketMap.end()) return found->second;
-	else {
-		auto market = std::make_shared<SmMarket>(market_name);
-		_MarketMap[market_name] = market;
-		return market;
-	}
+	auto market = std::make_shared<SmMarket>(market_name);
+	_MarketMap[market_name] = market;
+	return market;
 }
 
 SmSymbolManager::SmSymbolManager()
@@ -208,6 +208,72 @@ void SmSymbolManager::sort_dm_option_symbol_vector()
 	}
 }
 
+std::shared_ptr<SmMarket> SmSymbolManager::get_dm_market_by_product_code(const std::string& product_code)
+{
+	if (product_code.empty()) return nullptr;
+	if (product_code.substr(0, 1) == "1") {
+		return get_market(DmFutureMarketName);
+	}
+	else if (product_code.substr(0, 1) == "2" ||
+		product_code.substr(0, 1) == "3") {
+		return get_market(DmOptionMarketName);
+	}
+	return nullptr;
+}
+
+void SmSymbolManager::read_domestic_productfile()
+{
+	try {
+		std::string file_path;
+		file_path = SmConfigManager::GetApplicationPath();
+		file_path.append(_T("\\"));
+		file_path.append(_T("mst"));
+		file_path.append(_T("\\"));
+		std::string file_name = "dm_product.cod";
+		//TRACE(file_name.c_str());
+		std::string full_name = file_path + file_name;
+		std::ifstream infile(full_name);
+		std::string line;
+		std::string value;
+		while (std::getline(infile, line)) {
+			std::istringstream iss(line);
+			int index = 0;
+			std::string temp;
+			temp = line.substr(index, 8);
+			VtStringUtil::rtrim(temp);
+			auto market = mainApp.SymMgr()->get_dm_market_by_product_code(temp);
+			if (!market) continue;
+			std::shared_ptr<SmProduct> product = market->AddProduct(temp);
+			if (!product) continue;
+			index = index + 8;
+			temp = line.substr(index, 2);
+			product->decimal(std::stoi(temp));
+			index = index + 2;
+			temp = line.substr(index, 5);
+			VtStringUtil::ltrim(temp);
+			product->tick_size(temp);
+			temp.erase(std::remove(temp.begin(), temp.end(), '.'), temp.end());
+			product->int_tick_size(std::stoi(temp));
+			index = index + 5;
+			temp = line.substr(index, 5);
+			product->tick_value(std::stoi(temp));
+			index = index + 5;
+			temp = line.substr(index, 10);
+			VtStringUtil::ltrim(temp);
+			product->seung_su(std::stoi(temp));
+			index = index + 10;
+			temp = line.substr(index, 30);
+			VtStringUtil::ltrim(temp);
+			product->ProductNameEn(temp);
+		}
+
+		LOGINFO(CMyLogger::getInstance(), "read %s file complete!", full_name.c_str());
+	}
+	catch (std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error : %s", error.c_str());
+	}
+}
 void SmSymbolManager::read_domestic_masterfile()
 {
 	try {
@@ -221,19 +287,19 @@ void SmSymbolManager::read_domestic_masterfile()
 		std::string full_name = file_path + file_name;
 		std::ifstream infile(full_name);
 		std::string line;
-		int index = 0;
 		std::string value;
 		while (std::getline(infile, line)) {
 			std::istringstream iss(line);
-
-			value = line.substr(index, 9); index += 9;
+			int index = 0;
+			value = line.substr(index + 1, 9); index += 9;
 			VtStringUtil::trim(value);
 			std::string symbol_code = value;
 			std::shared_ptr<SmSymbol> symbol = std::make_shared<SmSymbol>(std::move(symbol_code));
 			symbol->SymbolCode(value);
 			const std::string market_name = value.substr(1, 1).at(0) == '1' ? DmFutureMarketName : DmOptionMarketName;
 			symbol->MarketName(market_name);
-			symbol->ProductCode(value.substr(1, 3));
+			const std::string product_code = value.substr(1, 3);
+			symbol->ProductCode(product_code);
 			value = line.substr(index, 12); index += 12;
 			VtStringUtil::trim(value);
 			symbol->FullCode(value);
@@ -260,6 +326,7 @@ void SmSymbolManager::read_domestic_masterfile()
 			symbol->PreDayClose(value);
 			value = line.substr(index, 12); index += 12;
 			VtStringUtil::trim(value);
+			std::string pre_day_close = value;
 			symbol->StandardPrice(value);
 			value = line.substr(index, 17); index += 17;
 			VtStringUtil::trim(value);
@@ -272,8 +339,9 @@ void SmSymbolManager::read_domestic_masterfile()
 			symbol->RecentMonth(_ttoi(value.c_str()));
 			value = line.substr(index, 8);
 			symbol->ExpireDate(value);
+			set_product_info(symbol);
+			set_quote_preday_close(symbol, pre_day_close);
 			AddSymbol(symbol);
-			index = 0;
 			LOGINFO(CMyLogger::getInstance(), "read symbol %s complete!", symbol->SymbolCode().c_str());
 			add_to_yearmonth(symbol);
 		}
@@ -284,6 +352,22 @@ void SmSymbolManager::read_domestic_masterfile()
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error : %s", error.c_str());
 	}
+}
+
+void SmSymbolManager::set_product_info(std::shared_ptr<SmSymbol> symbol)
+{
+	if (!symbol) return;
+	auto product = find_product(symbol->MarketName(), symbol->ProductCode());
+	if (!product) return;
+	symbol->Decimal(product->decimal());
+	symbol->SeungSu(product->seung_su());
+}
+
+void SmSymbolManager::set_quote_preday_close(std::shared_ptr<SmSymbol> symbol, const std::string& pre_day_str)
+{
+	if (!symbol || pre_day_str.empty()) return;
+	auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
+	quote->preclose = _ttoi(pre_day_str.c_str());
 }
 
 void SmSymbolManager::AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code)
@@ -433,6 +517,13 @@ std::shared_ptr<SmProduct> SmSymbolManager::FindProduct(const std::string& produ
 	}
 
 	return nullptr;
+}
+
+std::shared_ptr<SmMarket> SmSymbolManager::get_market(const std::string& market_name)
+{
+	auto market = FindMarket(market_name);
+	if (market) return market;
+	return AddMarket(market_name);
 }
 
 std::shared_ptr<SmMarket> SmSymbolManager::FindMarket(const std::string& market_name)

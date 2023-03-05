@@ -86,6 +86,7 @@ public:
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
 private:
+	void init_dm_symbol();
 	void SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	bool _Selected = false;
 	void UpdateOrderSettings();

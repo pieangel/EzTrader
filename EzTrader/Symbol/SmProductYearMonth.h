@@ -16,6 +16,14 @@ namespace DarkHorse {
 		{
 			return _SymbolVec;
 		}
+		const std::shared_ptr<DarkHorse::SmSymbol> get_first_symbol() {
+			if (_SymbolVec.size() == 0) return nullptr;
+			else return _SymbolVec[0];
+		}
+		const std::shared_ptr<DarkHorse::SmSymbol> get_second_symbol() {
+			if (_SymbolVec.size() <= 1) return nullptr;
+			else return _SymbolVec[1];
+		}
 		const std::string& get_name() {
 			return _Name;
 		}

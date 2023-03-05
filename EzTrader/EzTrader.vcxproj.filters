@@ -799,6 +799,12 @@
     <ClCompile Include="View\DmOptionView.cpp">
       <Filter>View</Filter>
     </ClCompile>
+    <ClCompile Include="ViewModel\HogaControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewModel\QuoteControl.cpp">
+      <Filter>ViewModel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1796,6 +1802,12 @@
     </ClInclude>
     <ClInclude Include="Symbol\DomesticMarketDefine.h">
       <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\HogaControl.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\QuoteControl.h">
+      <Filter>ViewModel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

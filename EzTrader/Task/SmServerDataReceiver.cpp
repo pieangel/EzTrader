@@ -211,6 +211,7 @@ void DarkHorse::SmServerDataReceiver::DoPostTask(const std::shared_ptr<SmTaskInf
 	{
 		mainApp.SymMgr()->MakeDomesticMarket();
 		mainApp.SymMgr()->ReadAbroadSymbols();
+		mainApp.SymMgr()->read_domestic_productfile();
 		mainApp.SymMgr()->read_domestic_masterfile();
 		mainApp.SymMgr()->sort_dm_option_symbol_vector();
 		//((CMainFrame*)AfxGetMainWnd())->SetMarketTree();

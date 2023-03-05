@@ -23,6 +23,25 @@ void SmHogaManager::StartProcess() noexcept
 	start();
 }
 
+std::shared_ptr<SmHoga> SmHogaManager::add_hoga(const std::string& symbol_code)
+{
+	std::shared_ptr<SmHoga> hoga_ptr = std::make_shared<SmHoga>();
+	hoga_map_[symbol_code] = hoga_ptr;
+	return hoga_ptr;
+}
+std::shared_ptr<SmHoga> SmHogaManager::find_hoga(const std::string& symbol_code)
+{
+	auto found = hoga_map_.find(symbol_code);
+	if (found != hoga_map_.end()) return found->second;
+	return nullptr;
+}
+std::shared_ptr<SmHoga> SmHogaManager::get_hoga(const std::string& symbol_code)
+{
+	auto hoga_ptr = find_hoga(symbol_code);
+	if (hoga_ptr) return hoga_ptr;
+	return add_hoga(symbol_code);
+}
+
 void SmHogaManager::StopProcess() noexcept
 {
 	if (!m_runMode) return;

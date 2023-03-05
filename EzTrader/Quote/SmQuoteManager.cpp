@@ -5,6 +5,7 @@
 #include "../Symbol/SmSymbol.h"
 #include "../Global/SmTotalManager.h"
 #include "../Log/MyLogger.h"
+#include "SmQuote.h"
 
 using namespace DarkHorse;
 
@@ -16,6 +17,25 @@ SmQuoteManager::SmQuoteManager()
 SmQuoteManager::~SmQuoteManager()
 {
 	StopProcess();
+}
+
+std::shared_ptr<SmQuote> SmQuoteManager::add_quote(const std::string& symbol_code)
+{
+	std::shared_ptr<SmQuote> quote_ptr = std::make_shared<SmQuote>();
+	quote_map_[symbol_code] = quote_ptr;
+	return quote_ptr;
+}
+std::shared_ptr<SmQuote> SmQuoteManager::find_quote(const std::string& symbol_code)
+{
+	auto found = quote_map_.find(symbol_code);
+	if (found != quote_map_.end()) return found->second;
+	return nullptr;
+}
+std::shared_ptr<SmQuote> SmQuoteManager::get_quote(const std::string& symbol_code)
+{
+	auto quote_ptr = find_quote(symbol_code);
+	if (quote_ptr) return quote_ptr;
+	return add_quote(symbol_code);
 }
 
 void SmQuoteManager::StartProcess() noexcept
