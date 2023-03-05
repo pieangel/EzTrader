@@ -17,6 +17,9 @@ namespace DarkHorse {
 		int WindowId = -1;
 		int SeriesIndex = 0;
 	};
+	struct DmSymbolMasterReq {
+		std::string symbol_code;
+	};
 	struct SmTaskArg {
 		SmTaskType TaskType = SmTaskType::None;
 		std::any Param;

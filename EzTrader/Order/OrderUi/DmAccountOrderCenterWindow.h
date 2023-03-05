@@ -119,6 +119,7 @@ private:
 	bool _ShowQuoteArea = true;
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
 	void SetInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void request_dm_symbol_master(const std::string symbol_code);
 
 	SmFilledRemainButton _FilledRemainButton;
 	SmRemainButton _RemainButton;

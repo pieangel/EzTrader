@@ -9,6 +9,7 @@ namespace DarkHorse {
 		Market, // 시장 정보
 		SymbolCode, // 종목 코드
 		SymbolMaster, // 종목 정보
+		DmSymbolMaster, // 국내 종목 정보
 		AccountAsset, // 자산 정보
 		AccountProfitLoss, // 계좌 손익
 		SymbolProfitLoss, // 종목 손익

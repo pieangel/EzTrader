@@ -52,7 +52,7 @@ void DarkHorse::SmTaskRequestMaker::MaketInitialBatchTask(std::vector<std::share
 	//task_list.push_back(MakeTaskRequest(SmTaskType::FileDownload));
 	//task_list.push_back(MakeTaskRequest(SmTaskType::DomesticSymbolCode));
 	//task_list.push_back(MakeTaskRequest(SmTaskType::SymbolMaster));
-	//task_list.push_back(MakeTaskRequest(SmTaskType::SymbolQuote));
+	task_list.push_back(MakeTaskRequest(SmTaskType::SymbolQuote));
 	//task_list.push_back(MakeTaskRequest(SmTaskType::SymbolHoga));
 	//task_list.push_back(MakeTaskRequest(SmTaskType::AccountAsset));
 	//task_list.push_back(MakeTaskRequest(SmTaskType::AccountProfitLoss));

@@ -91,6 +91,9 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 	else if (code == DefAbSymbolMaster) {
 		OnSymbolMaster(code, req_id);
 	}
+	else if (code == DefSymbolMaster) {
+		OnDmSymbolMaster(code, req_id);
+	}
 	else if (code == DefAbSymbolSise) {
 		OnSymbolQuote(code, req_id);
 	}
@@ -896,7 +899,27 @@ int DarkHorse::ViClient::GetChartData(task_arg&& arg)
 
 	return -1;
 }
+int ViClient::GetDmSymbolMaster(SmTaskArg&& arg)
+{
+	if (arg.TaskType != SmTaskType::DmSymbolMaster) return -1;
+	try {
+		auto req = std::any_cast<DarkHorse::DmSymbolMasterReq>(arg.Param);
 
+		CString sInput;
+		sInput = req.symbol_code.c_str();
+		sInput.Append(_T("40001"));
+		CString sReqFidInput = _T("000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061062063064065066067068069070071072073074075076077078079080081082083084085086087088089090091092093094095096097098099100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190191192193194195196197198199200201202203204205206207208209210211212213214215216217218219220221222223224225226227228229230231232");
+		CString strNextKey = _T("");
+		int nRqID = m_CommAgent.CommFIDRqData(DefSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+		return -1;
+	}
+	return 1;
+}
 int DarkHorse::ViClient::GetChartData(SmTaskArg&& arg)
 {
 	if (arg.TaskType != SmTaskType::ChartData) return -1;
@@ -2341,6 +2364,137 @@ void DarkHorse::ViClient::OnAccountListReceived(const CString& sTrCode, const LO
 	}
 
 	OnTaskComplete(nRqID);
+}
+
+void DarkHorse::ViClient::OnDmSymbolMaster(const CString& sTrCode, const LONG& nRqID)
+{
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "단축코드");
+	CString	strFullCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
+	CString	strSymbolNameKr = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "한글종목명");
+	CString strDeltaDay = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비");
+	CString strUpdownRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "등락률");
+
+	CString	strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "체결시간");
+	CString	strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "현재가");
+	CString	strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "시가");
+	CString	strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "고가");
+	CString	strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "저가");
+	CString strPreClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일종가");
+	CString strPreHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일고가");
+	CString strPreLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일저가");
+
+	nlohmann::json quote;
+
+	quote["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	quote["symbol_name_kr"] = static_cast<const char*>(strSymbolNameKr.Trim());
+	quote["delta_day"] = static_cast<const char*>(strDeltaDay.Trim());
+	//quote["delta_day_sign"] = static_cast<const char*>(strDeltaDaySign.Trim());
+	quote["updown_rate"] = static_cast<const char*>(strUpdownRate.Trim());
+	quote["time"] = static_cast<const char*>(strFilledTime.Trim());
+	quote["close"] = (_ttoi(strClose.Trim()));
+	quote["open"] = (_ttoi(strOpen.Trim()));
+	quote["high"] = (_ttoi(strHigh.Trim()));
+	quote["low"] = (_ttoi(strLow.Trim()));
+	quote["pre_day_close"] = (_ttoi(strPreClose.Trim()));
+	quote["cumulative_amount"] = 0;
+	quote["volume"] = 0;
+	quote["up_down"] = 1;
+	quote["preday_volume"] = 0;
+
+	if (auto wp = _Client.lock()) {
+		wp->OnDmSymbolQuote(std::move(quote));
+	}
+
+	CString	strHogaTime   = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "호가수신시간");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가1");
+	CString	strBuyPrice1  = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가1");
+	CString	strSellQty1   = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가수량1");
+	CString	strBuyQty1    = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가수량1");
+	CString	strSellCnt1   = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수1");
+	CString	strBuyCnt1    = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수1");
+
+	CString	strSellPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가수량2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가수량2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수2");
+
+	CString	strSellPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가수량3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가수량3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수3");
+
+	CString	strSellPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가수량4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가수량4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수4");
+
+	CString	strSellPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가수량5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가수량5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수5");
+
+	CString	strTotSellQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가총수량");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가총수량");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가총건수");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가총건수");
+
+	
+
+	nlohmann::json hoga;
+	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	hoga["hoga_time"] = static_cast<const char*>(strHogaTime.Trim());
+	hoga["tot_buy_qty"] = _ttoi(strTotBuyQty.Trim());
+	hoga["tot_sell_qty"] = _ttoi(strTotSellQty.Trim());
+	hoga["tot_buy_cnt"] = _ttoi(strTotBuyCnt.Trim());
+	hoga["tot_sell_cnt"] = _ttoi(strTotSellCnt.Trim());
+
+	hoga["hoga_items"][0]["sell_price"] = _ttoi(strSellPrice1.Trim());
+	hoga["hoga_items"][0]["buy_price"] = _ttoi(strBuyPrice1.Trim());
+	hoga["hoga_items"][0]["sell_qty"] = _ttoi(strSellQty1.Trim());
+	hoga["hoga_items"][0]["buy_qty"] = _ttoi(strBuyQty1.Trim());
+	hoga["hoga_items"][0]["sell_cnt"] = _ttoi(strSellCnt1.Trim());
+	hoga["hoga_items"][0]["buy_cnt"] = _ttoi(strBuyCnt1.Trim());
+
+	hoga["hoga_items"][1]["sell_price"] = _ttoi(strSellPrice2.Trim());
+	hoga["hoga_items"][1]["buy_price"] = _ttoi(strBuyPrice2.Trim());
+	hoga["hoga_items"][1]["sell_qty"] = _ttoi(strSellQty2.Trim());
+	hoga["hoga_items"][1]["buy_qty"] = _ttoi(strBuyQty2.Trim());
+	hoga["hoga_items"][1]["sell_cnt"] = _ttoi(strSellCnt2.Trim());
+	hoga["hoga_items"][1]["buy_cnt"] = _ttoi(strBuyCnt2.Trim());
+
+	hoga["hoga_items"][2]["sell_price"] = _ttoi(strSellPrice3.Trim());
+	hoga["hoga_items"][2]["buy_price"] = _ttoi(strBuyPrice3.Trim());
+	hoga["hoga_items"][2]["sell_qty"] = _ttoi(strSellQty3.Trim());
+	hoga["hoga_items"][2]["buy_qty"] = _ttoi(strBuyQty3.Trim());
+	hoga["hoga_items"][2]["sell_cnt"] = _ttoi(strSellCnt3.Trim());
+	hoga["hoga_items"][2]["buy_cnt"] = _ttoi(strBuyCnt3.Trim());
+
+	hoga["hoga_items"][3]["sell_price"] = _ttoi(strSellPrice4.Trim());
+	hoga["hoga_items"][3]["buy_price"] = _ttoi(strBuyPrice4.Trim());
+	hoga["hoga_items"][3]["sell_qty"] = _ttoi(strSellQty4.Trim());
+	hoga["hoga_items"][3]["buy_qty"] = _ttoi(strBuyQty4.Trim());
+	hoga["hoga_items"][3]["sell_cnt"] = _ttoi(strSellCnt4.Trim());
+	hoga["hoga_items"][3]["buy_cnt"] = _ttoi(strBuyCnt4.Trim());
+
+	hoga["hoga_items"][4]["sell_price"] = _ttoi(strSellPrice5.Trim());
+	hoga["hoga_items"][4]["buy_price"] = _ttoi(strBuyPrice5.Trim());
+	hoga["hoga_items"][4]["sell_qty"] = _ttoi(strSellQty5.Trim());
+	hoga["hoga_items"][4]["buy_qty"] = _ttoi(strBuyQty5.Trim());
+	hoga["hoga_items"][4]["sell_cnt"] = _ttoi(strSellCnt5.Trim());
+	hoga["hoga_items"][4]["buy_cnt"] = _ttoi(strBuyCnt5.Trim());
+
+	if (auto wp = _Client.lock()) {
+		wp->OnDmSymbolHoga(std::move(hoga));
+	}
 }
 
 void DarkHorse::ViClient::OnSymbolMaster(const CString& sTrCode, const LONG& nRqID)

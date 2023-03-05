@@ -36,6 +36,8 @@
 #include "../../Order/SmOrderRequestManager.h"
 #include "../SmOrderSetDialog.h"
 #include "../../Global/SmTotalManager.h"
+#include "../../Task/SmTaskArg.h"
+#include "../../Task/SmTaskRequestManager.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -466,6 +468,17 @@ void DmAccountOrderCenterWindow::SetInfo(std::shared_ptr<DarkHorse::SmSymbol> sy
 	_QuoteArea.Symbol(symbol);
 	//_OrderArea.UpdateOrder(_Symbol->SymbolCode());
 	//_OrderArea.Refresh();
+	request_dm_symbol_master(symbol->SymbolCode());
+}
+
+void DmAccountOrderCenterWindow::request_dm_symbol_master(const std::string symbol_code)
+{
+	DmSymbolMasterReq req;
+	req.symbol_code = symbol_code;
+	SmTaskArg arg;
+	arg.TaskType = SmTaskType::DmSymbolMaster;
+	arg.Param = req;
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
 void DmAccountOrderCenterWindow::SetRowWide()

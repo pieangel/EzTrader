@@ -966,13 +966,13 @@ void SmFundOrderArea::ResetHeaderWidth(const int& wnd_width)
 
 void SmFundOrderArea::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbol, const bool& make_row_map)
 {
-	if (!symbol) return;
+	if (!_Symbol) return;
 
 	if (_SettingCenterValue) return;
 	_SettingCenterValue = true;
 
-	const int& close = symbol->Qoute.close;
-	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
+	const int& close = _Symbol->Qoute.close;
+	const int int_tick_size = static_cast<int>(_Symbol->TickSize() * pow(10, _Symbol->Decimal()));
 	const int start_value = close + (_CloseRow - _ValueStartRow) * int_tick_size;
 	try {
 		if (make_row_map) {
@@ -987,15 +987,15 @@ void SmFundOrderArea::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbo
 			//ss << value;
 			//value_string = ss.str();
 			value_string = std::format("{0}", value);
-			if (symbol->Decimal() > 0)
-				value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+			if (_Symbol->Decimal() > 0)
+				value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
 			_Grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, value_string);
 
 			_QuoteToRowIndexMap[value] = i;
 			_RowIndexToPriceMap[i] = value;
 			value -= int_tick_size;
 		}
-		SetQuoteColor(symbol);
+		SetQuoteColor(_Symbol);
 		_CenterValued = true;
 	}
 	catch (const std::exception& e) {

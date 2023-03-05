@@ -76,6 +76,7 @@ namespace DarkHorse {
 		int GetFilledOrderList(task_arg&& arg) ;
 		int GetChartData(task_arg&& arg) ;
 		int GetChartData(SmTaskArg&& arg);
+		int GetDmSymbolMaster(SmTaskArg&& arg);
 		void NewOrder(task_arg&& arg) ;
 		void ChangeOrder(task_arg&& arg) ;
 		void CancelOrder(task_arg&& arg) ;
@@ -139,6 +140,7 @@ namespace DarkHorse {
 		void OnDomesticSymbolCode(const CString& sTrCode, const LONG& nRqID);
 		void OnAccountListReceived(const CString& sTrCode, const LONG& nRqID) ;
 		void OnSymbolMaster(const CString& sTrCode, const LONG& nRqID);
+		void OnDmSymbolMaster(const CString& sTrCode, const LONG& nRqID);
 		void OnMasterFile(const CString& sTrCode, const LONG& nRqID);
 		void OnSymbolQuote(const CString& sTrCode, const LONG& nRqID);
 		void OnSymbolHoga(const CString& sTrCode, const LONG& nRqID);

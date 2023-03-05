@@ -28,6 +28,12 @@
 #include "../Util/SmNumberFunc.h"
 #include "../Event/SmCallbackManager.h"
 #include "../Order/SmOrderRequest.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Quote/SmQuote.h"
+#include "../Hoga/SmHoga.h"
+#include "../Hoga/SmHogaManager.h"
+#include "../ViewModel/QuoteControl.h"
+#include "../ViewModel/HogaControl.h"
 #include <sstream>
 #include <format>
 
@@ -115,6 +121,9 @@ SymbolOrderView::SymbolOrderView()
 	_SellStopOrderMgr = std::make_shared<DarkHorse::SmStopOrderManager>();
 	//_BuyOrderViewer = std::make_shared<SmOrderViewer>();
 	//_SellOrderViewer = std::make_shared<SmOrderViewer>();
+	hoga_control_ = std::make_shared<DarkHorse::HogaControl>();
+	hoga_control_->symbol_order_view(this);
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 
 }
@@ -194,7 +203,60 @@ void SymbolOrderView::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	SetQuoteColor(symbol);
 	Invalidate();
 }
+void SymbolOrderView::update_hoga(std::shared_ptr<DarkHorse::SmHoga> hoga)
+{
+	if (!hoga || _QuoteToRowIndexMap.size() == 0) return;
 
+	std::shared_ptr<SmCell> pCell = nullptr;
+
+	for (int i = 0; i < 5; i++) {
+		int row_index = FindRow(hoga->Ary[i].SellPrice);
+		pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_CNT);
+		if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
+			pCell->Text(std::to_string(hoga->Ary[i].SellCnt));
+			pCell->CellType(SmCellType::CT_HOGA_SELL);
+			_OldHogaSellRowIndex.insert(row_index);
+		}
+		pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_QTY);
+		if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
+			pCell->CellType(SmCellType::CT_HOGA_SELL);
+			pCell->Text(std::to_string(hoga->Ary[i].SellQty));
+		}
+		row_index = FindRow(hoga->Ary[i].BuyPrice);
+		pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_QTY);
+		if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
+			pCell->CellType(SmCellType::CT_HOGA_BUY);
+			pCell->Text(std::to_string(hoga->Ary[i].BuyQty));
+			_OldHogaBuyRowIndex.insert(row_index);
+		}
+		pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_CNT);
+		if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
+			pCell->CellType(SmCellType::CT_HOGA_BUY);
+			pCell->Text(std::to_string(hoga->Ary[i].BuyCnt));
+		}
+	}
+
+	pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::SELL_CNT);
+	if (pCell) pCell->Text(std::to_string(hoga->TotSellCnt));
+	pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::SELL_QTY);
+	if (pCell) pCell->Text(std::to_string(hoga->TotSellQty));
+	pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::BUY_CNT);
+	if (pCell) pCell->Text(std::to_string(hoga->TotBuyCnt));
+	pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::BUY_QTY);
+	if (pCell) pCell->Text(std::to_string(hoga->TotBuyQty));
+
+	const int delta_hoga = hoga->TotBuyQty = hoga->TotSellQty;
+	pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::QUOTE);
+	if (pCell) pCell->Text(std::to_string(delta_hoga));
+
+	_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::SELL_CNT));
+	_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::SELL_QTY));
+	_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::QUOTE));
+	_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::BUY_CNT));
+	_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::BUY_QTY));
+
+	Invalidate(FALSE);
+}
 void SymbolOrderView::SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol || _QuoteToRowIndexMap.size() == 0) return;
@@ -1014,7 +1076,8 @@ void SymbolOrderView::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbo
 {
 	if (!symbol) return;
 
-	const int& close = symbol->Qoute.close;
+	const SmQuote& quote = quote_control_->get_quote();
+	const int& close = quote.preclose;
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
 	const int start_value = close + (_CloseRow - _ValueStartRow) * int_tick_size;
 	try {
@@ -1137,9 +1200,23 @@ void SymbolOrderView::FixedMode(bool val)
 	Refresh();
 }
 
+void SymbolOrderView::init_quote_control(const std::string& symbol_code)
+{
+	auto quote = mainApp.QuoteMgr()->get_quote(symbol_code);
+}
+
+void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
+{
+	auto hoga = mainApp.HogaMgr()->get_hoga(symbol_code);
+}
+
 void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
 	_Symbol = val;
+	auto quote = mainApp.QuoteMgr()->get_quote(_Symbol->SymbolCode());
+	quote_control_->update_quote(quote);
+	auto hoga = mainApp.HogaMgr()->get_hoga(_Symbol->SymbolCode());
+	hoga_control_->update_hoga(hoga);
 	ArrangeCenterValue();
 	Invalidate();
 }

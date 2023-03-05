@@ -26,11 +26,6 @@ int main (int argc, const char * argv[])
 #include "../Json/json.hpp"
 
 namespace DarkHorse {
-	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
-	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
-
-	using AddOrderCBL = eventpp::CallbackList<void(const std::string&)>;
-	using AddOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
 
 	class AccountOrderControl;
 	class AccountPositionControl;
@@ -55,6 +50,17 @@ namespace DarkHorse {
 	class SymbolProfitLossControl;
 	class SymbolTickControl;
 	class TotalHogaInfoControl;
+	struct SmHoga;
+
+	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
+	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
+
+	using AddOrderCBL = eventpp::CallbackList<void(const std::string&)>;
+	using AddOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
+
+	using HogaCBL = eventpp::CallbackList<void(std::shared_ptr<SmHoga> hoga)>;
+	using HogaCBH = eventpp::CallbackList<void(std::shared_ptr<SmHoga> hoga)>::Handle;
+
 class EventHub
 {
 public:
@@ -73,9 +79,27 @@ public:
 	{
 		remove_order_callback_list_(order_no);
 	}
+
+	void subscribe_hoga_event_handler(const int hoga_control_id, std::function<void(std::shared_ptr<SmHoga> hoga)>&& handler)
+	{
+		HogaCBH handle = hoga_cb_list_.append(handler);
+		hoga_cb_handle_map_[hoga_control_id] = handle;
+	}
+	void unsubscribe_hoga_event_handler(const int hoga_control_id)
+	{
+		auto found = hoga_cb_handle_map_.find(hoga_control_id);
+		if (found == hoga_cb_handle_map_.end()) return;
+		hoga_cb_list_.remove(found->second);
+	}
+	void process_hoga_event(std::shared_ptr<SmHoga> hoga)
+	{
+		hoga_cb_list_(hoga);
+	}
 private:
 	RemoveOrderCBL remove_order_callback_list_;
 	std::map<int, RemoveOrderCBH> remove_order_callback_handle_map_;
+	HogaCBL hoga_cb_list_;
+	std::map<int, HogaCBH> hoga_cb_handle_map_;
 };
 }
 

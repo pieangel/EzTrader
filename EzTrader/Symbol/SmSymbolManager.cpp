@@ -291,14 +291,14 @@ void SmSymbolManager::read_domestic_masterfile()
 		while (std::getline(infile, line)) {
 			std::istringstream iss(line);
 			int index = 0;
-			value = line.substr(index + 1, 9); index += 9;
+			value = line.substr(index + 1, 8); index += 9;
 			VtStringUtil::trim(value);
 			std::string symbol_code = value;
 			std::shared_ptr<SmSymbol> symbol = std::make_shared<SmSymbol>(std::move(symbol_code));
-			symbol->SymbolCode(value);
-			const std::string market_name = value.substr(1, 1).at(0) == '1' ? DmFutureMarketName : DmOptionMarketName;
+			symbol->SymbolCode(symbol_code);
+			const std::string market_name = symbol_code.substr(0, 1).at(0) == '1' ? DmFutureMarketName : DmOptionMarketName;
 			symbol->MarketName(market_name);
-			const std::string product_code = value.substr(1, 3);
+			const std::string product_code = symbol_code.substr(0, 3);
 			symbol->ProductCode(product_code);
 			value = line.substr(index, 12); index += 12;
 			VtStringUtil::trim(value);
@@ -367,7 +367,11 @@ void SmSymbolManager::set_quote_preday_close(std::shared_ptr<SmSymbol> symbol, c
 {
 	if (!symbol || pre_day_str.empty()) return;
 	auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
-	quote->preclose = _ttoi(pre_day_str.c_str());
+
+	double converted_value = _ttof(pre_day_str.c_str());
+	converted_value = converted_value * pow(10, symbol->Decimal());
+
+	quote->preclose = static_cast<int>(converted_value);
 }
 
 void SmSymbolManager::AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code)
