@@ -3,6 +3,7 @@
 #include "../Global/SmTotalManager.h"
 #include "../Event/EventHub.h"
 #include "../View/SymbolOrderView.h"
+#include "../Hoga/SmHoga.h"
 #include <functional>
 
 namespace DarkHorse {

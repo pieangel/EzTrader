@@ -32,8 +32,11 @@
 #include "../Quote/SmQuote.h"
 #include "../Hoga/SmHoga.h"
 #include "../Hoga/SmHogaManager.h"
-#include "../ViewModel/QuoteControl.h"
-#include "../ViewModel/HogaControl.h"
+#include "../Controller/QuoteControl.h"
+#include "../Controller/HogaControl.h"
+#include "../Controller/ProductControl.h"
+#include "../ViewModel/VmQuote.h"
+#include "../ViewModel/VmHoga.h"
 #include <sstream>
 #include <format>
 
@@ -124,6 +127,7 @@ SymbolOrderView::SymbolOrderView()
 	hoga_control_ = std::make_shared<DarkHorse::HogaControl>();
 	hoga_control_->symbol_order_view(this);
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	product_control_ = std::make_shared<DarkHorse::ProductControl>();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 
 }
@@ -143,6 +147,60 @@ SymbolOrderView::~SymbolOrderView()
 	{
 		delete m_pGM;
 	}
+}
+
+void SymbolOrderView::update_quote(std::shared_ptr<DarkHorse::SmQuote> quote)
+{
+	if (!_Symbol || !quote) return;
+
+	//if (!_CenterValued) SetCenterValues(symbol, false);
+
+	const int close_row = FindRow(quote->close);
+	const int symbol_decimal = _Symbol->Decimal();
+
+	std::shared_ptr<SmCell> cell = _Grid->FindCell(close_row, DarkHorse::OrderGridHeader::QUOTE);
+	std::string value_string;
+	if (close_row >= 2 && cell) {
+		cell->CellType(SmCellType::CT_QUOTE_CLOSE);
+		value_string = std::format("{0}", quote->close);
+		insert_decimal(value_string, symbol_decimal);
+		cell->Text(value_string);
+		_QuoteValueMap.insert(std::make_pair(cell->Row(), cell->Col()));
+	}
+
+	const int open_row = FindRow(quote->open);
+	cell = _Grid->FindCell(open_row, DarkHorse::OrderGridHeader::QUOTE);
+	if (open_row >= 2 && cell) {
+		cell->CellType(SmCellType::CT_QUOTE_OPEN);
+		value_string = std::format("{0}", quote->open);
+		insert_decimal(value_string, symbol_decimal);
+		cell->Text(value_string);
+		_QuoteValueMap.insert(std::make_pair(cell->Row(), cell->Col()));
+	}
+
+	const int high_row = FindRow(quote->high);
+	cell = _Grid->FindCell(high_row, DarkHorse::OrderGridHeader::QUOTE);
+	if (high_row >= 2 && cell) {
+		cell->CellType(SmCellType::CT_QUOTE_HIGH);
+		value_string = std::format("{0}", quote->high);
+		insert_decimal(value_string, symbol_decimal);
+		cell->Text(value_string);
+		_QuoteValueMap.insert(std::make_pair(cell->Row(), cell->Col()));
+	}
+
+	const int low_row = FindRow(quote->low);
+	cell = _Grid->FindCell(low_row, DarkHorse::OrderGridHeader::QUOTE);
+	if (low_row >= 2 && cell) {
+		cell->CellType(SmCellType::CT_QUOTE_LOW);
+		value_string = std::format("{0}", quote->low);
+		insert_decimal(value_string, symbol_decimal);
+		cell->Text(value_string);
+		_QuoteValueMap.insert(std::make_pair(cell->Row(), cell->Col()));
+	}
+
+	SetPosition();
+	//SetQuoteColor(symbol);
+	Invalidate();
 }
 
 void SymbolOrderView::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
@@ -582,6 +640,12 @@ int SymbolOrderView::FindRowFromCenterValue(std::shared_ptr<DarkHorse::SmSymbol>
 	}
 }
 
+void SymbolOrderView::set_quote_cell(const int row, const bool show_mark, const int mark_type)
+{
+	auto cell = _Grid->FindCell(row, DarkHorse::OrderGridHeader::QUOTE);
+	if (cell) { cell->ShowMark(show_mark); cell->MarkType(mark_type); }
+}
+
 void SymbolOrderView::SetQuoteColor(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	int lowRow = FindRowFromCenterValue(symbol, symbol->Qoute.low);
@@ -592,105 +656,30 @@ void SymbolOrderView::SetQuoteColor(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 
 	if (symbol->Qoute.close > symbol->Qoute.open) { // ¾çºÀ
 		for (auto it = _QuoteToRowIndexMap.rbegin(); it != _QuoteToRowIndexMap.rend(); ++it) {
-			if (it->second < highRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
-			}
-			else if (it->second < closeRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
-			}
-			else if (it->second <= openRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(252, 226, 228));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(1); }
-			}
-			else if (it->second < lowRow + 1) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
-			}
-			else {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
-			}
+			if (it->second < highRow) set_quote_cell(it->second, true, 0);
+			else if (it->second < closeRow) set_quote_cell(it->second, true, 3);
+			else if (it->second <= openRow) set_quote_cell(it->second, true, 1);
+			else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
+			else set_quote_cell(it->second, true, 0);
 		}
 
 	}
 	else if (symbol->Qoute.close < symbol->Qoute.open) { // À½ºÀ
 		for (auto it = _QuoteToRowIndexMap.rbegin(); it != _QuoteToRowIndexMap.rend(); ++it) {
-			if (it->second < highRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
-			}
-			else if (it->second < openRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
-			}
-			else if (it->second <= closeRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(218, 226, 245));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(2); }
-			}
-			else if (it->second < lowRow + 1) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
-			}
-			else {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
-			}
+			if (it->second < highRow) set_quote_cell(it->second, true, 0);
+			else if (it->second < openRow) set_quote_cell(it->second, true, 3);
+			else if (it->second <= closeRow) set_quote_cell(it->second, true, 2);
+			else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
+			else set_quote_cell(it->second, true, 0);
 		}
 	}
 	else { // µµÁö
 		for (auto it = _QuoteToRowIndexMap.rbegin(); it != _QuoteToRowIndexMap.rend(); ++it) {
-			if (it->second < highRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
-			}
-			else if (it->second < closeRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
-			}
-			else if (it->second <= openRow) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(252, 226, 228));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
-			}
-			else if (it->second < lowRow + 1) {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
-			}
-			else {
-				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
-				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
-			}
+			if (it->second < highRow) set_quote_cell(it->second, true, 0);
+			else if (it->second < closeRow) set_quote_cell(it->second, true, 3);
+			else if (it->second <= openRow) set_quote_cell(it->second, true, 3);
+			else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
+			else set_quote_cell(it->second, true, 0);
 		}
 	}
 }
@@ -728,9 +717,14 @@ void SymbolOrderView::DrawHogaLine(const CRect& rect)
 
 	int row_index = FindRow(_Symbol->Hoga.Ary[0].SellPrice);
 	auto pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_CNT);
-	if (pCell && row_index > 1) {
-		m_pGM->DrawLine(0, pCell->Y() + pCell->Height() + 1, rect.Width(), pCell->Y() + pCell->Height() + 1, _Resource.SelectedBrush);
-	}
+	if (pCell && row_index > 1) 
+		m_pGM->DrawLine(
+			0, 
+			pCell->Y() + pCell->Height() + 1, 
+			rect.Width(), 
+			pCell->Y() + pCell->Height() + 1, 
+			_Resource.SelectedBrush
+		);
 }
 
 void SymbolOrderView::DrawFixedSelectedCell()
@@ -1076,8 +1070,8 @@ void SymbolOrderView::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbo
 {
 	if (!symbol) return;
 
-	const SmQuote& quote = quote_control_->get_quote();
-	const int& close = quote.preclose;
+	const VmQuote& quote = quote_control_->get_quote();
+	const int& close = quote.close;
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
 	const int start_value = close + (_CloseRow - _ValueStartRow) * int_tick_size;
 	try {

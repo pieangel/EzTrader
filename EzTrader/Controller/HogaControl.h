@@ -1,17 +1,18 @@
 #pragma once
-#include "../Hoga/SmHoga.h"
+#include "../ViewModel/VmHoga.h"
 #include "../Util/IdGenerator.h"
 
 #include <memory>
 class SymbolOrderView;
 namespace DarkHorse {
+	struct SmHoga;
 class HogaControl
 {
 public:
 	HogaControl();
 	~HogaControl() {};
 	void update_hoga(std::shared_ptr<SmHoga> hoga);
-	const SmHoga& get_hoga()
+	const VmHoga& get_hoga()
 	{
 		return hoga_;
 	}
@@ -24,7 +25,7 @@ public:
 	}
 private:
 	void subscribe_hoga_control();
-	SmHoga hoga_;
+	VmHoga hoga_;
 	int id_;
 	SymbolOrderView* symbol_order_view_{ nullptr };
 };

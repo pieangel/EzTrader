@@ -27,7 +27,9 @@ namespace DarkHorse {
 	struct SmOrderRequest;
 	class HogaControl;
 	class QuoteControl;
+	class ProductControl;
 	struct SmHoga;
+	struct SmQuote;
 }
 
 class DmAccountOrderWindow;
@@ -49,6 +51,7 @@ public:
 	void SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void update_hoga(std::shared_ptr<DarkHorse::SmHoga> hoga);
+	void update_quote(std::shared_ptr<DarkHorse::SmQuote> quote);
 	void SetPosition();
 	void ClearOldHoga();
 	void ClearOldQuote();
@@ -103,10 +106,17 @@ public:
 
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 private:
+	void set_quote_cell(const int row, const bool show_mark, const int mark_type);
+	inline void insert_decimal(std::string& value, const int decimal)
+	{
+		if (decimal <= 0) return;
+		value.insert(value.length() - decimal, 1, '.');
+	}
 	void init_quote_control(const std::string& symbol_code);
 	void init_hoga_control(const std::string& symbol_code);
 	std::shared_ptr<DarkHorse::HogaControl> hoga_control_;
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
+	std::shared_ptr<DarkHorse::ProductControl> product_control_;
 	void DrawStopOrder();
 	std::vector<std::pair<CBCGPRect, CBCGPRect>> _StopRectVector;
 	void DrawArrow(const CBCGPPoint& start_point, const CBCGPPoint& end_point, const double& stroke_width, const int& head_width);

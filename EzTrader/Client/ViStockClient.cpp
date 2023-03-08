@@ -469,15 +469,15 @@ void DarkHorse::ViStockClient::OnDmSymbolQuote(nlohmann::json&& quote)
 {
 	try {
 		const std::string& symbol_code = quote["symbol_code"];
-		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
-		if (!symbol) return;
-
-		symbol->Qoute.open = quote["open"];
-		symbol->Qoute.high = quote["high"];
-		symbol->Qoute.low = quote["low"];
-		symbol->Qoute.close = quote["close"];
+		std::shared_ptr<SmQuote> quote_p = mainApp.QuoteMgr()->get_quote(symbol_code);
+		
+		quote_p->open = quote["open"];
+		quote_p->high = quote["high"];
+		quote_p->low = quote["low"];
+		quote_p->close = quote["close"];
+		quote_p->pre_day_close = quote["pre_day_close"];
 		//symbol->TotalVolume(quote["cumulative_amount"]);
-		symbol->PreDayRate(quote["updown_rate"]);
+		//symbol->PreDayRate(quote["updown_rate"]);
 		//symbol->PreDayVolume(quote["preday_volume"]);
 	}
 	catch (const std::exception& e) {

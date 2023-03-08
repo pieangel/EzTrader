@@ -51,6 +51,7 @@ namespace DarkHorse {
 	class SymbolTickControl;
 	class TotalHogaInfoControl;
 	struct SmHoga;
+	struct SmQuote;
 
 	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
 	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
@@ -60,6 +61,9 @@ namespace DarkHorse {
 
 	using HogaCBL = eventpp::CallbackList<void(std::shared_ptr<SmHoga> hoga)>;
 	using HogaCBH = eventpp::CallbackList<void(std::shared_ptr<SmHoga> hoga)>::Handle;
+
+	using QuoteCBL = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>;
+	using QuoteCBH = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>::Handle;
 
 class EventHub
 {
@@ -95,11 +99,30 @@ public:
 	{
 		hoga_cb_list_(hoga);
 	}
+
+	void subscribe_quote_event_handler(const int quote_control_id, std::function<void(std::shared_ptr<SmQuote> quote)>&& handler)
+	{
+		QuoteCBH handle = quote_cb_list_.append(handler);
+		quote_cb_handle_map_[quote_control_id] = handle;
+	}
+	void unsubscribe_quote_event_handler(const int quote_control_id)
+	{
+		auto found = quote_cb_handle_map_.find(quote_control_id);
+		if (found == quote_cb_handle_map_.end()) return;
+		quote_cb_list_.remove(found->second);
+	}
+	void process_quote_event(std::shared_ptr<SmQuote> quote)
+	{
+		quote_cb_list_(quote);
+	}
 private:
 	RemoveOrderCBL remove_order_callback_list_;
 	std::map<int, RemoveOrderCBH> remove_order_callback_handle_map_;
 	HogaCBL hoga_cb_list_;
 	std::map<int, HogaCBH> hoga_cb_handle_map_;
+
+	QuoteCBL quote_cb_list_;
+	std::map<int, QuoteCBH> quote_cb_handle_map_;
 };
 }
 

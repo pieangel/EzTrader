@@ -6,7 +6,8 @@
 #include <set>
 #include <vector>
 #include "DomesticMarketDefine.h"
-
+// 국내 자산 - 국내 선물, 국내 옵션, 주식 선물, ETF
+// 해외 자산 - 해외 선물 - 금리, 지수, 오일, 금속, 채권
 namespace DarkHorse {
 	class SmSymbol;
 	class SmMarket;

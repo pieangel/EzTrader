@@ -371,7 +371,7 @@ void SmSymbolManager::set_quote_preday_close(std::shared_ptr<SmSymbol> symbol, c
 	double converted_value = _ttof(pre_day_str.c_str());
 	converted_value = converted_value * pow(10, symbol->Decimal());
 
-	quote->preclose = static_cast<int>(converted_value);
+	quote->pre_day_close = static_cast<int>(converted_value);
 }
 
 void SmSymbolManager::AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code)
