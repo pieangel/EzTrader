@@ -37,6 +37,7 @@
 #include "../Controller/ProductControl.h"
 #include "../ViewModel/VmQuote.h"
 #include "../ViewModel/VmHoga.h"
+#include "../ViewModel/VmProduct.h"
 #include <sstream>
 #include <format>
 
@@ -842,7 +843,7 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	ClearOldQuote();
 	ClearOldHoga();
 	_Grid->ReleaseOrderButtons(_ButtonMap);
-	const int delta_height = _Grid->RecalRowCount(height, false);
+	const int extra_height = _Grid->RecalRowCount(height, false);
 
 
 
@@ -858,9 +859,9 @@ int SymbolOrderView::RecalRowCount(const int& height)
 
 	//Invalidate(FALSE);
 
-	DmAccountOrderCenterWindow::DeltaOrderArea = delta_height;
+	DmAccountOrderCenterWindow::DeltaOrderArea = extra_height;
 
-	return delta_height;
+	return extra_height;
 }
 
 void SymbolOrderView::UpdateOrder(const std::string& symbol_code)
@@ -1071,9 +1072,9 @@ void SymbolOrderView::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbo
 	if (!symbol) return;
 
 	const VmQuote& quote = quote_control_->get_quote();
+	const VmProduct& product = product_control_->get_product();
 	const int& close = quote.close;
-	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
-	const int start_value = close + (_CloseRow - _ValueStartRow) * int_tick_size;
+	const int start_value = close + (_CloseRow - _ValueStartRow) * product.int_tick_size;
 	try {
 		if (make_row_map) {
 			_QuoteToRowIndexMap.clear();
@@ -1082,19 +1083,13 @@ void SymbolOrderView::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbo
 		int value = start_value;
 		for (int i = 2; i < _Grid->RowCount() - 2; i++) {
 			std::string value_string;
-			//std::stringstream ss;
-			//ss.imbue(std::locale(std::locale::classic(), new SmNumPunct));
-			//ss << value;
-			//value_string = ss.str();
 			value_string = std::format("{0}", value);
-			if (symbol->Decimal() > 0)
-				value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+			insert_decimal(value_string, product.decimal);
 			_Grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, value_string);
-			//_Grid->SetCellMark(i, DarkHorse::OrderGridHeader::QUOTE, true);
 			_QuoteToRowIndexMap[value] = i;
 			_RowIndexToPriceMap[i] = value;
 
-			value -= int_tick_size;
+			value -= product.int_tick_size;
 		}
 
 		SetQuoteColor(symbol);
@@ -1211,6 +1206,7 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	quote_control_->update_quote(quote);
 	auto hoga = mainApp.HogaMgr()->get_hoga(_Symbol->SymbolCode());
 	hoga_control_->update_hoga(hoga);
+	product_control_->update_product(_Symbol);
 	ArrangeCenterValue();
 	Invalidate();
 }

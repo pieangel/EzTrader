@@ -29,9 +29,10 @@ namespace DarkHorse {
 		product_.decimal = symbol->Decimal();
 		//product_.hoga_unit = symbol->hoga_unit;
 		//product_.int_tick_size = symbol->TickSize();
-		//product_.tick_size = symbol->TickSize();
+		product_.tick_size = symbol->TickSize();
+		product_.int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
 		product_.seung_su = symbol->SeungSu();
-		product_.tick_value = (int)symbol->TickValue();
+		product_.tick_value = static_cast<int>(symbol->TickValue());
 
 	}
 }

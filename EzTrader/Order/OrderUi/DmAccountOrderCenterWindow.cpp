@@ -515,30 +515,30 @@ int DmAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 	CRect rcSymbol;
 	_StaticSymbolName.GetWindowRect(rcSymbol);
 
-	int y_del = 0, delta_height = 0;
+	int y_del = 0, extra_height = 0;
 	y_del = rcTopMost.bottom - rcOrderArea.top;
 	y_del -= 8;
 
-	delta_height = _OrderArea.RecalRowCount(y_del);
+	extra_height = _OrderArea.RecalRowCount(y_del);
 
-	if (delta_height > 0) {
+	if (extra_height > 0) {
 		CRect rcParent;
 		CRect rect;
 		_OrderArea.GetWindowRect(rect);
 
 		rect.right -= 2;
-		rect.bottom -= delta_height;
+		rect.bottom -= extra_height;
 		//_OrderArea.SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOMOVE | SWP_NOREDRAW);
 
 		GetWindowRect(rect);
 		//ScreenToClient(rect);
-		rect.bottom -= delta_height;
+		rect.bottom -= extra_height;
 		//MoveWindow(rect);
 		//SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOMOVE | SWP_NOREDRAW);
 	}
 
 
-	return delta_height;
+	return extra_height;
 }
 
 void DmAccountOrderCenterWindow::OnCbnSelchangeComboSymbol()

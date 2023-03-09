@@ -6,8 +6,8 @@ struct VmProduct {
 	int decimal;
 	// Á¤¼ö Æ½Å©±â
 	int int_tick_size;
-	// Æ½Å©±â - ¹®ÀÚ¿­
-	std::string tick_size;
+	// Æ½Å©±â 
+	double tick_size;
 	// Æ½°¡Ä¡ - Á¤¼ö
 	int tick_value;
 	// ½Â¼ö

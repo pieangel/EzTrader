@@ -516,11 +516,11 @@ int DarkHorse::SmGrid::RecalRowCount(const int& height, bool change_close_row)
 
 	if (_GridHeight > height) _GridHeight -= each_row_height;
 
-	const int delta_height = height - _GridHeight;
+	const int extra_height = height - _GridHeight;
 
 	if (change_close_row) _CloseRow = static_cast<int>(row_count / 2.0);
 
-	return delta_height;
+	return extra_height;
 }
 
 void DarkHorse::SmGrid::MakeColWidthMap()

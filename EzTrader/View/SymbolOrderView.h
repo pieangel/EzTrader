@@ -168,6 +168,10 @@ private:
 
 	CBCGPGraphicsManager* m_pGM{ nullptr };
 	DarkHorse::MouseMode _MouseMode{ DarkHorse::MouseMode::Normal };
+	// 가격 표시 기준점. 이 기준점을 기준으로 현재가를 기준으로 가격을 만든다.
+	// 현재가가 변해도 이 값은 변화가 없고 마우스 휠을 사용하여 이 값이 변할 때
+	// 다시 현재가를 기준으로 다시 만든다. 마우스 휠을 움직일 때 이 행은 항상 현재가를 가르키지만
+	// 마우스 휠이 멈췄을 때는 더이상 현재가가 있는 행을 가르키지 않는다. 
 	int _CloseRow{ 13 };
 	int _ValueStartRow{ 1 };
 	std::set<int> _OldHogaBuyRowIndex;
