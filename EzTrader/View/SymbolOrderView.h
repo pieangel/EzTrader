@@ -15,7 +15,7 @@ class SymbolOrderView
 #include "../Order/SmOrderConst.h"
 #include "../SmGrid/SmButtonId.h"
 #include "../Order/SmOrderSettings.h"
-
+#include "../SmGrid/SmCellType.h"
 
 namespace DarkHorse {
 	class SmGrid;
@@ -48,10 +48,10 @@ public:
 	~SymbolOrderView();
 	std::shared_ptr<DarkHorse::SmGrid> Grid() const { return _Grid; }
 	void Grid(std::shared_ptr<DarkHorse::SmGrid> val) { _Grid = val; }
-	void SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol);
-	void SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol);
-	void update_hoga(std::shared_ptr<DarkHorse::SmHoga> hoga);
-	void update_quote(std::shared_ptr<DarkHorse::SmQuote> quote);
+	
+	void update_hoga();
+	void update_quote();
+
 	void SetPosition();
 	void ClearOldHoga();
 	void ClearOldQuote();
@@ -61,8 +61,8 @@ public:
 	void SetOrder();
 	void ClearOldHoga(DarkHorse::Hoga_Type hoga_type) const noexcept;
 	int FindRow(const int& value) const noexcept;
-	int FindRowFromCenterValue(std::shared_ptr<DarkHorse::SmSymbol> symbol, const int& value);
-	void SetQuoteColor(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	int FindRowFromCenterValue(const int& value);
+	void SetQuoteColor();
 	int FindValue(const int& row) const noexcept;
 	void Refresh();
 	void DrawHogaLine(const CRect& rect);
@@ -86,6 +86,7 @@ public:
 	// 중앙 값을 정한다. 중앙 값은 최초에 심볼이 결정될 때 한번, 
 	// 그리고 전체 크기가 늘어나거나 줄어들때(대화상자를 늘이거나 줄일때) 다시 설정해 준다.
 	void SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbol, const bool& make_row_map = true);
+	void SetCenterValues(const bool& make_row_map = true);
 	bool Selected() const { return _Selected; }
 	void Selected(bool val) { _Selected = val; }
 	void PutOrderBySpaceBar();
@@ -106,6 +107,7 @@ public:
 
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 private:
+	void set_quote_value(const int value, const DarkHorse::SmCellType cell_type);
 	void set_quote_cell(const int row, const bool show_mark, const int mark_type);
 	inline void insert_decimal(std::string& value, const int decimal)
 	{
@@ -119,7 +121,13 @@ private:
 	std::shared_ptr<DarkHorse::ProductControl> product_control_;
 	void DrawStopOrder();
 	std::vector<std::pair<CBCGPRect, CBCGPRect>> _StopRectVector;
-	void DrawArrow(const CBCGPPoint& start_point, const CBCGPPoint& end_point, const double& stroke_width, const int& head_width);
+	void DrawArrow
+	(
+		const CBCGPPoint& start_point, 
+		const CBCGPPoint& end_point, 
+		const double& stroke_width, 
+		const int& head_width
+	);
 	void ProcessFixedMode();
 
 	bool _FixedMode = false;
@@ -133,7 +141,12 @@ private:
 	int _CutMode = 0;
 	bool _MovingOrder = false;
 	void PutStopOrder(const DarkHorse::SmPositionType& type, const int& price);
-	void PutOrder(const DarkHorse::SmPositionType& type, const int& price, const DarkHorse::SmPriceType& price_type = DarkHorse::SmPriceType::Price);
+	void PutOrder
+	(
+		const DarkHorse::SmPositionType& type, 
+		const int& price, 
+		const DarkHorse::SmPriceType& price_type = DarkHorse::SmPriceType::Price
+	);
 	DmAccountOrderWindow* _MainDialog = nullptr;
 	DmFundOrderWindow* _FundDialog = nullptr;
 	void ProcesButtonClick(const std::shared_ptr<DarkHorse::SmCell>& cell);
@@ -155,11 +168,11 @@ private:
 	/// <summary>
 	/// Key : Quote Value in integer. value : row index
 	/// </summary>
-	std::map<int, int> _QuoteToRowIndexMap;
+	std::map<int, int> price_to_row_;
 	/// <summary>
 	/// Key : row index, value : quote value.
 	/// </summary>
-	std::map<int, int> _RowIndexToPriceMap;
+	std::map<int, int> row_to_price_;
 
 	// Key : cell object, value : button id
 	std::map<std::shared_ptr<DarkHorse::SmCell>, BUTTON_ID> _ButtonMap;
@@ -181,8 +194,8 @@ private:
 	std::set<int> _OldStopBuyRowIndex;
 	std::set<int> _OldStopSellRowIndex;
 	std::set<std::pair<int, int>> _TotalHogaMap;
-	// key : row, value : column
-	std::set<std::pair<int, int>> _QuoteValueMap;
+	// key : (row, column) value : price
+	std::set<std::pair<int, int>> cell_to_price;
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol{ nullptr };
 
 	std::shared_ptr<DarkHorse::SmAccount> _Account{ nullptr };
@@ -204,6 +217,9 @@ private:
 
 	bool _Selected{ false };
 
+	int price_start_row{ 2 };
+	int price_end_row{ 0 };
+
 	CBCGPStrokeStyle _OrderStroke;
 	bool _Hover{ false };
 	int _OrderStartCol{ -1 };
@@ -219,7 +235,13 @@ private:
 	void CancelOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void ChangeOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& tgt_price);
 
-	void ChangeStop(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const std::shared_ptr<DarkHorse::SmCell>& tgt_cell, const int& src_price, const int& tgt_price);
+	void ChangeStop
+	(
+		const std::shared_ptr<DarkHorse::SmCell>& src_cell, 
+		const std::shared_ptr<DarkHorse::SmCell>& tgt_cell, 
+		const int& src_price, 
+		const int& tgt_price
+	);
 	void CancelStop(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void ProcessButtonMsg(const BUTTON_ID& id);
 protected:

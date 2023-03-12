@@ -39,6 +39,6 @@ namespace DarkHorse {
 		hoga_.TotBuyCnt = hoga->TotBuyCnt;
 		hoga_.HogaTime = hoga->HogaTime;
 
-		if (symbol_order_view_) symbol_order_view_->update_hoga(hoga);
+		if (symbol_order_view_) symbol_order_view_->update_hoga();
 	}
 }
