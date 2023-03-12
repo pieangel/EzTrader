@@ -83,7 +83,7 @@ void CCrashHandler::SetThreadExceptionHandlers()
 	// separately for each thread. Each new thread needs to install its own 
 	// unexpected function. Thus, each thread is in charge of its own unexpected handling.
 	// http://msdn.microsoft.com/en-us/library/h46t5b69.aspx  
-	set_unexpected(UnexpectedHandler);    
+	//set_unexpected(UnexpectedHandler);    
 
 	// Catch a floating point error
 	typedef void (*sigh)(int);
