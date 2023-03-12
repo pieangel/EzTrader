@@ -18,6 +18,13 @@ class DmFundOrderLeftWindow
 #include "../../Order/SmPositionGrid.h"
 #include "../../Order/SmFavoriteGrid.h"
 
+#include "../../View/AccountOrderView.h"
+#include "../../View/AccountPositionView.h"
+#include "../../View/AccountProfitLossView.h"
+#include "../../View/DmOptionView.h"
+#include "../../View/DmFutureView.h"
+#include "../../View/AssetView.h"
+
 // OrderLeftDialog dialog
 
 namespace DarkHorse {
@@ -47,13 +54,14 @@ protected:
 
 private:
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
-	SmAccountArea _AccountArea;
-
-	SmAcceptedGrid _AcceptedGrid;
-	SmPositionGrid _PositionGrid;
-	SmFavoriteGrid _FavoriteGrid;
-
-	SmFilledArea _FilledArea;
+	
+	AccountProfitLossView account_profit_loss_view_;
+	AssetView asset_view_;
+	//AccountOrderView _AcceptedGrid;
+	//AccountPositionView _PositionGrid;
+	//SmFavoriteGrid _FavoriteGrid;
+	DmOptionView option_view_;
+	DmFutureView future_view_;
 
 
 public:

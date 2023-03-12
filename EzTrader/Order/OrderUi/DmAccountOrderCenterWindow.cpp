@@ -66,26 +66,26 @@ DmAccountOrderCenterWindow::~DmAccountOrderCenterWindow()
 
 void DmAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
-	_Account = val;
-	_OrderArea.Account(val);
-	_OrderArea.Refresh();
-	_PositionArea.Account(val);
-	_PositionArea.Refresh();
+	account_ = val;
+	symbol_order_view_.Account(val);
+	symbol_order_view_.Refresh();
+	symbol_position_view_.Account(val);
+	symbol_position_view_.Refresh();
 }
 
 void DmAccountOrderCenterWindow::Selected(bool val)
 {
 	_Selected = val;
-	_OrderArea.Selected(val);
+	symbol_order_view_.Selected(val);
 }
 
 void DmAccountOrderCenterWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_SYMBOL, _ComboSymbol);
-	DDX_Control(pDX, IDC_STATIC_ORDER, _OrderArea);
-	DDX_Control(pDX, IDC_STATIC_POSITION, _PositionArea);
-	DDX_Control(pDX, IDC_STATIC_QUOTE, _QuoteArea);
+	DDX_Control(pDX, IDC_STATIC_ORDER, symbol_order_view_);
+	DDX_Control(pDX, IDC_STATIC_POSITION, symbol_position_view_);
+	DDX_Control(pDX, IDC_STATIC_QUOTE, symbol_tick_view_);
 	DDX_Control(pDX, IDC_STATIC_SYMBOL_NAME_KR, _StaticSymbolName);
 	DDX_Control(pDX, IDC_CHECK_SHOW_REAL_QUOTE, _CheckShowRealTick);
 	DDX_Control(pDX, IDC_SPIN_ORDER_AMOUNT, _OrderAmountSpin);
@@ -171,7 +171,7 @@ LRESULT DmAccountOrderCenterWindow::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
 
 void DmAccountOrderCenterWindow::SetMainDialog(DmAccountOrderWindow* main_dialog)
 {
-	_OrderArea.SetMainDialog(main_dialog);
+	symbol_order_view_.SetMainDialog(main_dialog);
 }
 
 
@@ -179,8 +179,8 @@ void DmAccountOrderCenterWindow::SetMainDialog(DmAccountOrderWindow* main_dialog
 void DmAccountOrderCenterWindow::SetSelected(const bool& selected)
 {
 	_Selected = selected;
-	_OrderArea.Selected(selected);
-	_OrderArea.Invalidate();
+	symbol_order_view_.Selected(selected);
+	symbol_order_view_.Invalidate();
 }
 
 void DmAccountOrderCenterWindow::OnSymbolClicked(const std::string& symbol_code)
@@ -198,16 +198,16 @@ void DmAccountOrderCenterWindow::SetOrderAmount(const int& count)
 
 int DmAccountOrderCenterWindow::GetPositionCount()
 {
-	if (!_Account || !_Symbol) return 0;
+	if (!account_ || !symbol_) return 0;
 
-	std::shared_ptr<SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(_Account->No(), _Symbol->SymbolCode());
+	std::shared_ptr<SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(account_->No(), symbol_->SymbolCode());
 
 	return position->OpenQty;
 }
 
 void DmAccountOrderCenterWindow::ArrangeCenterValue()
 {
-	_OrderArea.ArrangeCenterValue();
+	symbol_order_view_.ArrangeCenterValue();
 }
 
 void DmAccountOrderCenterWindow::CreateResource()
@@ -248,9 +248,9 @@ BOOL DmAccountOrderCenterWindow::OnInitDialog()
 
 
 
-	_OrderArea.SetUp();
-	_PositionArea.SetUp();
-	_QuoteArea.SetUp();
+	symbol_order_view_.SetUp();
+	symbol_position_view_.SetUp();
+	symbol_tick_view_.SetUp();
 
 	_CheckShowRealTick.SetCheck(BST_CHECKED);
 	CBCGPStaticLayout* pLayout = (CBCGPStaticLayout*)GetLayout();
@@ -267,7 +267,7 @@ BOOL DmAccountOrderCenterWindow::OnInitDialog()
 	_StaticSymbolName.m_clrText = RGB(255, 255, 255);
 
 	CRect rcWnd;
-	_OrderArea.GetWindowRect(&rcWnd);
+	symbol_order_view_.GetWindowRect(&rcWnd);
 	ScreenToClient(rcWnd);
 
 	rcWnd.bottom = rcWnd.top + rcWnd.Height() + DmAccountOrderCenterWindow::DeltaOrderArea;
@@ -324,7 +324,7 @@ void DmAccountOrderCenterWindow::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> s
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * std::pow(10, symbol->Decimal()));
 	const int start_value = close + (_CloseRow - _ValueStartRow) * int_tick_size;
 	try {
-		std::shared_ptr<SmGrid> grid = _OrderArea.Grid();
+		std::shared_ptr<SmGrid> grid = symbol_order_view_.Grid();
 		int value = start_value;
 		for (int i = 1; i < grid->RowCount(); i++) {
 			grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, std::to_string(value));
@@ -358,8 +358,8 @@ void DmAccountOrderCenterWindow::OnTimer(UINT_PTR nIDEvent)
 	CTime t1;
 	t1 = CTime::GetCurrentTime();
 	//m_bar.SetPaneText(1, t1.Format("%H:%M:%S"));
-	if (_Account && _Symbol) {
-		auto symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(_Account->No(), _Symbol->SymbolCode());
+	if (account_ && symbol_) {
+		auto symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(account_->No(), symbol_->SymbolCode());
 		int filled_count = symbol_order_mgr->GetUnsettledCount();
 		CString strCount;
 		strCount.Format("%d", filled_count);
@@ -373,7 +373,7 @@ void DmAccountOrderCenterWindow::SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymb
 {
 	if (!symbol) return;
 
-	_Symbol = symbol;
+	symbol_ = symbol;
 
 	std::string symbol_info(symbol->SymbolNameKr());
 	symbol_info.append(" [");
@@ -383,9 +383,9 @@ void DmAccountOrderCenterWindow::SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymb
 	int result = _ComboSymbol.SelectString(-1, symbol_info.c_str());
 	if (result == CB_ERR) {
 		_CurrentIndex = _ComboSymbol.AddString(symbol_info.c_str());
-		_IndexToSymbolMap[_CurrentIndex] = _Symbol;
+		_IndexToSymbolMap[_CurrentIndex] = symbol_;
 		_ComboSymbol.SetCurSel(_CurrentIndex);
-		mainApp.SymMgr()->RegisterSymbolToServer(_Symbol->SymbolCode(), true);
+		mainApp.SymMgr()->RegisterSymbolToServer(symbol_->SymbolCode(), true);
 	}
 	else {
 		_CurrentIndex = result;
@@ -394,12 +394,12 @@ void DmAccountOrderCenterWindow::SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymb
 
 		if (found == _IndexToSymbolMap.end()) return;
 
-		_Symbol = _IndexToSymbolMap[_CurrentIndex];
+		symbol_ = _IndexToSymbolMap[_CurrentIndex];
 	}
 
 	_StaticSymbolName.SetWindowText(symbol_info.c_str());
 
-	SetInfo(_Symbol);
+	SetInfo(symbol_);
 }
 
 void DmAccountOrderCenterWindow::UpdateOrderSettings()
@@ -432,7 +432,7 @@ void DmAccountOrderCenterWindow::UpdateOrderSettings()
 	_EditSlip.GetWindowText(strValue);
 	settings.SlipTick = _ttoi(strValue);
 
-	_OrderArea.UpdateOrderSettings(settings);
+	symbol_order_view_.UpdateOrderSettings(settings);
 }
 
 void DmAccountOrderCenterWindow::SetCutMode()
@@ -450,22 +450,22 @@ void DmAccountOrderCenterWindow::SetCutMode()
 			_CutMode = 3;
 		}
 	}
-	_OrderArea.CutMode(_CutMode);
+	symbol_order_view_.CutMode(_CutMode);
 }
 
 void DmAccountOrderCenterWindow::SetInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol) return;
 
-	_PositionArea.Clear();
-	_QuoteArea.Clear();
-	_OrderArea.Clear();
-	_PositionArea.Symbol(symbol);
+	symbol_position_view_.Clear();
+	symbol_tick_view_.Clear();
+	symbol_order_view_.Clear();
+	symbol_position_view_.Symbol(symbol);
 	//_OrderArea.SetCenterValues(symbol);
-	_OrderArea.Symbol(symbol);
+	symbol_order_view_.Symbol(symbol);
 	//_OrderArea.SetQuote(symbol);
 	//_OrderArea.SetHoga(symbol);
-	_QuoteArea.Symbol(symbol);
+	symbol_tick_view_.Symbol(symbol);
 	//_OrderArea.UpdateOrder(_Symbol->SymbolCode());
 	//_OrderArea.Refresh();
 	request_dm_symbol_master(symbol->SymbolCode());
@@ -483,22 +483,22 @@ void DmAccountOrderCenterWindow::request_dm_symbol_master(const std::string symb
 
 void DmAccountOrderCenterWindow::SetRowWide()
 {
-	_OrderArea.SetAllRowHeight(WideRowHeight);
+	symbol_order_view_.SetAllRowHeight(WideRowHeight);
 	RecalcOrderAreaHeight(this);
-	_OrderArea.Invalidate();
+	symbol_order_view_.Invalidate();
 }
 
 void DmAccountOrderCenterWindow::SetRowNarrow()
 {
-	_OrderArea.SetAllRowHeight(DefaultRowHeight);
+	symbol_order_view_.SetAllRowHeight(DefaultRowHeight);
 	RecalcOrderAreaHeight(this);
-	_OrderArea.Invalidate();
+	symbol_order_view_.Invalidate();
 }
 
 void DmAccountOrderCenterWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
 {
-	_OrderArea.OnOrderChanged(account_id, symbol_id);
-	_PositionArea.OnOrderChanged(account_id, symbol_id);
+	symbol_order_view_.OnOrderChanged(account_id, symbol_id);
+	symbol_position_view_.OnOrderChanged(account_id, symbol_id);
 }
 
 int DmAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
@@ -506,7 +506,7 @@ int DmAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 	CRect rcTopMost;
 	CRect rcOrderArea;
 	CRect rcOrderWnd;
-	_OrderArea.GetWindowRect(rcOrderArea);
+	symbol_order_view_.GetWindowRect(rcOrderArea);
 
 	GetWindowRect(rcOrderWnd);
 
@@ -519,12 +519,12 @@ int DmAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 	y_del = rcTopMost.bottom - rcOrderArea.top;
 	y_del -= 8;
 
-	extra_height = _OrderArea.RecalRowCount(y_del);
+	extra_height = symbol_order_view_.RecalRowCount(y_del);
 
 	if (extra_height > 0) {
 		CRect rcParent;
 		CRect rect;
-		_OrderArea.GetWindowRect(rect);
+		symbol_order_view_.GetWindowRect(rect);
 
 		rect.right -= 2;
 		rect.bottom -= extra_height;
@@ -552,17 +552,17 @@ void DmAccountOrderCenterWindow::OnCbnSelchangeComboSymbol()
 
 	_CurrentIndex = cur_sel;
 
-	_Symbol = _IndexToSymbolMap[_CurrentIndex];
+	symbol_ = _IndexToSymbolMap[_CurrentIndex];
 
 
-	std::string symbol_info(_Symbol->SymbolNameKr());
+	std::string symbol_info(symbol_->SymbolNameKr());
 	symbol_info.append(" [");
-	symbol_info.append(_Symbol->SymbolCode());
+	symbol_info.append(symbol_->SymbolCode());
 	symbol_info.append("]");
 
 	_StaticSymbolName.SetWindowText(symbol_info.c_str());
 
-	SetInfo(_Symbol);
+	SetInfo(symbol_);
 }
 
 
@@ -570,11 +570,11 @@ void DmAccountOrderCenterWindow::OnSize(UINT nType, int cx, int cy)
 {
 	CBCGPDialog::OnSize(nType, cx, cy);
 
-	if (_Init && _OrderArea.GetSafeHwnd()) {
+	if (_Init && symbol_order_view_.GetSafeHwnd()) {
 		CRect rcWnd;
 		GetWindowRect(rcWnd);
 		//_OrderArea.RecalRowCount(rcWnd.Height());
-		_OrderArea.Invalidate();
+		symbol_order_view_.Invalidate();
 	}
 
 }
@@ -585,17 +585,17 @@ void DmAccountOrderCenterWindow::OnBnClickedCheckShowRealQuote()
 	_ShowQuoteArea ? _ShowQuoteArea = false : _ShowQuoteArea = true;
 	CWnd* parent = GetParent();
 	CRect rcQuote;
-	_QuoteArea.GetWindowRect(rcQuote);
+	symbol_tick_view_.GetWindowRect(rcQuote);
 	CRect rcWnd;
 	GetWindowRect(rcWnd);
 	parent->ScreenToClient(rcWnd);
 	if (_ShowQuoteArea) {
 		rcWnd.right = rcWnd.left + rcWnd.Width() + rcQuote.Width();
-		_QuoteArea.ShowWindow(SW_SHOW);
+		symbol_tick_view_.ShowWindow(SW_SHOW);
 	}
 	else {
 		rcWnd.right = rcWnd.left + rcWnd.Width() - rcQuote.Width();
-		_QuoteArea.ShowWindow(SW_HIDE);
+		symbol_tick_view_.ShowWindow(SW_HIDE);
 	}
 
 	MoveWindow(rcWnd);
@@ -620,7 +620,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnRefreshOrder()
 {
 	//_OrderArea.UpdateOrder(_Symbol->SymbolCode());
 	//_OrderArea.Invalidate(FALSE);
-	mainApp.Client()->GetFilledOrderList(_Account->No(), _Account->Pwd());
+	mainApp.Client()->GetFilledOrderList(account_->No(), account_->Pwd());
 }
 
 
@@ -654,14 +654,14 @@ BOOL DmAccountOrderCenterWindow::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 		else if (pMsg->wParam == VK_SPACE) {
-			_OrderArea.PutOrderBySpaceBar();
+			symbol_order_view_.PutOrderBySpaceBar();
 			return TRUE;
 		}
 		else if (pMsg->wParam == VK_DOWN) {
-			_OrderArea.ChangeOrderByKey(-1);
+			symbol_order_view_.ChangeOrderByKey(-1);
 		}
 		else if (pMsg->wParam == VK_UP) {
-			_OrderArea.ChangeOrderByKey(1);
+			symbol_order_view_.ChangeOrderByKey(1);
 		}
 	}
 
@@ -706,7 +706,7 @@ void DmAccountOrderCenterWindow::OnEnChangeEditAmount()
 
 	CString strValue;
 	amount->GetWindowText(strValue);
-	_OrderArea.OrderAmount(_ttoi(strValue));
+	symbol_order_view_.OrderAmount(_ttoi(strValue));
 }
 
 
@@ -715,18 +715,18 @@ void DmAccountOrderCenterWindow::OnEnChangeEditAmount()
 
 void DmAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 {
-	if (!_Account || !_Symbol) return;
+	if (!account_ || !symbol_) return;
 
-	auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(_Account->No());
+	auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(account_->No());
 	const std::map<std::string, std::shared_ptr<SmPosition>>& account_pos_map = account_pos_mgr->GetPositionMap();
-	auto found = account_pos_map.find(_Symbol->SymbolCode());
+	auto found = account_pos_map.find(symbol_->SymbolCode());
 	if (found == account_pos_map.end()) return;
 
 	std::shared_ptr<SmOrderRequest> order_req = nullptr;
 	if (found->second->Position == SmPositionType::Buy)
-		order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), 0, abs(found->second->OpenQty), DarkHorse::SmPriceType::Market);
+		order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account_->No(), account_->Pwd(), symbol_->SymbolCode(), 0, abs(found->second->OpenQty), DarkHorse::SmPriceType::Market);
 	else
-		order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), 0, abs(found->second->OpenQty), DarkHorse::SmPriceType::Market);
+		order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account_->No(), account_->Pwd(), symbol_->SymbolCode(), 0, abs(found->second->OpenQty), DarkHorse::SmPriceType::Market);
 	mainApp.Client()->NewOrder(order_req);
 }
 
@@ -800,7 +800,7 @@ void DmAccountOrderCenterWindow::OnStnClickedStaticFilledRemain()
 void DmAccountOrderCenterWindow::OnBnClickedCheckFixHoga()
 {
 	if (((CButton*)GetDlgItem(IDC_CHECK_FIX_HOGA))->GetCheck() == BST_CHECKED)
-		_OrderArea.FixedMode(true);
+		symbol_order_view_.FixedMode(true);
 	else
-		_OrderArea.FixedMode(false);
+		symbol_order_view_.FixedMode(false);
 }

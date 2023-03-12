@@ -8,8 +8,8 @@ class DmFundOrderRightWindow
 
 #pragma once
 
-#include "../../SmGrid/SmAssetArea.h"
-#include "../../SmGrid/SmSymbolArea.h"
+#include "../../View/AssetView.h"
+#include "../../View/SymbolInfoView.h"
 #include <memory>
 
 // OrderRightDialog dialog
@@ -40,8 +40,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	SmAssetArea _AssetArea;
-	SmSymbolArea _SymbolArea;
+	AssetView asset_view_;
+	SymbolInfoView symbol_info_view_;
 public:
 	void SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account);
 	void SetFund(const std::shared_ptr<DarkHorse::SmFund>& fund);

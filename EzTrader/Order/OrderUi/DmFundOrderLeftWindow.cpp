@@ -37,7 +37,7 @@ void DmFundOrderLeftWindow::DoDataExchange(CDataExchange* pDX)
 	//DDX_Control(pDX, IDC_STATIC_ACCEPTED, _AcceptedArea);
 	//DDX_Control(pDX, IDC_STATIC_FILLED, _FilledArea);
 	//DDX_Control(pDX, IDC_STATIC_FAVORITE, _FavoriteArea);
-	DDX_Control(pDX, IDC_STATIC_ACCOUNT, _AccountArea);
+	DDX_Control(pDX, IDC_STATIC_ACCOUNT, account_profit_loss_view_);
 	DDX_Control(pDX, IDC_BTN_ADD_FAV, _BtnAddFav);
 	DDX_Control(pDX, IDC_STATIC_FAV, _StaticFav);
 }
@@ -59,9 +59,9 @@ END_MESSAGE_MAP()
 
 void DmFundOrderLeftWindow::SetFundOrderWnd(SmFundOrderDialog* fund_order_wnd)
 {
-	_AcceptedGrid.SetFundOrderWnd(fund_order_wnd);
-	_PositionGrid.SetFundOrderWnd(fund_order_wnd);
-	_FavoriteGrid.SetFundOrderWnd(fund_order_wnd);
+	//_AcceptedGrid.SetFundOrderWnd(fund_order_wnd);
+	//_PositionGrid.SetFundOrderWnd(fund_order_wnd);
+	//_FavoriteGrid.SetFundOrderWnd(fund_order_wnd);
 }
 
 BOOL DmFundOrderLeftWindow::OnInitDialog()
@@ -71,8 +71,8 @@ BOOL DmFundOrderLeftWindow::OnInitDialog()
 	//_AcceptedArea.SetUp();
 	//_FilledArea.SetUp();
 	//_FavoriteArea.SetUp();
-	_AccountArea.SetUp();
-	_AccountArea.Mode(1);
+	account_profit_loss_view_.SetUp();
+	account_profit_loss_view_.Mode(1);
 
 
 
@@ -82,29 +82,6 @@ BOOL DmFundOrderLeftWindow::OnInitDialog()
 	pWnd->GetWindowRect(&rect);
 	ScreenToClient(&rect);
 
-	// Create the Windows control and attach it to the Grid object
-	_AcceptedGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID1);
-
-	pWnd = GetDlgItem(IDC_STATIC_FILLED);
-	pWnd->GetWindowRect(&rect);
-	ScreenToClient(&rect);
-
-	// Create the Windows control and attach it to the Grid object
-	_PositionGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID2);
-	//_PositionGrid.ShowWindow(SW_HIDE);
-
-	_AcceptedGrid.Mode(1);
-	_PositionGrid.Mode(1);
-
-
-	pWnd = GetDlgItem(IDC_STATIC_FAVORITE);
-	pWnd->GetWindowRect(&rect);
-	ScreenToClient(&rect);
-
-	// Create the Windows control and attach it to the Grid object
-	_FavoriteGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID3);
-
-
 	SetTimer(1, 100, NULL);
 
 	//_AcceptedGrid.UpdateAcceptedOrder();
@@ -112,12 +89,12 @@ BOOL DmFundOrderLeftWindow::OnInitDialog()
 
 	//_AcceptedGrid.StartTimer();
 
-	_FavoriteGrid.SetFavorite();
+	//_FavoriteGrid.SetFavorite();
 
 	//_AcceptedGrid.StartTimer();
 	//_PositionGrid.StartTimer();
-	_AcceptedGrid.UpdateAcceptedOrder();
-	_PositionGrid.UpdatePositionInfo();
+	//_AcceptedGrid.UpdateAcceptedOrder();
+	//_PositionGrid.UpdatePositionInfo();
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -134,9 +111,9 @@ void DmFundOrderLeftWindow::OnBnClickedBtnAddFav()
 
 void DmFundOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 {
-	_AcceptedGrid.Update();
-	_PositionGrid.Update();
-	_FavoriteGrid.Update();
+	//_AcceptedGrid.Update();
+	//_PositionGrid.Update();
+	//_FavoriteGrid.Update();
 	//_AcceptedGrid.UpdateAcceptedOrder();
 	//_PositionGrid.UpdatePositionInfo();
 	//_AccountArea.UpdateAssetInfo();
@@ -145,52 +122,52 @@ void DmFundOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 
 void DmFundOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> account)
 {
-	_AcceptedGrid.Account(account);
-	_PositionGrid.Account(account);
-	_AccountArea.Account(account);
-	_AccountArea.UpdateAssetInfo();
+	//_AcceptedGrid.Account(account);
+	//_PositionGrid.Account(account);
+	account_profit_loss_view_.Account(account);
+	account_profit_loss_view_.UpdateAssetInfo();
 }
 
 void DmFundOrderLeftWindow::SetFund(std::shared_ptr < DarkHorse::SmFund> fund)
 {
-	_AcceptedGrid.Fund(fund);
-	_PositionGrid.Fund(fund);
-	_AccountArea.Fund(fund);
-	_AccountArea.UpdateAssetInfo();
+	//_AcceptedGrid.Fund(fund);
+	//_PositionGrid.Fund(fund);
+	account_profit_loss_view_.Fund(fund);
+	account_profit_loss_view_.UpdateAssetInfo();
 }
 
 LRESULT DmFundOrderLeftWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
 {
-	_FavoriteGrid.AddSymbol(static_cast<int>(wParam));
+	//_FavoriteGrid.AddSymbol(static_cast<int>(wParam));
 	return 1;
 }
 
 void DmFundOrderLeftWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
 {
-	_AcceptedGrid.UpdateAcceptedOrder();
-	_PositionGrid.UpdatePositionInfo();
+	//_AcceptedGrid.UpdateAcceptedOrder();
+	//_PositionGrid.UpdatePositionInfo();
 }
 
 
 void DmFundOrderLeftWindow::OnBnClickedBtnCancelSel()
 {
-	_AcceptedGrid.CancelSelOrders();
+	//_AcceptedGrid.CancelSelOrders();
 }
 
 
 void DmFundOrderLeftWindow::OnBnClickedBtnCancelAll()
 {
-	_AcceptedGrid.CancelAll();
+	//_AcceptedGrid.CancelAll();
 }
 
 
 void DmFundOrderLeftWindow::OnBnClickedBtnLiqSel()
 {
-	_PositionGrid.LiqSelPositions();
+	//_PositionGrid.LiqSelPositions();
 }
 
 
 void DmFundOrderLeftWindow::OnBnClickedBtnLiqAll()
 {
-	_PositionGrid.LiqAll();
+	//_PositionGrid.LiqAll();
 }

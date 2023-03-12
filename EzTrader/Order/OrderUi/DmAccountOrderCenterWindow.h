@@ -48,7 +48,7 @@ public:
 	enum { IDD = IDD_DM_ACNT_ORDER_CENTER};
 #endif
 public:
-	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
+	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	bool Selected() const { return _Selected; }
 	void Selected(bool val);
@@ -70,10 +70,10 @@ public:
 	void OnClickSymbol(const std::string& symbol_info);
 	//CComboBox _ComboAccount;
 	CBCGPComboBox _ComboSymbol;
-	SymbolOrderView _OrderArea;
-	SymbolTickView _QuoteArea;
-	SymbolPositionView  _PositionArea;
-	SmOrderSetGrid _OrderSetGrid;
+	SymbolOrderView symbol_order_view_;
+	SymbolTickView symbol_tick_view_;
+	SymbolPositionView  symbol_position_view_;
+	SmOrderSetGrid order_set_view_;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnEnterSizeMove(WPARAM, LPARAM);
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);
@@ -112,8 +112,8 @@ private:
 	int _ValueStartRow{ 1 };
 	std::set<int> _OldHogaBuyRowIndex;
 	std::set<int> _OldHogaSellRowIndex;
-	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
-	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
+	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
+	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
 	//CExtStatusControlBar m_bar;
 	bool _Init = false;
 	bool _ShowQuoteArea = true;

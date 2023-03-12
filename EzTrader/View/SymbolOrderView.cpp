@@ -619,7 +619,7 @@ int SymbolOrderView::FindRow(const int& value) const noexcept
 
 int SymbolOrderView::FindRowFromCenterValue(std::shared_ptr<DarkHorse::SmSymbol> symbol, const int& value)
 {
-	if (!symbol || _QuoteToRowIndexMap.empty())
+	if (!symbol || _QuoteToRowIndexMap.empty() || value == 0)
 		return -1;
 
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
