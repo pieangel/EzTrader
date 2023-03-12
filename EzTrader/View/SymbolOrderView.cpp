@@ -128,6 +128,7 @@ SymbolOrderView::SymbolOrderView()
 	hoga_control_ = std::make_shared<DarkHorse::HogaControl>();
 	hoga_control_->symbol_order_view(this);
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->symbol_order_view(this);
 	product_control_ = std::make_shared<DarkHorse::ProductControl>();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 
@@ -153,7 +154,7 @@ void SymbolOrderView::update_quote()
 {
 	if (!quote_control_ || !product_control_) return;
 	const VmQuote quote = quote_control_->get_quote();
-
+	SetCenterValues();
 	set_quote_value(quote.close, SmCellType::CT_QUOTE_CLOSE);
 	set_quote_value(quote.open, SmCellType::CT_QUOTE_OPEN);
 	set_quote_value(quote.high, SmCellType::CT_QUOTE_HIGH);
@@ -976,9 +977,10 @@ void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)
 	if (!quote_control_ || !product_control_) return;
 
 	const VmQuote& quote = quote_control_->get_quote();
+	if (!quote.init) return;
 	const VmProduct& product = product_control_->get_product();
 	const int& close = quote.close;
-	const int start_value = close + (_CloseRow - _ValueStartRow) * product.int_tick_size;
+	const int start_value = close + (_CloseRow - price_start_row) * product.int_tick_size;
 	try {
 		if (make_row_map) {
 			price_to_row_.clear();

@@ -8,5 +8,6 @@ namespace DarkHorse {
 		int close{ 0 };
 		int open{ 0 };
 		int pre_day_close{ 0 };
+		bool init{ false };
 	};
 }

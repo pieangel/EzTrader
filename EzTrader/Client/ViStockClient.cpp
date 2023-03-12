@@ -479,6 +479,8 @@ void DarkHorse::ViStockClient::OnDmSymbolQuote(nlohmann::json&& quote)
 		//symbol->TotalVolume(quote["cumulative_amount"]);
 		//symbol->PreDayRate(quote["updown_rate"]);
 		//symbol->PreDayVolume(quote["preday_volume"]);
+
+		mainApp.event_hub()->process_quote_event(quote_p);
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();

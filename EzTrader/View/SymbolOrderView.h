@@ -219,6 +219,7 @@ private:
 
 	int price_start_row{ 2 };
 	int price_end_row{ 0 };
+	//bool init_quote_{ false };
 
 	CBCGPStrokeStyle _OrderStroke;
 	bool _Hover{ false };

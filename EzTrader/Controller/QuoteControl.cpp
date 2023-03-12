@@ -21,6 +21,7 @@ namespace DarkHorse {
 		quote_.open = quote->open;
 		quote_.close = quote->close;
 		quote_.pre_day_close = quote->pre_day_close;
+		quote_.init = true;
 
 		if (symbol_order_view_) symbol_order_view_->update_quote();
 	}
