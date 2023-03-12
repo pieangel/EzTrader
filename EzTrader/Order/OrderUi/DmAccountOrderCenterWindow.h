@@ -50,7 +50,7 @@ public:
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
-	bool Selected() const { return _Selected; }
+	bool Selected() const { return selected_; }
 	void Selected(bool val);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -69,7 +69,6 @@ public:
 	void SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnClickSymbol(const std::string& symbol_info);
 	//CComboBox _ComboAccount;
-	CBCGPComboBox _ComboSymbol;
 	SymbolOrderView symbol_order_view_;
 	SymbolTickView symbol_tick_view_;
 	SymbolPositionView  symbol_position_view_;
@@ -79,22 +78,28 @@ public:
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);
 
 	void SetMainDialog(DmAccountOrderWindow* main_dialog);
-	int ID() const { return _ID; }
-	void ID(int val) { _ID = val; }
+	int ID() const { return id_; }
+	void ID(int val) { id_ = val; }
 	void SetSelected(const bool& selected);
 	void OnSymbolClicked(const std::string& symbol_code);
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
 private:
+	void set_symbol(std::shared_ptr<DarkHorse::SmSymbol>symbol);
+	void set_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	std::string make_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	int add_to_symbol_combo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void init_control();
+	void init_views();
 	void init_dm_symbol();
-	void SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
-	bool _Selected = false;
+	void set_symbol_from_out(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	bool selected_ = false;
 	void UpdateOrderSettings();
 	//DarkHorse::SmOrderSettings _OrderSettings;
 	void SetCutMode();
-	int _ID{ 0 };
-	int _CutMode{ 0 };
-	bool _Resizing = false;
+	int id_{ 0 };
+	int profit_loss_cut_mode_{ 0 };
+	bool resizing_ = false;
 	///void ClearOldHoga(Hoga_Type hoga_type) const noexcept;
 	//int FindValueRow(const int& value) const noexcept;
 	/// <summary>
@@ -102,28 +107,29 @@ private:
 	/// </summary>
 	//std::map<int, std::string> _ComboIndexToSymbolMap;
 	// key : combobox index, value : symbol object
-	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> _IndexToSymbolMap;
-	int _CurrentIndex{ -1 };
+	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> index_to_symbol_;
+	std::map<std::string, int> symbol_to_index_;
+	int current_combo_index_{ -1 };
 	/// <summary>
 	/// Key : row index, Value : Quote Value in integer.
 	/// </summary>
-	std::map<int, int> _QuoteToRowIndexMap;
-	int _CloseRow{ 15 };
-	int _ValueStartRow{ 1 };
-	std::set<int> _OldHogaBuyRowIndex;
-	std::set<int> _OldHogaSellRowIndex;
+	std::map<int, int> quote_to_row_map;
+	int close_row_{ 15 };
+	int value_start_row_{ 1 };
+	std::set<int> old_hoga_buy_row;
+	std::set<int> old_hoga_sell_row;
 	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
 	//CExtStatusControlBar m_bar;
-	bool _Init = false;
-	bool _ShowQuoteArea = true;
-	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
-	void SetInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	bool init_dialog_ = false;
+	bool show_symbol_tick_view_ = true;
+	std::shared_ptr< SmSymbolTableDialog> symbol_table_dialog_ = nullptr;
+	void set_symbol_info(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void request_dm_symbol_master(const std::string symbol_code);
 
-	SmFilledRemainButton _FilledRemainButton;
-	SmRemainButton _RemainButton;
-	std::shared_ptr< SmOrderSetDialog> _OrderSetDlg = nullptr;
+	SmFilledRemainButton filled_remain_button_;
+	SmRemainButton remain_button_;
+	std::shared_ptr< SmOrderSetDialog> order_set_dialog_ = nullptr;
 
 public:
 	void SetRowWide();
@@ -133,7 +139,7 @@ public:
 	afx_msg void OnCbnSelchangeComboSymbol();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	CBCGPStatic _StaticAccountName;
-	CBCGPStatic _StaticSymbolName;
+	CBCGPStatic static_symbol_name_;
 	afx_msg void OnBnClickedCheckShowRealQuote();
 	CBCGPButton _CheckShowRealTick;
 	afx_msg void OnBnClickedButton3();
@@ -179,6 +185,7 @@ public:
 	CBCGPGroup _Group4;
 	CBCGPSpinButtonCtrl _BuyAvail;
 	CBCGPSpinButtonCtrl _SellAvail;
+	CBCGPComboBox combo_symbol_;
 	afx_msg void OnStnClickedStaticFilledRemain();
 	afx_msg void OnBnClickedCheckFixHoga();
 };

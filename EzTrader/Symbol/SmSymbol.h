@@ -80,7 +80,10 @@ namespace DarkHorse {
 		void AtmType(int val) { _AtmType = val; }
 		int RecentMonth() const { return _RecentMonth; }
 		void RecentMonth(int val) { _RecentMonth = val; }
+		bool Master_requested() const { return master_requested_; }
+		void Master_requested(bool val) { master_requested_ = val; }
 	private:
+		bool master_requested_{ false };
 		/// <summary>
 		/// 0 : future, 1 : atm , 2 : itm, 3 : otm
 		/// </summary>
