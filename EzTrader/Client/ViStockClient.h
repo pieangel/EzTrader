@@ -33,6 +33,7 @@ namespace DarkHorse {
 		void OnSymbolHoga(nlohmann::json&& arg);
 		void OnDmSymbolQuote(nlohmann::json&& arg);
 		void OnDmSymbolHoga(nlohmann::json&& arg);
+		void OnDmSymbolMaster(const std::string& symbol_code);
 
 		// 해외 실시간 시세
 		void OnRealtimeQuote(nlohmann::json&& arg);

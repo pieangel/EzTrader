@@ -73,6 +73,8 @@ namespace DarkHorse {
 		int GetAccountProfitLoss(task_arg&& arg) ;
 		int GetSymbolProfitLoss(task_arg&& arg) ;
 		int GetAcceptedOrderList(task_arg&& arg) ;
+
+
 		int GetFilledOrderList(task_arg&& arg) ;
 		int GetChartData(task_arg&& arg) ;
 		int GetChartData(SmTaskArg&& arg);
@@ -110,6 +112,9 @@ namespace DarkHorse {
 		bool Enable() const { return _Enable; }
 		void Enable(bool val) { _Enable = val; }
 	private:
+		int GetAbAcceptedOrderList(task_arg arg);
+		int GetDmAcceptedOrderList(task_arg arg);
+
 		int CheckDmAccountPassword(const std::string& account_no, const std::string& pwd);
 		int CheckAbAccountPassword(const std::string& account_no, const std::string& pwd);
 

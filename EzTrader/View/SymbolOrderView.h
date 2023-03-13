@@ -109,11 +109,14 @@ public:
 private:
 	void set_quote_value(const int value, const DarkHorse::SmCellType cell_type);
 	void set_quote_cell(const int row, const bool show_mark, const int mark_type);
+	void insert_decimal(std::string& value, const int decimal);
+	/*
 	inline void insert_decimal(std::string& value, const int decimal)
 	{
 		if (decimal <= 0) return;
 		value.insert(value.length() - decimal, 1, '.');
 	}
+	*/
 	void init_quote_control(const std::string& symbol_code);
 	void init_hoga_control(const std::string& symbol_code);
 	std::shared_ptr<DarkHorse::HogaControl> hoga_control_;

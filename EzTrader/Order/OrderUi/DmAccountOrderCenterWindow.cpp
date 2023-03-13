@@ -317,7 +317,7 @@ void DmAccountOrderCenterWindow::init_views()
 void DmAccountOrderCenterWindow::init_dm_symbol()
 {
 	const std::vector<DarkHorse::DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
-	for (int i = static_cast<int>(future_vec.size() - 1); i >= 0; --i) {
+	for (size_t i = 0; i < future_vec.size(); i++) {
 		std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
 		if (year_month_map.size() == 0) continue;
 		std::shared_ptr<DarkHorse::SmSymbol> symbol = year_month_map.begin()->second->get_first_symbol();
@@ -467,7 +467,8 @@ void DmAccountOrderCenterWindow::set_symbol_info(std::shared_ptr<DarkHorse::SmSy
 	symbol_position_view_.Symbol(symbol);
 	symbol_order_view_.Symbol(symbol);
 	symbol_tick_view_.Symbol(symbol);
-	request_dm_symbol_master(symbol->SymbolCode());
+	if (!symbol->Master_requested())
+		request_dm_symbol_master(symbol->SymbolCode());
 	mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
 }
 

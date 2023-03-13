@@ -696,7 +696,7 @@ void SymbolOrderView::SetUp()
 	mainApp.CallbackMgr()->SubscribeMasterCallback((long)this, std::bind(&SymbolOrderView::OnSymbolMasterEvent, this, _1));
 	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&SymbolOrderView::OnOrderEvent, this, _1, _2));
 
-	SetTimer(1, 10, NULL);
+	//SetTimer(1, 10, NULL);
 
 	return;
 }
@@ -971,15 +971,28 @@ void SymbolOrderView::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbo
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
 }
-
+void SymbolOrderView::insert_decimal(std::string& value, const int decimal)
+{
+	try {
+		CString msg;
+		msg.Format("value = %s\n", value.c_str());
+		TRACE(msg);
+		if (value.length() < static_cast<size_t>(decimal) || decimal <= 0) return;
+		value.insert(value.length() - decimal, 1, '.');
+	}
+	catch (const std::exception& e) {
+		const std::string& error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+}
 void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)
 {
 	if (!quote_control_ || !product_control_) return;
 
 	const VmQuote& quote = quote_control_->get_quote();
-	if (!quote.init) return;
 	const VmProduct& product = product_control_->get_product();
 	const int& close = quote.close;
+	if (close == 0) return;
 	const int start_value = close + (_CloseRow - price_start_row) * product.int_tick_size;
 	try {
 		if (make_row_map) {

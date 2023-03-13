@@ -340,6 +340,10 @@ std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeAccept
 		req["account_name"] = account.second->Name();
 		req["password"] = account.second->Pwd();
 		req["type"] = account.second->Type();
+		if (account.second->Type() == "1")
+			req["tr_code"] = "g11004.AQ0401%";
+		else
+			req["tr_code"] = "g11002.DQ0104&";
 		req["requested"] = false;
 		task_info->argMap[task_id] = std::move(req);
 	}

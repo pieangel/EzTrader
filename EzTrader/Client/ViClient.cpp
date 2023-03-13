@@ -186,43 +186,61 @@ void ViClient::OnGetMsg(LPCTSTR strCode, LPCTSTR strMsg)
 
 void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 {
-	CString strLog;
-	strLog.Format("RQID[%d][%s][%s]", nRqId, strCode, strMsg);
-	CString code(strCode);
-	if (code.Compare("0332") == 0) {
-		const int res_code = std::stoi((const char*)code);
-		OnTaskComplete(res_code);
-	}
-
-	auto it = _ChartReqMap.find(nRqId);
-	if (it != _ChartReqMap.end()) {
-		if (code.Compare("91001") == 0 || code.Compare("-2712") == 0) {
-			_ChartReqMap.erase(it);
-			AfxMessageBox(strMsg);
-		}
-	}
-
-	
-
-	if (nRqId == _CheckPwdReqId) {
+	try {
+		CString strLog;
 		auto found = _ReqMap.find(nRqId);
 		if (found != _ReqMap.end()) {
-			const std::string account_no = std::any_cast<std::string>(found->second["account_no"]);
-			const int result = _ttoi(code) == 0 ? 1 : 0;
-			auto account = mainApp.AcntMgr()->FindAccount(account_no);
-			if (account) {
-				const int account_id = account->Id();
-				account->Confirm(result);
-				mainApp.CallbackMgr()->OnPasswordConfirmed(account_id, result);
+			const auto& argument_map = found->second;
+			if (argument_map.contains("tr_code")) {
+				const std::string tr_code = std::any_cast<std::string>(found->second["tr_code"]);
+				strLog.Format("RQID[%d][%s][%s]", nRqId, tr_code.c_str(), strMsg);
+			}
+			else {
+				strLog.Format("RQID[%d][%s][%s]", nRqId, strCode, strMsg);
 			}
 		}
-		_CheckPwdReqId = -1;
-	}
+		strLog.Format("RQID[%d][%s][%s]", nRqId, strCode, strMsg);
+		CString code(strCode);
+		if (code.Compare("0332") == 0) {
+			const int res_code = std::stoi((const char*)code);
+			OnTaskComplete(nRqId);
+		}
 
-	mainApp.TotalOrderMgr()->ServerMsg = strMsg;
-	mainApp.CallbackMgr()->OnServerMsg(_ttoi(strCode));
+		auto it = _ChartReqMap.find(nRqId);
+		if (it != _ChartReqMap.end()) {
+			if (code.Compare("91001") == 0 || code.Compare("-2712") == 0) {
+				_ChartReqMap.erase(it);
+				AfxMessageBox(strMsg);
+			}
+		}
+
 	
-	LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
+
+		if (nRqId == _CheckPwdReqId) {
+			auto found = _ReqMap.find(nRqId);
+			if (found != _ReqMap.end()) {
+				const std::string account_no = std::any_cast<std::string>(found->second["account_no"]);
+				const int result = _ttoi(code) == 0 ? 1 : 0;
+				auto account = mainApp.AcntMgr()->FindAccount(account_no);
+				if (account) {
+					const int account_id = account->Id();
+					account->Confirm(result);
+					mainApp.CallbackMgr()->OnPasswordConfirmed(account_id, result);
+				}
+			}
+			_CheckPwdReqId = -1;
+		}
+
+		mainApp.TotalOrderMgr()->ServerMsg = strMsg;
+		mainApp.CallbackMgr()->OnServerMsg(_ttoi(strCode));
+	
+		LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
+
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
 }
 
 void ViClient::DoDataExchange(CDataExchange* pDX)
@@ -711,7 +729,7 @@ int DarkHorse::ViClient::GetSymbolProfitLoss(task_arg&& arg)
 	return -1;
 }
 
-int DarkHorse::ViClient::GetAcceptedOrderList(task_arg&& arg)
+int DarkHorse::ViClient::GetAbAcceptedOrderList(task_arg arg)
 {
 	try {
 		const std::string account_no = std::any_cast<std::string>(arg["account_no"]);
@@ -737,9 +755,57 @@ int DarkHorse::ViClient::GetAcceptedOrderList(task_arg&& arg)
 		const CString sInput = reqString.c_str();
 		const CString strNextKey = _T("");
 		const int nRqID = m_CommAgent.CommRqData(DefAbAccepted, sInput, sInput.GetLength(), strNextKey);
+		//arg["tr_code"] = std::string(DefAbAccepted);
 		_ReqMap[nRqID] = arg;
 
 		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+int DarkHorse::ViClient::GetDmAcceptedOrderList(task_arg arg)
+{
+	try {
+		const std::string account_no = std::any_cast<std::string>(arg["account_no"]);
+		const std::string password = std::any_cast<std::string>(arg["password"]);
+
+		std::string reqString;
+		std::string temp;
+		temp = VtStringUtil::PadRight(account_no, ' ', 11);
+		reqString.append(temp);
+		reqString.append(_T("001"));
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+
+
+		CString sTrCode = "g11002.DQ0104&";
+		CString sInput = reqString.c_str();
+		CString strNextKey = _T("");
+		int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+		//arg["tr_code"] = std::string(sTrCode);
+		_ReqMap[nRqID] = arg;
+
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+int DarkHorse::ViClient::GetAcceptedOrderList(task_arg&& arg)
+{
+	try {
+		const std::string type = std::any_cast<std::string>(arg["type"]);
+		if (type == "1") GetAbAcceptedOrderList(arg);
+		else if (type == "9") GetDmAcceptedOrderList(arg);
+		return 1;
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
@@ -2403,6 +2469,8 @@ void DarkHorse::ViClient::OnDmSymbolMaster(const CString& sTrCode, const LONG& n
 	quote["preday_volume"] = 0;
 
 	if (auto wp = _Client.lock()) {
+		const std::string symbol_code = static_cast<const char*>(strSymbolCode.Trim());
+		wp->OnDmSymbolMaster(symbol_code);
 		wp->OnDmSymbolQuote(std::move(quote));
 	}
 

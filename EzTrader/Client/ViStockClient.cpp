@@ -464,6 +464,11 @@ void DarkHorse::ViStockClient::OnSymbolQuote(nlohmann::json&& quote)
 	}
 }
 
+void DarkHorse::ViStockClient::OnDmSymbolMaster(const std::string& symbol_code)
+{
+	std::shared_ptr<SmSymbol> symbol_p = mainApp.SymMgr()->FindSymbol(symbol_code);
+	if (symbol_p) symbol_p->Master_requested(true);
+}
 
 void DarkHorse::ViStockClient::OnDmSymbolQuote(nlohmann::json&& quote)
 {
