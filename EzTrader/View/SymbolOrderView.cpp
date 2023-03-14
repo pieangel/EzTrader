@@ -765,7 +765,7 @@ void SymbolOrderView::ArrangeCenterValue()
 	ClearOldHoga();
 	ClearOrders();
 
-	_CloseRow = static_cast<int>(_Grid->RowCount() / 2) - 2;
+	_CloseRow = get_center_row();
 
 	SetCenterValues();
 
@@ -937,40 +937,6 @@ void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
 	_Grid->SetColWidth(DarkHorse::OrderGridHeader::QUOTE, wnd_width - width_sum);
 }
 
-void SymbolOrderView::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbol, const bool& make_row_map)
-{
-	if (!quote_control_ || !product_control_) return;
-
-	const VmQuote& quote = quote_control_->get_quote();
-	const VmProduct& product = product_control_->get_product();
-	const int& close = quote.close;
-	const int start_value = close + (_CloseRow - _ValueStartRow) * product.int_tick_size;
-	try {
-		if (make_row_map) {
-			price_to_row_.clear();
-			row_to_price_.clear();
-		}
-		int value = start_value;
-		for (int i = 2; i < price_end_row; i++) {
-			std::string value_string;
-			value_string = std::format("{0}", value);
-			insert_decimal(value_string, product.decimal);
-			_Grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, value_string);
-			price_to_row_[value] = i;
-			row_to_price_[i] = value;
-
-			value -= product.int_tick_size;
-		}
-
-		SetQuoteColor();
-
-		_CenterValued = true;
-	}
-	catch (const std::exception& e) {
-		const std::string& error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
-	}
-}
 void SymbolOrderView::insert_decimal(std::string& value, const int decimal)
 {
 	try {
@@ -1172,10 +1138,13 @@ void SymbolOrderView::DrawArrow(const CBCGPPoint& start_point, const CBCGPPoint&
 
 	m_pGM->FillGeometry(CBCGPPolygonGeometry(arrow_array), _Resource.SelectedBrush);
 }
-
+int SymbolOrderView::get_center_row()
+{
+	return static_cast<int>(_Grid->RowCount() / 2);
+}
 void SymbolOrderView::ProcessFixedMode()
 {
-	_CloseRow = static_cast<int>(_Grid->RowCount() / 2);
+	_CloseRow = get_center_row();
 
 	SetCenterValues(false);
 

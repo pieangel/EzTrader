@@ -85,7 +85,6 @@ public:
 	void CancelBuyOrder();
 	// 중앙 값을 정한다. 중앙 값은 최초에 심볼이 결정될 때 한번, 
 	// 그리고 전체 크기가 늘어나거나 줄어들때(대화상자를 늘이거나 줄일때) 다시 설정해 준다.
-	void SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbol, const bool& make_row_map = true);
 	void SetCenterValues(const bool& make_row_map = true);
 	bool Selected() const { return _Selected; }
 	void Selected(bool val) { _Selected = val; }
@@ -107,16 +106,10 @@ public:
 
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 private:
+	int get_center_row();
 	void set_quote_value(const int value, const DarkHorse::SmCellType cell_type);
 	void set_quote_cell(const int row, const bool show_mark, const int mark_type);
 	void insert_decimal(std::string& value, const int decimal);
-	/*
-	inline void insert_decimal(std::string& value, const int decimal)
-	{
-		if (decimal <= 0) return;
-		value.insert(value.length() - decimal, 1, '.');
-	}
-	*/
 	void init_quote_control(const std::string& symbol_code);
 	void init_hoga_control(const std::string& symbol_code);
 	std::shared_ptr<DarkHorse::HogaControl> hoga_control_;
