@@ -45,6 +45,9 @@ void DmAccountOrderLeftWindow::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_OPTION, option_view_);
 	DDX_Control(pDX, IDC_COMBO_OPTION_MARKET, combo_option_market_);
 	DDX_Control(pDX, IDC_COMBO_OPTION_MONTH, combo_option_month_);
+	DDX_Control(pDX, IDC_RADIO_CLOSE, radio_close_);
+	DDX_Control(pDX, IDC_RADIO_POSITION, radio_position_);
+	DDX_Control(pDX, IDC_RADIO_EXPECTED, ratio_expected_);
 }
 
 void DmAccountOrderLeftWindow::set_option_view()
@@ -81,6 +84,9 @@ BEGIN_MESSAGE_MAP(DmAccountOrderLeftWindow, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTN_LIQ_ALL, &DmAccountOrderLeftWindow::OnBnClickedBtnLiqAll)
 	ON_CBN_SELCHANGE(IDC_COMBO_OPTION_MARKET, &DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMarket)
 	ON_CBN_SELCHANGE(IDC_COMBO_OPTION_MONTH, &DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMonth)
+	ON_BN_CLICKED(IDC_RADIO_CLOSE, &DmAccountOrderLeftWindow::OnBnClickedRadioClose)
+	ON_BN_CLICKED(IDC_RADIO_POSITION, &DmAccountOrderLeftWindow::OnBnClickedRadioPosition)
+	ON_BN_CLICKED(IDC_RADIO_EXPECTED, &DmAccountOrderLeftWindow::OnBnClickedRadioExpected)
 END_MESSAGE_MAP()
 
 
@@ -106,6 +112,7 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 	init_option_market();
 	set_option_view();
 
+	radio_close_.SetCheck(BST_CHECKED);
 	SetTimer(1, 100, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -206,4 +213,22 @@ void DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMonth()
 
 	year_month_index = combo_option_month_.GetCurSel();
 	set_option_view();
+}
+
+
+void DmAccountOrderLeftWindow::OnBnClickedRadioClose()
+{
+	// TODO: Add your control notification handler code here
+}
+
+
+void DmAccountOrderLeftWindow::OnBnClickedRadioPosition()
+{
+	// TODO: Add your control notification handler code here
+}
+
+
+void DmAccountOrderLeftWindow::OnBnClickedRadioExpected()
+{
+	// TODO: Add your control notification handler code here
 }

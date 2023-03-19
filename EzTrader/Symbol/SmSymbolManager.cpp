@@ -14,6 +14,10 @@
 #include "SmProductYearMonth.h"
 #include "../Quote/SmQuoteManager.h"
 #include "../Quote/SmQuote.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 namespace DarkHorse {
 int SmSymbolManager::_Id = 0;
 
@@ -232,6 +236,10 @@ void SmSymbolManager::read_domestic_productfile()
 		std::string file_name = "dm_product.cod";
 		//TRACE(file_name.c_str());
 		std::string full_name = file_path + file_name;
+		if (!fs::exists(full_name)) {
+			AfxMessageBox("국내시장 제품 정보 파일(dm_product.cod)이 없습니다!");
+			return;
+		}
 		std::ifstream infile(full_name);
 		std::string line;
 		std::string value;

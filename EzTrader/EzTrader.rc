@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 한국어(대한민국) resources
+// Korean (Korea) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -974,8 +974,8 @@ BEGIN
     LTEXT           "계좌현황",IDC_STATIC,4,7,33,8
     LTEXT           "자산현황",IDC_STATIC,2,81,33,8
     CONTROL         "현재가",IDC_RADIO_CLOSE,"Button",BS_AUTORADIOBUTTON,2,170,38,10
-    CONTROL         "잔고",IDC_RADIO_POSITION,"Button",BS_AUTORADIOBUTTON,48,170,31,10
-    CONTROL         "예상가",IDC_RADIO_EXPECTED,"Button",BS_AUTORADIOBUTTON,92,170,38,10
+    CONTROL         "잔고",IDC_RADIO_POSITION,"Button",BS_AUTORADIOBUTTON,50,170,31,10
+    CONTROL         "예상가",IDC_RADIO_EXPECTED,"Button",BS_AUTORADIOBUTTON,91,170,38,10
     COMBOBOX        IDC_COMBO_OPTION_MARKET,0,257,68,218,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_COMBO_OPTION_MONTH,70,257,62,222,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
 END
@@ -2192,12 +2192,12 @@ BEGIN
     ID_USER_TOOL10          "Activates user-defined tool\nUser Tool"
 END
 
-#endif    // 한국어(대한민국) resources
+#endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 영어(미국) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -2214,7 +2214,7 @@ IDR_MAINFRAME           ICON                    "RES\\DarkHorse.ico"
 
 IDR_DarkHorseTYPE       ICON                    "RES\\DarkHorseDoc.ico"
 
-#endif    // 영어(미국) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

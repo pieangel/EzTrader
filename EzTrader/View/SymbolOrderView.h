@@ -106,6 +106,10 @@ public:
 
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 private:
+	int find_close_row_from_end_row();
+	int find_zero_value_row();
+	int find_row(const int target_value);
+	int find_start_value();
 	int get_center_row();
 	void set_quote_value(const int value, const DarkHorse::SmCellType cell_type);
 	void set_quote_cell(const int row, const bool show_mark, const int mark_type);
@@ -181,8 +185,7 @@ private:
 	// 현재가가 변해도 이 값은 변화가 없고 마우스 휠을 사용하여 이 값이 변할 때
 	// 다시 현재가를 기준으로 다시 만든다. 마우스 휠을 움직일 때 이 행은 항상 현재가를 가르키지만
 	// 마우스 휠이 멈췄을 때는 더이상 현재가가 있는 행을 가르키지 않는다. 
-	int _CloseRow{ 13 };
-	int _ValueStartRow{ 1 };
+	int close_row_{ 13 };
 	std::set<int> _OldHogaBuyRowIndex;
 	std::set<int> _OldHogaSellRowIndex;
 	std::set<int> _OldOrderBuyRowIndex;
@@ -213,10 +216,8 @@ private:
 
 	bool _Selected{ false };
 
-	int price_start_row{ 2 };
-	int price_end_row{ 0 };
-	//bool init_quote_{ false };
-
+	int price_start_row_{ 2 };
+	int price_end_row_{ 0 };
 	CBCGPStrokeStyle _OrderStroke;
 	bool _Hover{ false };
 	int _OrderStartCol{ -1 };
@@ -225,7 +226,8 @@ private:
 	bool _DraggingOrder{ false };
 	bool m_bTrackMouse{ false };
 	bool _CenterValued{ false };
-	void IncreaseCloseRow(const int& delta);
+	void increase_close_row(const int& delta);
+	void set_close_row();
 	void ClearOldSelectedCells();
 	void DrawMovingRect();
 

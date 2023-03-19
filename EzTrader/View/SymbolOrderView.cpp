@@ -91,7 +91,7 @@ BOOL SymbolOrderView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	ClearOrders();
 	ClearStopOrders();
 
-	IncreaseCloseRow(distance);
+	increase_close_row(distance);
 
 	SetCenterValues();
 
@@ -175,48 +175,48 @@ void SymbolOrderView::update_hoga()
 	for (int i = 0; i < 5; i++) {
 		int row_index = FindRow(hoga.Ary[i].SellPrice);
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_CNT);
-		if (pCell && row_index > 1 && row_index < price_end_row) {
+		if (pCell && row_index > 1 && row_index < price_end_row_) {
 			pCell->Text(std::to_string(hoga.Ary[i].SellCnt));
 			pCell->CellType(SmCellType::CT_HOGA_SELL);
 			_OldHogaSellRowIndex.insert(row_index);
 		}
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_QTY);
-		if (pCell && row_index > 1 && row_index < price_end_row) {
+		if (pCell && row_index > 1 && row_index < price_end_row_) {
 			pCell->CellType(SmCellType::CT_HOGA_SELL);
 			pCell->Text(std::to_string(hoga.Ary[i].SellQty));
 		}
 		row_index = FindRow(hoga.Ary[i].BuyPrice);
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_QTY);
-		if (pCell && row_index > 1 && row_index < price_end_row) {
+		if (pCell && row_index > 1 && row_index < price_end_row_) {
 			pCell->CellType(SmCellType::CT_HOGA_BUY);
 			pCell->Text(std::to_string(hoga.Ary[i].BuyQty));
 			_OldHogaBuyRowIndex.insert(row_index);
 		}
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_CNT);
-		if (pCell && row_index > 1 && row_index < price_end_row) {
+		if (pCell && row_index > 1 && row_index < price_end_row_) {
 			pCell->CellType(SmCellType::CT_HOGA_BUY);
 			pCell->Text(std::to_string(hoga.Ary[i].BuyCnt));
 		}
 	}
 
-	pCell = _Grid->FindCell(price_end_row, DarkHorse::OrderGridHeader::SELL_CNT);
+	pCell = _Grid->FindCell(price_end_row_, DarkHorse::OrderGridHeader::SELL_CNT);
 	if (pCell) pCell->Text(std::to_string(hoga.TotSellCnt));
-	pCell = _Grid->FindCell(price_end_row, DarkHorse::OrderGridHeader::SELL_QTY);
+	pCell = _Grid->FindCell(price_end_row_, DarkHorse::OrderGridHeader::SELL_QTY);
 	if (pCell) pCell->Text(std::to_string(hoga.TotSellQty));
-	pCell = _Grid->FindCell(price_end_row, DarkHorse::OrderGridHeader::BUY_CNT);
+	pCell = _Grid->FindCell(price_end_row_, DarkHorse::OrderGridHeader::BUY_CNT);
 	if (pCell) pCell->Text(std::to_string(hoga.TotBuyCnt));
-	pCell = _Grid->FindCell(price_end_row, DarkHorse::OrderGridHeader::BUY_QTY);
+	pCell = _Grid->FindCell(price_end_row_, DarkHorse::OrderGridHeader::BUY_QTY);
 	if (pCell) pCell->Text(std::to_string(hoga.TotBuyQty));
 
 	const int delta_hoga = hoga.TotBuyQty - hoga.TotSellQty;
-	pCell = _Grid->FindCell(price_end_row, DarkHorse::OrderGridHeader::QUOTE);
+	pCell = _Grid->FindCell(price_end_row_, DarkHorse::OrderGridHeader::QUOTE);
 	if (pCell) pCell->Text(std::to_string(delta_hoga));
 
-	_TotalHogaMap.insert(std::make_pair(price_end_row, DarkHorse::OrderGridHeader::SELL_CNT));
-	_TotalHogaMap.insert(std::make_pair(price_end_row, DarkHorse::OrderGridHeader::SELL_QTY));
-	_TotalHogaMap.insert(std::make_pair(price_end_row, DarkHorse::OrderGridHeader::QUOTE));
-	_TotalHogaMap.insert(std::make_pair(price_end_row, DarkHorse::OrderGridHeader::BUY_CNT));
-	_TotalHogaMap.insert(std::make_pair(price_end_row, DarkHorse::OrderGridHeader::BUY_QTY));
+	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderGridHeader::SELL_CNT));
+	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderGridHeader::SELL_QTY));
+	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderGridHeader::QUOTE));
+	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderGridHeader::BUY_CNT));
+	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderGridHeader::BUY_QTY));
 
 	Invalidate(FALSE);
 }
@@ -263,13 +263,13 @@ void SymbolOrderView::SetStopOrder()
 		int row_index = FindRow(it->second->OrderPrice);
 		sell_stop_count += it->second->OrderAmount;
 		std::shared_ptr<SmCell> pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_STOP);
-		if (pCell && row_index > 1 && row_index < price_end_row) {
+		if (pCell && row_index > 1 && row_index < price_end_row_) {
 			pCell->AddOrderReq(it->second);
 			pCell->Text(std::to_string(pCell->GetOrderReqCount()));
 			_OldStopSellRowIndex.insert(row_index);
 
 			std::shared_ptr<SmCell> pOrderCell = _Grid->FindCell(row_index + it->second->CutSlip, DarkHorse::OrderGridHeader::SELL_ORDER);
-			if (pOrderCell && pOrderCell->Row() > 1 && pOrderCell->Row() < price_end_row) {
+			if (pOrderCell && pOrderCell->Row() > 1 && pOrderCell->Row() < price_end_row_) {
 				_StopRectVector.push_back(std::make_pair(pCell->GetCellRect(), pOrderCell->GetCellRect()));
 			}
 		}
@@ -285,13 +285,13 @@ void SymbolOrderView::SetStopOrder()
 		int row_index = FindRow(it->second->OrderPrice);
 		buy_stop_count += it->second->OrderAmount;
 		std::shared_ptr<SmCell> pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_STOP);
-		if (pCell && row_index > 1 && row_index < price_end_row) {
+		if (pCell && row_index > 1 && row_index < price_end_row_) {
 			pCell->AddOrderReq(it->second);
 			pCell->Text(std::to_string(pCell->GetOrderReqCount()));
 			_OldStopBuyRowIndex.insert(row_index);
 
 			std::shared_ptr<SmCell> pOrderCell = _Grid->FindCell(row_index - it->second->CutSlip, DarkHorse::OrderGridHeader::BUY_ORDER);
-			if (pOrderCell && pOrderCell->Row() > 1 && pOrderCell->Row() < price_end_row) {
+			if (pOrderCell && pOrderCell->Row() > 1 && pOrderCell->Row() < price_end_row_) {
 				_StopRectVector.push_back(std::make_pair(pCell->GetCellRect(), pOrderCell->GetCellRect()));
 			}
 		}
@@ -317,7 +317,7 @@ void SymbolOrderView::SetOrder()
 		else sell_count++;
 
 		int row_index = FindRow(order->OrderPrice);
-		if (row_index > 1 && row_index < price_end_row) {
+		if (row_index > 1 && row_index < price_end_row_) {
 			if (order->PositionType == SmPositionType::Buy) {
 				cell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_ORDER);
 				if (cell) {
@@ -469,6 +469,7 @@ int SymbolOrderView::FindRowFromCenterValue(const int& value)
 	if (price_to_row_.empty() || value == 0) return -1;
 
 	const int int_tick_size = product_control_->get_product().int_tick_size;
+	if (int_tick_size == 0) return -1;
 	auto it = price_to_row_.find(value);
 	if (it != price_to_row_.end()) { // 값이 보이는 범위 안에 있을 때
 		return it->second;
@@ -514,10 +515,10 @@ void SymbolOrderView::SetQuoteColor()
 	if (!quote_control_) return;
 
 	const VmQuote quote = quote_control_->get_quote();
-	int lowRow = FindRowFromCenterValue(quote.low);
-	int highRow = FindRowFromCenterValue(quote.high);
-	int closeRow = FindRowFromCenterValue(quote.close);
-	int openRow = FindRowFromCenterValue(quote.open);
+	int lowRow = find_row(quote.low);
+	int highRow = find_row(quote.high);
+	int closeRow = find_row(quote.close);
+	int openRow = find_row(quote.open);
 
 	if (quote.close > quote.open) { // 양봉
 		for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
@@ -696,7 +697,7 @@ void SymbolOrderView::SetUp()
 	mainApp.CallbackMgr()->SubscribeMasterCallback((long)this, std::bind(&SymbolOrderView::OnSymbolMasterEvent, this, _1));
 	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&SymbolOrderView::OnOrderEvent, this, _1, _2));
 
-	//SetTimer(1, 10, NULL);
+	SetTimer(1, 10, NULL);
 
 	return;
 }
@@ -715,8 +716,8 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	ClearOldHoga();
 	_Grid->ReleaseOrderButtons(_ButtonMap);
 	const int extra_height = _Grid->RecalRowCount(height, false);
-	price_start_row = 2;
-	price_end_row = _Grid->RowCount() - 2;
+	price_start_row_ = 2;
+	price_end_row_ = _Grid->RowCount() - 2;
 
 
 	_Grid->CreateGrids();
@@ -765,7 +766,7 @@ void SymbolOrderView::ArrangeCenterValue()
 	ClearOldHoga();
 	ClearOrders();
 
-	_CloseRow = get_center_row();
+	close_row_ = get_center_row();
 
 	SetCenterValues();
 
@@ -955,31 +956,25 @@ void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)
 {
 	if (!quote_control_ || !product_control_) return;
 
-	const VmQuote& quote = quote_control_->get_quote();
-	const VmProduct& product = product_control_->get_product();
-	const int& close = quote.close;
+	const int& close = quote_control_->get_quote().close;
 	if (close == 0) return;
-	const int start_value = close + (_CloseRow - price_start_row) * product.int_tick_size;
+	const int start_value = find_start_value();
 	try {
 		if (make_row_map) {
 			price_to_row_.clear();
 			row_to_price_.clear();
 		}
-		int value = start_value;
-		for (int i = 2; i < price_end_row; i++) {
+		int next_value = start_value;
+		for (int i = price_start_row_; i < price_end_row_; i++) {
 			std::string value_string;
-			value_string = std::format("{0}", value);
-			insert_decimal(value_string, product.decimal);
+			value_string = std::format("{0}", next_value);
+			insert_decimal(value_string, product_control_->get_product().decimal);
 			_Grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, value_string);
-			price_to_row_[value] = i;
-			row_to_price_[i] = value;
+			price_to_row_[next_value] = i;
+			row_to_price_[i] = next_value;
 
-			value -= product.int_tick_size;
+			next_value = product_control_->get_next_down_value(next_value);
 		}
-
-		SetQuoteColor();
-
-		_CenterValued = true;
 	}
 	catch (const std::exception& e) {
 		const std::string& error = e.what();
@@ -1138,13 +1133,88 @@ void SymbolOrderView::DrawArrow(const CBCGPPoint& start_point, const CBCGPPoint&
 
 	m_pGM->FillGeometry(CBCGPPolygonGeometry(arrow_array), _Resource.SelectedBrush);
 }
+
+int SymbolOrderView::find_close_row_from_end_row()
+{
+	const int close_value = quote_control_->get_quote().close;
+	int next_value = 0;
+	int target_row = price_end_row_;
+
+	do {
+		next_value = product_control_->get_next_up_value(next_value);
+		target_row--;
+	} while (next_value != close_value);
+
+	return target_row;
+}
+
+int SymbolOrderView::find_zero_value_row()
+{
+	int next_value = quote_control_->get_quote().close;
+	int target_row = close_row_;
+
+	do {
+		next_value = product_control_->get_next_down_value(next_value);
+		target_row++;
+	} while (next_value != 0);
+
+	return target_row;
+}
+
+int SymbolOrderView::find_row(const int target_value)
+{
+	int next_value = quote_control_->get_quote().close;
+	int target_row = close_row_;
+
+	if (next_value == target_value) return target_row;
+	else if (target_value < next_value) {
+		do {
+			next_value = product_control_->get_next_down_value(next_value);
+			target_row++;
+		} while (next_value != target_value);
+	}
+	else {
+		do {
+			next_value = product_control_->get_next_up_value(next_value);
+			target_row--;
+		} while (next_value != target_value);
+	}
+
+	return target_row;
+}
+
+int SymbolOrderView::find_start_value()
+{
+	if (!quote_control_ || !product_control_) return 0;
+
+	const int& close = quote_control_->get_quote().close;
+	if (close == 0) return 0;
+	int target_value = close;
+	int target_row = close_row_;
+	if (price_start_row_ == close_row_) return target_value;
+	else if (price_start_row_ < close_row_) { // up value
+		do {
+			target_value = product_control_->get_next_up_value(target_value);
+			target_row--;
+		} while(target_row != price_start_row_);
+	}
+	else { //down value.
+		do {
+			target_value = product_control_->get_next_down_value(target_value);
+			target_row++;
+		} while (target_row != price_start_row_);
+	}
+
+	return target_value;
+}
+
 int SymbolOrderView::get_center_row()
 {
 	return static_cast<int>(_Grid->RowCount() / 2);
 }
 void SymbolOrderView::ProcessFixedMode()
 {
-	_CloseRow = get_center_row();
+	close_row_ = get_center_row();
 
 	SetCenterValues(false);
 
@@ -1258,12 +1328,16 @@ void SymbolOrderView::CreateResource()
 	_Resource.QuoteNumberFormat = fmt2;
 }
 
-void SymbolOrderView::IncreaseCloseRow(const int& delta)
+void SymbolOrderView::increase_close_row(const int& delta)
 {
-	_CloseRow += delta;
-	if (!_Symbol) return;
+	close_row_ += delta;
+	if (quote_control_->get_quote().close == 0) return;
+	_Grid->CloseRow(close_row_);
+}
 
-	_Grid->CloseRow(_CloseRow);
+void SymbolOrderView::set_close_row()
+{
+	if (quote_control_->get_quote().close == 0) return;
 }
 
 void SymbolOrderView::ClearOldSelectedCells()

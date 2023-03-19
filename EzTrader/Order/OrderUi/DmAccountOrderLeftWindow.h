@@ -91,6 +91,13 @@ public:
 	CBCGPComboBox combo_option_month_;
 	afx_msg void OnCbnSelchangeComboOptionMarket();
 	afx_msg void OnCbnSelchangeComboOptionMonth();
+	afx_msg void OnBnClickedRadioClose();
+	afx_msg void OnBnClickedRadioPosition();
+	afx_msg void OnBnClickedRadioExpected();
+
+	CBCGPButton radio_close_;
+	CBCGPButton radio_position_;
+	CBCGPButton ratio_expected_;
 };
 
 
