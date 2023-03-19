@@ -500,13 +500,14 @@
 #define ID_32928                        32928
 #define ID_32929                        32929
 #define ID_32930                        32930
+#define ID_DM_ACNT_ORDER                32931
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        219
-#define _APS_NEXT_COMMAND_VALUE         32931
+#define _APS_NEXT_COMMAND_VALUE         32932
 #define _APS_NEXT_CONTROL_VALUE         1163
 #define _APS_NEXT_SYMED_VALUE           119
 #endif

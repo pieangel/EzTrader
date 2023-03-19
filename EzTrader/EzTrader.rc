@@ -1797,7 +1797,7 @@ BEGIN
         MENUITEM "복수주문일괄주문창",                   ID_COMPLEX_ORDER
         MENUITEM "미니잔고",                        ID_ORDER_REMAIN
         MENUITEM "체결내역",                        ID_FILLED_LIST
-        MENUITEM "DomesticAccountOrder",        ID_32927
+        MENUITEM "국내주문",                        ID_DM_ACNT_ORDER
         MENUITEM "DomesticAccountPosition",     ID_32928
     END
     POPUP "펀드", INACTIVE
@@ -1845,7 +1845,7 @@ BEGIN
         MENUITEM "복수주문일괄주문창",                   ID_COMPLEX_ORDER
         MENUITEM "미니잔고",                        ID_ORDER_REMAIN
         MENUITEM "체결내역",                        ID_FILLED_LIST
-        MENUITEM "DomesticAccountOrder",        ID_32927
+        MENUITEM "국내주문",                        ID_DM_ACNT_ORDER
         MENUITEM "DomesticAccountPosition",     ID_32928
     END
     POPUP "펀드", INACTIVE

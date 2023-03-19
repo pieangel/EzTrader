@@ -265,6 +265,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_MULTICOLOR_CHART, &CMainFrame::OnMulticolorChart)
 	ON_COMMAND(ID_32927, &CMainFrame::OnDomesticAccountOrder)
 	ON_COMMAND(ID_32929, &CMainFrame::OnDomesticFundOrder)
+	ON_COMMAND(ID_DM_ACNT_ORDER, &CMainFrame::OnDmAcntOrder)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1239,4 +1240,13 @@ void CMainFrame::OnDomesticFundOrder()
 	fund_order_wnd->Create(IDD_DM_FUND_ORDER_MAIN, this);
 	dm_fund_order_wnd_map_[fund_order_wnd->GetSafeHwnd()] = fund_order_wnd;
 	fund_order_wnd->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnDmAcntOrder()
+{
+	std::shared_ptr<DmAccountOrderWindow> acnt_order_wnd = std::make_shared<DmAccountOrderWindow>();
+	acnt_order_wnd->Create(IDD_DM_ACNT_ORDER_MAIN, this);
+	dm_account_order_wnd_map_[acnt_order_wnd->GetSafeHwnd()] = acnt_order_wnd;
+	acnt_order_wnd->ShowWindow(SW_SHOW);
 }
