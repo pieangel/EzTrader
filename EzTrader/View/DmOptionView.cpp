@@ -20,6 +20,7 @@
 
 #include <functional>
 #include "../Fund/SmFund.h"
+#include "../Event/EventHub.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -31,6 +32,7 @@ BEGIN_MESSAGE_MAP(DmOptionView, CBCGPStatic)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
 	ON_WM_MOUSEWHEEL()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 DmOptionView::DmOptionView()
@@ -163,7 +165,7 @@ void DmOptionView::set_option_view(
 
 void DmOptionView::set_option_view()
 {
-	set_strike(call_symbol_vector_);
+	set_strike(call_symbol_vector_, put_symbol_vector_);
 	Invalidate();
 }
 
@@ -215,28 +217,52 @@ void DmOptionView::set_strike_start_index(const int distance)
 		strike_start_index_ = diff - 2;
 }
 
-void DmOptionView::set_strike(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec)
+void DmOptionView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if (symbol_vec.size() == 0) return;
-	symbol_index_map_.clear();
+	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
+	if (cell_pos.second == 0) {
+		auto it = call_symbol_map_.find(cell_pos);
+		if (it == call_symbol_map_.end()) return;
+
+		mainApp.event_hub()->process_symbol_event(it->second);
+	}
+	else if (cell_pos.second == 2) {
+		auto it = put_symbol_map_.find(cell_pos);
+		if (it == put_symbol_map_.end()) return;
+
+		mainApp.event_hub()->process_symbol_event(it->second);
+	}
+	CBCGPStatic::OnLButtonDown(nFlags, point);
+}
+
+void DmOptionView::set_strike(
+	const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& call_symbol_vec,
+	const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& put_symbol_vec
+)
+{
+	if (call_symbol_vec.empty() || put_symbol_vector_.empty()) return;
+	call_symbol_map_.clear();
+	put_symbol_map_.clear();
 	for (int i = 1; i < _Grid->RowCount(); i++) {
 		auto cell = _Grid->FindCell(i, 1);
 		int new_strike_index = strike_start_index_ + i - 1;
-		if (new_strike_index >= static_cast<int>(symbol_vec.size()))
-			new_strike_index = symbol_vec.size() - 1;
+		if (new_strike_index >= static_cast<int>(call_symbol_vec.size()))
+			new_strike_index = call_symbol_vec.size() - 1;
 		if (new_strike_index < 0)
 			new_strike_index = 0;
 		if (cell) {
-			symbol_index_map_[i] = new_strike_index;
-			if (symbol_vec[new_strike_index]->AtmType() == 1)
+			if (call_symbol_vec[new_strike_index]->AtmType() == 1)
 				cell->CellType(CT_BUTTON_BUY);
 			else 
 				cell->CellType(CT_NORMAL);
-			cell->Text(symbol_vec[new_strike_index]->Strike().c_str());
+			cell->Text(call_symbol_vec[new_strike_index]->Strike().c_str());
+
+			call_symbol_map_[std::make_pair(i, 0)] = call_symbol_vec[new_strike_index];
+			put_symbol_map_[std::make_pair(i, 2)] = put_symbol_vec[new_strike_index];
 		}
 	}
 
-	max_symbol_count = symbol_vec.size();
+	max_symbol_count = call_symbol_vec.size();
 }
 
 void DmOptionView::UpdateAccountAssetInfo()

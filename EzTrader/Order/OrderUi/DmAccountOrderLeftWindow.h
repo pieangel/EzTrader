@@ -60,19 +60,8 @@ private:
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
 	AccountProfitLossView account_profit_loss_view_;
 	AssetView asset_view_;
-	//AccountOrderView _AcceptedGrid;
-	//AccountPositionView _PositionGrid;
-	//SmFavoriteGrid _FavoriteGrid;
 	DmOptionView option_view_;
 	DmFutureView future_view_;
-
-
-	//SmFilledArea _FilledArea;
-	//SmFavoriteArea _FavoriteArea;
-	//SmAcceptedArea _AcceptedArea;
-	//CBCGPScrollBar _VScrollBarAcpt;
-	//CBCGPScrollBar _VScrollBarPosi;
-	//CBCGPScrollBar _VScrollBarFav;
 public:
 	void SetMainWnd(DmAccountOrderWindow* main_wnd);
 	virtual BOOL OnInitDialog();

@@ -39,6 +39,8 @@
 #include "../../Task/SmTaskArg.h"
 #include "../../Task/SmTaskRequestManager.h"
 #include "../../Util/IdGenerator.h"
+#include "../../Event/EventHub.h"
+#include <functional>
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -55,7 +57,7 @@ IMPLEMENT_DYNAMIC(DmAccountOrderCenterWindow, CBCGPDialog)
 DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
-
+	mainApp.event_hub()->add_symbol_event_handler(std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 	id_ = IdGenerator::get_id();

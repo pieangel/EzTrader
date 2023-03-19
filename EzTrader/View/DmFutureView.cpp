@@ -5,6 +5,7 @@
 #include "../SmGrid/SmGrid.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Symbol/SmProduct.h"
+#include "../Symbol/SmProductYearMonth.h"
 #include "../SmGrid/SmCell.h"
 #include "../Account/SmAccount.h"
 
@@ -15,6 +16,7 @@
 
 #include <functional>
 #include "../Fund/SmFund.h"
+#include "../Event/EventHub.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -25,6 +27,7 @@ BEGIN_MESSAGE_MAP(DmFutureView, CBCGPStatic)
 	//{{AFX_MSG_MAP(CBCGPTextPreviewCtrl)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 DmFutureView::DmFutureView()
@@ -42,6 +45,16 @@ DmFutureView::~DmFutureView()
 	{
 		delete m_pGM;
 	}
+}
+
+void DmFutureView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
+	auto it = symbol_map_.find(cell_pos.first);
+	if (it == symbol_map_.end()) return;
+	mainApp.event_hub()->process_symbol_event(it->second);
+
+	CBCGPStatic::OnLButtonDown(nFlags, point);
 }
 
 void DmFutureView::SetUp()
@@ -144,6 +157,12 @@ void DmFutureView::init_dm_future()
 	const std::vector<DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
 	for (size_t i = 0; i < future_vec.size(); i++) {
 		auto cell = _Grid->FindCell(i, 0);
+		if (cell) {
+			const std::map<std::string, std::shared_ptr<SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
+			std::shared_ptr<SmProductYearMonth> year_month = year_month_map.begin()->second;
+			auto symbol = year_month->get_first_symbol();
+			if (symbol) symbol_map_[i] = symbol;
+		}
 		std::string value = future_vec[i].future_name;
 		if (cell) cell->Text(value);
 		cell = _Grid->FindCell(i, 1);

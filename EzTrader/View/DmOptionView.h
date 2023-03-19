@@ -45,7 +45,11 @@ private:
 	void set_option_view();
 	int get_atm_index(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec);
 	void set_strike_start_index(const int distance);
-	void set_strike(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec);
+	void set_strike
+	(
+		const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& call_symbol_vec,
+		const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& put_symbol_vec
+	);
 	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
 	// 0 : account, 1 : fund
@@ -67,7 +71,10 @@ private:
 	/// <summary>
 	/// key : row index, value : the index of the symbol vector.
 	/// </summary>
-	std::map<int, int> symbol_index_map_;
+	//std::map<int, int> symbol_index_map_;
+
+	std::map<std::pair<int, int>, std::shared_ptr<DarkHorse::SmSymbol>> call_symbol_map_;
+	std::map<std::pair<int, int>, std::shared_ptr<DarkHorse::SmSymbol>> put_symbol_map_;
 
 	CBCGPGraphicsManager* m_pGM = nullptr;
 
@@ -75,6 +82,7 @@ private:
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
 public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };

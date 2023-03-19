@@ -20,8 +20,10 @@ int main (int argc, const char * argv[])
 }
 */
 #include "eventpp/callbacklist.h"
+#include "eventpp/eventdispatcher.h"
 #include <functional>
 #include <map>
+#include <vector>
 #include "../Order/OrderUi/ControlId.h"
 #include "../Json/json.hpp"
 
@@ -52,6 +54,7 @@ namespace DarkHorse {
 	class TotalHogaInfoControl;
 	struct SmHoga;
 	struct SmQuote;
+	class SmSymbol;
 
 	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
 	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
@@ -64,6 +67,8 @@ namespace DarkHorse {
 
 	using QuoteCBL = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>;
 	using QuoteCBH = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>::Handle;
+
+	using SymbolCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>;
 
 class EventHub
 {
@@ -115,6 +120,15 @@ public:
 	{
 		quote_cb_list_(quote);
 	}
+
+	void add_symbol_event_handler(std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
+	{
+		symbol_cb_list_.append(handler);
+	}
+	void process_symbol_event(std::shared_ptr<SmSymbol> symbol)
+	{
+		symbol_cb_list_(symbol);
+	}
 private:
 	RemoveOrderCBL remove_order_callback_list_;
 	std::map<int, RemoveOrderCBH> remove_order_callback_handle_map_;
@@ -123,6 +137,8 @@ private:
 
 	QuoteCBL quote_cb_list_;
 	std::map<int, QuoteCBH> quote_cb_handle_map_;
+
+	SymbolCBL symbol_cb_list_;
 };
 }
 

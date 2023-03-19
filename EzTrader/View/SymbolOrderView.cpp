@@ -38,6 +38,7 @@
 #include "../ViewModel/VmQuote.h"
 #include "../ViewModel/VmHoga.h"
 #include "../ViewModel/VmProduct.h"
+#include "../Event/EventHub.h"
 #include <sstream>
 #include <format>
 
@@ -944,7 +945,11 @@ void SymbolOrderView::insert_decimal(std::string& value, const int decimal)
 		CString msg;
 		msg.Format("value = %s\n", value.c_str());
 		TRACE(msg);
-		if (value.length() < static_cast<size_t>(decimal) || decimal <= 0) return;
+		if (decimal <= 0) return;
+		if (value.length() == static_cast<size_t>(decimal))
+			value.insert(0, 1, '0');
+		else if (value.length() < static_cast<size_t>(decimal))
+			value.insert(0, 2, '0');
 		value.insert(value.length() - decimal, 1, '.');
 	}
 	catch (const std::exception& e) {
@@ -1143,7 +1148,7 @@ int SymbolOrderView::find_close_row_from_end_row()
 	do {
 		next_value = product_control_->get_next_up_value(next_value);
 		target_row--;
-	} while (next_value != close_value);
+	} while (next_value < close_value);
 
 	return target_row;
 }
@@ -1156,7 +1161,7 @@ int SymbolOrderView::find_zero_value_row()
 	do {
 		next_value = product_control_->get_next_down_value(next_value);
 		target_row++;
-	} while (next_value != 0);
+	} while (next_value > 0);
 
 	return target_row;
 }
@@ -1171,13 +1176,13 @@ int SymbolOrderView::find_row(const int target_value)
 		do {
 			next_value = product_control_->get_next_down_value(next_value);
 			target_row++;
-		} while (next_value != target_value);
+		} while (next_value > target_value);
 	}
 	else {
 		do {
 			next_value = product_control_->get_next_up_value(next_value);
 			target_row--;
-		} while (next_value != target_value);
+		} while (next_value < target_value);
 	}
 
 	return target_row;
@@ -1196,13 +1201,13 @@ int SymbolOrderView::find_start_value()
 		do {
 			target_value = product_control_->get_next_up_value(target_value);
 			target_row--;
-		} while(target_row != price_start_row_);
+		} while(target_row > price_start_row_);
 	}
 	else { //down value.
 		do {
 			target_value = product_control_->get_next_down_value(target_value);
 			target_row++;
-		} while (target_row != price_start_row_);
+		} while (target_row < price_start_row_);
 	}
 
 	return target_value;

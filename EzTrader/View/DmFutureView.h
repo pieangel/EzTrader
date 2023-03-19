@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <map>
 
 #include "../SmGrid/SmGridResource.h"
 namespace DarkHorse {
@@ -56,8 +57,13 @@ private:
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
+	/// <summary>
+	/// key : row index, value : symbol object.
+	/// </summary>
+	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> symbol_map_;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 

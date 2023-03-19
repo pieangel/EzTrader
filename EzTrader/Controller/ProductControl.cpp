@@ -96,7 +96,6 @@ namespace DarkHorse {
 		product_.int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
 		product_.seung_su = symbol->SeungSu();
 		product_.tick_value = static_cast<int>(symbol->TickValue());
-		if (value_type_ == ValueType::None) 
-			set_value_type(symbol->SymbolCode());
+		set_value_type(symbol->SymbolCode());
 	}
 }
