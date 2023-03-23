@@ -55,6 +55,40 @@ namespace DarkHorse {
 		}
 	}
 
+	int ProductControl::get_row(const int source_value, const int base_row, const int base_value)
+	{
+		int target_row = 0;
+
+		if (value_type_ == ValueType::None) return source_value;
+
+		if (value_type_ == ValueType::KospiOption ||
+			value_type_ == ValueType::KospiWeekly) {
+			//if (source_value <= 1000) return value - 1;
+			//else return value - 5;
+			//if (source_value > base_value)
+			//if (base_value )
+		}
+		else if (value_type_ == ValueType::MiniKospiOption) {
+			//if (value <= 300) return value - 1;
+			//else return value - 2;
+		}
+		else if (value_type_ == ValueType::Kosdaq) {
+			//return value - 10;
+		}
+		else {
+			//return value - product_.int_tick_size;
+		}
+
+		return target_row;
+	}
+
+	int ProductControl::get_value(const int source_row, const int base_row, const int base_value)
+	{
+		int target_value = 0;
+
+		return target_value;
+	}
+
 	void ProductControl::set_value_type(const std::string& symbol_code)
 	{
 		if (symbol_code.empty()) return;

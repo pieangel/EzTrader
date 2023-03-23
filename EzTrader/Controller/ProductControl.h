@@ -34,6 +34,8 @@ namespace DarkHorse {
 		}
 		int get_next_up_value(const int value);
 		int get_next_down_value(const int value);
+		int get_row(const int source_value, const int base_row, const int base_value);
+		int get_value(const int source_row, const int base_row, const int base_value);
 	private:
 		void set_value_type(const std::string& symbol_code);
 		void subscribe_product_control();

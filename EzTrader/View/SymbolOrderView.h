@@ -110,6 +110,8 @@ private:
 	int find_zero_value_row();
 	int find_row(const int target_value);
 	int find_start_value();
+	int find_row2(const int target_value);
+	int find_value(const int target_row);
 	int get_center_row();
 	void set_quote_value(const int value, const DarkHorse::SmCellType cell_type);
 	void set_quote_cell(const int row, const bool show_mark, const int mark_type);

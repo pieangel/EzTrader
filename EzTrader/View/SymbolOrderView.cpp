@@ -1188,6 +1188,22 @@ int SymbolOrderView::find_row(const int target_value)
 	return target_row;
 }
 
+int SymbolOrderView::find_row2(const int target_value)
+{
+	if (!quote_control_ || !product_control_) return 0;
+
+	const int& close = quote_control_->get_quote().close;
+	if (close == 0) return 0;
+	int next_value = close;
+	int next_row = _Grid->CloseRow();
+	if (target_value == next_value) return next_row;
+	return target_value;
+}
+int SymbolOrderView::find_value(const int target_row)
+{
+	;
+}
+
 int SymbolOrderView::find_start_value()
 {
 	if (!quote_control_ || !product_control_) return 0;
