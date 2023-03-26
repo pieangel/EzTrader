@@ -166,8 +166,8 @@ namespace DarkHorse {
 		}
 		else {
 			if (source_row > base_row) {
-				const int difference_row_greater_than = source_row - turning_point_row;
-				const int difference_row_less = turning_point_row - base_row;
+				const int difference_row_less = source_row - turning_point_row;
+				const int difference_row_greater_than = turning_point_row - base_row;
 				const int difference_value = difference_row_less + difference_row_greater_than * product_.int_tick_size;
 				return base_value - difference_value;
 			}
