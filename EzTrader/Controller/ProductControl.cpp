@@ -57,36 +57,136 @@ namespace DarkHorse {
 
 	int ProductControl::get_row(const int source_value, const int base_row, const int base_value)
 	{
-		int target_row = 0;
-
-		if (value_type_ == ValueType::None) return source_value;
+		if (value_type_ == ValueType::None || base_value == 0) return -1;
+		if (source_value == base_value) return base_row;
 
 		if (value_type_ == ValueType::KospiOption ||
-			value_type_ == ValueType::KospiWeekly) {
-			//if (source_value <= 1000) return value - 1;
-			//else return value - 5;
-			//if (source_value > base_value)
-			//if (base_value )
-		}
-		else if (value_type_ == ValueType::MiniKospiOption) {
-			//if (value <= 300) return value - 1;
-			//else return value - 2;
-		}
-		else if (value_type_ == ValueType::Kosdaq) {
-			//return value - 10;
+			value_type_ == ValueType::KospiWeekly || 
+			value_type_ == ValueType::MiniKospiOption) {
+			return get_row_with_turnig_point(source_value, base_row, base_value);
 		}
 		else {
-			//return value - product_.int_tick_size;
+			if (source_value > base_value) {
+				const int difference_value = source_value - base_value;
+				return base_row - static_cast<int>(difference_value / product_.int_tick_size);
+			}
+			else {
+				const int difference_value = base_value - source_value;
+				return base_row + static_cast<int>(difference_value / product_.int_tick_size);
+			}
 		}
-
-		return target_row;
 	}
 
 	int ProductControl::get_value(const int source_row, const int base_row, const int base_value)
 	{
-		int target_value = 0;
+		if (value_type_ == ValueType::None || base_value == 0) base_value;
+		if (source_row == base_row) return base_value;
 
-		return target_value;
+		if (value_type_ == ValueType::KospiOption ||
+			value_type_ == ValueType::KospiWeekly ||
+			value_type_ == ValueType::MiniKospiOption) {
+			return get_value_with_turnig_point(source_row, base_row, base_value);
+		}
+		else {
+			if (source_row > base_row) {
+				const int difference_row = source_row - base_row;
+				return base_value - difference_row * product_.int_tick_size;
+			}
+			else {
+				const int difference_row = base_row - source_row;
+				return base_value + difference_row * product_.int_tick_size;
+			}
+		}
+	}
+
+	int ProductControl::get_row_with_turnig_point(const int source_value, const int base_row, const int base_value)
+	{
+		if (base_value > product_.option_value_turning_point && 
+			source_value > product_.option_value_turning_point) {
+			if (source_value > base_value) {
+				const int difference_value = source_value - base_value;
+				return base_row - static_cast<int>(difference_value / product_.int_tick_size);
+			}
+			else {
+				const int difference_value = base_value - source_value;
+				return base_row + static_cast<int>(difference_value / product_.int_tick_size);
+			}
+		}
+		else if (base_value < product_.option_value_turning_point && 
+			source_value < product_.option_value_turning_point) {
+			if (source_value > base_value) {
+				const int difference_value = source_value - base_value;
+				return base_row - difference_value;
+			}
+			else {
+				const int difference_value = base_value - source_value;
+				return base_row + difference_value;
+			}
+		}
+		else {
+			if (source_value > base_value) {
+				const int difference_value_greater_than = source_value - product_.option_value_turning_point;
+				const int difference_value_less = product_.option_value_turning_point - base_value;
+				int difference_row = difference_value_less + static_cast<int>(difference_value_greater_than / product_.int_tick_size);
+				return base_row - difference_row;
+			}
+			else {
+				const int difference_value_greater_than = base_value - product_.option_value_turning_point;
+				const int difference_value_less = product_.option_value_turning_point - source_value;
+				const int difference_row = difference_value_less + static_cast<int>(difference_value_greater_than / product_.int_tick_size);
+				return base_row + difference_row;
+			}
+		}
+	}
+
+	int ProductControl::get_value_with_turnig_point(const int source_row, const int base_row, const int base_value)
+	{
+		const int turning_point_row = get_row(product_.option_value_turning_point, base_row, base_value);
+		if (base_row < turning_point_row &&
+			source_row < turning_point_row) {
+			if (source_row > base_row) {
+				const int difference_row = source_row - base_row;
+				return base_value - difference_row * product_.int_tick_size;
+			}
+			else {
+				const int difference_row = base_row - source_row;
+				return base_value + difference_row * product_.int_tick_size;
+			}
+		}
+		else if (base_row > turning_point_row &&
+			source_row > turning_point_row) {
+			if (source_row > base_row) {
+				const int difference_row = source_row - base_row;
+				return base_value - difference_row;
+			}
+			else {
+				const int difference_row = base_row - source_row;
+				return base_value + difference_row;
+			}
+		}
+		else {
+			if (source_row > base_row) {
+				const int difference_row_greater_than = source_row - turning_point_row;
+				const int difference_row_less = turning_point_row - base_row;
+				const int difference_value = difference_row_less + difference_row_greater_than * product_.int_tick_size;
+				return base_value - difference_value;
+			}
+			else {
+				const int difference_row_less = base_row - turning_point_row;
+				const int difference_row_greater_than = turning_point_row - source_row;
+				const int difference_value = difference_row_less + difference_row_greater_than * product_.int_tick_size;
+				return base_value + difference_value;
+			}
+		}
+	}
+
+	void ProductControl::set_option_value_turning_point()
+	{
+		if (value_type_ == ValueType::KospiOption ||
+			value_type_ == ValueType::KospiWeekly)
+			product_.option_value_turning_point = kospi_option_turning_point;
+		else if (value_type_ == ValueType::MiniKospiOption)
+			product_.option_value_turning_point = mini_kospi_option_turning_point;
 	}
 
 	void ProductControl::set_value_type(const std::string& symbol_code)
@@ -131,5 +231,6 @@ namespace DarkHorse {
 		product_.seung_su = symbol->SeungSu();
 		product_.tick_value = static_cast<int>(symbol->TickValue());
 		set_value_type(symbol->SymbolCode());
+		set_option_value_turning_point();
 	}
 }

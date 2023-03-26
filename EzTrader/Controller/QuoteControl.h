@@ -3,6 +3,7 @@
 #include "../Util/IdGenerator.h"
 #include <memory>
 class SymbolOrderView;
+class SymbolInfoView;
 namespace DarkHorse {
 	struct SmQuote;
 class QuoteControl
@@ -22,11 +23,15 @@ public:
 	void symbol_order_view(SymbolOrderView* symbol_order_view_p) {
 		symbol_order_view_ = symbol_order_view_p;
 	}
+	void symbol_info_view(SymbolInfoView* symbol_info_view_p) {
+		symbol_info_view_ = symbol_info_view_p;
+	}
 private:
 	VmQuote quote_;
 	void subscribe_quote_control();
 	int id_;
 	SymbolOrderView* symbol_order_view_{ nullptr };
+	SymbolInfoView* symbol_info_view_{ nullptr };
 };
 }
 

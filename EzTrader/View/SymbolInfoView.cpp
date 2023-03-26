@@ -8,6 +8,11 @@
 #include "../SmGrid/SmCell.h"
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
+
+#include "../Controller/QuoteControl.h"
+#include "../ViewModel/VmQuote.h"
+#include "../Event/EventHub.h"
+
 #include <format>
 
 #include <functional>
@@ -24,7 +29,8 @@ END_MESSAGE_MAP()
 
 SymbolInfoView::SymbolInfoView()
 {
-
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->symbol_info_view(this);
 }
 
 SymbolInfoView::~SymbolInfoView()
@@ -132,32 +138,34 @@ void SymbolInfoView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 
 void SymbolInfoView::UpdateSymbolInfo()
 {
-	if (!_Symbol) return;
+	if (!_Symbol || !quote_control_) return;
+
+	const VmQuote quote = quote_control_->get_quote();
 
 	std::shared_ptr<SmCell> cell = _Grid->FindCell(0, 0);
 	if (cell) cell->Text(_Symbol->SymbolNameKr());
 	cell = _Grid->FindCell(1, 1);
 
-	std::string	value_string = std::format("{0}", _Symbol->Qoute.open);
+	std::string	value_string = std::format("{0}", quote.open);
 	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
 		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
 
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(2, 1);
-	value_string = std::format("{0}", _Symbol->Qoute.high);
+	value_string = std::format("{0}", quote.high);
 	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
 		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(3, 1);
-	value_string = std::format("{0}", _Symbol->Qoute.low);
+	value_string = std::format("{0}", quote.low);
 	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
 		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(4, 1);
-	value_string = std::format("{0}", _Symbol->Qoute.close);
+	value_string = std::format("{0}", quote.close);
 	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
 		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
 	if (cell) cell->Text(value_string);
@@ -230,6 +238,12 @@ void SymbolInfoView::OnQuoteEvent(const std::string& symbol_code)
 	if (_Symbol->SymbolCode() != symbol_code) return;
 
 	_EnableQuoteShow = true;
+}
+
+void SymbolInfoView::update_quote()
+{
+	if (!quote_control_ ) return;
+	UpdateSymbolInfo();
 }
 
 void SymbolInfoView::CreateResource()

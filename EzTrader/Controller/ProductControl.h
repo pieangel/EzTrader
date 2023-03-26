@@ -37,6 +37,9 @@ namespace DarkHorse {
 		int get_row(const int source_value, const int base_row, const int base_value);
 		int get_value(const int source_row, const int base_row, const int base_value);
 	private:
+		int get_row_with_turnig_point(const int source_value, const int base_row, const int base_value);
+		int get_value_with_turnig_point(const int source_row, const int base_row, const int base_value);
+		void set_option_value_turning_point();
 		void set_value_type(const std::string& symbol_code);
 		void subscribe_product_control();
 		VmProduct product_;

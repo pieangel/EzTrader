@@ -698,7 +698,7 @@ void SymbolOrderView::SetUp()
 	mainApp.CallbackMgr()->SubscribeMasterCallback((long)this, std::bind(&SymbolOrderView::OnSymbolMasterEvent, this, _1));
 	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&SymbolOrderView::OnOrderEvent, this, _1, _2));
 
-	SetTimer(1, 10, NULL);
+	//SetTimer(1, 10, NULL);
 
 	return;
 }
@@ -1155,6 +1155,9 @@ int SymbolOrderView::find_close_row_from_end_row()
 
 int SymbolOrderView::find_zero_value_row()
 {
+	if (!product_control_) return -1;
+	return product_control_->get_row(0, close_row_, quote_control_->get_quote().close);
+	/*
 	int next_value = quote_control_->get_quote().close;
 	int target_row = close_row_;
 
@@ -1164,33 +1167,18 @@ int SymbolOrderView::find_zero_value_row()
 	} while (next_value > 0);
 
 	return target_row;
+	*/
 }
 
 int SymbolOrderView::find_row(const int target_value)
 {
-	int next_value = quote_control_->get_quote().close;
-	int target_row = close_row_;
-
-	if (next_value == target_value) return target_row;
-	else if (target_value < next_value) {
-		do {
-			next_value = product_control_->get_next_down_value(next_value);
-			target_row++;
-		} while (next_value > target_value);
-	}
-	else {
-		do {
-			next_value = product_control_->get_next_up_value(next_value);
-			target_row--;
-		} while (next_value < target_value);
-	}
-
-	return target_row;
+	if (!product_control_ || !quote_control_) return -1;
+	return product_control_->get_row(target_value, close_row_, quote_control_->get_quote().close);
 }
 
 int SymbolOrderView::find_row2(const int target_value)
 {
-	if (!quote_control_ || !product_control_) return 0;
+	assert(!quote_control_ || !product_control_);
 
 	const int& close = quote_control_->get_quote().close;
 	if (close == 0) return 0;
@@ -1201,32 +1189,15 @@ int SymbolOrderView::find_row2(const int target_value)
 }
 int SymbolOrderView::find_value(const int target_row)
 {
-	;
+	return -1;
 }
 
 int SymbolOrderView::find_start_value()
 {
 	if (!quote_control_ || !product_control_) return 0;
-
 	const int& close = quote_control_->get_quote().close;
 	if (close == 0) return 0;
-	int target_value = close;
-	int target_row = close_row_;
-	if (price_start_row_ == close_row_) return target_value;
-	else if (price_start_row_ < close_row_) { // up value
-		do {
-			target_value = product_control_->get_next_up_value(target_value);
-			target_row--;
-		} while(target_row > price_start_row_);
-	}
-	else { //down value.
-		do {
-			target_value = product_control_->get_next_down_value(target_value);
-			target_row++;
-		} while (target_row < price_start_row_);
-	}
-
-	return target_value;
+	return product_control_->get_value(price_start_row_, close_row_, close);
 }
 
 int SymbolOrderView::get_center_row()

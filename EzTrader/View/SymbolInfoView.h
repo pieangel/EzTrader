@@ -15,6 +15,7 @@ namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
 	class SmCell;
+	class QuoteControl;
 }
 
 class SymbolInfoView : public CBCGPStatic
@@ -31,7 +32,9 @@ public:
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 	void UpdateSymbolInfo();
 	void OnQuoteEvent(const std::string& symbol_code);
+	void update_quote();
 private:
+	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	bool _EnableQuoteShow = false;
 	SmOrderGridResource _Resource;
 	void CreateResource();
