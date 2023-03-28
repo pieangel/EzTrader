@@ -12,7 +12,8 @@
 #include "../Controller/QuoteControl.h"
 #include "../ViewModel/VmQuote.h"
 #include "../Event/EventHub.h"
-
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
 #include <format>
 
 #include <functional>
@@ -133,6 +134,8 @@ void SymbolInfoView::OnPaint()
 void SymbolInfoView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
 	_Symbol = val;
+	quote_control_->set_symbol_id(val->Id());
+	quote_control_->update_quote(mainApp.QuoteMgr()->get_quote(val->SymbolCode()));
 	UpdateSymbolInfo();
 }
 

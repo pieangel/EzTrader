@@ -15,7 +15,7 @@ namespace DarkHorse {
 		// 예상치 못한 행동을 할 수 있다. static 함수를 사용에 신중하길 바란다.
 		//static void ShiftData(SmTick* data, const int& len, SmTick&& newValue);
 		void ShiftDown(SmTick&& newValue);
-		SmSymbol(std::string&& symbol_code) : _SymbolCode(symbol_code) { TickVec.resize(26); }
+		SmSymbol(std::string&& symbol_code);
 		~SmSymbol();
 		std::string SymbolCode() const { return _SymbolCode; }
 		void SymbolCode(std::string val) { _SymbolCode = val; }

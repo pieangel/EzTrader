@@ -22,7 +22,7 @@ namespace DarkHorse {
 	}
 	void HogaControl::update_hoga(std::shared_ptr<SmHoga> hoga)
 	{
-		if (!hoga) return;
+		if (!hoga || hoga->symbol_id != symbol_id_) return;
 
 		for (int i = 0; i < 5; i++) {
 			hoga_.Ary[i].BuyCnt = hoga->Ary[i].BuyCnt;

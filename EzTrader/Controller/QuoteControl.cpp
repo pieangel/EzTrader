@@ -14,7 +14,7 @@ namespace DarkHorse {
 	}
 	void QuoteControl::update_quote(std::shared_ptr<SmQuote> quote)
 	{
-		if (!quote) return;
+		if (!quote || quote->symbol_id != symbol_id_) return;
 
 		quote_.high = quote->high;
 		quote_.low = quote->low;

@@ -8,6 +8,7 @@
 #include "../SmGrid/SmCell.h"
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
+#include "../Controller/SymbolTickControl.h"
 #include <format>
 
 
@@ -26,7 +27,8 @@ END_MESSAGE_MAP()
 
 SymbolTickView::SymbolTickView()
 {
-
+	tick_control_ = std::make_shared<DarkHorse::SymbolTickControl>();
+	tick_control_->symbol_tick_view(this);
 }
 
 SymbolTickView::~SymbolTickView()
@@ -37,6 +39,18 @@ SymbolTickView::~SymbolTickView()
 	{
 		delete m_pGM;
 	}
+}
+
+void SymbolTickView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
+{
+	tick_control_->set_symbol_id(val->Id());
+	tick_control_->set_symbol_decimal(val->Decimal());
+	UpdateSymbolInfo();
+}
+
+void SymbolTickView::update_tick()
+{
+	UpdateSymbolInfo();
 }
 
 void SymbolTickView::SetUp()
@@ -70,7 +84,7 @@ void SymbolTickView::SetUp()
 		_Grid->SetColHeaderTitles(_HeaderTitles);
 	}
 
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&SymbolTickView::OnQuoteEvent, this, _1));
+	//mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&SymbolTickView::OnQuoteEvent, this, _1));
 	SetTimer(1, 40, NULL);
 }
 
@@ -122,15 +136,16 @@ void SymbolTickView::Clear()
 
 void SymbolTickView::UpdateSymbolInfo()
 {
-	if (!_Symbol) return;
+	if (!tick_control_) return;
 
-
-	for (size_t i = 1; i < _Symbol->TickVec.size(); i++) {
+	const std::vector<SmTick>& tick_vec = tick_control_->get_tick_vec();
+	const int symbol_decimal = tick_control_->get_symbol_decimal();
+	for (size_t i = 1; i < tick_vec.size(); i++) {
 		std::shared_ptr<SmCell> cell = _Grid->FindCell(i, 0);
 
 
-		std::string tick_time = _Symbol->TickVec[i].time;
-		const int up_down = _Symbol->TickVec[i].updown;
+		std::string tick_time = tick_vec[i].time;
+		const int up_down = tick_vec[i].updown;
 		if (tick_time.length() > 0) {
 			tick_time.insert(tick_time.length() - 2, ":");
 			tick_time.insert(tick_time.length() - 5, ":");
@@ -141,18 +156,18 @@ void SymbolTickView::UpdateSymbolInfo()
 
 
 		cell = _Grid->FindCell(i, 1);
-		std::string	value_string = std::format("{0}", _Symbol->TickVec[i].close);
+		std::string	value_string = std::format("{0}", tick_vec[i].close);
 
-		if (value_string.length() > (size_t)_Symbol->Decimal()) {
-			if (_Symbol->Decimal() > 0)
-				value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+		if (value_string.length() > (size_t)symbol_decimal) {
+			if (symbol_decimal > 0)
+				value_string.insert(value_string.length() - symbol_decimal, 1, '.');
 			if (cell) { cell->Text(value_string); up_down == 1 ? cell->CellType(SmCellType::CT_TICK_BUY) : cell->CellType(SmCellType::CT_TICK_SELL); }
 		}
 		cell = _Grid->FindCell(i, 2);
-		if (cell) { cell->Text(std::to_string(_Symbol->TickVec[i].qty)); up_down == 1 ? cell->CellType(SmCellType::CT_TICK_BUY) : cell->CellType(SmCellType::CT_TICK_SELL); }
+		if (cell) { cell->Text(std::to_string(tick_vec[i].qty)); up_down == 1 ? cell->CellType(SmCellType::CT_TICK_BUY) : cell->CellType(SmCellType::CT_TICK_SELL); }
 	}
 
-	//Invalidate();
+	_EnableQuoteShow = true;
 }
 
 void SymbolTickView::OnQuoteEvent(const std::string& symbol_code)

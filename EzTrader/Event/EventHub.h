@@ -26,6 +26,7 @@ int main (int argc, const char * argv[])
 #include <vector>
 #include "../Order/OrderUi/ControlId.h"
 #include "../Json/json.hpp"
+#include "../Quote/SmQuote.h"
 
 namespace DarkHorse {
 
@@ -54,7 +55,11 @@ namespace DarkHorse {
 	class TotalHogaInfoControl;
 	struct SmHoga;
 	struct SmQuote;
+	struct SmTick;
 	class SmSymbol;
+
+	using TickCBL = eventpp::CallbackList<void(SmTick tick)>;
+	using TickCBH = eventpp::CallbackList<void(SmTick tick)>::Handle;
 
 	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
 	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
@@ -73,6 +78,23 @@ namespace DarkHorse {
 class EventHub
 {
 public:
+
+	void subscribe_tick_event_handler(const int tick_control_id, std::function<void(SmTick tick)>&& handler)
+	{
+		TickCBH handle = tick_cb_list_.append(handler);
+		tick_cb_handle_map_[tick_control_id] = handle;
+	}
+	void unsubscribe_tick_event_handler(const int tick_control_id)
+	{
+		auto found = tick_cb_handle_map_.find(tick_control_id);
+		if (found == tick_cb_handle_map_.end()) return;
+		tick_cb_list_.remove(found->second);
+	}
+	void process_tick_event(SmTick tick)
+	{
+		tick_cb_list_(tick);
+	}
+
 	void subscribe_remove_order_event_handler(const int order_source_id, std::function<void(const std::string&)>&& handler)
 	{
 		RemoveOrderCBH handle = remove_order_callback_list_.append(handler);
@@ -137,6 +159,9 @@ private:
 
 	QuoteCBL quote_cb_list_;
 	std::map<int, QuoteCBH> quote_cb_handle_map_;
+
+	TickCBL tick_cb_list_;
+	std::map<int, TickCBH> tick_cb_handle_map_;
 
 	SymbolCBL symbol_cb_list_;
 };

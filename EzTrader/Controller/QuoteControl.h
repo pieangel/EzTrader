@@ -26,7 +26,11 @@ public:
 	void symbol_info_view(SymbolInfoView* symbol_info_view_p) {
 		symbol_info_view_ = symbol_info_view_p;
 	}
+	void set_symbol_id(const int symbol_id) {
+		symbol_id_ = symbol_id;
+	}
 private:
+	int symbol_id_{ 0 };
 	VmQuote quote_;
 	void subscribe_quote_control();
 	int id_;

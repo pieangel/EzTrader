@@ -23,7 +23,11 @@ public:
 	void symbol_order_view(SymbolOrderView* symbol_order_view_p) {
 		symbol_order_view_ = symbol_order_view_p;
 	}
+	void set_symbol_id(const int symbol_id) {
+		symbol_id_ = symbol_id;
+	}
 private:
+	int symbol_id_{ 0 };
 	void subscribe_hoga_control();
 	VmHoga hoga_;
 	int id_;

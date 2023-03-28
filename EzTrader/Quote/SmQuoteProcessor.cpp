@@ -7,7 +7,9 @@
 #include "../MessageDefine.h"
 #include "../Position/SmTotalPositionManager.h"
 #include "../Event/SmCallbackManager.h"
-
+#include "../Event/EventHub.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
 using namespace DarkHorse;
 
 SmQuoteProcessor::SmQuoteProcessor() 
@@ -66,7 +68,7 @@ void SmQuoteProcessor::AddQuote(nlohmann::json&& quote) noexcept
 void SmQuoteProcessor::ProcessQuote(nlohmann::json&& quote)
 {
 	try {
-		
+		/*
 		const std::string& symbol_code = quote["symbol_code"];
 		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) return;
@@ -95,7 +97,28 @@ void SmQuoteProcessor::ProcessQuote(nlohmann::json&& quote)
 		mainApp.TotalPosiMgr()->UpdatePosition(symbol_code);
 		mainApp.TotalOrderMgr()->CheckStopOrder(symbol);
 		mainApp.CallbackMgr()->OnQuoteEvent(symbol_code);
-		
+		*/
+		const std::string& symbol_code = quote["symbol_code"];
+		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		if (!symbol) return;
+		std::shared_ptr<SmQuote> quote_p = mainApp.QuoteMgr()->get_quote(symbol_code);
+		quote_p->symbol_id = symbol->Id();
+		quote_p->open = quote["open"];
+		quote_p->high = quote["high"];
+		quote_p->low = quote["low"];
+		quote_p->close = quote["close"];
+		//quote_p->pre_day_close = quote["pre_day_close"];
+
+		mainApp.event_hub()->process_quote_event(quote_p);
+
+		SmTick tick;
+
+		tick.close = quote["close"];
+		tick.time = quote["time"];
+		tick.qty = quote["volume"];
+		tick.updown = quote["up_down"];
+
+		mainApp.event_hub()->process_tick_event(tick);
 		
 	}
 	catch (const std::exception & e) {

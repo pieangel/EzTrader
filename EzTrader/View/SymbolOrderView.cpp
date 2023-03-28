@@ -513,41 +513,47 @@ void SymbolOrderView::set_quote_cell(const int row, const bool show_mark, const 
 
 void SymbolOrderView::SetQuoteColor()
 {
-	if (!quote_control_) return;
+	try {
+		if (!quote_control_) return;
 
-	const VmQuote quote = quote_control_->get_quote();
-	int lowRow = find_row(quote.low);
-	int highRow = find_row(quote.high);
-	int closeRow = find_row(quote.close);
-	int openRow = find_row(quote.open);
+		const VmQuote quote = quote_control_->get_quote();
+		int lowRow = find_row(quote.low);
+		int highRow = find_row(quote.high);
+		int closeRow = find_row(quote.close);
+		int openRow = find_row(quote.open);
 
-	if (quote.close > quote.open) { // ¾çºÀ
-		for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
-			if (it->second < highRow) set_quote_cell(it->second, true, 0);
-			else if (it->second < closeRow) set_quote_cell(it->second, true, 3);
-			else if (it->second <= openRow) set_quote_cell(it->second, true, 1);
-			else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
-			else set_quote_cell(it->second, true, 0);
+		if (quote.close > quote.open) { // ¾çºÀ
+			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
+				if (it->second < highRow) set_quote_cell(it->second, true, 0);
+				else if (it->second < closeRow) set_quote_cell(it->second, true, 3);
+				else if (it->second <= openRow) set_quote_cell(it->second, true, 1);
+				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
+				else set_quote_cell(it->second, true, 0);
+			}
+
 		}
-
+		else if (quote.close < quote.open) { // À½ºÀ
+			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
+				if (it->second < highRow) set_quote_cell(it->second, true, 0);
+				else if (it->second < openRow) set_quote_cell(it->second, true, 3);
+				else if (it->second <= closeRow) set_quote_cell(it->second, true, 2);
+				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
+				else set_quote_cell(it->second, true, 0);
+			}
+		}
+		else { // µµÁö
+			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
+				if (it->second < highRow) set_quote_cell(it->second, true, 0);
+				else if (it->second < closeRow) set_quote_cell(it->second, true, 3);
+				else if (it->second <= openRow) set_quote_cell(it->second, true, 3);
+				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
+				else set_quote_cell(it->second, true, 0);
+			}
+		}
 	}
-	else if (quote.close < quote.open) { // À½ºÀ
-		for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
-			if (it->second < highRow) set_quote_cell(it->second, true, 0);
-			else if (it->second < openRow) set_quote_cell(it->second, true, 3);
-			else if (it->second <= closeRow) set_quote_cell(it->second, true, 2);
-			else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
-			else set_quote_cell(it->second, true, 0);
-		}
-	}
-	else { // µµÁö
-		for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
-			if (it->second < highRow) set_quote_cell(it->second, true, 0);
-			else if (it->second < closeRow) set_quote_cell(it->second, true, 3);
-			else if (it->second <= openRow) set_quote_cell(it->second, true, 3);
-			else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
-			else set_quote_cell(it->second, true, 0);
-		}
+	catch (const std::exception& e) {
+		const std::string& error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
 }
 
@@ -1088,8 +1094,12 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
 	_Symbol = val;
 	auto quote = mainApp.QuoteMgr()->get_quote(_Symbol->SymbolCode());
+	quote->symbol_id = val->Id();
+	quote_control_->set_symbol_id(val->Id());
 	quote_control_->update_quote(quote);
 	auto hoga = mainApp.HogaMgr()->get_hoga(_Symbol->SymbolCode());
+	hoga->symbol_id = val->Id();
+	hoga_control_->set_symbol_id(val->Id());
 	hoga_control_->update_hoga(hoga);
 	product_control_->update_product(_Symbol);
 	ArrangeCenterValue();
@@ -1157,17 +1167,6 @@ int SymbolOrderView::find_zero_value_row()
 {
 	if (!product_control_) return -1;
 	return product_control_->get_row(0, close_row_, quote_control_->get_quote().close);
-	/*
-	int next_value = quote_control_->get_quote().close;
-	int target_row = close_row_;
-
-	do {
-		next_value = product_control_->get_next_down_value(next_value);
-		target_row++;
-	} while (next_value > 0);
-
-	return target_row;
-	*/
 }
 
 int SymbolOrderView::find_row(const int target_value)

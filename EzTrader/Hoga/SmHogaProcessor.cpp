@@ -5,6 +5,9 @@
 #include "../Global/SmTotalManager.h"
 #include "../Log/MyLogger.h"
 #include "../Event/SmCallbackManager.h"
+#include "../Hoga/SmHoga.h"
+#include "../Hoga/SmHogaManager.h"
+#include "../Event/EventHub.h"
 
 using namespace DarkHorse;
 
@@ -67,25 +70,24 @@ void SmHogaProcessor::ProcessHoga(nlohmann::json&& hoga)
 		const std::string& symbol_code = hoga["symbol_code"];
 		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) return;
-
+		std::shared_ptr<SmHoga> hoga_p = mainApp.HogaMgr()->get_hoga(symbol_code);
+		hoga_p->symbol_id = symbol->Id();
 		for (int i = 0; i < 5; i++) {
-			symbol->Hoga.Ary[i].SellPrice = hoga["hoga_items"][i]["sell_price"];
-			symbol->Hoga.Ary[i].BuyPrice = hoga["hoga_items"][i]["buy_price"];
-			symbol->Hoga.Ary[i].SellQty = hoga["hoga_items"][i]["sell_qty"];
-			symbol->Hoga.Ary[i].BuyQty = hoga["hoga_items"][i]["buy_qty"];
-			symbol->Hoga.Ary[i].SellCnt = hoga["hoga_items"][i]["sell_cnt"];
-			symbol->Hoga.Ary[i].BuyCnt = hoga["hoga_items"][i]["buy_cnt"];
+			hoga_p->Ary[i].SellPrice = hoga["hoga_items"][i]["sell_price"];
+			hoga_p->Ary[i].BuyPrice = hoga["hoga_items"][i]["buy_price"];
+			hoga_p->Ary[i].SellQty = hoga["hoga_items"][i]["sell_qty"];
+			hoga_p->Ary[i].BuyQty = hoga["hoga_items"][i]["buy_qty"];
+			hoga_p->Ary[i].SellCnt = hoga["hoga_items"][i]["sell_cnt"];
+			hoga_p->Ary[i].BuyCnt = hoga["hoga_items"][i]["buy_cnt"];
 		}
 
-		symbol->Hoga.HogaTime = hoga["hoga_time"];
-		symbol->Hoga.TotBuyQty = hoga["tot_buy_qty"];
-		symbol->Hoga.TotSellQty = hoga["tot_sell_qty"];
-		symbol->Hoga.TotBuyCnt = hoga["tot_buy_cnt"];
-		symbol->Hoga.TotSellCnt = hoga["tot_sell_cnt"];
+		hoga_p->HogaTime = hoga["hoga_time"];
+		hoga_p->TotBuyQty = hoga["tot_buy_qty"];
+		hoga_p->TotSellQty = hoga["tot_sell_qty"];
+		hoga_p->TotBuyCnt = hoga["tot_buy_cnt"];
+		hoga_p->TotSellCnt = hoga["tot_sell_cnt"];
 
-		
-		//mainApp.CallbackMgr()->OnWndHogaEvent(symbol->Id());
-		mainApp.CallbackMgr()->OnHogaEvent(symbol_code);
+		mainApp.event_hub()->process_hoga_event(hoga_p);
 
 	}
 	catch (const std::exception& e) {

@@ -19,13 +19,7 @@ struct SmHoga
 	int	TotSellCnt;
 	int	TotBuyCnt;
 	std::string HogaTime;
-};
-
-struct Test
-{
-	int a;
-	int b;
-	int c;
+	int symbol_id{ 0 };
 };
 }
 

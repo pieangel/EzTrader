@@ -14,6 +14,7 @@ namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
 	class SmCell;
+	class SymbolTickControl;
 }
 
 class SymbolTickView : public CBCGPStatic
@@ -28,12 +29,10 @@ public:
 public:
 	void Clear();
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
-	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) {
-		_Symbol = val;
-		UpdateSymbolInfo();
-	}
+	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 	void UpdateSymbolInfo();
 	void OnQuoteEvent(const std::string& symbol_code);
+	void update_tick();
 private:
 	bool _EnableQuoteShow = false;
 	SmOrderGridResource _Resource;
@@ -41,6 +40,7 @@ private:
 	void InitHeader();
 	std::vector<std::string> _HeaderTitles;
 	std::shared_ptr<DarkHorse::SmGrid> _Grid = nullptr;
+	std::shared_ptr<DarkHorse::SymbolTickControl> tick_control_;
 
 	CBCGPGraphicsManager* m_pGM = nullptr;
 
