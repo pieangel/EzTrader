@@ -13,6 +13,7 @@ namespace DarkHorse {
 	class SmCell;
 	class SmAccount;
 	class SmFund;
+	class QuoteControl;
 }
 
 class DmOptionView : public CBCGPStatic
@@ -29,6 +30,7 @@ public:
 	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
+	void update_quote();
 public:
 	void set_option_view(
 		const int option_market_index, 
@@ -42,6 +44,7 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	void register_symbols_to_server();
 	void set_option_view();
 	int get_atm_index(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec);

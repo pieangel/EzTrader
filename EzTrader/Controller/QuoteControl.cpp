@@ -3,6 +3,8 @@
 #include "../Global/SmTotalManager.h"
 #include "../Event/EventHub.h"
 #include "../View/SymbolOrderView.h"
+#include "../View/DmFutureView.h"
+#include "../View/DmOptionView.h"
 #include "../Quote/SmQuote.h"
 #include <functional>
 
@@ -14,7 +16,8 @@ namespace DarkHorse {
 	}
 	void QuoteControl::update_quote(std::shared_ptr<SmQuote> quote)
 	{
-		if (!quote || quote->symbol_id != symbol_id_) return;
+		if (!quote) return;
+		if (symbol_id_ != 0 && quote->symbol_id != symbol_id_) return;
 
 		quote_.high = quote->high;
 		quote_.low = quote->low;
@@ -24,6 +27,8 @@ namespace DarkHorse {
 		quote_.init = true;
 
 		if (symbol_order_view_) symbol_order_view_->update_quote();
+		if (dm_future_view_) dm_future_view_->update_quote();
+		if (dm_option_view_) dm_option_view_->update_quote();
 	}
 
 	void QuoteControl::subscribe_quote_control()

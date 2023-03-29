@@ -22,6 +22,9 @@
 #include "../Fund/SmFund.h"
 #include "../Event/EventHub.h"
 
+#include "../Controller/QuoteControl.h"
+#include "../ViewModel/VmQuote.h"
+
 using namespace std;
 using namespace std::placeholders;
 
@@ -37,7 +40,8 @@ END_MESSAGE_MAP()
 
 DmOptionView::DmOptionView()
 {
-
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->dm_option_view(this);
 }
 
 DmOptionView::~DmOptionView()
@@ -50,6 +54,14 @@ DmOptionView::~DmOptionView()
 	{
 		delete m_pGM;
 	}
+}
+
+void DmOptionView::update_quote()
+{
+	const VmQuote quote = quote_control_->get_quote();
+	CString msg;
+	msg.Format("DmOptionView::update_quote ::  close : %d\n", quote.close);
+	TRACE(msg);
 }
 
 void DmOptionView::SetUp()

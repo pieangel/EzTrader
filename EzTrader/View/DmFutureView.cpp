@@ -18,6 +18,9 @@
 #include "../Fund/SmFund.h"
 #include "../Event/EventHub.h"
 
+#include "../Controller/QuoteControl.h"
+#include "../ViewModel/VmQuote.h"
+
 using namespace std;
 using namespace std::placeholders;
 
@@ -32,7 +35,8 @@ END_MESSAGE_MAP()
 
 DmFutureView::DmFutureView()
 {
-
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->dm_future_view(this);
 }
 
 DmFutureView::~DmFutureView()
@@ -45,6 +49,14 @@ DmFutureView::~DmFutureView()
 	{
 		delete m_pGM;
 	}
+}
+
+void DmFutureView::update_quote()
+{
+	const VmQuote quote = quote_control_->get_quote();
+	CString msg;
+	msg.Format("DmFutureView::update_quote ::  close : %d\n", quote.close);
+	TRACE(msg);
 }
 
 void DmFutureView::OnLButtonDown(UINT nFlags, CPoint point)

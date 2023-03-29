@@ -151,29 +151,25 @@ void SymbolInfoView::UpdateSymbolInfo()
 	cell = _Grid->FindCell(1, 1);
 
 	std::string	value_string = std::format("{0}", quote.open);
-	//if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-	//	value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	
 	SmUtil::insert_decimal(value_string, _Symbol->Decimal());
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(2, 1);
 	value_string = std::format("{0}", quote.high);
-	//if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-	//	value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	
 	SmUtil::insert_decimal(value_string, _Symbol->Decimal());
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(3, 1);
 	value_string = std::format("{0}", quote.low);
-	//if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-	//	value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	
 	SmUtil::insert_decimal(value_string, _Symbol->Decimal());
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(4, 1);
 	value_string = std::format("{0}", quote.close);
-	//if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-	//	value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	
 	SmUtil::insert_decimal(value_string, _Symbol->Decimal());
 	if (cell) cell->Text(value_string);
 
