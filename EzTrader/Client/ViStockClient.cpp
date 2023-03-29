@@ -444,24 +444,7 @@ void DarkHorse::ViStockClient::OnSymbolMaster(nlohmann::json&& arg)
 
 void DarkHorse::ViStockClient::OnSymbolQuote(nlohmann::json&& quote)
 {
-	try {
-		const std::string& symbol_code = quote["symbol_code"];
-		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
-		if (!symbol) return;
-
-		symbol->Qoute.open = quote["open"];
-		symbol->Qoute.high = quote["high"];
-		symbol->Qoute.low = quote["low"];
-		symbol->Qoute.close = quote["close"];
-		symbol->TotalVolume(quote["cumulative_amount"]);
-		symbol->PreDayRate(quote["updown_rate"]);
-		symbol->PreDayVolume(quote["preday_volume"]);
-	}
-	catch (const std::exception& e) {
-		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
-
-	}
+	mainApp.QuoteMgr()->AddQuote(std::move(quote));
 }
 
 void DarkHorse::ViStockClient::OnDmSymbolMaster(const std::string& symbol_code)
@@ -470,90 +453,38 @@ void DarkHorse::ViStockClient::OnDmSymbolMaster(const std::string& symbol_code)
 	if (symbol_p) symbol_p->Master_requested(true);
 }
 
+void DarkHorse::ViStockClient::on_dm_commodity_future_quote(nlohmann::json&& quote)
+{
+	mainApp.QuoteMgr()->AddQuote(std::move(quote));
+}
+void DarkHorse::ViStockClient::on_dm_commodity_future_hoga(nlohmann::json&& hoga)
+{
+	mainApp.HogaMgr()->AddHoga(std::move(hoga));
+}
+
+void DarkHorse::ViStockClient::on_dm_option_quote(nlohmann::json&& quote)
+{
+	mainApp.QuoteMgr()->AddQuote(std::move(quote));
+}
+void DarkHorse::ViStockClient::on_dm_option_hoga(nlohmann::json&& hoga)
+{
+	mainApp.HogaMgr()->AddHoga(std::move(hoga));
+}
+
 void DarkHorse::ViStockClient::OnDmSymbolQuote(nlohmann::json&& quote)
 {
-	try {
-		const std::string& symbol_code = quote["symbol_code"];
-		std::shared_ptr<SmQuote> quote_p = mainApp.QuoteMgr()->get_quote(symbol_code);
-		
-		quote_p->open = quote["open"];
-		quote_p->high = quote["high"];
-		quote_p->low = quote["low"];
-		quote_p->close = quote["close"];
-		quote_p->pre_day_close = quote["pre_day_close"];
-		//symbol->TotalVolume(quote["cumulative_amount"]);
-		//symbol->PreDayRate(quote["updown_rate"]);
-		//symbol->PreDayVolume(quote["preday_volume"]);
-
-		mainApp.event_hub()->process_quote_event(quote_p);
-	}
-	catch (const std::exception& e) {
-		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
-
-	}
+	mainApp.QuoteMgr()->AddQuote(std::move(quote));
 }
 
 void DarkHorse::ViStockClient::OnSymbolHoga(nlohmann::json&& hoga)
 {
-	try {
-		const std::string& symbol_code = hoga["symbol_code"];
-		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
-		if (!symbol) return;
-
-		for (int i = 0; i < 5; i++) {
-			symbol->Hoga.Ary[i].SellPrice = hoga["hoga_items"][i]["sell_price"];
-			symbol->Hoga.Ary[i].BuyPrice = hoga["hoga_items"][i]["buy_price"];
-			symbol->Hoga.Ary[i].SellQty = hoga["hoga_items"][i]["sell_qty"];
-			symbol->Hoga.Ary[i].BuyQty = hoga["hoga_items"][i]["buy_qty"];
-			symbol->Hoga.Ary[i].SellCnt = hoga["hoga_items"][i]["sell_cnt"];
-			symbol->Hoga.Ary[i].BuyCnt = hoga["hoga_items"][i]["buy_cnt"];
-		}
-
-		symbol->Hoga.HogaTime = hoga["hoga_time"];
-		symbol->Hoga.TotBuyQty = hoga["tot_buy_qty"];
-		symbol->Hoga.TotSellQty = hoga["tot_sell_qty"];
-		symbol->Hoga.TotBuyCnt = hoga["tot_buy_cnt"];
-		symbol->Hoga.TotSellCnt = hoga["tot_sell_cnt"];
-
-
-		//mainApp.CallbackMgr()->OnWndHogaEvent(symbol->Id());
-
-	}
-	catch (const std::exception& e) {
-		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
-	}
+	mainApp.HogaMgr()->AddHoga(std::move(hoga));
 }
 
 
 void DarkHorse::ViStockClient::OnDmSymbolHoga(nlohmann::json&& hoga)
 {
-	try {
-		const std::string& symbol_code = hoga["symbol_code"];
-		std::shared_ptr<SmHoga> hoga_p = mainApp.HogaMgr()->get_hoga(symbol_code);
-
-		for (int i = 0; i < 5; i++) {
-			hoga_p->Ary[i].SellPrice = hoga["hoga_items"][i]["sell_price"];
-			hoga_p->Ary[i].BuyPrice = hoga["hoga_items"][i]["buy_price"];
-			hoga_p->Ary[i].SellQty = hoga["hoga_items"][i]["sell_qty"];
-			hoga_p->Ary[i].BuyQty = hoga["hoga_items"][i]["buy_qty"];
-			hoga_p->Ary[i].SellCnt = hoga["hoga_items"][i]["sell_cnt"];
-			hoga_p->Ary[i].BuyCnt = hoga["hoga_items"][i]["buy_cnt"];
-		}
-
-		hoga_p->HogaTime = hoga["hoga_time"];
-		hoga_p->TotBuyQty = hoga["tot_buy_qty"];
-		hoga_p->TotSellQty = hoga["tot_sell_qty"];
-		hoga_p->TotBuyCnt = hoga["tot_buy_cnt"];
-		hoga_p->TotSellCnt = hoga["tot_sell_cnt"];
-
-		mainApp.event_hub()->process_hoga_event(hoga_p);
-	}
-	catch (const std::exception& e) {
-		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
-	}
+	mainApp.HogaMgr()->AddHoga(std::move(hoga));
 }
 
 void DarkHorse::ViStockClient::OnRealtimeQuote(nlohmann::json&& arg)

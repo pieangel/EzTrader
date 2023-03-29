@@ -170,8 +170,16 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 		OnRealtimeQuote(strRecvKey, nRealType); break;
 	case 51: // 국내 선물 호가
 		OnRealtimeDomesticHoga(strRecvKey, nRealType); break;
+	case 52: // dm option hoga
+		on_dm_option_hoga(strRecvKey, nRealType); break;
+	case 58: // dm commodity future hoga
+		on_dm_commodity_future_hoga(strRecvKey, nRealType); break;
 	case 65: // 국내 선물 시세
 		OnRealtimeDomesticQuote(strRecvKey, nRealType); break;
+	case 66:
+		on_dm_option_quote(strRecvKey, nRealType); break;
+	case 71:
+		on_dm_commodity_future_quote(strRecvKey, nRealType); break;
 	default:
 		break;
 	}
@@ -3541,6 +3549,295 @@ void DarkHorse::ViClient::OnChartDataShort_Init(const CString& sTrCode, const LO
 
 
 	OnTaskComplete(nRqID);
+}
+
+void DarkHorse::ViClient::on_dm_commodity_future_quote(const CString& strKey, const LONG& nRealType)
+{
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
+
+
+	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
+
+	nlohmann::json quote;
+
+	quote["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	//quote["symbol_name_kr"] = static_cast<const char*>(strSymbolNameKr.Trim());
+	//quote["delta_day"] = static_cast<const char*>(strDeltaDay.Trim());
+	//quote["delta_day_sign"] = static_cast<const char*>(strDeltaDaySign.Trim());
+	//quote["updown_rate"] = static_cast<const char*>(strUpdownRate.Trim());
+	//quote["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+	quote["close"] = (_ttoi(strClose.Trim()));
+	quote["open"] = (_ttoi(strOpen.Trim()));
+	quote["high"] = (_ttoi(strHigh.Trim()));
+	quote["low"] = (_ttoi(strLow.Trim()));
+	quote["cumulative_amount"] = 0;
+	quote["time"] = static_cast<const char*>(strTime.Trim());
+	quote["volume"] = _ttoi(strVolume.Trim());
+	quote["updown_rate"] = 0;
+	quote["up_down"] = strUpdown == "+" ? 1 : -1;
+
+	if (auto wp = _Client.lock()) {
+		wp->on_dm_commodity_future_quote(std::move(quote));
+	}
+}
+void DarkHorse::ViClient::on_dm_commodity_future_hoga(const CString& strKey, const LONG& nRealType)
+{
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "kfutcode");
+
+
+
+	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerho1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidho1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerrem1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidrem1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offercnt1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidcnt1");
+
+
+
+	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerho2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidho2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerrem2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidrem2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offercnt2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidcnt2");
+
+
+	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerho3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidho3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerrem3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidrem3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offercnt3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidcnt3");
+
+
+	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerho4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidho4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerrem4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidrem4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offercnt4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidcnt4");
+
+
+	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerho5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidho5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offerrem5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidrem5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "offercnt5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "bidcnt5");
+
+	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "hotime");
+
+	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "totofferrem");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "totbidrem");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "totoffercnt");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "totbidcnt");
+
+	nlohmann::json hoga;
+	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	hoga["hoga_time"] = static_cast<const char*>(strHogaTime.Trim());
+	hoga["tot_buy_qty"] = _ttoi(strTotBuyQty.Trim());
+	hoga["tot_sell_qty"] = _ttoi(strTotSellQty.Trim());
+	hoga["tot_buy_cnt"] = _ttoi(strTotBuyCnt.Trim());
+	hoga["tot_sell_cnt"] = _ttoi(strTotSellCnt.Trim());
+
+	hoga["hoga_items"][0]["sell_price"] = _ttoi(strSellPrice1.Trim());
+	hoga["hoga_items"][0]["buy_price"] = _ttoi(strBuyPrice1.Trim());
+	hoga["hoga_items"][0]["sell_qty"] = _ttoi(strSellQty1.Trim());
+	hoga["hoga_items"][0]["buy_qty"] = _ttoi(strBuyQty1.Trim());
+	hoga["hoga_items"][0]["sell_cnt"] = _ttoi(strSellCnt1.Trim());
+	hoga["hoga_items"][0]["buy_cnt"] = _ttoi(strBuyCnt1.Trim());
+
+	hoga["hoga_items"][1]["sell_price"] = _ttoi(strSellPrice2.Trim());
+	hoga["hoga_items"][1]["buy_price"] = _ttoi(strBuyPrice2.Trim());
+	hoga["hoga_items"][1]["sell_qty"] = _ttoi(strSellQty2.Trim());
+	hoga["hoga_items"][1]["buy_qty"] = _ttoi(strBuyQty2.Trim());
+	hoga["hoga_items"][1]["sell_cnt"] = _ttoi(strSellCnt2.Trim());
+	hoga["hoga_items"][1]["buy_cnt"] = _ttoi(strBuyCnt2.Trim());
+
+	hoga["hoga_items"][2]["sell_price"] = _ttoi(strSellPrice3.Trim());
+	hoga["hoga_items"][2]["buy_price"] = _ttoi(strBuyPrice3.Trim());
+	hoga["hoga_items"][2]["sell_qty"] = _ttoi(strSellQty3.Trim());
+	hoga["hoga_items"][2]["buy_qty"] = _ttoi(strBuyQty3.Trim());
+	hoga["hoga_items"][2]["sell_cnt"] = _ttoi(strSellCnt3.Trim());
+	hoga["hoga_items"][2]["buy_cnt"] = _ttoi(strBuyCnt3.Trim());
+
+	hoga["hoga_items"][3]["sell_price"] = _ttoi(strSellPrice4.Trim());
+	hoga["hoga_items"][3]["buy_price"] = _ttoi(strBuyPrice4.Trim());
+	hoga["hoga_items"][3]["sell_qty"] = _ttoi(strSellQty4.Trim());
+	hoga["hoga_items"][3]["buy_qty"] = _ttoi(strBuyQty4.Trim());
+	hoga["hoga_items"][3]["sell_cnt"] = _ttoi(strSellCnt4.Trim());
+	hoga["hoga_items"][3]["buy_cnt"] = _ttoi(strBuyCnt4.Trim());
+
+	hoga["hoga_items"][4]["sell_price"] = _ttoi(strSellPrice5.Trim());
+	hoga["hoga_items"][4]["buy_price"] = _ttoi(strBuyPrice5.Trim());
+	hoga["hoga_items"][4]["sell_qty"] = _ttoi(strSellQty5.Trim());
+	hoga["hoga_items"][4]["buy_qty"] = _ttoi(strBuyQty5.Trim());
+	hoga["hoga_items"][4]["sell_cnt"] = _ttoi(strSellCnt5.Trim());
+	hoga["hoga_items"][4]["buy_cnt"] = _ttoi(strBuyCnt5.Trim());
+
+	if (auto wp = _Client.lock()) {
+		wp->on_dm_commodity_future_hoga(std::move(hoga));
+	}
+}
+
+void DarkHorse::ViClient::on_dm_option_quote(const CString& strKey, const LONG& nRealType)
+{
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+
+	
+
+	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
+
+	nlohmann::json quote;
+
+	quote["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	//quote["symbol_name_kr"] = static_cast<const char*>(strSymbolNameKr.Trim());
+	//quote["delta_day"] = static_cast<const char*>(strDeltaDay.Trim());
+	//quote["delta_day_sign"] = static_cast<const char*>(strDeltaDaySign.Trim());
+	//quote["updown_rate"] = static_cast<const char*>(strUpdownRate.Trim());
+	//quote["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+	quote["close"] = (_ttoi(strClose.Trim()));
+	quote["open"] = (_ttoi(strOpen.Trim()));
+	quote["high"] = (_ttoi(strHigh.Trim()));
+	quote["low"] = (_ttoi(strLow.Trim()));
+	quote["cumulative_amount"] = 0;
+	quote["time"] = static_cast<const char*>(strTime.Trim());
+	quote["volume"] = _ttoi(strVolume.Trim());
+	quote["updown_rate"] = 0;
+	quote["up_down"] = strUpdown == "+" ? 1 : -1;
+	if (auto wp = _Client.lock()) {
+		wp->on_dm_option_quote(std::move(quote));
+	}
+}
+void DarkHorse::ViClient::on_dm_option_hoga(const CString& strKey, const LONG& nRealType)
+{
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+
+
+
+	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수1");
+
+
+
+	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수2");
+
+
+	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수3");
+
+
+	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수4");
+
+
+	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수5");
+
+	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "호가시간");
+
+	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가총수량");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가총수량");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가총건수");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가총건수");
+
+	nlohmann::json hoga;
+	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	hoga["hoga_time"] = static_cast<const char*>(strHogaTime.Trim());
+	hoga["tot_buy_qty"] = _ttoi(strTotBuyQty.Trim());
+	hoga["tot_sell_qty"] = _ttoi(strTotSellQty.Trim());
+	hoga["tot_buy_cnt"] = _ttoi(strTotBuyCnt.Trim());
+	hoga["tot_sell_cnt"] = _ttoi(strTotSellCnt.Trim());
+
+	hoga["hoga_items"][0]["sell_price"] = _ttoi(strSellPrice1.Trim());
+	hoga["hoga_items"][0]["buy_price"] = _ttoi(strBuyPrice1.Trim());
+	hoga["hoga_items"][0]["sell_qty"] = _ttoi(strSellQty1.Trim());
+	hoga["hoga_items"][0]["buy_qty"] = _ttoi(strBuyQty1.Trim());
+	hoga["hoga_items"][0]["sell_cnt"] = _ttoi(strSellCnt1.Trim());
+	hoga["hoga_items"][0]["buy_cnt"] = _ttoi(strBuyCnt1.Trim());
+
+	hoga["hoga_items"][1]["sell_price"] = _ttoi(strSellPrice2.Trim());
+	hoga["hoga_items"][1]["buy_price"] = _ttoi(strBuyPrice2.Trim());
+	hoga["hoga_items"][1]["sell_qty"] = _ttoi(strSellQty2.Trim());
+	hoga["hoga_items"][1]["buy_qty"] = _ttoi(strBuyQty2.Trim());
+	hoga["hoga_items"][1]["sell_cnt"] = _ttoi(strSellCnt2.Trim());
+	hoga["hoga_items"][1]["buy_cnt"] = _ttoi(strBuyCnt2.Trim());
+
+	hoga["hoga_items"][2]["sell_price"] = _ttoi(strSellPrice3.Trim());
+	hoga["hoga_items"][2]["buy_price"] = _ttoi(strBuyPrice3.Trim());
+	hoga["hoga_items"][2]["sell_qty"] = _ttoi(strSellQty3.Trim());
+	hoga["hoga_items"][2]["buy_qty"] = _ttoi(strBuyQty3.Trim());
+	hoga["hoga_items"][2]["sell_cnt"] = _ttoi(strSellCnt3.Trim());
+	hoga["hoga_items"][2]["buy_cnt"] = _ttoi(strBuyCnt3.Trim());
+
+	hoga["hoga_items"][3]["sell_price"] = _ttoi(strSellPrice4.Trim());
+	hoga["hoga_items"][3]["buy_price"] = _ttoi(strBuyPrice4.Trim());
+	hoga["hoga_items"][3]["sell_qty"] = _ttoi(strSellQty4.Trim());
+	hoga["hoga_items"][3]["buy_qty"] = _ttoi(strBuyQty4.Trim());
+	hoga["hoga_items"][3]["sell_cnt"] = _ttoi(strSellCnt4.Trim());
+	hoga["hoga_items"][3]["buy_cnt"] = _ttoi(strBuyCnt4.Trim());
+
+	hoga["hoga_items"][4]["sell_price"] = _ttoi(strSellPrice5.Trim());
+	hoga["hoga_items"][4]["buy_price"] = _ttoi(strBuyPrice5.Trim());
+	hoga["hoga_items"][4]["sell_qty"] = _ttoi(strSellQty5.Trim());
+	hoga["hoga_items"][4]["buy_qty"] = _ttoi(strBuyQty5.Trim());
+	hoga["hoga_items"][4]["sell_cnt"] = _ttoi(strSellCnt5.Trim());
+	hoga["hoga_items"][4]["buy_cnt"] = _ttoi(strBuyCnt5.Trim());
+
+	if (auto wp = _Client.lock()) {
+		wp->on_dm_option_hoga(std::move(hoga));
+	}
+}
+
+void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG& nRealType)
+{
+
+}
+void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& nRealType)
+{
+
+}
+void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG& nRealType)
+{
+
+}
+void DarkHorse::ViClient::on_dm_order_position(const CString& strKey, const LONG& nRealType)
+{
+
 }
 
 void DarkHorse::ViClient::OnDomesticChartData_Init(const CString& sTrCode, const LONG& nRqID)

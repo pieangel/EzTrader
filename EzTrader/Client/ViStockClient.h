@@ -35,6 +35,12 @@ namespace DarkHorse {
 		void OnDmSymbolHoga(nlohmann::json&& arg);
 		void OnDmSymbolMaster(const std::string& symbol_code);
 
+		void on_dm_commodity_future_quote(nlohmann::json&& arg);
+		void on_dm_commodity_future_hoga(nlohmann::json&& arg);
+
+		void on_dm_option_quote(nlohmann::json&& arg);
+		void on_dm_option_hoga(nlohmann::json&& arg);
+
 		// 해외 실시간 시세
 		void OnRealtimeQuote(nlohmann::json&& arg);
 		// 해외 실시간 호가

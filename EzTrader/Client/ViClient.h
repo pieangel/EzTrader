@@ -196,6 +196,17 @@ namespace DarkHorse {
 		void OnRealtimeDomesticQuote(const CString& strKey, const LONG& nRealType);
 		// 국내 실시간 호가
 		void OnRealtimeDomesticHoga(const CString& strKey, const LONG& nRealType);
+
+		void on_dm_commodity_future_quote(const CString& strKey, const LONG& nRealType);
+		void on_dm_commodity_future_hoga(const CString& strKey, const LONG& nRealType);
+
+		void on_dm_option_quote(const CString& strKey, const LONG& nRealType);
+		void on_dm_option_hoga(const CString& strKey, const LONG& nRealType);
+
+		void on_dm_order_unfilled(const CString& strKey, const LONG& nRealType);
+		void on_dm_order_filled(const CString& strKey, const LONG& nRealType);
+		void on_dm_order_accepted(const CString& strKey, const LONG& nRealType);
+		void on_dm_order_position(const CString& strKey, const LONG& nRealType);
 		// Key : 선물사 요청 번호, value : argument map.
 		std::map<int, task_arg> _ReqMap;
 		// Key : Order Request Id, value : order request object

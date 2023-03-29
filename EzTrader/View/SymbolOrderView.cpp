@@ -39,6 +39,7 @@
 #include "../ViewModel/VmHoga.h"
 #include "../ViewModel/VmProduct.h"
 #include "../Event/EventHub.h"
+#include "../Util/SmUtil.h"
 #include <sstream>
 #include <format>
 
@@ -503,7 +504,7 @@ void SymbolOrderView::set_quote_value(const int value, const DarkHorse::SmCellTy
 	std::string value_string;
 	cell->CellType(cell_type);
 	value_string = std::format("{0}", value);
-	insert_decimal(value_string, symbol_decimal);
+	SmUtil::insert_decimal(value_string, symbol_decimal);
 	cell->Text(value_string);
 	cell_to_price.insert(std::make_pair(cell->Row(), cell->Col()));
 }
@@ -947,7 +948,7 @@ void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
 
 	_Grid->SetColWidth(DarkHorse::OrderGridHeader::QUOTE, wnd_width - width_sum);
 }
-
+/*
 void SymbolOrderView::insert_decimal(std::string& value, const int decimal)
 {
 	try {
@@ -966,6 +967,7 @@ void SymbolOrderView::insert_decimal(std::string& value, const int decimal)
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
 }
+*/
 void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)
 {
 	if (!quote_control_ || !product_control_) return;
@@ -982,7 +984,7 @@ void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)
 		for (int i = price_start_row_; i < price_end_row_; i++) {
 			std::string value_string;
 			value_string = std::format("{0}", next_value);
-			insert_decimal(value_string, product_control_->get_product().decimal);
+			SmUtil::insert_decimal(value_string, product_control_->get_product().decimal);
 			_Grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, value_string);
 			price_to_row_[next_value] = i;
 			row_to_price_[i] = next_value;

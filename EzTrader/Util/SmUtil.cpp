@@ -7,10 +7,31 @@
 #include "iprtrmib.h"
 #include "tlhelp32.h"
 #include "iphlpapi.h"
+#include "../Log/MyLogger.h"
 #pragma comment(lib, "Iphlpapi.lib")
 
 
 using namespace DarkHorse;
+
+
+void SmUtil::insert_decimal(std::string& value, const int decimal)
+{
+	try {
+		CString msg;
+		msg.Format("value = %s\n", value.c_str());
+		TRACE(msg);
+		if (decimal <= 0) return;
+		if (value.length() == static_cast<size_t>(decimal))
+			value.insert(0, 1, '0');
+		else if (value.length() < static_cast<size_t>(decimal))
+			value.insert(0, 2, '0');
+		value.insert(value.length() - decimal, 1, '.');
+	}
+	catch (const std::exception& e) {
+		const std::string& error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+}
 
 std::tuple<int, int, int> SmUtil::GetLocalTime()
 {

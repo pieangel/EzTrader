@@ -68,36 +68,6 @@ void SmQuoteProcessor::AddQuote(nlohmann::json&& quote) noexcept
 void SmQuoteProcessor::ProcessQuote(nlohmann::json&& quote)
 {
 	try {
-		/*
-		const std::string& symbol_code = quote["symbol_code"];
-		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
-		if (!symbol) return;
-
-		symbol->Qoute.open = quote["open"];
-		symbol->Qoute.high = quote["high"];
-		symbol->Qoute.low = quote["low"];
-		symbol->Qoute.close = quote["close"];
-		symbol->TotalVolume(quote["cumulative_amount"]);
-		symbol->PreDayRate(quote["updown_rate"]);
-		
-		
-		SmTick tick, tick2;
-		
-		tick2.close = tick.close = quote["close"];
-		tick2.time = tick.time = quote["time"];
-		tick.qty = quote["volume"];
-		tick.updown = quote["up_down"];
-		// 이 함수 호출은 종료할 때 문제가 생김
-		symbol->ShiftDown(std::move(tick));	
-		symbol->UpdateChartData(std::move(tick2));
-		
-		CString msg;
-		msg.Format(">>>>>> symbol_code = %s, close = %d\n", symbol_code.c_str(), symbol->Qoute.close);
-		//TRACE(msg);
-		mainApp.TotalPosiMgr()->UpdatePosition(symbol_code);
-		mainApp.TotalOrderMgr()->CheckStopOrder(symbol);
-		mainApp.CallbackMgr()->OnQuoteEvent(symbol_code);
-		*/
 		const std::string& symbol_code = quote["symbol_code"];
 		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) return;

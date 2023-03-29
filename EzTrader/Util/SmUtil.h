@@ -20,6 +20,7 @@ namespace DarkHorse {
 
 	class SmUtil {
 	public:
+		static void insert_decimal(std::string& value, const int decimal);
 		static std::vector<int> IntToDate(const int& date);
 		static std::vector<int> IntToTime(const int& time);
 		static std::tuple<int, int, int> GetLocalTime();

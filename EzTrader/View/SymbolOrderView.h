@@ -105,6 +105,7 @@ public:
 	void FixedMode(bool val);
 
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
+	//void insert_decimal(std::string& value, const int decimal);
 private:
 	int find_close_row_from_end_row();
 	int find_zero_value_row();
@@ -115,7 +116,7 @@ private:
 	int get_center_row();
 	void set_quote_value(const int value, const DarkHorse::SmCellType cell_type);
 	void set_quote_cell(const int row, const bool show_mark, const int mark_type);
-	void insert_decimal(std::string& value, const int decimal);
+	
 	void init_quote_control(const std::string& symbol_code);
 	void init_hoga_control(const std::string& symbol_code);
 	std::shared_ptr<DarkHorse::HogaControl> hoga_control_;
