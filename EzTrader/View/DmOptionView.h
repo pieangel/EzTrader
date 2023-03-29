@@ -42,6 +42,7 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	void register_symbols_to_server();
 	void set_option_view();
 	int get_atm_index(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec);
 	void set_strike_start_index(const int distance);

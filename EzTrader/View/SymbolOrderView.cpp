@@ -162,7 +162,8 @@ void SymbolOrderView::update_quote()
 	set_quote_value(quote.low, SmCellType::CT_QUOTE_LOW);
 	SetPosition();
 	SetQuoteColor();
-	Invalidate();
+	//Invalidate();
+	_EnableQuoteShow = true;
 }
 
 void SymbolOrderView::update_hoga()
@@ -219,7 +220,9 @@ void SymbolOrderView::update_hoga()
 	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderGridHeader::BUY_CNT));
 	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderGridHeader::BUY_QTY));
 
-	Invalidate(FALSE);
+	//Invalidate(FALSE);
+
+	_EnableHogaShow = true;
 }
 
 void SymbolOrderView::SetPosition()
@@ -704,7 +707,7 @@ void SymbolOrderView::SetUp()
 	mainApp.CallbackMgr()->SubscribeMasterCallback((long)this, std::bind(&SymbolOrderView::OnSymbolMasterEvent, this, _1));
 	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&SymbolOrderView::OnOrderEvent, this, _1, _2));
 
-	//SetTimer(1, 10, NULL);
+	SetTimer(1, 10, NULL);
 
 	return;
 }

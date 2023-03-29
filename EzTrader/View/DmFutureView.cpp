@@ -151,6 +151,11 @@ void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string
 {
 	_EnableOrderShow = true;
 }
+void DmFutureView::register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!symbol) return;
+	mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
+}
 
 void DmFutureView::init_dm_future()
 {
@@ -161,7 +166,10 @@ void DmFutureView::init_dm_future()
 			const std::map<std::string, std::shared_ptr<SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
 			std::shared_ptr<SmProductYearMonth> year_month = year_month_map.begin()->second;
 			auto symbol = year_month->get_first_symbol();
-			if (symbol) symbol_map_[i] = symbol;
+			if (symbol) {
+				symbol_map_[i] = symbol;
+				register_symbol_to_server(symbol);
+			}
 		}
 		std::string value = future_vec[i].future_name;
 		if (cell) cell->Text(value);

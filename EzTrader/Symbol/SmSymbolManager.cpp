@@ -367,6 +367,8 @@ void SmSymbolManager::set_product_info(std::shared_ptr<SmSymbol> symbol)
 	if (!symbol) return;
 	auto product = find_product(symbol->MarketName(), symbol->ProductCode());
 	if (!product) return;
+	symbol->TickSize(_ttof(product->tick_size().c_str()));
+	symbol->TickValue(product->tick_value());
 	symbol->Decimal(product->decimal());
 	symbol->SeungSu(product->seung_su());
 }
@@ -640,6 +642,8 @@ void SmSymbolManager::RegisterSymbolToServer(const std::string& symbol_code, con
 	else {
 		auto found = _RegisteredSymbolMap.find(symbol_code);
 		if (found == _RegisteredSymbolMap.end()) return;
+
+		mainApp.Client()->RegisterSymbol(symbol_code);
 	}
 }
 

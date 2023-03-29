@@ -166,6 +166,7 @@ void DmOptionView::set_option_view(
 void DmOptionView::set_option_view()
 {
 	set_strike(call_symbol_vector_, put_symbol_vector_);
+	register_symbols_to_server();
 	Invalidate();
 }
 
@@ -233,6 +234,14 @@ void DmOptionView::OnLButtonDown(UINT nFlags, CPoint point)
 		mainApp.event_hub()->process_symbol_event(it->second);
 	}
 	CBCGPStatic::OnLButtonDown(nFlags, point);
+}
+
+void DmOptionView::register_symbols_to_server()
+{
+	for(auto& symbol : call_symbol_vector_)
+		mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
+	for (auto& symbol : put_symbol_vector_)
+		mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
 }
 
 void DmOptionView::set_strike(

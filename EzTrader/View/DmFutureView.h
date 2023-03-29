@@ -40,6 +40,7 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	void register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
 	// 0 : account, 1 : fund
