@@ -46,10 +46,9 @@ DmOptionView::DmOptionView()
 
 DmOptionView::~DmOptionView()
 {
+	quote_control_->dm_option_view(nullptr);
 	KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-
+	
 	if (m_pGM != NULL)
 	{
 		delete m_pGM;

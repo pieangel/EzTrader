@@ -303,10 +303,10 @@ void SmSymbolManager::read_domestic_masterfile()
 			VtStringUtil::trim(value);
 			std::string symbol_code = value;
 			std::shared_ptr<SmSymbol> symbol = std::make_shared<SmSymbol>(std::move(symbol_code));
-			symbol->SymbolCode(symbol_code);
-			const std::string market_name = symbol_code.substr(0, 1).at(0) == '1' ? DmFutureMarketName : DmOptionMarketName;
+			std::shared_ptr<SmQuote> quote_p = mainApp.QuoteMgr()->get_quote(value);
+			const std::string market_name = symbol->SymbolCode().substr(0, 1).at(0) == '1' ? DmFutureMarketName : DmOptionMarketName;
 			symbol->MarketName(market_name);
-			const std::string product_code = symbol_code.substr(0, 3);
+			const std::string product_code = symbol->SymbolCode().substr(0, 3);
 			symbol->ProductCode(product_code);
 			value = line.substr(index, 12); index += 12;
 			VtStringUtil::trim(value);
@@ -332,6 +332,11 @@ void SmSymbolManager::read_domestic_masterfile()
 			value = line.substr(index, 12); index += 12;
 			VtStringUtil::trim(value);
 			symbol->PreDayClose(value);
+			std::string close_value = value;
+			close_value.erase(std::remove(close_value.begin(), close_value.end(), '.'), close_value.end());
+			quote_p->close = _ttoi(close_value.c_str());
+			quote_p->pre_day_close = _ttoi(close_value.c_str());
+
 			value = line.substr(index, 12); index += 12;
 			VtStringUtil::trim(value);
 			std::string pre_day_close = value;

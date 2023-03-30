@@ -127,13 +127,13 @@ namespace DarkHorse {
 			if (source_value > base_value) {
 				const int difference_value_greater_than = source_value - product_.option_value_turning_point;
 				const int difference_value_less = product_.option_value_turning_point - base_value;
-				int difference_row = difference_value_less + static_cast<int>(difference_value_greater_than / product_.int_tick_size);
+				int difference_row = difference_value_less + static_cast<int>(difference_value_greater_than / 5);
 				return base_row - difference_row;
 			}
 			else {
 				const int difference_value_greater_than = base_value - product_.option_value_turning_point;
 				const int difference_value_less = product_.option_value_turning_point - source_value;
-				const int difference_row = difference_value_less + static_cast<int>(difference_value_greater_than / product_.int_tick_size);
+				const int difference_row = difference_value_less + static_cast<int>(difference_value_greater_than / 5);
 				return base_row + difference_row;
 			}
 		}
@@ -168,13 +168,13 @@ namespace DarkHorse {
 			if (source_row > base_row) {
 				const int difference_row_less = source_row - turning_point_row;
 				const int difference_row_greater_than = turning_point_row - base_row;
-				const int difference_value = difference_row_less + difference_row_greater_than * product_.int_tick_size;
+				const int difference_value = difference_row_less + difference_row_greater_than * 5;
 				return base_value - difference_value;
 			}
 			else {
 				const int difference_row_less = base_row - turning_point_row;
 				const int difference_row_greater_than = turning_point_row - source_row;
-				const int difference_value = difference_row_less + difference_row_greater_than * product_.int_tick_size;
+				const int difference_value = difference_row_less + difference_row_greater_than * 5;
 				return base_value + difference_value;
 			}
 		}

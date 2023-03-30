@@ -25,14 +25,13 @@ namespace DarkHorse {
 	{
 		try {
 			if (!quote) return;
-			//if (symbol_id_ != 0 && quote->symbol_id != symbol_id_) return;
-
+			if (symbol_id_ != 0 && quote->symbol_id != symbol_id_) return;
+			quote_.symbol_id = quote->symbol_id;
 			quote_.high = quote->high;
 			quote_.low = quote->low;
 			quote_.open = quote->open;
 			quote_.close = quote->close;
 			quote_.pre_day_close = quote->pre_day_close;
-			quote_.init = true;
 
 			if (symbol_order_view_) symbol_order_view_->on_update_quote();
 			if (dm_future_view_) dm_future_view_->update_quote();

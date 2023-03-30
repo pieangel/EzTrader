@@ -41,9 +41,8 @@ DmFutureView::DmFutureView()
 
 DmFutureView::~DmFutureView()
 {
+	quote_control_->dm_future_view(nullptr);
 	KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
 
 	if (m_pGM != NULL)
 	{

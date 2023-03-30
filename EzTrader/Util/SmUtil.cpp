@@ -17,9 +17,9 @@ using namespace DarkHorse;
 void SmUtil::insert_decimal(std::string& value, const int decimal)
 {
 	try {
-		CString msg;
-		msg.Format("value = %s\n", value.c_str());
-		TRACE(msg);
+		//CString msg;
+		//msg.Format("value = %s\n", value.c_str());
+		//TRACE(msg);
 		if (decimal <= 0) return;
 		if (value.length() == static_cast<size_t>(decimal))
 			value.insert(0, 1, '0');

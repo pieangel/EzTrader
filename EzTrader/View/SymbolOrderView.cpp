@@ -102,7 +102,7 @@ BOOL SymbolOrderView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	SetOrder();
 	SetStopOrder();
 
-	//Invalidate();
+	Invalidate();
 
 	return CBCGPStatic::OnMouseWheel(nFlags, zDelta, pt);
 }
@@ -1176,6 +1176,7 @@ int SymbolOrderView::find_zero_value_row()
 
 int SymbolOrderView::find_row(const int target_value)
 {
+	/*
 	if (price_to_row_.empty() || target_value == 0) return -1;
 
 	const int int_tick_size = product_control_->get_product().int_tick_size;
@@ -1185,7 +1186,8 @@ int SymbolOrderView::find_row(const int target_value)
 		return it->second;
 	else  // 값이 보이는 범위 밖에 있을 때
 		return product_control_->get_row(target_value, close_row_, quote_control_->get_quote().close);
-	
+		*/
+	return product_control_->get_row(target_value, close_row_, quote_control_->get_quote().close);
 }
 
 int SymbolOrderView::find_row2(const int target_value)

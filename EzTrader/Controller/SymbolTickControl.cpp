@@ -22,7 +22,7 @@ namespace DarkHorse {
 
 	void SymbolTickControl::update_tick(SmTick tick)
 	{
-		//if (tick.symbol_id != symbol_id_) return;
+		if (tick.symbol_id != symbol_id_) return;
 
 		std::rotate(tick_vec_.rbegin(), tick_vec_.rbegin() + 1, tick_vec_.rend());
 		tick_vec_[0] = std::move(tick);
