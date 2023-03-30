@@ -14,9 +14,15 @@ namespace DarkHorse {
 		subscribe_tick_control();
 		tick_vec_.resize(26);
 	}
+
+	SymbolTickControl::~SymbolTickControl()
+	{
+		mainApp.event_hub()->unsubscribe_tick_event_handler( id_ );
+	}
+
 	void SymbolTickControl::update_tick(SmTick tick)
 	{
-		if (tick.symbol_id != symbol_id_) return;
+		//if (tick.symbol_id != symbol_id_) return;
 
 		std::rotate(tick_vec_.rbegin(), tick_vec_.rbegin() + 1, tick_vec_.rend());
 		tick_vec_[0] = std::move(tick);

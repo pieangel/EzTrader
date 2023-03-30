@@ -8,7 +8,7 @@ namespace DarkHorse {
 	{
 	public:
 		SymbolTickControl();
-		~SymbolTickControl() {};
+		~SymbolTickControl();
 		void update_tick(SmTick tick);
 		
 		const int get_id()

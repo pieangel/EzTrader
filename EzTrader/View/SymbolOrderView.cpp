@@ -139,19 +139,19 @@ SymbolOrderView::SymbolOrderView()
 SymbolOrderView::~SymbolOrderView()
 {
 	KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeOrderWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->UnsubscribeSymbolMasterWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->UnsubscribeQuoteWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->UnsubscribeHogaWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeHogaCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeMasterCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
-	if (m_pGM != NULL)
-	{
-		delete m_pGM;
-	}
+	
+	if (m_pGM != NULL) delete m_pGM;
 }
+
+void SymbolOrderView::on_update_quote()
+{
+	_EnableQuoteShow = true;
+}
+void SymbolOrderView::on_update_hoga()
+{
+	_EnableHogaShow = true;
+}
+
 void SymbolOrderView::update_quote()
 {
 	if (!quote_control_ || !product_control_) return;
@@ -164,7 +164,7 @@ void SymbolOrderView::update_quote()
 	SetPosition();
 	SetQuoteColor();
 	//Invalidate();
-	_EnableQuoteShow = true;
+	//_EnableQuoteShow = true;
 }
 
 void SymbolOrderView::update_hoga()
@@ -223,7 +223,7 @@ void SymbolOrderView::update_hoga()
 
 	//Invalidate(FALSE);
 
-	_EnableHogaShow = true;
+	//_EnableHogaShow = true;
 }
 
 void SymbolOrderView::SetPosition()
@@ -1176,8 +1176,16 @@ int SymbolOrderView::find_zero_value_row()
 
 int SymbolOrderView::find_row(const int target_value)
 {
-	if (!product_control_ || !quote_control_) return -1;
-	return product_control_->get_row(target_value, close_row_, quote_control_->get_quote().close);
+	if (price_to_row_.empty() || target_value == 0) return -1;
+
+	const int int_tick_size = product_control_->get_product().int_tick_size;
+	if (int_tick_size == 0) return -1;
+	auto it = price_to_row_.find(target_value);
+	if (it != price_to_row_.end())  // 값이 보이는 범위 안에 있을 때
+		return it->second;
+	else  // 값이 보이는 범위 밖에 있을 때
+		return product_control_->get_row(target_value, close_row_, quote_control_->get_quote().close);
+	
 }
 
 int SymbolOrderView::find_row2(const int target_value)

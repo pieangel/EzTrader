@@ -10,7 +10,7 @@ class HogaControl
 {
 public:
 	HogaControl();
-	~HogaControl() {};
+	~HogaControl();
 	void update_hoga(std::shared_ptr<SmHoga> hoga);
 	const VmHoga& get_hoga()
 	{

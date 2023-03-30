@@ -106,6 +106,8 @@ public:
 
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 	//void insert_decimal(std::string& value, const int decimal);
+	void on_update_quote();
+	void on_update_hoga();
 private:
 	int find_close_row_from_end_row();
 	int find_zero_value_row();

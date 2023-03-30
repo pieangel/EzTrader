@@ -4,6 +4,7 @@
 #include "../Event/EventHub.h"
 #include "../View/SymbolOrderView.h"
 #include "../Hoga/SmHoga.h"
+#include "../Log/MyLogger.h"
 #include <functional>
 
 namespace DarkHorse {
@@ -11,6 +12,10 @@ namespace DarkHorse {
 		: id_(IdGenerator::get_id())
 	{
 		subscribe_hoga_control();
+	}
+	HogaControl::~HogaControl()
+	{
+		mainApp.event_hub()->unsubscribe_hoga_event_handler( id_ );
 	}
 	void HogaControl::subscribe_hoga_control()
 	{
@@ -22,23 +27,29 @@ namespace DarkHorse {
 	}
 	void HogaControl::update_hoga(std::shared_ptr<SmHoga> hoga)
 	{
-		if (!hoga || hoga->symbol_id != symbol_id_) return;
+		try {
+			//if (!hoga || hoga->symbol_id != symbol_id_) return;
 
-		for (int i = 0; i < 5; i++) {
-			hoga_.Ary[i].BuyCnt = hoga->Ary[i].BuyCnt;
-			hoga_.Ary[i].BuyPrice = hoga->Ary[i].BuyPrice;
-			hoga_.Ary[i].BuyQty = hoga->Ary[i].BuyQty;
-			hoga_.Ary[i].SellCnt = hoga->Ary[i].SellCnt;
-			hoga_.Ary[i].SellPrice = hoga->Ary[i].SellPrice;
-			hoga_.Ary[i].SellQty = hoga->Ary[i].SellQty;
+			for (int i = 0; i < 5; i++) {
+				hoga_.Ary[i].BuyCnt = hoga->Ary[i].BuyCnt;
+				hoga_.Ary[i].BuyPrice = hoga->Ary[i].BuyPrice;
+				hoga_.Ary[i].BuyQty = hoga->Ary[i].BuyQty;
+				hoga_.Ary[i].SellCnt = hoga->Ary[i].SellCnt;
+				hoga_.Ary[i].SellPrice = hoga->Ary[i].SellPrice;
+				hoga_.Ary[i].SellQty = hoga->Ary[i].SellQty;
+			}
+
+			hoga_.TotSellQty = hoga->TotSellQty;
+			hoga_.TotBuyQty = hoga->TotBuyQty;
+			hoga_.TotSellCnt = hoga->TotSellCnt;
+			hoga_.TotBuyCnt = hoga->TotBuyCnt;
+			hoga_.HogaTime = hoga->HogaTime;
+
+			if (symbol_order_view_) symbol_order_view_->on_update_hoga();
 		}
-
-		hoga_.TotSellQty = hoga->TotSellQty;
-		hoga_.TotBuyQty = hoga->TotBuyQty;
-		hoga_.TotSellCnt = hoga->TotSellCnt;
-		hoga_.TotBuyCnt = hoga->TotBuyCnt;
-		hoga_.HogaTime = hoga->HogaTime;
-
-		if (symbol_order_view_) symbol_order_view_->update_hoga();
+		catch (const std::exception& e) {
+			const std::string error = e.what();
+			LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+		}
 	}
 }

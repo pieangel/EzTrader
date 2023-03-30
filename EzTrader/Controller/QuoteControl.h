@@ -12,7 +12,7 @@ class QuoteControl
 {
 public:
 	QuoteControl();
-	~QuoteControl() {};
+	~QuoteControl();
 	void update_quote(std::shared_ptr<SmQuote> quote);
 	const VmQuote& get_quote()
 	{
