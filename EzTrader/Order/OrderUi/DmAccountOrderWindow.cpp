@@ -81,6 +81,8 @@ DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent /*=nullptr*/)
 
 DmAccountOrderWindow::~DmAccountOrderWindow()
 {
+	int i = 0;
+	i = i + 0;
 }
 
 void DmAccountOrderWindow::DoDataExchange(CDataExchange* pDX)
@@ -667,10 +669,10 @@ void DmAccountOrderWindow::ChangedCenterWindow(const int& center_wnd_id)
 
 void DmAccountOrderWindow::OnClose()
 {
-	mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
-
-
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->remove_dm_account_order_window(GetSafeHwnd());
+	//mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
 
 	CBCGPDialog::OnClose();
 }
@@ -728,16 +730,15 @@ void DmAccountOrderWindow::OnSysCommand(UINT nID, LPARAM lParam)
 
 void DmAccountOrderWindow::OnDestroy()
 {
+	
 	CBCGPDialog::OnDestroy();
-
-
 }
 
 
 void DmAccountOrderWindow::PostNcDestroy()
 {
-	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->RemoveOrderWnd(GetSafeHwnd());
+	//CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	//pFrame->remove_dm_account_order_window(GetSafeHwnd());
 
 	CBCGPDialog::PostNcDestroy();
 }

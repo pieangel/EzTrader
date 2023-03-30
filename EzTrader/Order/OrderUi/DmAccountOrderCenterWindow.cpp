@@ -66,6 +66,8 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 DmAccountOrderCenterWindow::~DmAccountOrderCenterWindow()
 {
 	//KillTimer(1);
+	int i = 0;
+	i = i + 0;
 }
 
 void DmAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> val)

@@ -1227,7 +1227,7 @@ void CMainFrame::OnMulticolorChart()
 
 void CMainFrame::OnDomesticAccountOrder()
 {
-	std::shared_ptr<DmAccountOrderWindow> acnt_order_wnd = std::make_shared<DmAccountOrderWindow>();
+	DmAccountOrderWindow* acnt_order_wnd = new DmAccountOrderWindow();
 	acnt_order_wnd->Create(IDD_DM_ACNT_ORDER_MAIN, this);
 	dm_account_order_wnd_map_[acnt_order_wnd->GetSafeHwnd()] = acnt_order_wnd;
 	acnt_order_wnd->ShowWindow(SW_SHOW);
@@ -1242,10 +1242,17 @@ void CMainFrame::OnDomesticFundOrder()
 	fund_order_wnd->ShowWindow(SW_SHOW);
 }
 
-
+void CMainFrame::remove_dm_account_order_window(HWND handle)
+{
+	if (!handle) return;
+	auto found = dm_account_order_wnd_map_.find(handle);
+	if (found == dm_account_order_wnd_map_.end()) return;
+	delete found->second;
+	dm_account_order_wnd_map_.erase(found);
+}
 void CMainFrame::OnDmAcntOrder()
 {
-	std::shared_ptr<DmAccountOrderWindow> acnt_order_wnd = std::make_shared<DmAccountOrderWindow>();
+	DmAccountOrderWindow* acnt_order_wnd = new DmAccountOrderWindow();
 	acnt_order_wnd->Create(IDD_DM_ACNT_ORDER_MAIN, this);
 	dm_account_order_wnd_map_[acnt_order_wnd->GetSafeHwnd()] = acnt_order_wnd;
 	acnt_order_wnd->ShowWindow(SW_SHOW);

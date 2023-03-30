@@ -124,9 +124,9 @@ public:
 	std::shared_ptr< SmJangGoDialog> _FundJangoDialog = nullptr;
 	std::shared_ptr< SmFundCompMainDialog> _FundCompOrderDialog = nullptr;
 
-	std::shared_ptr<DmAccountOrderWindow> dm_account_order_wnd_p_ = nullptr;
+	DmAccountOrderWindow* dm_account_order_wnd_p_ = nullptr;
 	std::shared_ptr<DmFundOrderWindow> dm_fund_order_wnd_p = nullptr;
-	std::map<HWND, std::shared_ptr<DmAccountOrderWindow>> dm_account_order_wnd_map_;
+	std::map<HWND, DmAccountOrderWindow*> dm_account_order_wnd_map_;
 	std::map<HWND, std::shared_ptr<DmFundOrderWindow>> dm_fund_order_wnd_map_;
 
 	std::map<HWND, std::shared_ptr<SmMainOrderDialog>> _OrderWndMap;
@@ -151,7 +151,7 @@ public:
 	std::map<HWND, std::shared_ptr<RealTimeMultiChart>> _RealTimeChartMap;
 
 	std::map<HWND, std::shared_ptr<SmTrendChart>> _TrendChartMap;
-
+	void remove_dm_account_order_window(HWND handle);
 	void RemoveOrderWnd(HWND wnd);
 	void RemoveFundOrderWnd(HWND wnd);
 	void RemoveJangoWnd(HWND wnd);
