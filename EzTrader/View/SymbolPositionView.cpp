@@ -38,13 +38,8 @@ SymbolPositionView::SymbolPositionView()
 
 SymbolPositionView::~SymbolPositionView()
 {
-	KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
-	if (m_pGM != NULL)
-	{
-		delete m_pGM;
-	}
+	//KillTimer(1);
+	if (m_pGM != NULL)	delete m_pGM;
 }
 
 void SymbolPositionView::SetUp()
@@ -81,8 +76,6 @@ void SymbolPositionView::SetUp()
 		_Grid->SetColHeaderTitles(_HeaderTitles);
 	}
 
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&SymbolPositionView::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&SymbolPositionView::OnOrderEvent, this, _1, _2));
 	SetTimer(1, 40, NULL);
 }
 

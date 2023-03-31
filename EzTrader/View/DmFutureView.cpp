@@ -42,7 +42,7 @@ DmFutureView::DmFutureView()
 DmFutureView::~DmFutureView()
 {
 	quote_control_->dm_future_view(nullptr);
-	KillTimer(1);
+	//KillTimer(1);
 
 	if (m_pGM != NULL)
 	{

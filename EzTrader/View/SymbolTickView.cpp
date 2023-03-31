@@ -33,8 +33,7 @@ SymbolTickView::SymbolTickView()
 
 SymbolTickView::~SymbolTickView()
 {
-	KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
+	//KillTimer(1);
 	if (m_pGM != NULL)
 	{
 		delete m_pGM;

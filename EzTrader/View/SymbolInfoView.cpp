@@ -37,7 +37,7 @@ SymbolInfoView::SymbolInfoView()
 
 SymbolInfoView::~SymbolInfoView()
 {
-	KillTimer(1);
+	//KillTimer(1);
 	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
 
 	if (m_pGM != NULL)

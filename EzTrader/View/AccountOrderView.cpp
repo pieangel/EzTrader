@@ -53,7 +53,7 @@ void AccountOrderView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 
 AccountOrderView::~AccountOrderView()
 {
-	KillTimer(1);
+	//KillTimer(1);
 	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
 }
 

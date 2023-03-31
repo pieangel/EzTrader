@@ -47,7 +47,7 @@ DmOptionView::DmOptionView()
 DmOptionView::~DmOptionView()
 {
 	quote_control_->dm_option_view(nullptr);
-	KillTimer(1);
+	//KillTimer(1);
 	
 	if (m_pGM != NULL)
 	{

@@ -138,7 +138,7 @@ SymbolOrderView::SymbolOrderView()
 
 SymbolOrderView::~SymbolOrderView()
 {
-	KillTimer(1);
+	//KillTimer(1);
 	
 	if (m_pGM != NULL) delete m_pGM;
 }

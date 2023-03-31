@@ -674,7 +674,7 @@ void DmAccountOrderWindow::OnClose()
 	//mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
 	//mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
 
-	CBCGPDialog::OnClose();
+	if (!destroyed_) CBCGPDialog::OnClose();
 }
 
 
@@ -731,7 +731,7 @@ void DmAccountOrderWindow::OnSysCommand(UINT nID, LPARAM lParam)
 void DmAccountOrderWindow::OnDestroy()
 {
 	
-	CBCGPDialog::OnDestroy();
+	if (!destroyed_) CBCGPDialog::OnDestroy();
 }
 
 
@@ -741,5 +741,7 @@ void DmAccountOrderWindow::PostNcDestroy()
 	//pFrame->remove_dm_account_order_window(GetSafeHwnd());
 
 	CBCGPDialog::PostNcDestroy();
+	destroyed_ = true;
+	delete this;
 }
 

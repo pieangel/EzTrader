@@ -1247,7 +1247,7 @@ void CMainFrame::remove_dm_account_order_window(HWND handle)
 	if (!handle) return;
 	auto found = dm_account_order_wnd_map_.find(handle);
 	if (found == dm_account_order_wnd_map_.end()) return;
-	delete found->second;
+	found->second->DestroyWindow();
 	dm_account_order_wnd_map_.erase(found);
 }
 void CMainFrame::OnDmAcntOrder()

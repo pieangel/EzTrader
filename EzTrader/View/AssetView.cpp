@@ -36,7 +36,7 @@ AssetView::AssetView()
 
 AssetView::~AssetView()
 {
-	KillTimer(1);
+	//KillTimer(1);
 	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
 	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
 

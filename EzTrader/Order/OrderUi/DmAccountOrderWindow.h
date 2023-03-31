@@ -61,6 +61,7 @@ public:
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
 private:
+	bool destroyed_{ false };
 	std::shared_ptr<DmAccountOrderLeftWindow> _LeftWnd = nullptr;
 	std::shared_ptr<DmAccountOrderRightWindow> _RightWnd = nullptr;
 	std::map<int, std::shared_ptr<DmAccountOrderCenterWindow>> _CenterWndMap;
