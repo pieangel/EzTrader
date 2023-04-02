@@ -8,6 +8,7 @@ namespace DarkHorse {
 		int close{ 0 };
 		int open{ 0 };
 		int pre_day_close{ 0 };
-		bool symbol_id{ 0 };
+		std::string symbol_code;
+		int symbol_id{ 0 };
 	};
 }

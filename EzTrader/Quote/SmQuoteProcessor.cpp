@@ -72,6 +72,7 @@ void SmQuoteProcessor::ProcessQuote(nlohmann::json&& quote)
 		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) return;
 		std::shared_ptr<SmQuote> quote_p = mainApp.QuoteMgr()->get_quote(symbol_code);
+		quote_p->symbol_code = symbol_code;
 		quote_p->symbol_id = symbol->Id();
 		quote_p->open = quote["open"];
 		quote_p->high = quote["high"];

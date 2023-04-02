@@ -218,17 +218,17 @@ void DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMonth()
 
 void DmAccountOrderLeftWindow::OnBnClickedRadioClose()
 {
-	// TODO: Add your control notification handler code here
+	option_view_.set_view_mode(ViewMode::VM_Close);
 }
 
 
 void DmAccountOrderLeftWindow::OnBnClickedRadioPosition()
 {
-	// TODO: Add your control notification handler code here
+	option_view_.set_view_mode(ViewMode::VM_Position);
 }
 
 
 void DmAccountOrderLeftWindow::OnBnClickedRadioExpected()
 {
-	// TODO: Add your control notification handler code here
+	option_view_.set_view_mode(ViewMode::VM_Expected);
 }

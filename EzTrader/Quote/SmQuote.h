@@ -3,6 +3,7 @@
 namespace DarkHorse {
 	struct SmQuote
 	{
+		std::string symbol_code;
 		int symbol_id{ 0 };
 		int high{ 0 };
 		int low{ 0 };

@@ -9,6 +9,7 @@
 #include "../SmGrid/SmGridResource.h"
 #include "../ViewModel/VmOption.h"
 #include "../Order/OrderUi/DmDefine.h"
+#include "../ViewModel/VmQuote.h"
 
 namespace DarkHorse {
 	class SmGrid;
@@ -35,6 +36,8 @@ public:
 	void Mode(int val) { _Mode = val; }
 	void update_quote();
 public:
+	void update_close(const DarkHorse::VmQuote& quote);
+	void update_close_cell(const DarkHorse::VmQuote& quote, const DarkHorse::VmOption& option_info);
 	void set_option_view(
 		const int option_market_index, 
 		const std::string& year_month_name
@@ -88,6 +91,8 @@ private:
 	std::map<std::pair<int, int>, std::shared_ptr<DarkHorse::SmSymbol>> symbol_map_;
 	// key : symbol id, value : (row, col)
 	std::map<int, std::pair<int, int>> row_col_map_;
+	// key : symbol code, value : symbol vector index.
+	std::map<std::string, int> symbol_vector_index_map_;
 
 	CBCGPGraphicsManager* m_pGM = nullptr;
 

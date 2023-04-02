@@ -60,10 +60,35 @@ DmOptionView::~DmOptionView()
 
 void DmOptionView::update_quote()
 {
-	const VmQuote quote = quote_control_->get_quote();
+	const VmQuote& quote = quote_control_->get_quote();
 	CString msg;
 	msg.Format("DmOptionView::update_quote ::  close : %d\n", quote.close);
 	TRACE(msg);
+	update_close(quote);
+}
+
+void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
+{
+	auto found = symbol_vector_index_map_.find(quote.symbol_code);
+	if (found == symbol_vector_index_map_.end()) return;
+	if (quote.symbol_code.at(0) == '2') {
+		auto info = call_symbol_vector_[found->second];
+		info.close = quote.close;
+		update_close_cell(quote, info);
+	}
+	else {
+		auto info = put_symbol_vector_[found->second];
+		info.close = quote.close;
+		update_close_cell(quote, info);
+	}
+}
+
+void DmOptionView::update_close_cell(const DarkHorse::VmQuote& quote, const DarkHorse::VmOption& option_info)
+{
+	if (view_mode_ != ViewMode::VM_Close) return;
+	auto found = row_col_map_.find(quote.symbol_id);
+	if (found == row_col_map_.end()) return;
+	show_value(found->second.first, found->second.second, option_info);
 }
 
 void DmOptionView::SetUp()
@@ -189,6 +214,7 @@ void DmOptionView::set_view_mode(ViewMode view_mode)
 {
 	view_mode_ = view_mode;
 	show_values();
+	Invalidate();
 }
 
 void DmOptionView::set_strike_start_index(const int distance)
@@ -256,9 +282,9 @@ void DmOptionView::show_values()
 			new_strike_index = vec_size - 1;
 		if (new_strike_index < 0)
 			new_strike_index = 0;
-		const VmOption& caLL_info = call_symbol_vector_[new_strike_index];
+		const VmOption& call_info = call_symbol_vector_[new_strike_index];
 		const VmOption& put_info = put_symbol_vector_[new_strike_index];
-		show_value(i, 0, caLL_info);
+		show_value(i, 0, call_info);
 		show_value(i, 2, put_info);
 	}
 }
@@ -282,7 +308,7 @@ void DmOptionView::make_symbol_vec(bool call_side)
 	if (it == year_month_map.end()) return;
 	if (call_side) call_symbol_vector_.clear();
 	else put_symbol_vector_.clear();
-
+	symbol_vector_index_map_.clear();
 	const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec = it->second->get_symbol_vector();
 	for (size_t i = 0; i < symbol_vec.size(); i++) {
 		auto symbol = symbol_vec[i];
@@ -298,13 +324,9 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		option_info.position = 0;
 		option_info.symbol_id = symbol->Id();
 		option_info.symbol_p = symbol;
-
-		if (call_side) {
-			call_symbol_vector_.push_back(option_info);
-		}
-		else {
-			put_symbol_vector_.push_back(option_info);
-		}
+		symbol_vector_index_map_[symbol->SymbolCode()] = i;
+		if (call_side) call_symbol_vector_.push_back(option_info);
+		else put_symbol_vector_.push_back(option_info);
 	}
 }
 
