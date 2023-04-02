@@ -218,17 +218,20 @@ void DmAccountOrderLeftWindow::OnCbnSelchangeComboOptionMonth()
 
 void DmAccountOrderLeftWindow::OnBnClickedRadioClose()
 {
+	future_view_.set_view_mode(ViewMode::VM_Close);
 	option_view_.set_view_mode(ViewMode::VM_Close);
 }
 
 
 void DmAccountOrderLeftWindow::OnBnClickedRadioPosition()
 {
+	future_view_.set_view_mode(ViewMode::VM_Position);
 	option_view_.set_view_mode(ViewMode::VM_Position);
 }
 
 
 void DmAccountOrderLeftWindow::OnBnClickedRadioExpected()
 {
+	future_view_.set_view_mode(ViewMode::VM_Expected);
 	option_view_.set_view_mode(ViewMode::VM_Expected);
 }

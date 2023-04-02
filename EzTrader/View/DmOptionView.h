@@ -52,6 +52,8 @@ public:
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void set_view_mode(ViewMode view_mode);
 private:
+	void register_symbols(const int option_market_index);
+	void register_symbol(const std::string symbol_code);
 	void show_value(const int row, const int col, const DarkHorse::VmOption& option_info);
 	void show_strike(const int row, const int col, const DarkHorse::VmOption& option_info);
 	void show_values();
@@ -93,6 +95,8 @@ private:
 	std::map<int, std::pair<int, int>> row_col_map_;
 	// key : symbol code, value : symbol vector index.
 	std::map<std::string, int> symbol_vector_index_map_;
+
+	std::map<int, int> registered_map_;
 
 	CBCGPGraphicsManager* m_pGM = nullptr;
 

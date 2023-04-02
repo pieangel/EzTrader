@@ -8,6 +8,7 @@
 
 #include "../SmGrid/SmGridResource.h"
 #include "../Order/OrderUi/DmDefine.h"
+#include "../ViewModel/VmFuture.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -44,6 +45,8 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	void show_values();
+	void show_value(const int row, const int col, const DarkHorse::VmFuture& future_info);
 	ViewMode view_mode_{ ViewMode::VM_Close };
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	void register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol);
@@ -64,10 +67,10 @@ private:
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
-	/// <summary>
-	/// key : row index, value : symbol object.
-	/// </summary>
-	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> symbol_map_;
+	
+	std::vector<DarkHorse::VmFuture> symbol_vec_;
+	// key : symbol code, value : row index.
+	std::map<std::string, int> symbol_row_index_map_;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

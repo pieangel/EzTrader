@@ -157,6 +157,7 @@ void SymbolOrderView::update_quote()
 	if (!quote_control_ || !product_control_) return;
 	const VmQuote quote = quote_control_->get_quote();
 	if (!center_valued_) SetCenterValues();
+	//SetCenterValues();
 	set_quote_value(quote.close, SmCellType::CT_QUOTE_CLOSE);
 	set_quote_value(quote.open, SmCellType::CT_QUOTE_OPEN);
 	set_quote_value(quote.high, SmCellType::CT_QUOTE_HIGH);
@@ -1109,6 +1110,8 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	hoga_control_->update_hoga(hoga);
 	product_control_->update_product(_Symbol);
 	ArrangeCenterValue();
+	on_update_quote();
+	on_update_hoga();
 	Invalidate();
 }
 

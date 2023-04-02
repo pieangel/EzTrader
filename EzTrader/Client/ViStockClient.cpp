@@ -351,7 +351,7 @@ void DarkHorse::ViStockClient::ExecTask(const SmTaskType& task_type, task_arg&& 
 	}
 }
 
-void DarkHorse::ViStockClient::ExecTask(SmTaskArg&& task)
+void DarkHorse::ViStockClient::ExecTask(DarkHorse::SmTaskArg&& task)
 {
 	switch (task.TaskType)
 	{
@@ -386,6 +386,7 @@ void DarkHorse::ViStockClient::ExecTask(SmTaskArg&& task)
 	case SmTaskType::SymbolPosition:
 		break;
 	case SmTaskType::RegisterSymbol:
+		_ViCtrol->RegisterSymbol(std::move(task));
 		break;
 	case SmTaskType::RegisterAccount:
 		break;

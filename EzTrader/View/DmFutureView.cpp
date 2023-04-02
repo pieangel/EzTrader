@@ -20,6 +20,9 @@
 
 #include "../Controller/QuoteControl.h"
 #include "../ViewModel/VmQuote.h"
+#include "../Util/SmUtil.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -60,15 +63,16 @@ void DmFutureView::update_quote()
 
 void DmFutureView::set_view_mode(ViewMode view_mode)
 {
-
+	view_mode_ = view_mode;
+	show_values();
+	Invalidate();
 }
 
 void DmFutureView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
-	auto it = symbol_map_.find(cell_pos.first);
-	if (it == symbol_map_.end()) return;
-	mainApp.event_hub()->process_symbol_event(it->second);
+	if (cell_pos.first < 0 || cell_pos.first > 4) return;
+	mainApp.event_hub()->process_symbol_event(symbol_vec_[cell_pos.first].symbol_p);
 
 	CBCGPStatic::OnLButtonDown(nFlags, point);
 }
@@ -167,6 +171,34 @@ void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string
 {
 	_EnableOrderShow = true;
 }
+
+void DmFutureView::show_values()
+{
+	for (int i = 0; i < _Grid->RowCount(); i++) {
+		const VmFuture& future_info = symbol_vec_[i];
+		show_value(i, 2, future_info);
+	}
+}
+
+void DmFutureView::show_value(const int row, const int col, const DarkHorse::VmFuture& future_info)
+{
+	auto cell = _Grid->FindCell(row, col);
+	if (!cell) return;
+
+	std::string value;
+	if (view_mode_ == ViewMode::VM_Close) {
+		value = std::to_string(future_info.close);
+	}
+	else if (view_mode_ == ViewMode::VM_Expected) {
+		value = std::to_string(future_info.expected);
+	}
+	else {
+		value = std::to_string(future_info.position);
+	}
+	SmUtil::insert_decimal(value, future_info.decimal);
+	cell->Text(value);
+}
+
 void DmFutureView::register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol) return;
@@ -183,8 +215,19 @@ void DmFutureView::init_dm_future()
 			std::shared_ptr<SmProductYearMonth> year_month = year_month_map.begin()->second;
 			auto symbol = year_month->get_first_symbol();
 			if (symbol) {
-				symbol_map_[i] = symbol;
+				auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
+				VmFuture future_info;
+				future_info.decimal = symbol->Decimal();
+				future_info.close = quote->close;
+				future_info.expected = quote->expected;
+				future_info.ordered = false;
+				future_info.position = 0;
+				future_info.symbol_id = symbol->Id();
+				future_info.symbol_p = symbol;
+
+				symbol_vec_.push_back(future_info);
 				register_symbol_to_server(symbol);
+				symbol_row_index_map_[symbol->SymbolCode()] = i;
 			}
 		}
 		std::string value = future_vec[i].future_name;
@@ -193,6 +236,8 @@ void DmFutureView::init_dm_future()
 		value = future_vec[i].product_code;
 		if (cell) cell->Text(value);
 	}
+
+	show_values();
 }
 
 void DmFutureView::UpdateAccountAssetInfo()

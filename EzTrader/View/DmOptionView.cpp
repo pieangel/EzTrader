@@ -27,6 +27,9 @@
 #include "../Quote/SmQuote.h"
 #include "../Quote/SmQuoteManager.h"
 #include "../Util/SmUtil.h"
+#include "../Global/SmTotalManager.h"
+#include "../Task/SmTaskArg.h"
+#include "../Task/SmTaskRequestManager.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -171,6 +174,7 @@ void DmOptionView::set_option_view(
 	set_option_info(option_market_index, year_month_name);
 	make_symbol_vec(true);
 	make_symbol_vec(false);
+	register_symbols(option_market_index);
 	init_strike_index();
 	set_option_view();
 }
@@ -238,6 +242,30 @@ void DmOptionView::OnLButtonDown(UINT nFlags, CPoint point)
 	mainApp.event_hub()->process_symbol_event(found->second);
 
 	CBCGPStatic::OnLButtonDown(nFlags, point);
+}
+
+void DmOptionView::register_symbols(const int option_market_index)
+{
+	auto found = registered_map_.find(option_market_index_);
+	if (found != registered_map_.end()) return;
+
+	for (size_t i = 0; i < call_symbol_vector_.size(); i++) {
+		std::string symbol_code = call_symbol_vector_[i].symbol_p->SymbolCode();
+		register_symbol(symbol_code);
+		symbol_code = put_symbol_vector_[i].symbol_p->SymbolCode();
+		register_symbol(symbol_code);
+	}
+	registered_map_[option_market_index] = option_market_index;
+}
+
+void DmOptionView::register_symbol(const std::string symbol_code)
+{
+	DmRegisterReq req;
+	req.symbol_code = symbol_code;
+	SmTaskArg arg;
+	arg.TaskType = SmTaskType::RegisterSymbol;
+	arg.Param = req;
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
 void DmOptionView::show_value(const int row, const int col, const DarkHorse::VmOption& option_info)

@@ -334,6 +334,7 @@ void SmSymbolManager::read_domestic_masterfile()
 			symbol->PreDayClose(value);
 			std::string close_value = value;
 			close_value.erase(std::remove(close_value.begin(), close_value.end(), '.'), close_value.end());
+			//if (product_code != "101")
 			quote_p->close = _ttoi(close_value.c_str());
 			quote_p->pre_day_close = _ttoi(close_value.c_str());
 

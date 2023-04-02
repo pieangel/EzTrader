@@ -79,6 +79,7 @@ namespace DarkHorse {
 		int GetChartData(task_arg&& arg) ;
 		int GetChartData(SmTaskArg&& arg);
 		int GetDmSymbolMaster(SmTaskArg&& arg);
+		void RegisterSymbol(SmTaskArg&& arg);
 		void NewOrder(task_arg&& arg) ;
 		void ChangeOrder(task_arg&& arg) ;
 		void CancelOrder(task_arg&& arg) ;

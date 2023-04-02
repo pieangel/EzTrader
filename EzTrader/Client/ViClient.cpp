@@ -1865,6 +1865,57 @@ void DarkHorse::ViClient::UnregisterAccount(const std::string& account_no)
 	int nResult = m_CommAgent.CommRemoveJumunChe(user_id.c_str(), account_no.c_str());
 }
 
+void ViClient::RegisterSymbol(SmTaskArg&& arg)
+{
+	if (arg.TaskType != SmTaskType::RegisterSymbol) return;
+
+	auto req = std::any_cast<DarkHorse::DmRegisterReq>(arg.Param);
+
+	CString sInput;
+	const std::string symbol_code = req.symbol_code;
+	_RegSymbolSet.insert(symbol_code);
+	CString strSymbolCode = symbol_code.c_str();
+	if (isdigit(strSymbolCode.GetAt(2))) {
+		int nRealType = 0;
+		int nResult = 0;
+		CString strKey = strSymbolCode;
+		TCHAR first = strSymbolCode.GetAt(0);
+		CString prefix = strSymbolCode.Left(3);
+		if (first == '1' || first == '4') {
+			if (prefix.Compare(_T("167")) == 0 || prefix.Compare(_T("175")) == 0) {
+				nRealType = 58;
+				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+				nRealType = 71;
+				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+			}
+			else {
+				nRealType = 51;
+				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+				nRealType = 65;
+				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+			}
+		}
+		else if (first == '2' || first == '3') {
+			nRealType = 52;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+			nRealType = 66;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+		}
+		else {
+			nRealType = 82;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+		}
+	}
+	else {
+		std::string code = static_cast<const char*>(strSymbolCode);
+		std::string key = VtStringUtil::PadRight(code, ' ', 32);
+		int nRealType = 76; // 시세
+		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
+		nRealType = 82; // 호가
+		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
+	}
+}
+
 void DarkHorse::ViClient::UnregisterSymbol(task_arg&& arg)
 {
 	int nRealType = 0;

@@ -20,6 +20,9 @@ namespace DarkHorse {
 	struct DmSymbolMasterReq {
 		std::string symbol_code;
 	};
+	struct DmRegisterReq {
+		std::string symbol_code;
+	};
 	struct SmTaskArg {
 		SmTaskType TaskType = SmTaskType::None;
 		std::any Param;
