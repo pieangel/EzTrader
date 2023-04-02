@@ -7,6 +7,9 @@
 #include <map>
 
 #include "../SmGrid/SmGridResource.h"
+#include "../ViewModel/VmOption.h"
+#include "../Order/OrderUi/DmDefine.h"
+
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -34,7 +37,8 @@ public:
 public:
 	void set_option_view(
 		const int option_market_index, 
-		const std::string& year_month_name);
+		const std::string& year_month_name
+	);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
@@ -43,25 +47,32 @@ public:
 	void UpdateAssetInfo();
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
+	void set_view_mode(ViewMode view_mode);
 private:
+	void show_value(const int row, const int col, const DarkHorse::VmOption& option_info);
+	void show_strike(const int row, const int col, const DarkHorse::VmOption& option_info);
+	void show_values();
+	ViewMode view_mode_{ ViewMode::VM_Close };
+	void set_option_info(
+		const int option_market_index,
+		const std::string& year_month_name
+	);
+	void make_symbol_vec(bool call_side = true);
+	void init_strike_index();
+
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	void register_symbols_to_server();
 	void set_option_view();
-	int get_atm_index(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec);
 	void set_strike_start_index(const int distance);
-	void set_strike
-	(
-		const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& call_symbol_vec,
-		const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& put_symbol_vec
-	);
+	void set_strike();
 	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
+	int atm_index_{ 0 };
 	// 0 : account, 1 : fund
 	int _Mode = 0;
 	int option_market_index_ = 0;
 	std::string year_month_name_;
 	int strike_start_index_ = 1;
-	size_t max_symbol_count = 0;
 	bool _EnableOrderShow = false;
 	bool _EnableQuoteShow = false;
 	SmOrderGridResource _Resource;
@@ -70,15 +81,13 @@ private:
 	std::vector<std::string> _HeaderTitles;
 	std::shared_ptr<DarkHorse::SmGrid> _Grid = nullptr;
 
-	std::vector<std::shared_ptr<DarkHorse::SmSymbol>> call_symbol_vector_;
-	std::vector<std::shared_ptr<DarkHorse::SmSymbol>> put_symbol_vector_;
-	/// <summary>
-	/// key : row index, value : the index of the symbol vector.
-	/// </summary>
-	//std::map<int, int> symbol_index_map_;
+	std::vector<DarkHorse::VmOption> call_symbol_vector_;
+	std::vector<DarkHorse::VmOption> put_symbol_vector_;
 
-	std::map<std::pair<int, int>, std::shared_ptr<DarkHorse::SmSymbol>> call_symbol_map_;
-	std::map<std::pair<int, int>, std::shared_ptr<DarkHorse::SmSymbol>> put_symbol_map_;
+	// key : (row, col), value : VmOption object
+	std::map<std::pair<int, int>, std::shared_ptr<DarkHorse::SmSymbol>> symbol_map_;
+	// key : symbol id, value : (row, col)
+	std::map<int, std::pair<int, int>> row_col_map_;
 
 	CBCGPGraphicsManager* m_pGM = nullptr;
 

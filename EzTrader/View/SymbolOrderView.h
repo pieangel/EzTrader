@@ -17,6 +17,7 @@ class SymbolOrderView
 #include "../Order/SmOrderSettings.h"
 #include "../SmGrid/SmCellType.h"
 
+
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;

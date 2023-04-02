@@ -398,6 +398,7 @@
     <ClInclude Include="Order\OrderUi\DmAccountOrderRightWindow.h" />
     <ClInclude Include="Order\OrderUi\DmAccountOrderWindow.h" />
     <ClInclude Include="Order\OrderUi\ControlId.h" />
+    <ClInclude Include="Order\OrderUi\DmDefine.h" />
     <ClInclude Include="Order\OrderUi\DmFundOrderCenterWindow.h" />
     <ClInclude Include="Order\OrderUi\DmFundOrderLeftWindow.h" />
     <ClInclude Include="Order\OrderUi\DmFundOrderRightWindow.h" />
@@ -520,7 +521,9 @@
     <ClInclude Include="Util\SmWndRefreshManager.h" />
     <ClInclude Include="Util\VtStringUtil.h" />
     <ClInclude Include="Util\VtTime.h" />
+    <ClInclude Include="ViewModel\VmFuture.h" />
     <ClInclude Include="ViewModel\VmHoga.h" />
+    <ClInclude Include="ViewModel\VmOption.h" />
     <ClInclude Include="ViewModel\VmProduct.h" />
     <ClInclude Include="ViewModel\VmQuote.h" />
     <ClInclude Include="View\AccountOrderView.h" />

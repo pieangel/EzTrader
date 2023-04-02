@@ -58,6 +58,11 @@ void DmFutureView::update_quote()
 	TRACE(msg);
 }
 
+void DmFutureView::set_view_mode(ViewMode view_mode)
+{
+
+}
+
 void DmFutureView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);

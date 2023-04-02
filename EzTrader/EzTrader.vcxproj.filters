@@ -1824,6 +1824,15 @@
     <ClInclude Include="ViewModel\VmProduct.h">
       <Filter>ViewModel</Filter>
     </ClInclude>
+    <ClInclude Include="ViewModel\VmFuture.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\VmOption.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\DmDefine.h">
+      <Filter>Order\OrderUi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

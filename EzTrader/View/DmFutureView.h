@@ -7,6 +7,7 @@
 #include <map>
 
 #include "../SmGrid/SmGridResource.h"
+#include "../Order/OrderUi/DmDefine.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -32,6 +33,7 @@ public:
 	void Mode(int val) { _Mode = val; }
 	void init_dm_future();
 	void update_quote();
+	void set_view_mode(ViewMode view_mode);
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }
@@ -42,6 +44,7 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	ViewMode view_mode_{ ViewMode::VM_Close };
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	void register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void UpdateAccountAssetInfo();
