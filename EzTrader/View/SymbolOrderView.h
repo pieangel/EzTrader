@@ -221,6 +221,7 @@ private:
 	int _EndY{ 0 };
 
 	bool _Selected{ false };
+	bool center_valued_{ false };
 
 	int price_start_row_{ 2 };
 	int price_end_row_{ 0 };

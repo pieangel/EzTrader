@@ -156,7 +156,7 @@ void SymbolOrderView::update_quote()
 {
 	if (!quote_control_ || !product_control_) return;
 	const VmQuote quote = quote_control_->get_quote();
-	SetCenterValues();
+	if (!center_valued_) SetCenterValues();
 	set_quote_value(quote.close, SmCellType::CT_QUOTE_CLOSE);
 	set_quote_value(quote.open, SmCellType::CT_QUOTE_OPEN);
 	set_quote_value(quote.high, SmCellType::CT_QUOTE_HIGH);
@@ -991,6 +991,7 @@ void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)
 
 			next_value = product_control_->get_next_down_value(next_value);
 		}
+		center_valued_ = true;
 	}
 	catch (const std::exception& e) {
 		const std::string& error = e.what();
