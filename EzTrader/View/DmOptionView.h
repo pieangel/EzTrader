@@ -18,6 +18,7 @@ namespace DarkHorse {
 	class SmAccount;
 	class SmFund;
 	class QuoteControl;
+	struct SmQuote;
 }
 
 class DmOptionView : public CBCGPStatic
@@ -30,6 +31,7 @@ public:
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
+	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
 	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
 	int Mode() const { return _Mode; }
@@ -37,7 +39,8 @@ public:
 	void update_quote();
 public:
 	void update_close(const DarkHorse::VmQuote& quote);
-	void update_close_cell(const DarkHorse::VmQuote& quote, const DarkHorse::VmOption& option_info);
+	void update_close_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
+	void update_expected_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
 	void set_option_view(
 		const int option_market_index, 
 		const std::string& year_month_name
@@ -97,6 +100,8 @@ private:
 	std::map<std::string, int> symbol_vector_index_map_;
 
 	std::map<int, int> registered_map_;
+
+	int id_{ 0 };
 
 	CBCGPGraphicsManager* m_pGM = nullptr;
 

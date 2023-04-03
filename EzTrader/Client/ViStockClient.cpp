@@ -459,6 +459,18 @@ void DarkHorse::ViStockClient::OnDmSymbolMaster(const std::string& symbol_code)
 	if (symbol_p) symbol_p->Master_requested(true);
 }
 
+void DarkHorse::ViStockClient::on_dm_expected(nlohmann::json&& quote)
+{
+	const std::string& symbol_code = quote["symbol_code"];
+	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+	if (!symbol) return;
+	std::shared_ptr<SmQuote> quote_p = mainApp.QuoteMgr()->get_quote(symbol_code);
+	quote_p->symbol_code = symbol->SymbolCode();
+	quote_p->symbol_id = symbol->Id();
+	quote_p->expected = quote["expected"];
+	mainApp.event_hub()->process_expected_event(quote_p);
+}
+
 void DarkHorse::ViStockClient::on_dm_commodity_future_quote(nlohmann::json&& quote)
 {
 	mainApp.QuoteMgr()->AddQuote(std::move(quote));

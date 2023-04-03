@@ -30,6 +30,7 @@
 #include "../Global/SmTotalManager.h"
 #include "../Task/SmTaskArg.h"
 #include "../Task/SmTaskRequestManager.h"
+#include "../Util/IdGenerator.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -45,9 +46,16 @@ BEGIN_MESSAGE_MAP(DmOptionView, CBCGPStatic)
 END_MESSAGE_MAP()
 
 DmOptionView::DmOptionView()
+	: id_(IdGenerator::get_id())
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->dm_option_view(this);
+
+	mainApp.event_hub()->subscribe_expected_event_handler
+	(
+		id_,
+		std::bind(&DmOptionView::update_expected, this, std::placeholders::_1)
+	);
 }
 
 DmOptionView::~DmOptionView()
@@ -70,6 +78,22 @@ void DmOptionView::update_quote()
 	update_close(quote);
 }
 
+void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
+{
+	auto found = symbol_vector_index_map_.find(quote->symbol_code);
+	if (found == symbol_vector_index_map_.end()) return;
+	if (quote->symbol_code.at(0) == '2') {
+		DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+		option_info.expected = quote->expected;
+		update_close_cell(quote->symbol_id, option_info);
+	}
+	else {
+		DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+		option_info.expected = quote->expected;
+		update_close_cell(quote->symbol_id, option_info);
+	}
+}
+
 void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 {
 	auto found = symbol_vector_index_map_.find(quote.symbol_code);
@@ -77,19 +101,27 @@ void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 	if (quote.symbol_code.at(0) == '2') {
 		DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
 		option_info.close = quote.close;
-		update_close_cell(quote, option_info);
+		update_expected_cell(quote.symbol_id, option_info);
 	}
 	else {
 		DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
 		option_info.close = quote.close;
-		update_close_cell(quote, option_info);
+		update_expected_cell(quote.symbol_id, option_info);
 	}
 }
 
-void DmOptionView::update_close_cell(const DarkHorse::VmQuote& quote, const DarkHorse::VmOption& option_info)
+void DmOptionView::update_close_cell(const int symbol_id, const DarkHorse::VmOption& option_info)
 {
 	if (view_mode_ != ViewMode::VM_Close) return;
-	auto found = row_col_map_.find(quote.symbol_id);
+	auto found = row_col_map_.find(symbol_id);
+	if (found == row_col_map_.end()) return;
+	show_value(found->second.first, found->second.second, option_info);
+}
+
+void DmOptionView::update_expected_cell(const int symbol_id, const DarkHorse::VmOption& option_info)
+{
+	if (view_mode_ != ViewMode::VM_Expected) return;
+	auto found = row_col_map_.find(symbol_id);
 	if (found == row_col_map_.end()) return;
 	show_value(found->second.first, found->second.second, option_info);
 }

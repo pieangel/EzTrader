@@ -73,6 +73,9 @@ namespace DarkHorse {
 	using QuoteCBL = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>;
 	using QuoteCBH = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>::Handle;
 
+	using ExpectedCBL = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>;
+	using ExpectedCBH = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>::Handle;
+
 	using SymbolCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>;
 
 class EventHub
@@ -143,6 +146,23 @@ public:
 		quote_cb_list_(quote);
 	}
 
+	void subscribe_expected_event_handler(const int expected_control_id, std::function<void(std::shared_ptr<SmQuote> quote)>&& handler)
+	{
+		ExpectedCBH handle = expected_cb_list_.append(handler);
+		expected_cb_handle_map_[expected_control_id] = handle;
+	}
+	void unsubscribe_expected_event_handler(const int expected_control_id)
+	{
+		auto found = expected_cb_handle_map_.find(expected_control_id);
+		if (found == expected_cb_handle_map_.end()) return;
+		expected_cb_list_.remove(found->second);
+	}
+
+	void process_expected_event(std::shared_ptr<SmQuote> quote)
+	{
+		expected_cb_list_(quote);
+	}
+
 	void add_symbol_event_handler(std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
 	{
 		symbol_cb_list_.append(handler);
@@ -164,6 +184,9 @@ private:
 	std::map<int, TickCBH> tick_cb_handle_map_;
 
 	SymbolCBL symbol_cb_list_;
+
+	ExpectedCBL expected_cb_list_;
+	std::map<int, ExpectedCBH> expected_cb_handle_map_;
 };
 }
 

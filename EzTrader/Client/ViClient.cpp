@@ -3622,6 +3622,20 @@ void DarkHorse::ViClient::OnChartDataShort_Init(const CString& sTrCode, const LO
 	OnTaskComplete(nRqID);
 }
 
+void DarkHorse::ViClient::on_dm_expected(const CString& strKey, const LONG& nRealType)
+{
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strExpected = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "예상체결가격");
+	nlohmann::json quote;
+
+	quote["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	quote["expected"] = _ttoi(strExpected);
+
+	if (auto wp = _Client.lock()) {
+		wp->on_dm_expected(std::move(quote));
+	}
+}
+
 void DarkHorse::ViClient::on_dm_commodity_future_quote(const CString& strKey, const LONG& nRealType)
 {
 	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");

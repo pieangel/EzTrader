@@ -23,6 +23,8 @@
 #include "../Util/SmUtil.h"
 #include "../Quote/SmQuote.h"
 #include "../Quote/SmQuoteManager.h"
+#include "../Util/IdGenerator.h"
+
 
 using namespace std;
 using namespace std::placeholders;
@@ -37,9 +39,16 @@ BEGIN_MESSAGE_MAP(DmFutureView, CBCGPStatic)
 END_MESSAGE_MAP()
 
 DmFutureView::DmFutureView()
+	: id_(IdGenerator::get_id())
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->dm_future_view(this);
+
+	mainApp.event_hub()->subscribe_expected_event_handler
+	(
+		id_,
+		std::bind(&DmFutureView::update_expected, this, std::placeholders::_1)
+	);
 }
 
 DmFutureView::~DmFutureView()
@@ -161,16 +170,31 @@ void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string
 	_EnableOrderShow = true;
 }
 
+void DmFutureView::update_expected(std::shared_ptr<SmQuote> quote)
+{
+	auto found = symbol_row_index_map_.find(quote->symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.expected = quote->expected;
+	update_expected_cell(found->second, future_info);
+}
+
+void DmFutureView::update_expected_cell(const int row, const DarkHorse::VmFuture& future_info)
+{
+	if (view_mode_ != ViewMode::VM_Expected) return;
+	show_value(row, 2, future_info);
+}
+
 void DmFutureView::update_close(const DarkHorse::VmQuote& quote)
 {
 	auto found = symbol_row_index_map_.find(quote.symbol_code);
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.close = quote.close;
-	update_close_cell(found->second, quote, future_info);
+	update_close_cell(found->second, future_info);
 }
 
-void DmFutureView::update_close_cell(const int row, const DarkHorse::VmQuote& quote, const DarkHorse::VmFuture& future_info)
+void DmFutureView::update_close_cell(const int row, const DarkHorse::VmFuture& future_info)
 {
 	if (view_mode_ != ViewMode::VM_Close) return;
 	show_value(row, 2, future_info);

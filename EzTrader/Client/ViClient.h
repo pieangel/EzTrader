@@ -198,6 +198,8 @@ namespace DarkHorse {
 		// 국내 실시간 호가
 		void OnRealtimeDomesticHoga(const CString& strKey, const LONG& nRealType);
 
+		void on_dm_expected(const CString& strKey, const LONG& nRealType);
+
 		void on_dm_commodity_future_quote(const CString& strKey, const LONG& nRealType);
 		void on_dm_commodity_future_hoga(const CString& strKey, const LONG& nRealType);
 
