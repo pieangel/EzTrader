@@ -103,11 +103,7 @@ void DmFutureView::SetUp()
 
 	_Grid->HeaderMode(SmHeaderMode::None);
 
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&DmFutureView::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&DmFutureView::OnOrderEvent, this, _1, _2));
-
-
-	SetTimer(1, 40, NULL);
+	//SetTimer(1, 40, NULL);
 }
 
 void DmFutureView::OnPaint()
@@ -120,19 +116,11 @@ void DmFutureView::OnPaint()
 	CRect rect;
 	GetClientRect(rect);
 
-	if (m_pGM == NULL)
-	{
-		return;
-	}
+	if (m_pGM == NULL) return;
 
 	m_pGM->BindDC(pDC, rect);
 
-	if (!m_pGM->BeginDraw())
-	{
-		return;
-	}
-
-
+	if (!m_pGM->BeginDraw()) return;
 
 	m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
 	rect.right -= 1;
