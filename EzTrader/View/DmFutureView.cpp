@@ -59,6 +59,7 @@ void DmFutureView::update_quote()
 	CString msg;
 	msg.Format("DmFutureView::update_quote ::  close : %d\n", quote.close);
 	TRACE(msg);
+	update_close(quote);
 }
 
 void DmFutureView::set_view_mode(ViewMode view_mode)
@@ -172,6 +173,21 @@ void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string
 	_EnableOrderShow = true;
 }
 
+void DmFutureView::update_close(const DarkHorse::VmQuote& quote)
+{
+	auto found = symbol_row_index_map_.find(quote.symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.close = quote.close;
+	update_close_cell(found->second, quote, future_info);
+}
+
+void DmFutureView::update_close_cell(const int row, const DarkHorse::VmQuote& quote, const DarkHorse::VmFuture& future_info)
+{
+	if (view_mode_ != ViewMode::VM_Close) return;
+	show_value(row, 2, future_info);
+}
+
 void DmFutureView::show_values()
 {
 	for (int i = 0; i < _Grid->RowCount(); i++) {
@@ -186,23 +202,32 @@ void DmFutureView::show_value(const int row, const int col, const DarkHorse::VmF
 	if (!cell) return;
 
 	std::string value;
-	if (view_mode_ == ViewMode::VM_Close) {
+	if (view_mode_ == ViewMode::VM_Close) 
 		value = std::to_string(future_info.close);
-	}
-	else if (view_mode_ == ViewMode::VM_Expected) {
+	else if (view_mode_ == ViewMode::VM_Expected) 
 		value = std::to_string(future_info.expected);
-	}
 	else {
 		value = std::to_string(future_info.position);
 	}
 	SmUtil::insert_decimal(value, future_info.decimal);
 	cell->Text(value);
+	Invalidate();
 }
 
 void DmFutureView::register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol) return;
 	mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
+}
+
+void DmFutureView::register_symbols()
+{
+	if (registered_) return;
+
+	for (auto& symbol : symbol_vec_) {
+		register_symbol_to_server(symbol.symbol_p);
+	}
+	registered_ = true;
 }
 
 void DmFutureView::init_dm_future()
@@ -226,7 +251,6 @@ void DmFutureView::init_dm_future()
 				future_info.symbol_p = symbol;
 
 				symbol_vec_.push_back(future_info);
-				register_symbol_to_server(symbol);
 				symbol_row_index_map_[symbol->SymbolCode()] = i;
 			}
 		}
@@ -236,7 +260,7 @@ void DmFutureView::init_dm_future()
 		value = future_vec[i].product_code;
 		if (cell) cell->Text(value);
 	}
-
+	register_symbols();
 	show_values();
 }
 

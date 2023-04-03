@@ -549,10 +549,8 @@ std::shared_ptr<SmMarket> SmSymbolManager::get_market(const std::string& market_
 std::shared_ptr<SmMarket> SmSymbolManager::FindMarket(const std::string& market_name)
 {
 	auto found = _MarketMap.find(market_name);
-	if (found != _MarketMap.end())
-		return found->second;
-	else
-		return nullptr;
+	if (found == _MarketMap.end()) return nullptr;
+	return found->second;
 }
 
 void SmSymbolManager::ReadAbroadSymbols() const noexcept
@@ -648,8 +646,8 @@ void SmSymbolManager::RegisterSymbolToServer(const std::string& symbol_code, con
 	else {
 		auto found = _RegisteredSymbolMap.find(symbol_code);
 		if (found == _RegisteredSymbolMap.end()) return;
-
-		mainApp.Client()->RegisterSymbol(symbol_code);
+		_RegisteredSymbolMap.erase(found);
+		mainApp.Client()->UnregisterSymbol(symbol_code);
 	}
 }
 

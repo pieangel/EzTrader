@@ -1785,7 +1785,6 @@ void DarkHorse::ViClient::CancelOrder(const std::shared_ptr<SmOrderRequest>& ord
 void DarkHorse::ViClient::RegisterSymbol(task_arg&& arg)
 {
 	const std::string symbol_code = std::any_cast<std::string>(arg["symbol_code"]);
-	_RegSymbolSet.insert(symbol_code);
 	CString strSymbolCode = symbol_code.c_str();
 	if (isdigit(strSymbolCode.GetAt(2))) {
 		int nRealType = 0;
@@ -1838,24 +1837,45 @@ void DarkHorse::ViClient::RegisterAccount(const std::string& account_no)
 
 void DarkHorse::ViClient::UnregisterSymbol(const std::string& symbol_code)
 {
-	int nRealType = 0;
-	int nResult = 0;
-	
-	CString strKey = symbol_code.c_str();
-	TCHAR first = strKey.GetAt(0);
-	if (first == '1' || first == '4')
-	{
-		nRealType = 51;
-		nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
-		nRealType = 65;
-		nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+	CString strSymbolCode = symbol_code.c_str();
+	if (isdigit(strSymbolCode.GetAt(2))) {
+		int nRealType = 0;
+		int nResult = 0;
+		CString strKey = strSymbolCode;
+		TCHAR first = strSymbolCode.GetAt(0);
+		CString prefix = strSymbolCode.Left(3);
+		if (first == '1' || first == '4') {
+			if (prefix.Compare(_T("167")) == 0 || prefix.Compare(_T("175")) == 0) {
+				nRealType = 58;
+				nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+				nRealType = 71;
+				nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+			}
+			else {
+				nRealType = 51;
+				nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+				nRealType = 65;
+				nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+			}
+		}
+		else if (first == '2' || first == '3') {
+			nRealType = 52;
+			nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+			nRealType = 66;
+			nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+		}
+		else {
+			nRealType = 82;
+			nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+		}
 	}
-	else if (first == '2' || first == '3')
-	{
-		nRealType = 52;
-		nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
-		nRealType = 66;
-		nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
+	else {
+		std::string code = static_cast<const char*>(strSymbolCode);
+		std::string key = VtStringUtil::PadRight(code, ' ', 32);
+		int nRealType = 76; // 시세
+		m_CommAgent.CommRemoveBroad(key.c_str(), nRealType);
+		nRealType = 82; // 호가
+		m_CommAgent.CommRemoveBroad(key.c_str(), nRealType);
 	}
 }
 

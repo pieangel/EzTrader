@@ -9,6 +9,9 @@
 #include "../SmGrid/SmGridResource.h"
 #include "../Order/OrderUi/DmDefine.h"
 #include "../ViewModel/VmFuture.h"
+#include "../ViewModel/VmQuote.h"
+#include "../ViewModel/VmFuture.h"
+
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -45,6 +48,8 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	void update_close(const DarkHorse::VmQuote& quote);
+	void update_close_cell(const int row, const DarkHorse::VmQuote& quote, const DarkHorse::VmFuture& future_info);
 	void show_values();
 	void show_value(const int row, const int col, const DarkHorse::VmFuture& future_info);
 	ViewMode view_mode_{ ViewMode::VM_Close };
@@ -52,6 +57,8 @@ private:
 	void register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
+	void register_symbols();
+	bool registered_{ false };
 	// 0 : account, 1 : fund
 	int _Mode = 0;
 	bool _EnableOrderShow = false;

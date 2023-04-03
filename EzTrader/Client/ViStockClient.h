@@ -60,6 +60,7 @@ namespace DarkHorse {
 		void OnOrderFilledList(nlohmann::json&& arg);
 		void OnOrderFilled(nlohmann::json&& arg);
 		void RegisterSymbol(const std::string& symbol_code) ;
+		void UnregisterSymbol(const std::string& symbol_code);
 		void RegisterAccount(const std::string& account_no) ;
 
 		void NewOrder(const std::shared_ptr<SmOrderRequest>& order_req);

@@ -75,14 +75,14 @@ void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 	auto found = symbol_vector_index_map_.find(quote.symbol_code);
 	if (found == symbol_vector_index_map_.end()) return;
 	if (quote.symbol_code.at(0) == '2') {
-		auto info = call_symbol_vector_[found->second];
-		info.close = quote.close;
-		update_close_cell(quote, info);
+		DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+		option_info.close = quote.close;
+		update_close_cell(quote, option_info);
 	}
 	else {
-		auto info = put_symbol_vector_[found->second];
-		info.close = quote.close;
-		update_close_cell(quote, info);
+		DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+		option_info.close = quote.close;
+		update_close_cell(quote, option_info);
 	}
 }
 
@@ -123,10 +123,6 @@ void DmOptionView::SetUp()
 		_HeaderTitles.push_back("PUT");
 		_Grid->SetColHeaderTitles(_HeaderTitles);
 	}
-
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&DmOptionView::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&DmOptionView::OnOrderEvent, this, _1, _2));
-
 
 	//SetTimer(1, 40, NULL);
 }
@@ -285,6 +281,7 @@ void DmOptionView::show_value(const int row, const int col, const DarkHorse::VmO
 	}
 	SmUtil::insert_decimal(value, option_info.decimal);
 	cell->Text(value);
+	Invalidate();
 }
 
 void DmOptionView::show_strike(const int row, const int col, const DarkHorse::VmOption& option_info)

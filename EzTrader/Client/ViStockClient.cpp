@@ -201,6 +201,11 @@ void DarkHorse::ViStockClient::RegisterSymbol(const std::string& symbol_code)
 	_ViCtrol->RegisterSymbol(symbol_code);
 }
 
+void DarkHorse::ViStockClient::UnregisterSymbol(const std::string& symbol_code)
+{
+	_ViCtrol->UnregisterSymbol(symbol_code);
+}
+
 void DarkHorse::ViStockClient::RegisterAccount(const std::string& account_no)
 {
 	_ViCtrol->RegisterAccount(account_no);
