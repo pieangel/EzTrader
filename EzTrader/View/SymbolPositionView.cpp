@@ -13,6 +13,10 @@
 #include "../Account/SmAccount.h"
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
+#include "../Controller/QuoteControl.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Util/SmUtil.h"
 #include <format>
 
 #include <functional>
@@ -33,7 +37,13 @@ END_MESSAGE_MAP()
 
 SymbolPositionView::SymbolPositionView()
 {
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->symbol_position_view(this);
+}
 
+void SymbolPositionView::on_update_quote()
+{
+	_EnableQuoteShow = true;
 }
 
 SymbolPositionView::~SymbolPositionView()
@@ -124,17 +134,33 @@ void SymbolPositionView::Clear()
 {
 	for (int i = 0; i < _Grid->ColCount(); i++) {
 		auto cell = _Grid->FindCell(1, i);
-		if (cell) {
-			cell->CellType(SmCellType::CT_NORMAL);
-			cell->Text("");
-		}
+		if (!cell) continue;
+		cell->CellType(SmCellType::CT_NORMAL);
+		cell->clear();
 	}
 	Invalidate();
 }
 
 void SymbolPositionView::UpdateSymbolInfo()
 {
+	if (!quote_control_ || !_Symbol) return;
+	const VmQuote quote = quote_control_->get_quote();
+	std::string value = std::to_string(quote.close);
+	SmUtil::insert_decimal(value, _Symbol->Decimal());
+	auto cell = _Grid->FindCell(1, 4);
+	cell->Text(value);
+}
 
+void SymbolPositionView::Symbol(std::shared_ptr<SmSymbol> val)
+{
+	_Symbol = val;
+	auto quote = mainApp.QuoteMgr()->get_quote(_Symbol->SymbolCode());
+	quote->symbol_id = val->Id();
+	quote_control_->set_symbol_id(val->Id());
+	quote_control_->update_quote(quote);
+	UpdateSymbolInfo();
+	UpdatePositionInfo();
+	Invalidate();
 }
 
 void SymbolPositionView::UpdatePositionInfo()
@@ -183,9 +209,8 @@ void SymbolPositionView::UpdatePositionInfo()
 void SymbolPositionView::OnEndEditCell(int nRow, int nCol, CString str)
 {
 	auto cell = _Grid->FindCell(nRow, nCol);
-	if (cell) {
-		_Grid->SetCellText(nRow, nCol, std::string(str));
-	}
+	if (!cell) return;
+	_Grid->SetCellText(nRow, nCol, std::string(str));
 	_Grid->OnEndEdit();
 	_Editing = false;
 }
@@ -296,7 +321,7 @@ void SymbolPositionView::OnTimer(UINT_PTR nIDEvent)
 	if (!_Symbol) return;
 	bool needDraw = false;
 	if (_EnableQuoteShow) {
-		UpdatePositionInfo();
+		UpdateSymbolInfo();
 		_EnableQuoteShow = false;
 		needDraw = true;
 	}

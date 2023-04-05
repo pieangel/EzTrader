@@ -34,10 +34,7 @@ SymbolTickView::SymbolTickView()
 SymbolTickView::~SymbolTickView()
 {
 	//KillTimer(1);
-	if (m_pGM != NULL)
-	{
-		delete m_pGM;
-	}
+	if (m_pGM != NULL) delete m_pGM;
 }
 
 void SymbolTickView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
@@ -45,11 +42,13 @@ void SymbolTickView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	tick_control_->set_symbol_id(val->Id());
 	tick_control_->set_symbol_decimal(val->Decimal());
 	UpdateSymbolInfo();
+	Invalidate();
 }
 
 void SymbolTickView::update_tick()
 {
-	UpdateSymbolInfo();
+	//UpdateSymbolInfo();
+	_EnableQuoteShow = true;
 }
 
 void SymbolTickView::SetUp()
@@ -83,7 +82,6 @@ void SymbolTickView::SetUp()
 		_Grid->SetColHeaderTitles(_HeaderTitles);
 	}
 
-	//mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&SymbolTickView::OnQuoteEvent, this, _1));
 	SetTimer(1, 40, NULL);
 }
 
@@ -98,16 +96,12 @@ void SymbolTickView::OnPaint()
 	GetClientRect(rect);
 
 	if (m_pGM == NULL)
-	{
 		return;
-	}
 
 	m_pGM->BindDC(pDC, rect);
 
 	if (!m_pGM->BeginDraw())
-	{
 		return;
-	}
 
 
 
@@ -165,8 +159,6 @@ void SymbolTickView::UpdateSymbolInfo()
 		cell = _Grid->FindCell(i, 2);
 		if (cell) { cell->Text(std::to_string(tick_vec[i].qty)); up_down == 1 ? cell->CellType(SmCellType::CT_TICK_BUY) : cell->CellType(SmCellType::CT_TICK_SELL); }
 	}
-
-	_EnableQuoteShow = true;
 }
 
 void SymbolTickView::OnQuoteEvent(const std::string& symbol_code)

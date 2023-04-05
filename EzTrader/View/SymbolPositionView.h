@@ -16,6 +16,7 @@ namespace DarkHorse {
 	class SmSymbol;
 	class SmCell;
 	class SmAccount;
+	class QuoteControl;
 }
 
 class SymbolPositionView : public CBCGPStatic
@@ -30,11 +31,7 @@ public:
 public:
 	void Clear();
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
-	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) {
-		_Symbol = val;
-		UpdateSymbolInfo();
-		UpdatePositionInfo();
-	}
+	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 	void UpdateSymbolInfo();
 	void UpdatePositionInfo();
 	void  OnEndEditCell(int nRow, int nCol, CString str);
@@ -51,8 +48,9 @@ public:
 		_EnableQuoteShow = true;
 		Invalidate();
 	}
+	void on_update_quote();
 private:
-
+	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	bool _EnableOrderShow = false;
 	bool _EnableQuoteShow = false;
 	bool _Editing{ false };

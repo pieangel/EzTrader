@@ -6,6 +6,7 @@ class SymbolOrderView;
 class SymbolInfoView;
 class DmFutureView;
 class DmOptionView;
+class SymbolPositionView;
 namespace DarkHorse {
 	struct SmQuote;
 class QuoteControl
@@ -37,6 +38,9 @@ public:
 	void set_symbol_id(const int symbol_id) {
 		symbol_id_ = symbol_id;
 	}
+	void symbol_position_view(SymbolPositionView* symbol_position_view_p) {
+		symbol_position_view_ = symbol_position_view_p;
+	}
 private:
 	int symbol_id_{ 0 };
 	VmQuote quote_;
@@ -46,6 +50,7 @@ private:
 	SymbolInfoView* symbol_info_view_{ nullptr };
 	DmFutureView* dm_future_view_{ nullptr };
 	DmOptionView* dm_option_view_{ nullptr };
+	SymbolPositionView* symbol_position_view_{ nullptr };
 };
 }
 

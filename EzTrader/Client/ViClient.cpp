@@ -2006,6 +2006,9 @@ void DarkHorse::ViClient::RegisterSymbol(const std::string& symbol_code)
 			nRealType = 82;
 			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 		}
+		// Expected.
+		nRealType = 310;
+		nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 	}
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
@@ -2549,8 +2552,8 @@ void DarkHorse::ViClient::OnDmSymbolMaster(const CString& sTrCode, const LONG& n
 
 	if (auto wp = _Client.lock()) {
 		const std::string symbol_code = static_cast<const char*>(strSymbolCode.Trim());
-		wp->OnDmSymbolMaster(symbol_code);
 		wp->OnDmSymbolQuote(std::move(quote));
+		wp->OnDmSymbolMaster(symbol_code);
 	}
 
 	CString	strHogaTime   = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "호가수신시간");

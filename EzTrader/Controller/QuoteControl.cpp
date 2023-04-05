@@ -5,6 +5,7 @@
 #include "../View/SymbolOrderView.h"
 #include "../View/DmFutureView.h"
 #include "../View/DmOptionView.h"
+#include "../View/SymbolPositionView.h"
 #include "../Quote/SmQuote.h"
 #include <functional>
 #include "../Log/MyLogger.h"
@@ -37,6 +38,7 @@ namespace DarkHorse {
 			if (symbol_order_view_) symbol_order_view_->on_update_quote();
 			if (dm_future_view_) dm_future_view_->update_quote();
 			if (dm_option_view_) dm_option_view_->update_quote();
+			if (symbol_position_view_) symbol_position_view_->on_update_quote();
 		}
 		catch (const std::exception& e) {
 			const std::string error = e.what();

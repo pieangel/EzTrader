@@ -41,7 +41,9 @@ namespace DarkHorse {
 		// 0 : Normal, 1 : buy, 2 : sell, 3 : high / low.
 		int _MarkType = 0;
 	public:
-		
+		void clear() {
+			_Text.clear();
+		}
 		size_t GetOrderReqCount();
 		size_t GetOrderCount();
 		const std::map<int, std::shared_ptr<SmOrderRequest>>& GetOrderReqMap() {

@@ -73,40 +73,42 @@ void DmOptionView::update_quote()
 {
 	const VmQuote& quote = quote_control_->get_quote();
 	CString msg;
-	msg.Format("DmOptionView::update_quote ::  close : %d\n", quote.close);
+	msg.Format("DmOptionView::update_quote :: %s ::  close : %d\n", quote.symbol_code.c_str(), quote.close);
 	TRACE(msg);
 	update_close(quote);
 }
 
 void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 {
-	auto found = symbol_vector_index_map_.find(quote->symbol_code);
+	const std::string option_code = quote->symbol_code.substr(1, quote->symbol_code.length() - 1);
+	auto found = symbol_vector_index_map_.find(option_code);
 	if (found == symbol_vector_index_map_.end()) return;
 	if (quote->symbol_code.at(0) == '2') {
 		DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
 		option_info.expected = quote->expected;
-		update_close_cell(quote->symbol_id, option_info);
+		update_expected_cell(quote->symbol_id, option_info);
 	}
 	else {
 		DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
 		option_info.expected = quote->expected;
-		update_close_cell(quote->symbol_id, option_info);
+		update_expected_cell(quote->symbol_id, option_info);
 	}
 }
 
 void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 {
-	auto found = symbol_vector_index_map_.find(quote.symbol_code);
+	const std::string option_code = quote.symbol_code.substr(1, quote.symbol_code.length() - 1);
+	auto found = symbol_vector_index_map_.find(option_code);
 	if (found == symbol_vector_index_map_.end()) return;
 	if (quote.symbol_code.at(0) == '2') {
 		DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
 		option_info.close = quote.close;
-		update_expected_cell(quote.symbol_id, option_info);
+		update_close_cell(quote.symbol_id, option_info);
 	}
 	else {
 		DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
 		option_info.close = quote.close;
-		update_expected_cell(quote.symbol_id, option_info);
+		update_close_cell(quote.symbol_id, option_info);
 	}
 }
 
@@ -381,7 +383,9 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		option_info.position = 0;
 		option_info.symbol_id = symbol->Id();
 		option_info.symbol_p = symbol;
-		symbol_vector_index_map_[symbol->SymbolCode()] = i;
+		const std::string& symbol_code = symbol->SymbolCode();
+		const std::string option_code = symbol_code.substr(1, symbol_code.length() - 1);
+		symbol_vector_index_map_[option_code] = i;
 		if (call_side) call_symbol_vector_.push_back(option_info);
 		else put_symbol_vector_.push_back(option_info);
 	}
