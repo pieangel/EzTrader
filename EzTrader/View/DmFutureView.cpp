@@ -54,6 +54,7 @@ DmFutureView::DmFutureView()
 DmFutureView::~DmFutureView()
 {
 	quote_control_->dm_future_view(nullptr);
+	mainApp.event_hub()->unsubscribe_expected_event_handler( id_ );
 	//KillTimer(1);
 
 	if (m_pGM != NULL)

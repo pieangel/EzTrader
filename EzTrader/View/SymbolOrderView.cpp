@@ -151,6 +151,8 @@ void SymbolOrderView::on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbo
 SymbolOrderView::~SymbolOrderView()
 {
 	//KillTimer(1);
+	quote_control_->symbol_order_view(nullptr);
+	mainApp.event_hub()->unsubscribe_symbol_master_event_handler( id_ );
 	
 	if (m_pGM != NULL) delete m_pGM;
 }

@@ -37,13 +37,9 @@ SymbolInfoView::SymbolInfoView()
 
 SymbolInfoView::~SymbolInfoView()
 {
+	quote_control_->symbol_info_view(nullptr);
 	//KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-
-	if (m_pGM != NULL)
-	{
-		delete m_pGM;
-	}
+	if (m_pGM != NULL) delete m_pGM;
 }
 
 void SymbolInfoView::SetUp()

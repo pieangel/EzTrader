@@ -62,7 +62,10 @@ DmOptionView::~DmOptionView()
 {
 	quote_control_->dm_option_view(nullptr);
 	//KillTimer(1);
-	
+	mainApp.event_hub()->unsubscribe_expected_event_handler
+	(
+		id_
+	);
 	if (m_pGM != NULL)
 	{
 		delete m_pGM;

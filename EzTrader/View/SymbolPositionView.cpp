@@ -48,6 +48,7 @@ void SymbolPositionView::on_update_quote()
 
 SymbolPositionView::~SymbolPositionView()
 {
+	quote_control_->symbol_position_view(nullptr);
 	//KillTimer(1);
 	if (m_pGM != NULL)	delete m_pGM;
 }
