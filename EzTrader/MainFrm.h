@@ -129,7 +129,7 @@ public:
 	std::map<HWND, DmAccountOrderWindow*> dm_account_order_wnd_map_;
 	std::map<HWND, std::shared_ptr<DmFundOrderWindow>> dm_fund_order_wnd_map_;
 
-	std::map<HWND, std::shared_ptr<SmMainOrderDialog>> _OrderWndMap;
+	std::map<HWND, SmMainOrderDialog*> _OrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmOrderCompMainDialog>> _CompOrderWndMap;
 	std::map<HWND, std::shared_ptr<SmJangGoDialog>> _JangoWndMap;

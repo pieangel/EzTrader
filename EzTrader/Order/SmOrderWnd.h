@@ -13,6 +13,9 @@
 #include "OrderWndConst.h"
 #include "SmFilledRemainButton.h"
 #include "SmRemainButton.h"
+#include "../View/SymbolOrderView.h"
+#include "../View/SymbolTickView.h"
+#include "../View/SymbolPositionView.h"
 
 // SmOrderWnd dialog
 namespace DarkHorse {
@@ -61,9 +64,9 @@ public:
 	void OnClickSymbol(const std::string& symbol_info);
 	//CComboBox _ComboAccount;
 	CBCGPComboBox _ComboSymbol;
-	SmOrderArea _OrderArea;
-	SmQuoteArea _QuoteArea;
-	SmPositionArea  _PositionArea;
+	SymbolOrderView _OrderArea;
+	SymbolTickView _QuoteArea;
+	SymbolPositionView  _PositionArea;
 	SmOrderSetGrid _OrderSetGrid;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnEnterSizeMove(WPARAM, LPARAM);

@@ -725,6 +725,6 @@ void SmMainOrderDialog::PostNcDestroy()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->RemoveOrderWnd(GetSafeHwnd());
-
+	delete this;
 	CBCGPDialog::PostNcDestroy();
 }

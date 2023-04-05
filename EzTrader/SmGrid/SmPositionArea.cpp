@@ -35,9 +35,6 @@ SmPositionArea::SmPositionArea()
 
 SmPositionArea::~SmPositionArea()
 {
-	KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
 	if (m_pGM != NULL)
 	{
 		delete m_pGM;

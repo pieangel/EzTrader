@@ -83,7 +83,7 @@ void SmQuoteProcessor::ProcessQuote(nlohmann::json&& quote)
 		mainApp.event_hub()->process_quote_event(quote_p);
 
 		SmTick tick;
-
+		tick.symbol_id = symbol->Id();
 		tick.close = quote["close"];
 		tick.time = quote["time"];
 		tick.qty = quote["volume"];

@@ -661,7 +661,7 @@ void CMainFrame::RemoveOrderWnd(HWND wnd)
 
 	auto found = _OrderWndMap.find(wnd);
 	if (found == _OrderWndMap.end()) return;
-
+	found->second->DestroyWindow();
 	_OrderWndMap.erase(found);
 }
 
@@ -1011,7 +1011,7 @@ void CMainFrame::OnManagePwd()
 
 void CMainFrame::OnOrderWnd()
 {
-	std::shared_ptr<SmMainOrderDialog> mainOrderWnd = std::make_shared<SmMainOrderDialog>();
+	SmMainOrderDialog* mainOrderWnd = new SmMainOrderDialog();
 	mainOrderWnd->Create(IDD_ORDER_MAIN, this);
 	_OrderWndMap[mainOrderWnd->GetSafeHwnd()] = mainOrderWnd;
 	mainOrderWnd->ShowWindow(SW_SHOW);

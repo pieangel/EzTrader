@@ -165,7 +165,7 @@ LRESULT SmOrderWnd::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
 
 void SmOrderWnd::SetMainDialog(SmMainOrderDialog* main_dialog)
 {
-	_OrderArea.SetMainDialog(main_dialog);
+	//_OrderArea.SetMainDialog(main_dialog);
 }
 
 void SmOrderWnd::SetFundDialog(SmFundOrderDialog* fund_dialog)

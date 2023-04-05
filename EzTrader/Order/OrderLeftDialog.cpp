@@ -59,8 +59,8 @@ END_MESSAGE_MAP()
 
 void OrderLeftDialog::SetMainWnd(SmMainOrderDialog* main_wnd)
 {
-	_AcceptedGrid.SetMainWnd(main_wnd);
-	_PositionGrid.SetMainWnd(main_wnd);
+	//_AcceptedGrid.SetMainWnd(main_wnd);
+	//_PositionGrid.SetMainWnd(main_wnd);
 	_FavoriteGrid.SetMainWnd(main_wnd);
 }
 

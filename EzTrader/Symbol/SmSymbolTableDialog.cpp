@@ -179,7 +179,7 @@ LRESULT SmSymbolTableDialog::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
 	if (OrderWnd) OrderWnd->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);
 	if (FundOrderWnd) FundOrderWnd->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);
 	if (OrderLeftWnd) OrderLeftWnd->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);
-	if (FavoriteGrid) FavoriteGrid->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);
+	if (favorite_symbol_view_) favorite_symbol_view_->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);
 	if (CompOrderWnd) CompOrderWnd->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);
 	if (CompOrderLeft) CompOrderLeft->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);
 	if (SpreadChart) SpreadChart->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);

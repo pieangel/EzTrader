@@ -8,6 +8,10 @@
 #include "SmAcceptedGrid.h"
 #include "SmPositionGrid.h"
 #include "SmFavoriteGrid.h"
+#include "../View/AccountOrderView.h"
+#include "../View/AccountPositionView.h"
+#include "../View/AccountProfitLossView.h"
+#include "../View/FavoriteSymbolView.h"
 
 // OrderLeftDialog dialog
 
@@ -37,11 +41,10 @@ protected:
 
 private:
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
-	SmAccountArea _AccountArea;
-
-	SmAcceptedGrid _AcceptedGrid;
-	SmPositionGrid _PositionGrid;
-	
+	AccountProfitLossView _AccountArea;
+	AccountOrderView _AcceptedGrid;
+	AccountPositionView _PositionGrid;
+	FavoriteSymbolView _FavoriteGrid;
 
 	//SmFilledArea _FilledArea;
 	//SmFavoriteArea _FavoriteArea;
@@ -63,5 +66,4 @@ public:
 	afx_msg void OnBnClickedBtnLiqAll();
 	CBCGPButton _BtnAddFav;
 	CBCGPStatic _StaticFav;
-	SmFavoriteGrid _FavoriteGrid;
 };

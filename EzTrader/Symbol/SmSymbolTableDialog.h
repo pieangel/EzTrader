@@ -19,6 +19,7 @@ class SmCompOrderDialog;
 class SmOrderLeftComp;
 class GaSpreadChart;
 class SmMultiSpreadChart;
+class FavoriteSymbolView;
 class SmSymbolTableDialog : public CBCGPScrollDialog
 {
 	DECLARE_DYNAMIC(SmSymbolTableDialog)
@@ -67,6 +68,7 @@ public:
 	SmCompOrderDialog* CompOrderWnd = nullptr;
 	SmOrderLeftComp* CompOrderLeft = nullptr;
 	GaSpreadChart* SpreadChart = nullptr;
+	FavoriteSymbolView* favorite_symbol_view_ = nullptr;
 	SmMultiSpreadChart* MultiSpreadChart = nullptr;
 private:
 	bool _MoreSymbol{ false };
