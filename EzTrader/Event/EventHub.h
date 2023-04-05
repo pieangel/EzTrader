@@ -58,6 +58,10 @@ namespace DarkHorse {
 	struct SmTick;
 	class SmSymbol;
 
+
+	using SymbolMasterCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> quote)>;
+	using SymbolMasterCBH = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> quote)>::Handle;
+
 	using TickCBL = eventpp::CallbackList<void(SmTick tick)>;
 	using TickCBH = eventpp::CallbackList<void(SmTick tick)>::Handle;
 
@@ -171,6 +175,25 @@ public:
 	{
 		symbol_cb_list_(symbol);
 	}
+
+
+	void subscribe_symbol_master_event_handler(const int symbol_master_control_id, std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
+	{
+		SymbolMasterCBH handle = symbol_master_cb_list_.append(handler);
+		symbol_master_cb_handle_map_[symbol_master_control_id] = handle;
+	}
+	void unsubscribe_symbol_master_event_handler(const int symbol_master_control_id)
+	{
+		auto found = symbol_master_cb_handle_map_.find(symbol_master_control_id);
+		if (found == symbol_master_cb_handle_map_.end()) return;
+		symbol_master_cb_list_.remove(found->second);
+	}
+
+	void process_symbol_master_event(std::shared_ptr<SmSymbol> symbol)
+	{
+		symbol_master_cb_list_(symbol);
+	}
+
 private:
 	RemoveOrderCBL remove_order_callback_list_;
 	std::map<int, RemoveOrderCBH> remove_order_callback_handle_map_;
@@ -187,6 +210,9 @@ private:
 
 	ExpectedCBL expected_cb_list_;
 	std::map<int, ExpectedCBH> expected_cb_handle_map_;
+
+	SymbolMasterCBL symbol_master_cb_list_;
+	std::map<int, SymbolMasterCBH> symbol_master_cb_handle_map_;
 };
 }
 

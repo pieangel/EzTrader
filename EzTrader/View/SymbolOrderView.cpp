@@ -40,6 +40,7 @@
 #include "../ViewModel/VmProduct.h"
 #include "../Event/EventHub.h"
 #include "../Util/SmUtil.h"
+#include "../Util/IdGenerator.h"
 #include <sstream>
 #include <format>
 
@@ -133,7 +134,18 @@ SymbolOrderView::SymbolOrderView()
 	quote_control_->symbol_order_view(this);
 	product_control_ = std::make_shared<DarkHorse::ProductControl>();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
+	mainApp.event_hub()->subscribe_symbol_master_event_handler
+	(
+		id_,
+		std::bind(&SymbolOrderView::on_update_symbol_master, this, std::placeholders::_1)
+	);
+}
 
+void SymbolOrderView::on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!_Symbol || _Symbol->Id() != symbol->Id()) return;
+	center_valued_ = false;
+	_EnableQuoteShow = true;
 }
 
 SymbolOrderView::~SymbolOrderView()

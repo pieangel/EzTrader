@@ -457,6 +457,7 @@ void DarkHorse::ViStockClient::OnDmSymbolMaster(const std::string& symbol_code)
 {
 	std::shared_ptr<SmSymbol> symbol_p = mainApp.SymMgr()->FindSymbol(symbol_code);
 	if (symbol_p) symbol_p->Master_requested(true);
+	mainApp.event_hub()->process_symbol_master_event(symbol_p);
 }
 
 void DarkHorse::ViStockClient::on_dm_expected(nlohmann::json&& quote)

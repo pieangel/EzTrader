@@ -109,6 +109,7 @@ public:
 	//void insert_decimal(std::string& value, const int decimal);
 	void on_update_quote();
 	void on_update_hoga();
+	void on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 private:
 	int find_close_row_from_end_row();
 	int find_zero_value_row();
@@ -209,7 +210,7 @@ private:
 	std::shared_ptr<DarkHorse::SmStopOrderManager> _BuyStopOrderMgr{ nullptr };
 	std::vector<std::string> _OrderTableHeader;
 
-
+	int id_{ 0 };
 	int _OrderAmount{ 1 };
 
 	int _X{ 0 };
