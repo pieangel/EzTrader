@@ -263,7 +263,7 @@
     <ClInclude Include="CompOrder\SmOrderLeftComp.h" />
     <ClInclude Include="CompOrder\SmOrderRightComp.h" />
     <ClInclude Include="Config\SmConfigManager.h" />
-    <ClInclude Include="Controller\AcceptedOrderControl.h" />
+    <ClInclude Include="Controller\SubOrderControl.h" />
     <ClInclude Include="Controller\AccountOrderControl.h" />
     <ClInclude Include="Controller\AccountPositionControl.h" />
     <ClInclude Include="Controller\AccountProfitLossControl.h" />
@@ -604,7 +604,7 @@
     <ClCompile Include="CompOrder\SmOrderLeftComp.cpp" />
     <ClCompile Include="CompOrder\SmOrderRightComp.cpp" />
     <ClCompile Include="Config\SmConfigManager.cpp" />
-    <ClCompile Include="Controller\AcceptedOrderControl.cpp" />
+    <ClCompile Include="Controller\SubOrderControl.cpp" />
     <ClCompile Include="Controller\AccountOrderControl.cpp" />
     <ClCompile Include="Controller\AccountPositionControl.cpp" />
     <ClCompile Include="Controller\AccountProfitLossControl.cpp" />

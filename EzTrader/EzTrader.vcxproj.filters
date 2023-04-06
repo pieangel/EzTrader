@@ -808,7 +808,7 @@
     <ClCompile Include="Controller\TotalHogaInfoControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Controller\AcceptedOrderControl.cpp">
+    <ClCompile Include="Controller\SubOrderControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
     <ClCompile Include="Controller\StopOrderControl.cpp">
@@ -1842,7 +1842,7 @@
     <ClInclude Include="Order\OrderUi\DmDefine.h">
       <Filter>Order\OrderUi</Filter>
     </ClInclude>
-    <ClInclude Include="Controller\AcceptedOrderControl.h">
+    <ClInclude Include="Controller\SubOrderControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
     <ClInclude Include="Controller\StopOrderControl.h">

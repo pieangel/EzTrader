@@ -16,7 +16,7 @@ namespace DarkHorse {
 	/// 펀드 일 때는 펀드에 속한 모든 계좌의 주문을 저장해야 한다. 
 	/// 컨트롤에 각 계좌의 id 맵을 가지고 들어오는 주문을 필터링 해야 한다. 
 	/// </summary>
-	struct AcceptedOrderControl
+	struct SubOrderControl
 	{
 		int total_count{ 0 };
 		// key : price as integer, value : order list on the price. 
