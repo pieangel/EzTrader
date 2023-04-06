@@ -19,7 +19,7 @@ namespace DarkHorse {
 		int symbol_id_{ 0 };
 		std::set<int> account_id_set_;
 		// key : order no, value : AcceptedOrder object pointer.
-		std::map<std::string, order_p> order_list;
+		std::map<std::string, order_p> order_list_;
 	};
 }
 
