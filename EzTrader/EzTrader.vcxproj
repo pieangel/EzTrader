@@ -281,6 +281,7 @@
     <ClInclude Include="Controller\OptionExpectedControl.h" />
     <ClInclude Include="Controller\OptionPositionControl.h" />
     <ClInclude Include="Controller\OrderableInfoControl.h" />
+    <ClInclude Include="Controller\OrderControl.h" />
     <ClInclude Include="Controller\PriceRangeControl.h" />
     <ClInclude Include="Controller\ProductControl.h" />
     <ClInclude Include="Controller\QuoteControl.h" />
@@ -621,6 +622,7 @@
     <ClCompile Include="Controller\OptionExpectedControl.cpp" />
     <ClCompile Include="Controller\OptionPositionControl.cpp" />
     <ClCompile Include="Controller\OrderableInfoControl.cpp" />
+    <ClCompile Include="Controller\OrderControl.cpp" />
     <ClCompile Include="Controller\PriceRangeControl.cpp" />
     <ClCompile Include="Controller\ProductControl.cpp" />
     <ClCompile Include="Controller\QuoteControl.cpp" />
