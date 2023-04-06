@@ -76,8 +76,5 @@ BOOL DmAccountOrderRightWindow::OnInitDialog()
 
 void DmAccountOrderRightWindow::OnTimer(UINT_PTR nIDEvent)
 {
-	asset_veiw_.SetAssetInfo();
-	symbol_info_view_.UpdateSymbolInfo();
-
 	CBCGPDialog::OnTimer(nIDEvent);
 }

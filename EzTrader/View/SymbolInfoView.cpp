@@ -32,12 +32,11 @@ END_MESSAGE_MAP()
 SymbolInfoView::SymbolInfoView()
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
-	quote_control_->symbol_info_view(this);
+	quote_control_->set_event_handler(std::bind(&SymbolInfoView::on_update_quote, this));
 }
 
 SymbolInfoView::~SymbolInfoView()
 {
-	quote_control_->symbol_info_view(nullptr);
 	//KillTimer(1);
 	if (m_pGM != NULL) delete m_pGM;
 }
@@ -105,17 +104,12 @@ void SymbolInfoView::OnPaint()
 	GetClientRect(rect);
 
 	if (m_pGM == NULL)
-	{
 		return;
-	}
 
 	m_pGM->BindDC(pDC, rect);
 
 	if (!m_pGM->BeginDraw())
-	{
 		return;
-	}
-
 	m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
 	rect.right -= 1;
 	rect.bottom -= 1;
@@ -133,10 +127,10 @@ void SymbolInfoView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	_Symbol = val;
 	quote_control_->set_symbol_id(val->Id());
 	quote_control_->update_quote(mainApp.QuoteMgr()->get_quote(val->SymbolCode()));
-	UpdateSymbolInfo();
+	_EnableQuoteShow = true;
 }
 
-void SymbolInfoView::UpdateSymbolInfo()
+void SymbolInfoView::update_quote()
 {
 	if (!_Symbol || !quote_control_) return;
 
@@ -239,10 +233,9 @@ void SymbolInfoView::OnQuoteEvent(const std::string& symbol_code)
 	_EnableQuoteShow = true;
 }
 
-void SymbolInfoView::update_quote()
+void SymbolInfoView::on_update_quote()
 {
-	if (!quote_control_ ) return;
-	UpdateSymbolInfo();
+	_EnableQuoteShow = true;
 }
 
 void SymbolInfoView::CreateResource()
@@ -279,10 +272,9 @@ void SymbolInfoView::InitHeader()
 
 void SymbolInfoView::OnTimer(UINT_PTR nIDEvent)
 {
-	if (!_Symbol) return;
 	bool needDraw = false;
 	if (_EnableQuoteShow) {
-		UpdateSymbolInfo();
+		update_quote();
 		_EnableQuoteShow = false;
 		needDraw = true;
 	}

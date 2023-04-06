@@ -180,6 +180,8 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 		on_dm_option_quote(strRecvKey, nRealType); break;
 	case 71:
 		on_dm_commodity_future_quote(strRecvKey, nRealType); break;
+	case 310:
+		on_dm_expected(strRecvKey, nRealType); break;
 	default:
 		break;
 	}

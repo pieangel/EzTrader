@@ -1,9 +1,8 @@
 #pragma once
 #include "../ViewModel/VmHoga.h"
 #include "../Util/IdGenerator.h"
-
+#include <functional>
 #include <memory>
-class SymbolOrderView;
 namespace DarkHorse {
 	struct SmHoga;
 class HogaControl
@@ -20,18 +19,18 @@ public:
 	{
 		return id_;
 	}
-	void symbol_order_view(SymbolOrderView* symbol_order_view_p) {
-		symbol_order_view_ = symbol_order_view_p;
-	}
 	void set_symbol_id(const int symbol_id) {
 		symbol_id_ = symbol_id;
+	}
+	void set_event_handler(std::function<void()> event_handler) {
+		event_handler_ = event_handler_;
 	}
 private:
 	int symbol_id_{ 0 };
 	void subscribe_hoga_control();
 	VmHoga hoga_;
 	int id_;
-	SymbolOrderView* symbol_order_view_{ nullptr };
+	std::function<void()> event_handler_;
 };
 }
 

@@ -38,7 +38,7 @@ END_MESSAGE_MAP()
 SymbolPositionView::SymbolPositionView()
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
-	quote_control_->symbol_position_view(this);
+	quote_control_->set_event_handler(std::bind(&SymbolPositionView::on_update_quote, this));
 }
 
 void SymbolPositionView::on_update_quote()
@@ -48,7 +48,6 @@ void SymbolPositionView::on_update_quote()
 
 SymbolPositionView::~SymbolPositionView()
 {
-	quote_control_->symbol_position_view(nullptr);
 	//KillTimer(1);
 	if (m_pGM != NULL)	delete m_pGM;
 }

@@ -50,6 +50,7 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	void on_update_quote();
 	void update_close(const DarkHorse::VmQuote& quote);
 	void update_close_cell(const int row, const DarkHorse::VmFuture& future_info);
 	void update_expected_cell(const int row, const DarkHorse::VmFuture& future_info);

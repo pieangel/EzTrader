@@ -42,7 +42,7 @@ DmFutureView::DmFutureView()
 	: id_(IdGenerator::get_id())
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
-	quote_control_->dm_future_view(this);
+	quote_control_->set_event_handler(std::bind(&DmFutureView::on_update_quote, this));
 
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
@@ -53,14 +53,16 @@ DmFutureView::DmFutureView()
 
 DmFutureView::~DmFutureView()
 {
-	quote_control_->dm_future_view(nullptr);
 	mainApp.event_hub()->unsubscribe_expected_event_handler( id_ );
 	//KillTimer(1);
 
 	if (m_pGM != NULL)
-	{
 		delete m_pGM;
-	}
+}
+
+void DmFutureView::on_update_quote()
+{
+	_EnableQuoteShow = true;
 }
 
 void DmFutureView::update_quote()
@@ -113,7 +115,7 @@ void DmFutureView::SetUp()
 
 	_Grid->HeaderMode(SmHeaderMode::None);
 
-	//SetTimer(1, 40, NULL);
+	SetTimer(1, 40, NULL);
 }
 
 void DmFutureView::OnPaint()
@@ -355,17 +357,10 @@ void DmFutureView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
 	if (_EnableQuoteShow) {
-		UpdateAssetInfo();
+		update_quote();
 		_EnableQuoteShow = false;
 		needDraw = true;
 	}
-
-	if (_EnableOrderShow) {
-		UpdateAssetInfo();
-		_EnableOrderShow = false;
-		needDraw = true;
-	}
-
 
 	if (needDraw) Invalidate();
 

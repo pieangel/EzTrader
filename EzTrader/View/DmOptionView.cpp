@@ -49,7 +49,7 @@ DmOptionView::DmOptionView()
 	: id_(IdGenerator::get_id())
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
-	quote_control_->dm_option_view(this);
+	quote_control_->set_event_handler(std::bind(&DmOptionView::on_update_quote, this));
 
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
@@ -60,7 +60,6 @@ DmOptionView::DmOptionView()
 
 DmOptionView::~DmOptionView()
 {
-	quote_control_->dm_option_view(nullptr);
 	//KillTimer(1);
 	mainApp.event_hub()->unsubscribe_expected_event_handler
 	(
@@ -71,7 +70,10 @@ DmOptionView::~DmOptionView()
 		delete m_pGM;
 	}
 }
-
+void DmOptionView::on_update_quote()
+{
+	_EnableQuoteShow = true;
+}
 void DmOptionView::update_quote()
 {
 	const VmQuote& quote = quote_control_->get_quote();
@@ -161,7 +163,7 @@ void DmOptionView::SetUp()
 		_Grid->SetColHeaderTitles(_HeaderTitles);
 	}
 
-	//SetTimer(1, 40, NULL);
+	SetTimer(1, 40, NULL);
 }
 
 void DmOptionView::OnPaint()
@@ -175,18 +177,12 @@ void DmOptionView::OnPaint()
 	GetClientRect(rect);
 
 	if (m_pGM == NULL)
-	{
 		return;
-	}
 
 	m_pGM->BindDC(pDC, rect);
 
 	if (!m_pGM->BeginDraw())
-	{
 		return;
-	}
-
-
 
 	m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
 	rect.right -= 1;
@@ -516,17 +512,10 @@ void DmOptionView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
 	if (_EnableQuoteShow) {
-		UpdateAssetInfo();
+		update_quote();
 		_EnableQuoteShow = false;
 		needDraw = true;
 	}
-
-	if (_EnableOrderShow) {
-		UpdateAssetInfo();
-		_EnableOrderShow = false;
-		needDraw = true;
-	}
-
 
 	if (needDraw) Invalidate();
 

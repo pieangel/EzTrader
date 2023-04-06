@@ -5,7 +5,6 @@
 #include "../View/SymbolOrderView.h"
 #include "../Hoga/SmHoga.h"
 #include "../Log/MyLogger.h"
-#include <functional>
 
 namespace DarkHorse {
 	HogaControl::HogaControl()
@@ -46,7 +45,7 @@ namespace DarkHorse {
 			hoga_.TotBuyCnt = hoga->TotBuyCnt;
 			hoga_.HogaTime = hoga->HogaTime;
 
-			if (symbol_order_view_) symbol_order_view_->on_update_hoga();
+			if (event_handler_) event_handler_();
 		}
 		catch (const std::exception& e) {
 			const std::string error = e.what();

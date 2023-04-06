@@ -79,8 +79,5 @@ BOOL OrderRightDialog::OnInitDialog()
 
 void OrderRightDialog::OnTimer(UINT_PTR nIDEvent)
 {
-	_AssetArea.SetAssetInfo();
-	_SymbolArea.UpdateSymbolInfo();
-
 	CBCGPDialog::OnTimer(nIDEvent);
 }

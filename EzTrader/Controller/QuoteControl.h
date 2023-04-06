@@ -2,11 +2,8 @@
 #include "../ViewModel/VmQuote.h"
 #include "../Util/IdGenerator.h"
 #include <memory>
-class SymbolOrderView;
-class SymbolInfoView;
-class DmFutureView;
-class DmOptionView;
-class SymbolPositionView;
+#include <functional>
+
 namespace DarkHorse {
 	struct SmQuote;
 class QuoteControl
@@ -23,34 +20,18 @@ public:
 	{
 		return id_;
 	}
-	void symbol_order_view(SymbolOrderView* symbol_order_view_p) {
-		symbol_order_view_ = symbol_order_view_p;
-	}
-	void symbol_info_view(SymbolInfoView* symbol_info_view_p) {
-		symbol_info_view_ = symbol_info_view_p;
-	}
-	void dm_future_view(DmFutureView* dm_future_view) {
-		dm_future_view_ = dm_future_view;
-	}
-	void dm_option_view(DmOptionView* dm_option_view) {
-		dm_option_view_ = dm_option_view;
-	}
 	void set_symbol_id(const int symbol_id) {
 		symbol_id_ = symbol_id;
 	}
-	void symbol_position_view(SymbolPositionView* symbol_position_view_p) {
-		symbol_position_view_ = symbol_position_view_p;
+	void set_event_handler(std::function<void()> event_handler) {
+		event_handler_= event_handler;
 	}
 private:
+	int id_;
 	int symbol_id_{ 0 };
 	VmQuote quote_;
 	void subscribe_quote_control();
-	int id_;
-	SymbolOrderView* symbol_order_view_{ nullptr };
-	SymbolInfoView* symbol_info_view_{ nullptr };
-	DmFutureView* dm_future_view_{ nullptr };
-	DmOptionView* dm_option_view_{ nullptr };
-	SymbolPositionView* symbol_position_view_{ nullptr };
+	std::function<void()> event_handler_;
 };
 }
 

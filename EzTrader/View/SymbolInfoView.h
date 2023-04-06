@@ -30,10 +30,10 @@ public:
 public:
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
-	void UpdateSymbolInfo();
-	void OnQuoteEvent(const std::string& symbol_code);
 	void update_quote();
+	void OnQuoteEvent(const std::string& symbol_code);
 private:
+	void on_update_quote();
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	bool _EnableQuoteShow = false;
 	SmOrderGridResource _Resource;

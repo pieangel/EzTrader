@@ -43,7 +43,6 @@
 #include "../Util/IdGenerator.h"
 #include <sstream>
 #include <format>
-
 #include <functional>
 
 using namespace std;
@@ -129,9 +128,9 @@ SymbolOrderView::SymbolOrderView()
 	//_BuyOrderViewer = std::make_shared<SmOrderViewer>();
 	//_SellOrderViewer = std::make_shared<SmOrderViewer>();
 	hoga_control_ = std::make_shared<DarkHorse::HogaControl>();
-	hoga_control_->symbol_order_view(this);
+	hoga_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_hoga, this));
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
-	quote_control_->symbol_order_view(this);
+	quote_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_quote, this));
 	product_control_ = std::make_shared<DarkHorse::ProductControl>();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 	mainApp.event_hub()->subscribe_symbol_master_event_handler
@@ -146,12 +145,12 @@ void SymbolOrderView::on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbo
 	if (!_Symbol || _Symbol->Id() != symbol->Id()) return;
 	center_valued_ = false;
 	_EnableQuoteShow = true;
+	_EnableHogaShow = true;
 }
 
 SymbolOrderView::~SymbolOrderView()
 {
 	//KillTimer(1);
-	quote_control_->symbol_order_view(nullptr);
 	mainApp.event_hub()->unsubscribe_symbol_master_event_handler( id_ );
 	
 	if (m_pGM != NULL) delete m_pGM;
@@ -711,17 +710,6 @@ void SymbolOrderView::SetUp()
 	}
 
 	_Grid->RegisterOrderButtons(_ButtonMap);
-
-
-	mainApp.CallbackMgr()->SubscribeSymbolMasterWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->SubscribeQuoteWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->SubscribeHogaWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->SubscribeOrderWndCallback(GetSafeHwnd());
-
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&SymbolOrderView::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeHogaCallback((long)this, std::bind(&SymbolOrderView::OnHogaEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeMasterCallback((long)this, std::bind(&SymbolOrderView::OnSymbolMasterEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&SymbolOrderView::OnOrderEvent, this, _1, _2));
 
 	SetTimer(1, 10, NULL);
 

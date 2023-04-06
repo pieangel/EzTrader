@@ -1,7 +1,7 @@
 #pragma once
 #include "../Quote/SmQuote.h"
 #include <vector>
-
+#include <functional>
 class SymbolTickView;
 namespace DarkHorse {
 	class SymbolTickControl
@@ -15,9 +15,6 @@ namespace DarkHorse {
 		{
 			return id_;
 		}
-		void symbol_tick_view(SymbolTickView* symbol_tick_view_p) {
-			symbol_tick_view_ = symbol_tick_view_p;
-		}
 		void set_symbol_id(const int symbol_id) {
 			symbol_id_ = symbol_id;
 		}
@@ -30,12 +27,15 @@ namespace DarkHorse {
 		int get_symbol_decimal() {
 			return symbol_decimal_;
 		}
+		void set_event_handler(std::function<void()> event_handler) {
+			event_handler_ = event_handler;
+		}
 	private:
 		int symbol_decimal_{ 0 };
 		std::vector<SmTick> tick_vec_;
 		int symbol_id_{ 0 };
 		void subscribe_tick_control();
 		int id_;
-		SymbolTickView* symbol_tick_view_{ nullptr };
+		std::function<void()> event_handler_;
 	};
 }

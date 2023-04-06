@@ -263,6 +263,7 @@
     <ClInclude Include="CompOrder\SmOrderLeftComp.h" />
     <ClInclude Include="CompOrder\SmOrderRightComp.h" />
     <ClInclude Include="Config\SmConfigManager.h" />
+    <ClInclude Include="Controller\AcceptedOrderControl.h" />
     <ClInclude Include="Controller\AccountOrderControl.h" />
     <ClInclude Include="Controller\AccountPositionControl.h" />
     <ClInclude Include="Controller\AccountProfitLossControl.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="Controller\SellHogaControl.h" />
     <ClInclude Include="Controller\SellOrderControl.h" />
     <ClInclude Include="Controller\SellStopOrderControl.h" />
+    <ClInclude Include="Controller\StopOrderControl.h" />
     <ClInclude Include="Controller\SymbolInfoControl.h" />
     <ClInclude Include="Controller\SymbolPositionControl.h" />
     <ClInclude Include="Controller\SymbolProfitLossControl.h" />
@@ -524,6 +526,7 @@
     <ClInclude Include="ViewModel\VmFuture.h" />
     <ClInclude Include="ViewModel\VmHoga.h" />
     <ClInclude Include="ViewModel\VmOption.h" />
+    <ClInclude Include="ViewModel\VmOrder.h" />
     <ClInclude Include="ViewModel\VmProduct.h" />
     <ClInclude Include="ViewModel\VmQuote.h" />
     <ClInclude Include="View\AccountOrderView.h" />
@@ -600,6 +603,7 @@
     <ClCompile Include="CompOrder\SmOrderLeftComp.cpp" />
     <ClCompile Include="CompOrder\SmOrderRightComp.cpp" />
     <ClCompile Include="Config\SmConfigManager.cpp" />
+    <ClCompile Include="Controller\AcceptedOrderControl.cpp" />
     <ClCompile Include="Controller\AccountOrderControl.cpp" />
     <ClCompile Include="Controller\AccountPositionControl.cpp" />
     <ClCompile Include="Controller\AccountProfitLossControl.cpp" />
@@ -623,6 +627,7 @@
     <ClCompile Include="Controller\SellHogaControl.cpp" />
     <ClCompile Include="Controller\SellOrderControl.cpp" />
     <ClCompile Include="Controller\SellStopOrderControl.cpp" />
+    <ClCompile Include="Controller\StopOrderControl.cpp" />
     <ClCompile Include="Controller\SymbolInfoControl.cpp" />
     <ClCompile Include="Controller\SymbolPositionControl.cpp" />
     <ClCompile Include="Controller\SymbolProfitLossControl.cpp" />

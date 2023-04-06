@@ -13,6 +13,7 @@ namespace DarkHorse {
 	class SmSymbol;
 	class SmCell;
 	class SmAccount;
+	class QuoteControl;
 }
 class SmSymbolTableDialog;
 class SmMainOrderDialog;
@@ -96,6 +97,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	void on_update_quote();
+	void update_quote();
 	bool _EnableQuoteShow = false;
 	SmFundCompMainDialog* _CompFundWnd = nullptr;
 	SmOrderCompMainDialog* _CompOrderWnd = nullptr;
@@ -111,6 +114,9 @@ private:
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
 	// key : row index, value : smsymbol object
 	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> _RowToSymbolMap;
+	// key : symbol id, value : row
+	std::map<int, int> symbol_to_row_;
+	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 public:
 	void Clear();
 	void SetFavorite();
@@ -122,5 +128,6 @@ public:
 	afx_msg LRESULT OnUmSymbolSelected(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnMenuRemove();
 	afx_msg void OnMenuAdd();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 

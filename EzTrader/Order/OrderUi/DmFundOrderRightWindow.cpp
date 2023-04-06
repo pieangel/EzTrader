@@ -88,9 +88,6 @@ BOOL DmFundOrderRightWindow::OnInitDialog()
 
 void DmFundOrderRightWindow::OnTimer(UINT_PTR nIDEvent)
 {
-	asset_view_.SetAssetInfo();
-	symbol_info_view_.UpdateSymbolInfo();
-
 	CBCGPDialog::OnTimer(nIDEvent);
 }
 

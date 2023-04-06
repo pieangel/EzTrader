@@ -28,7 +28,7 @@ END_MESSAGE_MAP()
 SymbolTickView::SymbolTickView()
 {
 	tick_control_ = std::make_shared<DarkHorse::SymbolTickControl>();
-	tick_control_->symbol_tick_view(this);
+	tick_control_->set_event_handler(std::bind(&SymbolTickView::on_update_tick, this));
 }
 
 SymbolTickView::~SymbolTickView()
@@ -41,13 +41,12 @@ void SymbolTickView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
 	tick_control_->set_symbol_id(val->Id());
 	tick_control_->set_symbol_decimal(val->Decimal());
-	UpdateSymbolInfo();
+	on_update_tick();
 	Invalidate();
 }
 
-void SymbolTickView::update_tick()
+void SymbolTickView::on_update_tick()
 {
-	//UpdateSymbolInfo();
 	_EnableQuoteShow = true;
 }
 
@@ -127,7 +126,7 @@ void SymbolTickView::Clear()
 	Invalidate();
 }
 
-void SymbolTickView::UpdateSymbolInfo()
+void SymbolTickView::update_tick()
 {
 	if (!tick_control_) return;
 
@@ -204,7 +203,7 @@ void SymbolTickView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
 	if (_EnableQuoteShow) {
-		UpdateSymbolInfo();
+		update_tick();
 		_EnableQuoteShow = false;
 		needDraw = true;
 	}

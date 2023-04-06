@@ -17,6 +17,11 @@
 #include "../Event/SmCallbackManager.h"
 #include "../CompOrder/SmOrderCompMainDialog.h"
 #include "../CompOrder/SmFundCompMainDialog.h"
+#include "../Controller/QuoteControl.h"
+#include "../ViewModel/VmQuote.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Util/SmUtil.h"
 #include <format>
 
 #include <functional>
@@ -40,11 +45,35 @@ IMPLEMENT_DYNAMIC(FavoriteSymbolView, CBCGPGridCtrl)
 FavoriteSymbolView::FavoriteSymbolView()
 {
 	m_bExtendedPadding = FALSE;
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->set_event_handler(std::bind(&FavoriteSymbolView::on_update_quote, this));
 }
 
 FavoriteSymbolView::~FavoriteSymbolView()
 {
 	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
+}
+
+void FavoriteSymbolView::on_update_quote()
+{
+	_EnableQuoteShow = true;
+}
+void FavoriteSymbolView::update_quote()
+{
+	if (!quote_control_) return;
+	const VmQuote quote = quote_control_->get_quote();
+	auto found = symbol_to_row_.find(quote.symbol_id);
+	if (found == symbol_to_row_.end()) return;
+	int row = found->second;
+	auto found_symbol = _RowToSymbolMap.find(row);
+	if (found_symbol == _RowToSymbolMap.end()) return;
+
+	CBCGPGridRow* pRow = GetRow(row);
+	std::string value_string;
+	value_string = std::format("{0}", quote.close);
+	SmUtil::insert_decimal(value_string, found_symbol->second->Decimal());
+
+	pRow->GetItem(1)->SetValue(value_string.c_str(), TRUE);
 }
 
 void FavoriteSymbolView::OnHeaderCheckBoxClick(int nColumn)
@@ -81,42 +110,7 @@ void FavoriteSymbolView::OnRowCheckBoxClick(CBCGPGridRow* pRow)
 
 void FavoriteSymbolView::UpdateAcceptedOrder()
 {
-	if (!_Account) return;
-	//ClearOldCotents();
-	auto account_order_mgr = mainApp.TotalOrderMgr()->FindAccountOrderManager(_Account->No());
-	if (!account_order_mgr) return;
-
-	const std::map<std::string, std::shared_ptr<SmSymbolOrderManager>>& symbol_order_mgr_map = account_order_mgr->GetSymbolOrderMgrMap();
-	int row = 0;
-	for (auto it = symbol_order_mgr_map.begin(); it != symbol_order_mgr_map.end(); ++it) {
-		auto symbol_order_mgr = it->second;
-		const std::map<std::string, std::shared_ptr<SmOrder>>& accepted_map = symbol_order_mgr->GetAcceptedOrders();
-		CBCGPGridRow* pRow = GetRow(row);
-		if (!pRow) continue;
-		for (auto it2 = accepted_map.begin(); it2 != accepted_map.end(); it2++) {
-			auto order = it2->second;
-			pRow->GetItem(0)->SetValue(order->SymbolCode.c_str());
-			pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
-			if (order->PositionType == SmPositionType::Buy) {
-				pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
-				pRow->GetItem(1)->SetTextColor(RGB(255, 0, 0));
-				pRow->GetItem(2)->SetTextColor(RGB(255, 0, 0));
-				pRow->GetItem(1)->SetValue("매수");
-			}
-			else {
-				pRow->GetItem(1)->SetValue("매도");
-				pRow->GetItem(0)->SetTextColor(RGB(0, 0, 255));
-				pRow->GetItem(1)->SetTextColor(RGB(0, 0, 255));
-				pRow->GetItem(2)->SetTextColor(RGB(0, 0, 255));
-			}
-			pRow->GetItem(2)->SetValue(std::to_string(order->OrderAmount).c_str());
-			_OldContentRowSet.insert(row);
-			row++;
-		}
-	}
-
-	ClearOldContents(row);
-	Invalidate();
+	
 }
 
 void FavoriteSymbolView::OnQuoteEvent(const std::string& symbol_code)
@@ -128,6 +122,7 @@ BEGIN_MESSAGE_MAP(FavoriteSymbolView, CBCGPGridCtrl)
 	//{{AFX_MSG_MAP(CBasicGridCtrl)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
+	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 	ON_WM_RBUTTONDOWN()
 	ON_WM_LBUTTONDOWN()
@@ -202,7 +197,7 @@ int FavoriteSymbolView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	UpdateHeaderCheckbox();
 	AdjustLayout();
 
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&FavoriteSymbolView::OnQuoteEvent, this, _1));
+	SetTimer(1, 40, NULL);
 
 	return 0;
 }
@@ -257,16 +252,19 @@ void FavoriteSymbolView::SetFavorite()
 	Clear();
 	// 반드시 실시간 등록을 해줄것
 	const std::map<int, std::shared_ptr<SmSymbol>>& favorite_map = mainApp.SymMgr()->GetFavoriteMap();
+	_RowToSymbolMap.clear();
+	symbol_to_row_.clear();
 	int row = 0;
 	for (auto it = favorite_map.begin(); it != favorite_map.end(); ++it) {
 		_RowToSymbolMap[row] = it->second;
+		symbol_to_row_[it->second->Id()] = row;
 		_OldContentRowSet.insert(row);
 		CBCGPGridRow* pRow = GetRow(row);
 		pRow->GetItem(0)->SetValue(it->second->SymbolCode().c_str(), TRUE);
 
 		std::string value_string;
-
-		value_string = std::format("{0}", it->second->Qoute.close);
+		auto quote = mainApp.QuoteMgr()->get_quote(it->second->SymbolCode());
+		value_string = std::format("{0}", quote->close);
 		if (it->second->Decimal() > 0 && value_string.length() > (size_t)it->second->Decimal())
 			value_string.insert(value_string.length() - it->second->Decimal(), 1, '.');
 
@@ -279,7 +277,7 @@ void FavoriteSymbolView::SetFavorite()
 void FavoriteSymbolView::Update()
 {
 	if (_EnableQuoteShow) {
-		UpdateQuote();
+		update_quote();
 		_EnableQuoteShow = false;
 	}
 }
@@ -389,3 +387,18 @@ void FavoriteSymbolView::OnMenuAdd()
 	_SymbolTableDlg->favorite_symbol_view_ = this;
 	_SymbolTableDlg->ShowWindow(SW_SHOW);
 }
+
+void FavoriteSymbolView::OnTimer(UINT_PTR nIDEvent)
+{
+	bool needDraw = false;
+	if (_EnableQuoteShow) {
+		update_quote();
+		_EnableQuoteShow = false;
+		needDraw = true;
+	}
+
+	if (needDraw) Invalidate();
+
+	CBCGPGridCtrl::OnTimer(nIDEvent);
+}
+

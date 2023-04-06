@@ -6,7 +6,7 @@
 #include "../Quote/SmQuote.h"
 #include "../Util/IdGenerator.h"
 #include "../View/SymbolTickView.h"
-#include <functional>
+
 namespace DarkHorse {
 	SymbolTickControl::SymbolTickControl()
 		: id_(IdGenerator::get_id())
@@ -27,7 +27,7 @@ namespace DarkHorse {
 		std::rotate(tick_vec_.rbegin(), tick_vec_.rbegin() + 1, tick_vec_.rend());
 		tick_vec_[0] = std::move(tick);
 
-		if (symbol_tick_view_) symbol_tick_view_->update_tick();
+		if (event_handler_) event_handler_();
 	}
 
 	void SymbolTickControl::subscribe_tick_control()

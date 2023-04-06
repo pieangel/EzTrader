@@ -55,6 +55,7 @@ public:
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void set_view_mode(ViewMode view_mode);
 private:
+	void on_update_quote();
 	void register_symbols(const int option_market_index);
 	void register_symbol(const std::string symbol_code);
 	void show_value(const int row, const int col, const DarkHorse::VmOption& option_info);
