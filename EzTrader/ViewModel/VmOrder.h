@@ -8,5 +8,6 @@ namespace DarkHorse {
 		std::string symbol_code;
 		SmPositionType position{ SmPositionType::None };
 		int order_amount{ 0 };
+		int order_price{ 0 };
 	};
 }

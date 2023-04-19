@@ -29,8 +29,10 @@ namespace DarkHorse {
 	class HogaControl;
 	class QuoteControl;
 	class ProductControl;
+	class OrderControl;
 	struct SmHoga;
 	struct SmQuote;
+	struct SubOrderControl;
 }
 
 class DmAccountOrderWindow;
@@ -110,7 +112,11 @@ public:
 	void on_update_quote();
 	void on_update_hoga();
 	void on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void on_update_order();
 private:
+	void draw_order_cell(DarkHorse::SmPositionType position, const int price, const int count);
+	void draw_order();
+	void draw_order_by_price(DarkHorse::SubOrderControl* sub_order_control);
 	int find_close_row_from_end_row();
 	int find_zero_value_row();
 	int find_row(const int target_value);
@@ -123,6 +129,7 @@ private:
 	
 	void init_quote_control(const std::string& symbol_code);
 	void init_hoga_control(const std::string& symbol_code);
+	std::shared_ptr<DarkHorse::OrderControl> order_control_;
 	std::shared_ptr<DarkHorse::HogaControl> hoga_control_;
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	std::shared_ptr<DarkHorse::ProductControl> product_control_;

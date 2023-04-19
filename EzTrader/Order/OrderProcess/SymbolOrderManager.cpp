@@ -51,4 +51,9 @@ void SymbolOrderManager::update_accepted_order(order_p order)
 {
 	;
 }
+
+void SymbolOrderManager::remove_accepted_order(order_p order)
+{
+	;
+}
 }
