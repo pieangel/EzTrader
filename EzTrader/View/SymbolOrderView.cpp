@@ -187,9 +187,9 @@ void SymbolOrderView::draw_order_cell(DarkHorse::SmPositionType position, const 
 	if (row_index < price_start_row_ || row_index > price_end_row_) return;
 
 	std::shared_ptr<SmCell> cell = _Grid->FindCell(row_index, 
-		position == DarkHorse::SmPositionType::Buy ? 
-		DarkHorse::OrderGridHeader::BUY_ORDER :
-		DarkHorse::OrderGridHeader::SELL_ORDER);
+		position == SmPositionType::Buy ? 
+		OrderGridHeader::BUY_ORDER :
+		OrderGridHeader::SELL_ORDER);
 	if (!cell) return;
 
 	cell->Text(std::to_string(count));
@@ -200,10 +200,10 @@ void SymbolOrderView::draw_order_by_price(DarkHorse::SubOrderControl* sub_order_
 {
 	if (!sub_order_control) return;
 
-	const DarkHorse::SmPositionType position =
-		sub_order_control->control_type == DarkHorse::SubOrderControlType::CT_BUY ?
-		DarkHorse::SmPositionType::Buy :
-		DarkHorse::SmPositionType::Sell;
+	const SmPositionType position =
+		sub_order_control->control_type == SubOrderControlType::CT_BUY ?
+		SmPositionType::Buy :
+		SmPositionType::Sell;
 	const std::map<int, PriceOrderMap>& price_order_map = sub_order_control->order_map;
 	for (auto it = price_order_map.begin(); it != price_order_map.end(); it++) {
 		draw_order_cell(position, it->second.price, it->second.count);
