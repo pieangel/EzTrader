@@ -22,9 +22,8 @@ void SmAccountManager::AddAccount(std::shared_ptr<SmAccount> account)
 	if (old_account) return;
 
 	// Set the id for the account
-	account->Id(GetId());
 	_AccountMap[account->No()] = account;
-	_AccountIdMap[account->Id()] = account;
+	_AccountIdMap[account->id()] = account;
 }
 
 void DarkHorse::SmAccountManager::GetUnusedAccountForFund(std::vector<std::shared_ptr<SmAccount>>& unused_acnt_vector)

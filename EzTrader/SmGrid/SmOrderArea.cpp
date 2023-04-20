@@ -1077,7 +1077,7 @@ void SmOrderArea::ChangeOrderByKey(const int up_down)
 void SmOrderArea::OnOrderChanged(const int& account_id, const int& symbol_id)
 {
 	if (!_Account || !_Symbol) return;
-	if (_Account->Id() != account_id || _Symbol->Id() != symbol_id) return;
+	if (_Account->id() != account_id || _Symbol->Id() != symbol_id) return;
 
 	UpdateOrder(_Symbol->SymbolCode());
 	Invalidate();

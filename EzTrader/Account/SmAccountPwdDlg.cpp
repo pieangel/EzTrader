@@ -216,7 +216,7 @@ LRESULT SmAccountPwdDlg::OnUmPasswordConfirmed(WPARAM wParam, LPARAM lParam)
 	const int result = static_cast<int>(lParam);
 	for (auto it = _RowToAccountMap.begin(); it != _RowToAccountMap.end(); ++it) {
 		auto account = it->second;
-		if (account->Id() == account_id) {
+		if (account->id() == account_id) {
 			CBCGPGridRow* pRow = m_wndGrid.GetRow(it->first);
 			if (result == 1)
 				pRow->GetItem(3)->SetValue("O");

@@ -233,7 +233,7 @@ void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 				const int result = _ttoi(code) == 0 ? 1 : 0;
 				auto account = mainApp.AcntMgr()->FindAccount(account_no);
 				if (account) {
-					const int account_id = account->Id();
+					const int account_id = account->id();
 					account->Confirm(result);
 					mainApp.CallbackMgr()->OnPasswordConfirmed(account_id, result);
 				}

@@ -528,6 +528,7 @@
     <ClInclude Include="ViewModel\VmHoga.h" />
     <ClInclude Include="ViewModel\VmOption.h" />
     <ClInclude Include="ViewModel\VmOrder.h" />
+    <ClInclude Include="ViewModel\VmPosition.h" />
     <ClInclude Include="ViewModel\VmProduct.h" />
     <ClInclude Include="ViewModel\VmQuote.h" />
     <ClInclude Include="View\AccountOrderView.h" />

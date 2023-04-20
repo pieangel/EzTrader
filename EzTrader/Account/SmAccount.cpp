@@ -1,8 +1,15 @@
 #include "stdafx.h"
 #include "SmAccount.h"
-using namespace DarkHorse;
+#include "../Util/IdGenerator.h"
+namespace DarkHorse {
+	SmAccount::SmAccount()
+		: _id(IdGenerator::get_id())
+	{
+	}
+	SmAccount::~SmAccount()
+	{
 
-void DarkHorse::SmAccount::Id(int val)
-{
-	_id = val;
+	}
 }
+
+

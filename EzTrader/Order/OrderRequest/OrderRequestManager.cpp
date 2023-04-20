@@ -35,12 +35,19 @@ unsigned int OrderRequestManager::ThreadHandlerProc(void)
 	while (true) {
 		// 종료 신호를 보내면 루프를 나간다.
 		if (isStop()) break;
-
-		std::array<order_request_p, BulkOrderRequestSize> order_request_arr;
-		size_t taken{ 0 };
-		auto status = order_request_q.try_take_bulk(order_request_arr.begin(), order_request_arr.size(), taken);
-		if (status != BlockingCollectionStatus::Ok) continue;
- 		handle_order_request(order_request_arr, taken);
+		if (bulk_operation_) {
+			std::array<order_request_p, BulkOrderRequestSize> order_request_arr;
+			size_t taken{ 0 };
+			auto status = order_request_q.try_take_bulk(order_request_arr.begin(), order_request_arr.size(), taken);
+			if (status != BlockingCollectionStatus::Ok) continue;
+			handle_order_request(order_request_arr, taken);
+		}
+		else {
+			order_request_p order_request;
+			auto status = order_request_q.try_take(order_request);
+			if (status != BlockingCollectionStatus::Ok) continue;
+			handle_order_request(order_request);
+		}
 	}
 
 	return 1;
@@ -49,6 +56,18 @@ unsigned int OrderRequestManager::ThreadHandlerProc(void)
 void OrderRequestManager::clear_order_requests() noexcept
 {
 	order_request_q.flush();
+}
+
+bool OrderRequestManager::handle_order_request(order_request_p order_request)
+{
+	if (!order_request) return false;
+
+	switch (order_request->order_type) {
+	case SmOrderType::New: mainApp.Client()->NewOrder(order_request); break;
+	case SmOrderType::Modify: mainApp.Client()->ChangeOrder(order_request); break;
+	case SmOrderType::Cancel: mainApp.Client()->CancelOrder(order_request); break;
+	}
+	return true;
 }
 
 bool OrderRequestManager::handle_order_request(

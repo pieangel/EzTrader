@@ -57,6 +57,7 @@ namespace DarkHorse {
 	struct SmQuote;
 	struct SmTick;
 	class SmSymbol;
+	struct Position;
 
 
 	using SymbolMasterCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> quote)>;
@@ -79,6 +80,9 @@ namespace DarkHorse {
 
 	using ExpectedCBL = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>;
 	using ExpectedCBH = eventpp::CallbackList<void(std::shared_ptr<SmQuote> quote)>::Handle;
+
+	using PositionCBL = eventpp::CallbackList<void(std::shared_ptr<Position> position)>;
+	using PositionCBH = eventpp::CallbackList<void(std::shared_ptr<Position> position)>::Handle;
 
 	using SymbolCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>;
 
@@ -194,6 +198,23 @@ public:
 		symbol_master_cb_list_(symbol);
 	}
 
+	void subscribe_position_event_handler(const int position_control_id, std::function<void(std::shared_ptr<Position> position)>&& handler)
+	{
+		PositionCBH handle = position_cb_list_.append(handler);
+		position_cb_handle_map_[position_control_id] = handle;
+	}
+	void unsubscribe_position_event_handler(const int position_control_id)
+	{
+		auto found = position_cb_handle_map_.find(position_control_id);
+		if (found == position_cb_handle_map_.end()) return;
+		position_cb_list_.remove(found->second);
+	}
+
+	void process_position_event(std::shared_ptr<Position> position)
+	{
+		position_cb_list_(position);
+	}
+
 private:
 	RemoveOrderCBL remove_order_callback_list_;
 	std::map<int, RemoveOrderCBH> remove_order_callback_handle_map_;
@@ -213,6 +234,9 @@ private:
 
 	SymbolMasterCBL symbol_master_cb_list_;
 	std::map<int, SymbolMasterCBH> symbol_master_cb_handle_map_;
+
+	PositionCBL position_cb_list_;
+	std::map<int, PositionCBH> position_cb_handle_map_;
 };
 }
 

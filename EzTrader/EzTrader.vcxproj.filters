@@ -1854,6 +1854,9 @@
     <ClInclude Include="Controller\OrderControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
+    <ClInclude Include="ViewModel\VmPosition.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

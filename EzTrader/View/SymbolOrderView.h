@@ -26,10 +26,12 @@ namespace DarkHorse {
 	class SmStopOrderManager;
 	class SmOrderViewer;
 	struct SmOrderRequest;
+	struct OrderRequest;
 	class HogaControl;
 	class QuoteControl;
 	class ProductControl;
 	class OrderControl;
+	class SymbolPositionControl;
 	struct SmHoga;
 	struct SmQuote;
 	struct SubOrderControl;
@@ -75,7 +77,7 @@ public:
 	//int RecalRowCount();
 	int RecalRowCount(const int& height);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
-	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }
+	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	void UpdateOrder(const std::string& symbol_code);
 	void ConnectOrderUpdateSignal();
 	void ArrangeCenterValue();
@@ -113,10 +115,21 @@ public:
 	void on_update_hoga();
 	void on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_update_order();
+	void on_update_position();
 private:
+	void draw_cell(const int row, const int col, const int value);
 	void draw_order_cell(DarkHorse::SmPositionType position, const int price, const int count);
 	void draw_order();
-	void draw_order_by_price(DarkHorse::SubOrderControl* sub_order_control);
+	void draw_order_by_price
+	(
+		DarkHorse::SubOrderControl* sub_order_control, 
+		DarkHorse::SmPositionType position
+	);
+	void draw_total_order
+	(
+		DarkHorse::SubOrderControl* sub_order_control,
+		DarkHorse::SmPositionType position
+	);
 	int find_close_row_from_end_row();
 	int find_zero_value_row();
 	int find_row(const int target_value);
@@ -133,6 +146,7 @@ private:
 	std::shared_ptr<DarkHorse::HogaControl> hoga_control_;
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	std::shared_ptr<DarkHorse::ProductControl> product_control_;
+	std::shared_ptr<DarkHorse::SymbolPositionControl> position_control_;
 	void DrawStopOrder();
 	std::vector<std::pair<CBCGPRect, CBCGPRect>> _StopRectVector;
 	void DrawArrow
@@ -146,6 +160,7 @@ private:
 
 	bool _FixedMode = false;
 	void SetProfitLossCut(std::shared_ptr<DarkHorse::SmOrderRequest> order_req);
+	void SetProfitLossCut(std::shared_ptr<DarkHorse::OrderRequest> order_req);
 	void SetStopOrderCut(std::shared_ptr<DarkHorse::SmOrderRequest> order_req);
 	DarkHorse::SmOrderSettings _OrderSettings;
 	bool _EnableOrderShow = false;

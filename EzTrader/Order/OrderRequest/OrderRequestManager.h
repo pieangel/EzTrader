@@ -114,6 +114,7 @@ namespace DarkHorse {
 			const SmPriceType& price_type = SmPriceType::Price,
 			const SmFilledCondition& fill_condition = SmFilledCondition::Day);
 	private:
+		bool bulk_operation_{ false };
 		void clear_order_requests() noexcept;
 		bool enable_{ true };
 		std::mutex order_request_map_mutex_;
@@ -123,6 +124,7 @@ namespace DarkHorse {
 		std::map<int, order_request_p> order_request_map;
 		// arr : 데이터가 들어 있는 배열, taken : 실제 데이터가 들어 있는 갯수
 		bool handle_order_request(std::array<order_request_p, BulkOrderRequestSize>& arr, int taken);
+		bool handle_order_request(order_request_p order_request);
 		order_request_p make_dummy_order_request();
 		void add_order_request_map(order_request_p order_request);
 

@@ -37,6 +37,8 @@ namespace DarkHorse {
 		int  _SeungSu = 1;
 		double _Ratio = 0;
 	public:
+		SmAccount();
+		~SmAccount();
 		int Confirm() const { return _Confirm; }
 		void Confirm(int val) { _Confirm = val; }
 		std::string Name() const { return _Name; }
@@ -49,8 +51,7 @@ namespace DarkHorse {
 		void Pwd(std::string val) { _pwd = val; }
 
 		SmAccountAsset Asset;
-		int Id() const { return _id; }
-		void Id(int val);
+		int id() const { return _id; }
 		bool UsedForFund() const { return _UsedForFund; }
 		void UsedForFund(bool val) { _UsedForFund = val; }
 		int SeungSu() const { return _SeungSu; }

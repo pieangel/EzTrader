@@ -37,12 +37,15 @@
 #include "../Controller/ProductControl.h"
 #include "../Controller/OrderControl.h"
 #include "../Controller/SubOrderControl.h"
+#include "../Controller/SymbolPositionControl.h"
 #include "../ViewModel/VmQuote.h"
 #include "../ViewModel/VmHoga.h"
 #include "../ViewModel/VmProduct.h"
 #include "../Event/EventHub.h"
 #include "../Util/SmUtil.h"
 #include "../Util/IdGenerator.h"
+#include "../Order/OrderRequest/OrderRequestManager.h"
+#include "../Order/OrderRequest/OrderRequest.h"
 #include <sstream>
 #include <format>
 #include <functional>
@@ -137,6 +140,9 @@ SymbolOrderView::SymbolOrderView()
 	order_control_ = std::make_shared<DarkHorse::OrderControl>();
 	order_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_order, this));
 
+	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
+	position_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_position, this));
+
 	product_control_ = std::make_shared<DarkHorse::ProductControl>();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 	mainApp.event_hub()->subscribe_symbol_master_event_handler
@@ -178,36 +184,58 @@ void SymbolOrderView::on_update_order()
 	_EnableOrderShow = true;
 }
 
-void SymbolOrderView::draw_order_cell(DarkHorse::SmPositionType position, const int price, const int count)
+void SymbolOrderView::on_update_position()
+{
+
+}
+
+void SymbolOrderView::draw_cell(const int row, const int col, const int value)
+{
+	std::shared_ptr<SmCell> cell = _Grid->FindCell(row, col);
+	if (!cell) return;
+	cell->Text(std::to_string(value));
+}
+
+void SymbolOrderView::draw_order_cell(
+	DarkHorse::SmPositionType position, 
+	const int price, 
+	const int count)
 {
 	if (price == 0 || count == 0) return;
 
-	int row_index = FindRow(price);
+	int row = FindRow(price);
+	if (row < price_start_row_ || row > price_end_row_) return;
 
-	if (row_index < price_start_row_ || row_index > price_end_row_) return;
-
-	std::shared_ptr<SmCell> cell = _Grid->FindCell(row_index, 
-		position == SmPositionType::Buy ? 
+	const int col = (position == SmPositionType::Buy) ?
 		OrderGridHeader::BUY_ORDER :
-		OrderGridHeader::SELL_ORDER);
-	if (!cell) return;
-
-	cell->Text(std::to_string(count));
-	_OldOrderBuyRowIndex.insert(row_index);
+		OrderGridHeader::SELL_ORDER;
+	draw_cell(row, col, count);
+	_OldOrderBuyRowIndex.insert(row);
 }
 
-void SymbolOrderView::draw_order_by_price(DarkHorse::SubOrderControl* sub_order_control)
+void SymbolOrderView::draw_order_by_price(
+	DarkHorse::SubOrderControl* sub_order_control, 
+	DarkHorse::SmPositionType position)
 {
 	if (!sub_order_control) return;
 
-	const SmPositionType position =
-		sub_order_control->control_type == SubOrderControlType::CT_BUY ?
-		SmPositionType::Buy :
-		SmPositionType::Sell;
 	const std::map<int, PriceOrderMap>& price_order_map = sub_order_control->order_map;
 	for (auto it = price_order_map.begin(); it != price_order_map.end(); it++) {
 		draw_order_cell(position, it->second.price, it->second.count);
 	}
+}
+
+void SymbolOrderView::draw_total_order(
+	DarkHorse::SubOrderControl* sub_order_control,
+	DarkHorse::SmPositionType position)
+{
+	if (!sub_order_control) return;
+
+	const int col = (position == SmPositionType::Buy) ?
+		OrderGridHeader::BUY_ORDER :
+		OrderGridHeader::SELL_ORDER;
+	const int row = 1;
+	draw_cell(row, col, sub_order_control->total_count);
 }
 
 void SymbolOrderView::draw_order()
@@ -216,9 +244,11 @@ void SymbolOrderView::draw_order()
 	if (_MovingOrder) return;
 
 	DarkHorse::SubOrderControl* order_control = order_control_->get_buy_order_control();
-	draw_order_by_price(order_control);
+	draw_order_by_price(order_control, SmPositionType::Buy);
+	draw_total_order(order_control, SmPositionType::Buy);
 	order_control = order_control_->get_sell_order_control();
-	draw_order_by_price(order_control);
+	draw_order_by_price(order_control, SmPositionType::Sell);
+	draw_total_order(order_control, SmPositionType::Sell);
 }
 
 void SymbolOrderView::update_quote()
@@ -633,12 +663,9 @@ void SymbolOrderView::SetQuoteColor()
 
 int SymbolOrderView::FindValue(const int& row) const noexcept
 {
-	int result = -1;
 	auto it = row_to_price_.find(row);
-	if (it != row_to_price_.end())
-		return it->second;
-	else
-		return -1;
+	if (it == row_to_price_.end()) return -1;
+	return it->second;
 }
 
 void SymbolOrderView::Refresh()
@@ -1088,7 +1115,7 @@ void SymbolOrderView::ChangeOrderByKey(const int up_down)
 void SymbolOrderView::OnOrderChanged(const int& account_id, const int& symbol_id)
 {
 	if (!_Account || !_Symbol) return;
-	if (_Account->Id() != account_id || _Symbol->Id() != symbol_id) return;
+	if (_Account->id() != account_id || _Symbol->Id() != symbol_id) return;
 
 	UpdateOrder(_Symbol->SymbolCode());
 	Invalidate();
@@ -1155,6 +1182,13 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 	auto hoga = mainApp.HogaMgr()->get_hoga(symbol_code);
 }
 
+void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	if (!val || !position_control_) return;
+
+	position_control_->set_account_id(val->id());
+}
+
 void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
 	_Symbol = val;
@@ -1167,6 +1201,9 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	hoga_control_->set_symbol_id(val->Id());
 	hoga_control_->update_hoga(hoga);
 	product_control_->update_product(_Symbol);
+
+	position_control_->set_symbol_id(val->Id());
+
 	ArrangeCenterValue();
 	on_update_quote();
 	on_update_hoga();
@@ -1316,6 +1353,28 @@ void SymbolOrderView::SetProfitLossCut(std::shared_ptr<SmOrderRequest> order_req
 		order_req->CutMode = 0;
 }
 
+void SymbolOrderView::SetProfitLossCut(std::shared_ptr<OrderRequest> order_req)
+{
+	order_req->cut_slip = _OrderSettings.SlipTick;
+	order_req->profit_cut_tick = _OrderSettings.ProfitCutTick;
+	order_req->loss_cut_tick = _OrderSettings.LossCutTick;
+	order_req->cut_price_type = _OrderSettings.PriceType;
+	if (_OrderSettings.ProfitCut) {
+		if (_OrderSettings.LossCut)
+			order_req->cut_mode = SmCutMode::BothCut;
+		else
+			order_req->cut_mode = SmCutMode::ProfitCut;
+	}
+	else if (_OrderSettings.LossCut) {
+		if (_OrderSettings.ProfitCut)
+			order_req->cut_mode = SmCutMode::BothCut;
+		else
+			order_req->cut_mode = SmCutMode::LossCut;
+	}
+	else
+		order_req->cut_mode = SmCutMode::None;
+}
+
 void SymbolOrderView::SetStopOrderCut(std::shared_ptr<SmOrderRequest> order_req)
 {
 	order_req->CutSlip = _OrderSettings.SlipTick;
@@ -1324,6 +1383,8 @@ void SymbolOrderView::SetStopOrderCut(std::shared_ptr<SmOrderRequest> order_req)
 void SymbolOrderView::PutStopOrder(const DarkHorse::SmPositionType& type, const int& price)
 {
 	if (!_Account || !_Symbol) return;
+	if (price <= 0) return;
+
 	const auto symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(_Account->No(), _Symbol->SymbolCode());
 
 	std::shared_ptr<SmOrderRequest> order_req = nullptr;
@@ -1346,15 +1407,16 @@ void SymbolOrderView::PutStopOrder(const DarkHorse::SmPositionType& type, const 
 void SymbolOrderView::PutOrder(const SmPositionType& type, const int& price, const SmPriceType& price_type)
 {
 	if (!_Account || !_Symbol) return;
+	if (price <= 0) return;
 
-	std::shared_ptr<SmOrderRequest> order_req = nullptr;
+	std::shared_ptr<OrderRequest> order_req = nullptr;
 	if (type == SmPositionType::Sell)
-		order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), price, _OrderAmount, price_type);
+		order_req = OrderRequestManager::make_default_sell_order_request(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), price, _OrderAmount, price_type);
 	else
-		order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), price, _OrderAmount, price_type);
+		order_req = OrderRequestManager::make_default_buy_order_request(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), price, _OrderAmount, price_type);
 	if (order_req) {
 		SetProfitLossCut(order_req);
-		mainApp.Client()->NewOrder(order_req);
+		mainApp.order_request_manager()->add_order_request(order_req);
 	}
 }
 
