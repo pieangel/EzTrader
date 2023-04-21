@@ -182,6 +182,14 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 		on_dm_commodity_future_quote(strRecvKey, nRealType); break;
 	case 310:
 		on_dm_expected(strRecvKey, nRealType); break;
+	case 261: // 국내 주문 접수
+		on_dm_order_accepted(strRecvKey, nRealType); break;
+	case 262: // 국내 주문 미체결
+		on_dm_order_unfilled(strRecvKey, nRealType); break;
+	case 265: // 해외 주문 체결
+		on_dm_order_filled(strRecvKey, nRealType); break;
+	case 183:
+		on_dm_order_position(strRecvKey, nRealType); break;
 	default:
 		break;
 	}
@@ -1677,24 +1685,9 @@ int DarkHorse::ViClient::ConvertToInt(CString& strSymbolCode, CString& strValue)
 	strValue.Trim();
 	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol((LPCTSTR)strSymbolCode);
 	if (!symbol) return -1;
-
-	
-	int whole_len = strValue.GetLength();
-	int pos = strValue.Find(".");
-	if (pos == -1) {
-		strValue.Append(".");
-		for (int i = 0; i < symbol->Decimal(); i++)
-			strValue.Append("0");
-	}
-	else {
-		int delta = (pos + symbol->Decimal() + 1) - whole_len;
-		for (int i = 0; i < delta; i++)
-			strValue.Append("0");
-	}
-
-	strValue.Remove('.');
-
-	return _ttoi(strValue);
+	double converted_value = _ttof(strValue);
+	converted_value = converted_value * pow(10, symbol->Decimal());
+	return static_cast<int>(converted_value);
 }
 
 void DarkHorse::ViClient::UnregAllSymbol()
@@ -3913,18 +3906,6 @@ void DarkHorse::ViClient::on_dm_option_hoga(const CString& strKey, const LONG& n
 	}
 }
 
-void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG& nRealType)
-{
-
-}
-void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& nRealType)
-{
-
-}
-void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG& nRealType)
-{
-
-}
 void DarkHorse::ViClient::on_dm_order_position(const CString& strKey, const LONG& nRealType)
 {
 
@@ -4208,6 +4189,230 @@ void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nReal
 
 	nlohmann::json order_info;
 	order_info["order_event"] = OrderEvent::AB_Filled;
+	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
+	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
+	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	order_info["order_price"] = order_price;
+	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
+	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	//order_info["ori_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	//order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+
+	order_info["filled_price"] = filled_price;
+	order_info["filled_count"] = _ttoi(strFilledAmount.Trim());
+
+	LOGINFO(CMyLogger::getInstance(), "order_no = %s, account_no = %s, symbol_code = %s, filled_amount = %s", strOrderNo, strAccountNo, strSymbolCode, strFilledAmount);
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
+
+	if (auto wp = _Client.lock()) {
+		wp->OnOrderFilled(std::move(order_info));
+	}
+}
+
+void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG& nRealType)
+{
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
+	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "가격구분");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
+	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문구분");
+	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
+	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "접수시간");
+
+
+	//LOG_F(INFO, _T(" OnOrderAcceptedHd Custoem = %s"), strCustom);
+
+	CString strMsg;
+	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount);
+
+	//TRACE(strMsg);
+	strCustom.Trim();
+	strAccountNo.TrimRight(); // 계좌 번호
+	strOrderNo.TrimLeft('0'); // 주문 번호
+	strSymbolCode.TrimRight(); // 심볼 코드
+	strOrderPrice = strOrderPrice.Trim(); // 주문 가격 트림
+
+	const int order_price = ConvertToInt(strSymbolCode, strOrderPrice);
+	if (order_price < 0) return;
+	// 주문 수량 트림
+	strOrderAmount.TrimRight();
+
+	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
+	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
+	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	order_info["order_price"] = order_price;
+	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
+	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+	order_info["order_type"] = static_cast<const char*>(strMan.Trim());
+	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
+
+	if (auto wp = _Client.lock()) {
+		wp->OnOrderAccepted(std::move(order_info));
+	}
+}
+
+
+void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG& nRealType)
+{
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
+	CString strCancelCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "취소수량");
+	CString strModyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "정정수량");
+	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결수량");
+	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "잔량");
+
+	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
+	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	CString strOrderSeq = "0";
+
+	CString strMsg;
+	strMsg.Format("OnOrderUnfilled 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s] ,주문순서[%s], 주문수량[%s], 잔량[%s], 체결수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+
+	//TRACE(strMsg);
+
+	strCustom.Trim();
+	// 주문 가격
+	strOrderPrice.Trim();
+
+
+	const int order_price = ConvertToInt(strSymbolCode, strOrderPrice);
+	if (order_price < 0) return;
+	// 계좌 번호 트림
+	strAccountNo.TrimRight();
+	// 주문 번호 트림
+	strOrderNo.TrimLeft('0');
+	// 원주문 번호 트림
+	strOriOrderNo.TrimLeft('0');
+	// 첫주문 번호 트림
+	strFirstOrderNo.TrimLeft('0');
+	// 심볼 코드 트림
+	strSymbolCode.TrimRight();
+	// 주문 수량 트림
+	strOrderAmount.TrimRight();
+	// 정정이나 취소시 처리할 수량 트림
+	strRemain.TrimRight();
+	// 정정이 이루어진 수량
+	strModyCnt.TrimRight();
+	// 체결된 수량
+	strFilledCnt.TrimRight();
+	// 취소된 수량
+	strCancelCnt.TrimRight();
+
+	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::DM_Unfilled;
+	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
+	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
+	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+	order_info["order_price"] = order_price;
+	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
+	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+	//order_info["order_type"] = static_cast<const char*>(strMan.Trim());
+	order_info["remain_count"] = _ttoi(strRemain.Trim());
+	order_info["cancelled_count"] = _ttoi(strCancelCnt.Trim());
+	order_info["modified_count"] = _ttoi(strModyCnt.Trim());
+	order_info["filled_count"] = _ttoi(strFilledCnt.Trim());
+	order_info["order_sequence"] = _ttoi(strOrderSeq.Trim());
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+
+	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
+
+	if (auto wp = _Client.lock()) {
+		wp->OnOrderUnfilled(std::move(order_info));
+	}
+}
+
+
+void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& nRealType)
+{
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
+
+	CString strOrderPrice = "0";
+	CString strOrderAmount = "0";
+
+
+	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결가격");
+	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결수량");
+	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
+
+	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
+
+	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "수수료");
+
+	CString strMsg;
+	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s]\n", strSymbolCode, strOrderNo);
+	//strMsg.Format(_T("OnOrderFilledHd 수수료 = %s\n"), strFee);
+	//TRACE(strMsg);
+
+	//LOG_F(INFO, _T(" OnOrderFilledHd Custoem = %s"), strCustom);
+
+	// 심볼 코드
+	strSymbolCode.Trim();
+
+	strCustom.Trim();
+
+	const int order_price = ConvertToInt(strSymbolCode, strOrderPrice);
+	if (order_price < 0) return;
+	const int filled_price = ConvertToInt(strSymbolCode, strFilledPrice);
+	if (filled_price < 0) return;
+	// 계좌 번호 트림
+	strAccountNo.TrimRight();
+	// 주문 번호 트림
+	strOrderNo.TrimLeft('0');
+
+
+	// 체결 수량
+	strFilledAmount.TrimLeft();
+	// 체결된 시각
+	strFilledTime.TrimRight();
+
+	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::DM_Filled;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());

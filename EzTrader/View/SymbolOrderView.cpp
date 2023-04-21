@@ -1411,9 +1411,21 @@ void SymbolOrderView::PutOrder(const SmPositionType& type, const int& price, con
 
 	std::shared_ptr<OrderRequest> order_req = nullptr;
 	if (type == SmPositionType::Sell)
-		order_req = OrderRequestManager::make_default_sell_order_request(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), price, _OrderAmount, price_type);
+		order_req = OrderRequestManager::make_default_sell_order_request(
+			_Account->No(), 
+			_Account->Pwd(), 
+			_Symbol->SymbolCode(), 
+			price, 
+			_OrderAmount, 
+			price_type);
 	else
-		order_req = OrderRequestManager::make_default_buy_order_request(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), price, _OrderAmount, price_type);
+		order_req = OrderRequestManager::make_default_buy_order_request(
+			_Account->No(), 
+			_Account->Pwd(), 
+			_Symbol->SymbolCode(), 
+			price, 
+			_OrderAmount, 
+			price_type);
 	if (order_req) {
 		SetProfitLossCut(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);

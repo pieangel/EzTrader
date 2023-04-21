@@ -11,7 +11,7 @@ using account_order_manager_p = std::shared_ptr<AccountOrderManager>;
 void TotalOrderManager::on_order_event(const order_event& order_info)
 {
 	order_p order = make_order(order_info);
-	const std::string custom_info = order_info["custom_info"];
+	const std::string& custom_info = order_info["custom_info"];
 	set_order_request_info(custom_info, order);
 	const int order_event = order_info["order_event"];
 	write_order_history(order_event, order);

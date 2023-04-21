@@ -18,8 +18,6 @@ bool OrderProcessor::handle_order_info(const std::array<order_info, BulkOrderPro
 bool OrderProcessor::handle_order_info(const order_info& order_info_item)
 {
 	try {
-		const std::string custom_info = order_info_item["custom"];
-		const int order_request_id = get_order_request_id(custom_info);
 		total_order_manager_p total_order_manager = mainApp.total_order_manager();
 		total_order_manager->on_order_event(order_info_item);
 	}

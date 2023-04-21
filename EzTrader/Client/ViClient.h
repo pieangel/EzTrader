@@ -188,6 +188,13 @@ namespace DarkHorse {
 		// 해외 주문 체결
 		void OnOrderFilled(const CString& strKey, const LONG& nRealType);
 
+		// 국내 주문 접수확인
+		void on_dm_order_accepted(const CString& strKey, const LONG& nRealType);
+		// 국내 주문 미체결 
+		void on_dm_order_unfilled(const CString& strKey, const LONG& nRealType);
+		// 국내 주문 체결
+		void on_dm_order_filled(const CString& strKey, const LONG& nRealType);
+
 		// 해외 실시간 시세
 		void OnRealtimeQuote(const CString& strKey, const LONG& nRealType);
 		// 해외 실시간 호가
@@ -206,9 +213,6 @@ namespace DarkHorse {
 		void on_dm_option_quote(const CString& strKey, const LONG& nRealType);
 		void on_dm_option_hoga(const CString& strKey, const LONG& nRealType);
 
-		void on_dm_order_unfilled(const CString& strKey, const LONG& nRealType);
-		void on_dm_order_filled(const CString& strKey, const LONG& nRealType);
-		void on_dm_order_accepted(const CString& strKey, const LONG& nRealType);
 		void on_dm_order_position(const CString& strKey, const LONG& nRealType);
 		// Key : 선물사 요청 번호, value : argument map.
 		std::map<int, task_arg> _ReqMap;
