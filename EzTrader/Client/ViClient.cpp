@@ -169,12 +169,14 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 	case 82: // 해외 실시간 체결
 		OnRealtimeQuote(strRecvKey, nRealType); break;
 	case 51: // 국내 선물 호가
+	case 75:
 		OnRealtimeDomesticHoga(strRecvKey, nRealType); break;
 	case 52: // dm option hoga
 		on_dm_option_hoga(strRecvKey, nRealType); break;
 	case 58: // dm commodity future hoga
 		on_dm_commodity_future_hoga(strRecvKey, nRealType); break;
 	case 65: // 국내 선물 시세
+	case 77:
 		OnRealtimeDomesticQuote(strRecvKey, nRealType); break;
 	case 66:
 		on_dm_option_quote(strRecvKey, nRealType); break;
@@ -1989,12 +1991,22 @@ void DarkHorse::ViClient::RegisterSymbol(const std::string& symbol_code)
 				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 				nRealType = 65;
 				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+
+				nRealType = 77;
+				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+				nRealType = 75;
+				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 			}
 		}
 		else if (first == '2' || first == '3') {
 			nRealType = 52;
 			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 			nRealType = 66;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+
+			nRealType = 79;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+			nRealType = 78;
 			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 		}
 		else {

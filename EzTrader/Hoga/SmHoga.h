@@ -20,6 +20,7 @@ struct SmHoga
 	int	TotBuyCnt;
 	std::string HogaTime;
 	int symbol_id{ 0 };
+	std::string symbol_code;
 };
 }
 

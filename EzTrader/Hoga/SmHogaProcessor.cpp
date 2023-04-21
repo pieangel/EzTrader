@@ -80,7 +80,7 @@ void SmHogaProcessor::ProcessHoga(nlohmann::json&& hoga)
 			hoga_p->Ary[i].SellCnt = hoga["hoga_items"][i]["sell_cnt"];
 			hoga_p->Ary[i].BuyCnt = hoga["hoga_items"][i]["buy_cnt"];
 		}
-
+		hoga_p->symbol_code = symbol_code;
 		hoga_p->HogaTime = hoga["hoga_time"];
 		hoga_p->TotBuyQty = hoga["tot_buy_qty"];
 		hoga_p->TotSellQty = hoga["tot_sell_qty"];

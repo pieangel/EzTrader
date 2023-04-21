@@ -23,7 +23,7 @@ public:
 		symbol_id_ = symbol_id;
 	}
 	void set_event_handler(std::function<void()> event_handler) {
-		event_handler_ = event_handler_;
+		event_handler_ = event_handler;
 	}
 private:
 	int symbol_id_{ 0 };

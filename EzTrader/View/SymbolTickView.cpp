@@ -74,7 +74,6 @@ void SymbolTickView::SetUp()
 	_Grid->RecalRowCount(rect.Height(), true);
 
 	_Grid->CreateGrids();
-
 	{
 		_HeaderTitles.push_back("시각");
 		_HeaderTitles.push_back("체결가");

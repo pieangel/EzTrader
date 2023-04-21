@@ -134,6 +134,7 @@ SymbolOrderView::SymbolOrderView()
 	//_SellOrderViewer = std::make_shared<SmOrderViewer>();
 	hoga_control_ = std::make_shared<DarkHorse::HogaControl>();
 	hoga_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_hoga, this));
+
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_quote, this));
 
