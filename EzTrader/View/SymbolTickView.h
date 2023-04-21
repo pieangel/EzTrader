@@ -32,6 +32,7 @@ public:
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 	void OnQuoteEvent(const std::string& symbol_code);
 private:
+	void draw_tick(const int row, const int col, const std::string& value, const int up_down);
 	void on_update_tick();
 	void update_tick();
 	bool _EnableQuoteShow = false;

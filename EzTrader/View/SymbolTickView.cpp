@@ -9,6 +9,7 @@
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
 #include "../Controller/SymbolTickControl.h"
+#include "../Util/SmUtil.h"
 #include <format>
 
 
@@ -94,15 +95,11 @@ void SymbolTickView::OnPaint()
 	CRect rect;
 	GetClientRect(rect);
 
-	if (m_pGM == NULL)
-		return;
+	if (m_pGM == NULL) return;
 
 	m_pGM->BindDC(pDC, rect);
 
-	if (!m_pGM->BeginDraw())
-		return;
-
-
+	if (!m_pGM->BeginDraw()) return;
 
 	m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
 	rect.right -= 1;
@@ -110,7 +107,6 @@ void SymbolTickView::OnPaint()
 
 	_Grid->DrawGrid(m_pGM, rect);
 	_Grid->DrawCells(m_pGM, rect, true, false);
-	//_Grid->DrawHorizontalHeader(m_pGM, _HeaderTitles, 0);
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
@@ -126,37 +122,38 @@ void SymbolTickView::Clear()
 	Invalidate();
 }
 
+void SymbolTickView::draw_tick(const int row, const int col, const std::string& value, const int up_down)
+{
+	std::shared_ptr<SmCell> cell = _Grid->FindCell(row, col);
+	if (!cell) return;
+
+	cell->Text(value);
+	up_down == 1 ?
+		cell->CellType(SmCellType::CT_TICK_BUY) :
+		cell->CellType(SmCellType::CT_TICK_SELL);
+}
+
 void SymbolTickView::update_tick()
 {
 	if (!tick_control_) return;
 
 	const std::vector<SmTick>& tick_vec = tick_control_->get_tick_vec();
 	const int symbol_decimal = tick_control_->get_symbol_decimal();
-	for (size_t i = 1; i < tick_vec.size(); i++) {
-		std::shared_ptr<SmCell> cell = _Grid->FindCell(i, 0);
-
-
+	for (size_t i = 0; i < tick_vec.size(); i++) {
+		const int row = i + 1;
 		std::string tick_time = tick_vec[i].time;
 		const int up_down = tick_vec[i].updown;
-		if (tick_time.length() > 0) {
+		if (!tick_time.empty()) {
 			tick_time.insert(tick_time.length() - 2, ":");
 			tick_time.insert(tick_time.length() - 5, ":");
 		}
 		else continue;
-
-		if (cell) { cell->Text(tick_time); up_down == 1 ? cell->CellType(SmCellType::CT_TICK_BUY) : cell->CellType(SmCellType::CT_TICK_SELL); }
-
-
-		cell = _Grid->FindCell(i, 1);
+		
+		draw_tick(row, 0, tick_time, up_down);
 		std::string	value_string = std::format("{0}", tick_vec[i].close);
-
-		if (value_string.length() > (size_t)symbol_decimal) {
-			if (symbol_decimal > 0)
-				value_string.insert(value_string.length() - symbol_decimal, 1, '.');
-			if (cell) { cell->Text(value_string); up_down == 1 ? cell->CellType(SmCellType::CT_TICK_BUY) : cell->CellType(SmCellType::CT_TICK_SELL); }
-		}
-		cell = _Grid->FindCell(i, 2);
-		if (cell) { cell->Text(std::to_string(tick_vec[i].qty)); up_down == 1 ? cell->CellType(SmCellType::CT_TICK_BUY) : cell->CellType(SmCellType::CT_TICK_SELL); }
+		SmUtil::insert_decimal(value_string, symbol_decimal);
+		draw_tick(row, 1, value_string, up_down);
+		draw_tick(row, 2, std::to_string(tick_vec[i].qty), up_down);
 	}
 }
 
