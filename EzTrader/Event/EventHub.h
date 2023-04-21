@@ -85,6 +85,7 @@ namespace DarkHorse {
 	using PositionCBH = eventpp::CallbackList<void(std::shared_ptr<Position> position)>::Handle;
 
 	using SymbolCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>;
+	using SymbolCBH = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>::Handle;
 
 class EventHub
 {
@@ -171,10 +172,19 @@ public:
 		expected_cb_list_(quote);
 	}
 
-	void add_symbol_event_handler(std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
+	void add_symbol_event_handler(const int symbol_control_id, std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
 	{
-		symbol_cb_list_.append(handler);
+		SymbolCBH handle = symbol_cb_list_.append(handler);
+		symbol_cb_handle_map_[symbol_control_id] = handle;
 	}
+
+	void unsubscribe_symbol_event_handler(const int symbol_control_id)
+	{
+		auto found = symbol_cb_handle_map_.find(symbol_control_id);
+		if (found == symbol_cb_handle_map_.end()) return;
+		symbol_cb_list_.remove(found->second);
+	}
+
 	void process_symbol_event(std::shared_ptr<SmSymbol> symbol)
 	{
 		symbol_cb_list_(symbol);
@@ -226,8 +236,9 @@ private:
 
 	TickCBL tick_cb_list_;
 	std::map<int, TickCBH> tick_cb_handle_map_;
-
+	// 맵을 만들어야 하고 해제 해야 한다. 
 	SymbolCBL symbol_cb_list_;
+	std::map<int, SymbolCBH> symbol_cb_handle_map_;
 
 	ExpectedCBL expected_cb_list_;
 	std::map<int, ExpectedCBH> expected_cb_handle_map_;

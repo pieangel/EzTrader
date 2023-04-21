@@ -108,6 +108,7 @@ private:
 	//std::map<int, std::string> _ComboIndexToSymbolMap;
 	// key : combobox index, value : symbol object
 	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> index_to_symbol_;
+	// key : symbol code, value : combobox index.
 	std::map<std::string, int> symbol_to_index_;
 	int current_combo_index_{ -1 };
 	/// <summary>

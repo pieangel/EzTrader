@@ -57,10 +57,10 @@ IMPLEMENT_DYNAMIC(DmAccountOrderCenterWindow, CBCGPDialog)
 DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
-	mainApp.event_hub()->add_symbol_event_handler(std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
+	id_ = IdGenerator::get_id();
+	mainApp.event_hub()->add_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
-	id_ = IdGenerator::get_id();
 }
 
 DmAccountOrderCenterWindow::~DmAccountOrderCenterWindow()
@@ -68,6 +68,7 @@ DmAccountOrderCenterWindow::~DmAccountOrderCenterWindow()
 	//KillTimer(1);
 	int i = 0;
 	i = i + 0;
+	mainApp.event_hub()->unsubscribe_symbol_event_handler(id_);
 }
 
 void DmAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> val)
@@ -246,6 +247,7 @@ std::string DmAccountOrderCenterWindow::make_symbol_name(std::shared_ptr<DarkHor
 int DmAccountOrderCenterWindow::add_to_symbol_combo(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol) return -1;
+	
 	auto found = symbol_to_index_.find(symbol->SymbolCode());
 	if (found != symbol_to_index_.end()) return -1;
 	const std::string symbol_name = make_symbol_name(symbol);
@@ -320,6 +322,8 @@ void DmAccountOrderCenterWindow::init_views()
 
 void DmAccountOrderCenterWindow::init_dm_symbol()
 {
+	symbol_to_index_.clear();
+	index_to_symbol_.clear();
 	const std::vector<DarkHorse::DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
 	for (size_t i = 0; i < future_vec.size(); i++) {
 		std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
