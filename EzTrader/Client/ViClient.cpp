@@ -30,6 +30,8 @@
 #include "../DataFrame/Utils/FixedSizeString.h"
 #include "../Config/SmConfigManager.h"
 #include "../Order/SmOrderConst.h"
+#include "../Global/SmTotalManager.h"
+#include "../Order/OrderProcess/OrderProcessor.h"
 #include <chartdir.h>
 
 
@@ -4062,9 +4064,7 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	if (auto wp = _Client.lock()) {
-		wp->OnOrderAccepted(std::move(order_info));
-	}
+	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRealType)
@@ -4147,9 +4147,7 @@ void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRe
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	if (auto wp = _Client.lock()) {
-		wp->OnOrderUnfilled(std::move(order_info));
-	}
+	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nRealType)
@@ -4223,9 +4221,7 @@ void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nReal
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	if (auto wp = _Client.lock()) {
-		wp->OnOrderFilled(std::move(order_info));
-	}
+	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG& nRealType)
@@ -4284,9 +4280,7 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	if (auto wp = _Client.lock()) {
-		wp->OnOrderAccepted(std::move(order_info));
-	}
+	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
 
@@ -4370,9 +4364,7 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	if (auto wp = _Client.lock()) {
-		wp->OnOrderUnfilled(std::move(order_info));
-	}
+	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
 
@@ -4447,9 +4439,7 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	if (auto wp = _Client.lock()) {
-		wp->OnOrderFilled(std::move(order_info));
-	}
+	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::OnRealtimeQuote(const CString& strKey, const LONG& nRealType)

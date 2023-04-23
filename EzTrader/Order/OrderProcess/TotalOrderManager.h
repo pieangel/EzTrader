@@ -17,6 +17,7 @@ class TotalOrderManager
 	using account_order_manager_p = std::shared_ptr<AccountOrderManager>;
 public:
 	void on_order_event(const order_event& order_info);
+	void on_order_event(order_event&& order_info);
 	account_order_manager_p get_order_manager(const std::string& account_no);
 private:
 	void write_order_history(const int order_event, order_p order) ;

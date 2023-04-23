@@ -1,17 +1,34 @@
 #pragma once
 #include "../../Json/json.hpp"
+#include "../../Common/common.h"
 #include "../../Common/BlockingCollection.h"
 using namespace code_machina;
 namespace DarkHorse {
 constexpr int BulkOrderProcessSize = 500;
-class OrderProcessor
+using order_event = nlohmann::json;
+
+class OrderProcessor : public Runnable
 {
-	using order_info = nlohmann::json;
+public:
+	OrderProcessor() {};
+	virtual ~OrderProcessor() {};
+	unsigned int ThreadHandlerProc(void) override;
+	bool enable() const { return enable_; }
+	void enable(bool val) { enable_ = val; }
+
+	void start_handle_order_event() noexcept;
+	void stop_handle_order_event() noexcept;
+	void add_order_event(order_event&& order_event_t) noexcept;
 private:
-	BlockingCollection<order_info> order_info_q;
-	bool handle_order_info(const std::array<order_info, BulkOrderProcessSize>& arr, int taken);
-	bool handle_order_info(const order_info& order_info_item);
+	bool bulk_operation_{ false };
+	bool enable_{ true };
+	BlockingCollection<order_event> order_event_q;
+	bool handle_order_event(const std::array<order_event, BulkOrderProcessSize>& arr, int taken);
+	bool handle_order_event(order_event&& order_info_item);
+	bool handle_order_event(const order_event& order_info_item);
+	void clear_order_event() noexcept;
 	int get_order_request_id(const std::string& custom_info);
+	order_event make_dummy_order_event();
 };
 }
 

@@ -12,7 +12,7 @@ namespace DarkHorse {
 		~SmHogaProcessor() override;
 		void StartProcess() noexcept;
 		void StopProcess() noexcept;
-		virtual unsigned int ThreadHandlerProc(void);
+		unsigned int ThreadHandlerProc(void) override;
 		void AddHoga(nlohmann::json&& hoga) noexcept;
 		bool Enable() const { return _Enable; }
 		void Enable(bool val) { _Enable = val; }
