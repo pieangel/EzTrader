@@ -10,8 +10,12 @@ using order_event = nlohmann::json;
 class OrderProcessor : public Runnable
 {
 public:
-	OrderProcessor() {};
-	virtual ~OrderProcessor() {};
+	OrderProcessor() {
+		start_handle_order_event();
+	};
+	virtual ~OrderProcessor() {
+		stop_handle_order_event();
+	};
 	unsigned int ThreadHandlerProc(void) override;
 	bool enable() const { return enable_; }
 	void enable(bool val) { enable_ = val; }

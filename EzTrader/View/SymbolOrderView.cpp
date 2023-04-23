@@ -1185,8 +1185,10 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 
 void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
-	if (!val || !position_control_) return;
-
+	if (!val || !position_control_ || !order_control_) return;
+	
+	_Account = val;
+	order_control_->add_account_id(val->id());
 	position_control_->set_account_id(val->id());
 }
 
@@ -2011,7 +2013,7 @@ void SymbolOrderView::OnTimer(UINT_PTR nIDEvent)
 	}
 	if (_EnableOrderShow && _Symbol) {
 		ClearOrders();
-		SetOrder();
+		draw_order();
 		ClearOldQuote();
 		update_quote();
 		needDraw = true;

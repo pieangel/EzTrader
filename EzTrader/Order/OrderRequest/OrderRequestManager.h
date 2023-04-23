@@ -14,8 +14,12 @@ namespace DarkHorse {
 	class OrderRequestManager : public Runnable
 	{
 	public:
-		OrderRequestManager() {};
-		virtual ~OrderRequestManager() {};
+		OrderRequestManager() {
+			start_handle_order_request();
+		};
+		virtual ~OrderRequestManager() {
+			stop_handle_order_request();
+		};
 
 		// Static Members
 		static int id_;

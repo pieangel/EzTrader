@@ -27,6 +27,7 @@ int main (int argc, const char * argv[])
 #include "../Order/OrderUi/ControlId.h"
 #include "../Json/json.hpp"
 #include "../Quote/SmQuote.h"
+#include "../Order/SmOrderConst.h"
 
 namespace DarkHorse {
 
@@ -56,6 +57,7 @@ namespace DarkHorse {
 	struct SmHoga;
 	struct SmQuote;
 	struct SmTick;
+	struct Order;
 	class SmSymbol;
 	struct Position;
 
@@ -65,12 +67,6 @@ namespace DarkHorse {
 
 	using TickCBL = eventpp::CallbackList<void(SmTick tick)>;
 	using TickCBH = eventpp::CallbackList<void(SmTick tick)>::Handle;
-
-	using RemoveOrderCBL = eventpp::CallbackList<void(const std::string&)>;
-	using RemoveOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
-
-	using AddOrderCBL = eventpp::CallbackList<void(const std::string&)>;
-	using AddOrderCBH = eventpp::CallbackList<void(const std::string&)>::Handle;
 
 	using HogaCBL = eventpp::CallbackList<void(std::shared_ptr<SmHoga> hoga)>;
 	using HogaCBH = eventpp::CallbackList<void(std::shared_ptr<SmHoga> hoga)>::Handle;
@@ -86,6 +82,9 @@ namespace DarkHorse {
 
 	using SymbolCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>;
 	using SymbolCBH = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>::Handle;
+
+	using OrderCBL = eventpp::CallbackList<void(std::shared_ptr<Order> order, OrderEvent order_event)>;
+	using OrderCBH = eventpp::CallbackList<void(std::shared_ptr<Order> order, OrderEvent order_event)>::Handle;
 
 class EventHub
 {
@@ -105,22 +104,6 @@ public:
 	void process_tick_event(SmTick tick)
 	{
 		tick_cb_list_(tick);
-	}
-
-	void subscribe_remove_order_event_handler(const int order_source_id, std::function<void(const std::string&)>&& handler)
-	{
-		RemoveOrderCBH handle = remove_order_callback_list_.append(handler);
-		remove_order_callback_handle_map_[order_source_id] = handle;
-	}
-	void unsubscribe_remove_order_event_handler(const int order_source_id)
-	{
-		auto found = remove_order_callback_handle_map_.find(order_source_id);
-		if (found == remove_order_callback_handle_map_.end()) return;
-		remove_order_callback_list_.remove(found->second);
-	}
-	void process_remove_order_event(const std::string& order_no)
-	{
-		remove_order_callback_list_(order_no);
 	}
 
 	void subscribe_hoga_event_handler(const int hoga_control_id, std::function<void(std::shared_ptr<SmHoga> hoga)>&& handler)
@@ -225,9 +208,27 @@ public:
 		position_cb_list_(position);
 	}
 
+	void subscribe_order_event_handler(const int order_control_id, std::function<void(std::shared_ptr<Order> order, OrderEvent order_event)>&& handler)
+	{
+		OrderCBH handle = order_cb_list_.append(handler);
+		order_cb_handle_map_[order_control_id] = handle;
+	}
+	void unsubscribe_order_event_handler(const int order_control_id)
+	{
+		auto found = order_cb_handle_map_.find(order_control_id);
+		if (found == order_cb_handle_map_.end()) return;
+		order_cb_list_.remove(found->second);
+	}
+
+	void process_order_event(std::shared_ptr<Order> order, OrderEvent order_event)
+	{
+		order_cb_list_(order, order_event);
+	}
+
 private:
-	RemoveOrderCBL remove_order_callback_list_;
-	std::map<int, RemoveOrderCBH> remove_order_callback_handle_map_;
+	OrderCBL order_cb_list_;
+	std::map<int, OrderCBH> order_cb_handle_map_;
+
 	HogaCBL hoga_cb_list_;
 	std::map<int, HogaCBH> hoga_cb_handle_map_;
 

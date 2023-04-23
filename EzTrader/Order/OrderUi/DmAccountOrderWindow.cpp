@@ -51,6 +51,7 @@ void DmAccountOrderWindow::SetAccount()
 	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
 	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
 		auto account = it->second;
+		if (account->Type() != "9") continue;
 		std::string account_info;
 		account_info.append(account->Name());
 		account_info.append(" : ");
@@ -65,6 +66,15 @@ void DmAccountOrderWindow::SetAccount()
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
 		SetAccountInfo(_ComboAccountMap[_CurrentAccountIndex]);
 		_LeftWnd->OnOrderChanged(0, 0);
+	}
+
+	if (!_ComboAccountMap.empty()) {
+		const int cur_sel = _ComboAccount.GetCurSel();
+		if (cur_sel >= 0) {
+			for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+				it->second->Account(_ComboAccountMap[cur_sel]);
+			}
+		}
 	}
 }
 
@@ -194,7 +204,7 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 
 	SetAccount();
 
-	SetAccountForOrderWnd();
+	//SetAccountForOrderWnd();
 
 
 

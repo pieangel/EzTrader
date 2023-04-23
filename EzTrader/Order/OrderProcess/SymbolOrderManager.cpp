@@ -4,37 +4,40 @@
 #include "../SmOrderConst.h"
 #include "../../Global/SmTotalManager.h"
 #include "../../Position/TotalPositionManager.h"
+#include "../../Event/EventHub.h"
+#include "../SmOrder.h"
 
 namespace DarkHorse {
 	using total_position_manager_p = std::shared_ptr<TotalPositionManager>;
-void SymbolOrderManager::dispatch_order(const int order_event, order_p order)
+void SymbolOrderManager::dispatch_order(const OrderEvent order_event, order_p order)
 {
 	switch (order_event) {
 	case OrderEvent::AB_Accepted:
 	case OrderEvent::DM_Accepted:
-		on_order_accepted(order);
+		on_order_accepted(order, order_event);
 		break;
 	case OrderEvent::AB_Unfilled:
 	case OrderEvent::DM_Unfilled:
-		on_order_unfilled(order);
+		on_order_unfilled(order, order_event);
 		break;
 	case OrderEvent::AB_Filled:
 	case OrderEvent::DM_Filled:
-		on_order_filled(order);
+		on_order_filled(order, order_event);
 		break;
 	}
 }
 
-void SymbolOrderManager::on_order_accepted(order_p order)
+void SymbolOrderManager::on_order_accepted(order_p order, OrderEvent order_event)
 {
 	order->order_state = SmOrderState::Accepted;
 	add_accepted_order(order);
+	mainApp.event_hub()->process_order_event(order, order_event);
 }
-void SymbolOrderManager::on_order_unfilled(order_p order)
+void SymbolOrderManager::on_order_unfilled(order_p order, OrderEvent order_event)
 {
 	;
 }
-void SymbolOrderManager::on_order_filled(order_p order)
+void SymbolOrderManager::on_order_filled(order_p order, OrderEvent order_event)
 {
 	order->order_state = SmOrderState::Filled;
 	update_accepted_order(order);

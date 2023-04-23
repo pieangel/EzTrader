@@ -4206,7 +4206,7 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
@@ -4283,7 +4283,7 @@ void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRe
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
@@ -4361,7 +4361,7 @@ void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nReal
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	//order_info["ori_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	//order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
@@ -4422,7 +4422,7 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
@@ -4500,7 +4500,7 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
@@ -4579,7 +4579,7 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 	order_info["order_price"] = order_price;
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
-	order_info["positon_type"] = static_cast<const char*>(strOrderPosition.Trim());
+	order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	//order_info["ori_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	//order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());

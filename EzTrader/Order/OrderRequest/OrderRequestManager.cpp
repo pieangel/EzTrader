@@ -133,7 +133,8 @@ void OrderRequestManager::dm_make_accepted_order_event(order_request_p order_req
 	order_info["symbol_code"] = order_request->symbol_code;
 	order_info["order_price"] = order_request->order_price;
 	order_info["order_amount"] = order_request->order_amount;
-	order_info["positon_type"] = order_request->position_type == SmPositionType::Buy ? "1" : "2";
+	const std::string position = order_request->position_type == SmPositionType::Buy ? "1" : "2";;
+	order_info["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info["original_order_no"] = "";
 	order_info["first_order_no"] = "";

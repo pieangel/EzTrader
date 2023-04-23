@@ -66,6 +66,7 @@ namespace DarkHorse {
 		int OrderSequence{ 1 };
 		// Order Request Id.
 		int OrderReqId = 0;
+		int account_id{ 0 };
 		// SmOrder Contstructor
 		explicit SmOrder(const int& order_id) : _id(order_id) {};
 		~SmOrder() {};

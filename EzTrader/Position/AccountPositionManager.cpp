@@ -43,7 +43,7 @@ void AccountPositionManager::update_position(order_p order)
 
 int AccountPositionManager::calculate_position_count(order_p order, position_p position)
 {
-	const int order_filled_sign = order->position_type == SmPositionType::Buy ? 1 : -1;
+	const int order_filled_sign = order->position == SmPositionType::Buy ? 1 : -1;
 	const int signed_filled_count = order->filled_count * order_filled_sign;
 	const int old_position_count = position->open_quantity;
 	return signed_filled_count + old_position_count;
@@ -55,7 +55,7 @@ int AccountPositionManager::calculate_unsettled_count(order_p order, position_p 
 }
 int AccountPositionManager::calculate_traded_count(order_p order, position_p position)
 {
-	const int order_filled_sign = order->position_type == SmPositionType::Buy ? 1 : -1;
+	const int order_filled_sign = order->position == SmPositionType::Buy ? 1 : -1;
 	const int signed_filled_count = order->filled_count * order_filled_sign;
 	const int old_position_count = position->open_quantity;
 	if (old_position_count * signed_filled_count >= 0) return 0;

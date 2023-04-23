@@ -15,7 +15,7 @@ void TotalOrderManager::on_order_event(const order_event& order_info)
 	if (!order) return;
 	const std::string& custom_info = order_info["custom_info"];
 	set_order_request_info(custom_info, order);
-	const int order_event = order_info["order_event"];
+	const OrderEvent order_event = order_info["order_event"];
 	write_order_history(order_event, order);
 	dispatch_order(order_event, order);
 }
@@ -26,18 +26,18 @@ void TotalOrderManager::on_order_event(order_event&& order_info)
 	if (!order) return;
 	const std::string& custom_info = order_info["custom_info"];
 	set_order_request_info(custom_info, order);
-	const int order_event = order_info["order_event"];
+	const OrderEvent order_event = order_info["order_event"];
 	write_order_history(order_event, order);
 	dispatch_order(order_event, order);
 }
 
-void TotalOrderManager::dispatch_order(const int order_event, order_p order) 
+void TotalOrderManager::dispatch_order(const OrderEvent order_event, order_p order)
 {
 	assert(order);
 	account_order_manager_p order_manager = get_order_manager(order->account_no);
 	order_manager->dispatch_order(order_event, order);
 }
-void TotalOrderManager::write_order_history(const int order_event, order_p order)
+void TotalOrderManager::write_order_history(const OrderEvent order_event, order_p order)
 {
 	assert(order);
 }
@@ -70,8 +70,8 @@ order_p TotalOrderManager::make_order(const order_event& order_info)
 		order->symbol_code = order_info["symbol_code"];
 		// 주문 유형 - 매수 / 매도
 		const std::string position_type = order_info["position_type"];
-		if (position_type.compare("1") == 0) order->position_type = SmPositionType::Buy;
-		else if (position_type.compare("2") == 0) order->position_type = SmPositionType::Sell;
+		if (position_type.compare("1") == 0) order->position = SmPositionType::Buy;
+		else if (position_type.compare("2") == 0) order->position = SmPositionType::Sell;
 
 		switch (order_event) {
 		case OrderEvent::DM_Accepted: { // 국내 접수확인
@@ -159,6 +159,7 @@ order_p TotalOrderManager::find_order(const std::string& order_no)
 order_p TotalOrderManager::create_order(const std::string& order_no)
 {
 	order_p order = std::make_shared<Order>();
+	order->order_no = order_no;
 	order_map_[order_no] = order;
 	return order;
 }

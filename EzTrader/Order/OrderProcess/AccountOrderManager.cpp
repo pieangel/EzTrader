@@ -4,7 +4,7 @@
 #include "../Order.h"
 namespace DarkHorse {
 using symbol_order_manager_p = std::shared_ptr<SymbolOrderManager>;
-void AccountOrderManager::dispatch_order(const int order_event, order_p order)
+void AccountOrderManager::dispatch_order(const OrderEvent order_event, order_p order)
 {
 	symbol_order_manager_p symbol_order_manager = get_order_manager(order->symbol_code);
 	symbol_order_manager->dispatch_order(order_event, order);

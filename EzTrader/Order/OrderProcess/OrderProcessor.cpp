@@ -32,7 +32,7 @@ unsigned int OrderProcessor::ThreadHandlerProc(void)
 
 void OrderProcessor::start_handle_order_event() noexcept
 {
-	stop();
+	start();
 }
 
 void OrderProcessor::stop_handle_order_event() noexcept

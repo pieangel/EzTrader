@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 #include "../../Json/json.hpp"
+#include "../SmOrderConst.h"
 namespace DarkHorse {
 using order_event = nlohmann::json;
 struct Order;
@@ -10,11 +11,11 @@ using order_p = std::shared_ptr<Order>;
 class SymbolOrderManager
 {
 public:
-    void dispatch_order(const int order_event, order_p order);
+    void dispatch_order(const OrderEvent order_event, order_p order);
 private:
-	void on_order_accepted(order_p order);
-	void on_order_unfilled(order_p order);
-	void on_order_filled(order_p order);
+	void on_order_accepted(order_p order, OrderEvent order_event);
+	void on_order_unfilled(order_p order, OrderEvent order_event);
+	void on_order_filled(order_p order, OrderEvent order_event);
 	// 접수확인 주문을 추가한다.
 	void add_accepted_order(order_p order);
 	// 접수확인 주문에 변화가 생겼을 때 이를 반영한다.

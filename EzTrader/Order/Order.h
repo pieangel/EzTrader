@@ -44,7 +44,7 @@ struct Order {
 	// Order Source - Ex) the id of the object that ordered.
 	int order_source{ 0 };
 	// 1 : 매수, 2 : 매도
-	SmPositionType position_type = SmPositionType::None;
+	SmPositionType position = SmPositionType::None;
 	// 1 : 신규, 2 : 정정, 3 : 취소
 	SmOrderType order_type = SmOrderType::None;
 	// 가격 유형. 1 : 시장가, 2 : 지정가, 3 : STOP, 4 : STOP 지정가
