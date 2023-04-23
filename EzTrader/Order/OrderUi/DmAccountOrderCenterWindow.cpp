@@ -58,6 +58,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
 	id_ = IdGenerator::get_id();
+	symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
 	mainApp.event_hub()->add_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();

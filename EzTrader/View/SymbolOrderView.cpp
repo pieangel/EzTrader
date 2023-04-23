@@ -1428,6 +1428,7 @@ void SymbolOrderView::PutOrder(const SmPositionType& type, const int& price, con
 			_OrderAmount, 
 			price_type);
 	if (order_req) {
+		order_req->request_type = order_request_type_;
 		SetProfitLossCut(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}

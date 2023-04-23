@@ -101,6 +101,16 @@ namespace DarkHorse {
 		void ChangeOrder(order_request_p order_req);
 		void CancelOrder(order_request_p order_req);
 
+		void dm_new_order(order_request_p order_req);
+		void dm_change_order(order_request_p order_req);
+		void dm_cancel_order(order_request_p order_req);
+
+		void ab_new_order(order_request_p order_req);
+		void ab_change_order(order_request_p order_req);
+		void ab_cancel_order(order_request_p order_req);
+
+		static void make_custom_order_info(const order_request_p& order_req, std::string& custom_order_info);
+
 		int ConnectToServer();
 		void Client(std::weak_ptr<ViStockClient> wp)
 		{

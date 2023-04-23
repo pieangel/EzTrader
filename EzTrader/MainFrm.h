@@ -194,4 +194,5 @@ public:
 	afx_msg void OnDomesticAccountOrder();
 	afx_msg void OnDomesticFundOrder();
 	afx_msg void OnDmAcntOrder();
+	afx_msg void OnSetSimulationMode();
 };

@@ -22,6 +22,8 @@
 #include "../System/SmSystemManager.h"
 #include "../Order//OrderProcess/TotalOrderManager.h"
 #include "../Position/TotalPositionManager.h"
+#include "../Order/OrderRequest/OrderRequestManager.h"
+#include "../Order/OrderProcess/OrderProcessor.h"
 #include "../Event/EventHub.h"
 #include <string>
 
@@ -57,4 +59,6 @@ void SmTotalManager::CreateManagers()
 	total_order_manager_ = std::make_shared<TotalOrderManager>();
 	total_position_manager_ = std::make_shared<TotalPositionManager>();
 	event_hub_ = std::make_shared<EventHub>();
+	order_processor_ = std::make_shared<OrderProcessor>();
+	order_request_manager_ = std::make_shared<OrderRequestManager>();
 }

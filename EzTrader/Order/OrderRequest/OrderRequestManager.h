@@ -125,10 +125,30 @@ namespace DarkHorse {
 		// arr : 데이터가 들어 있는 배열, taken : 실제 데이터가 들어 있는 갯수
 		bool handle_order_request(std::array<order_request_p, BulkOrderRequestSize>& arr, int taken);
 		bool handle_order_request(order_request_p order_request);
+		bool handle_order_simulation(order_request_p order_request);
 		order_request_p make_dummy_order_request();
 		void add_order_request_map(order_request_p order_request);
-
+		bool simulation_{ false };
+		void dm_make_accepted_order_event(order_request_p order_request);
+		void dm_make_unfilled_order_event(order_request_p order_request);
+		void dm_make_filled_order_event(order_request_p order_request);
+		void ab_make_accepted_order_event(order_request_p order_request);
+		void ab_make_unfilled_order_event(order_request_p order_request);
+		void ab_make_filled_order_event(order_request_p order_request);
+		void on_new_order(order_request_p order_request);
+		void on_change_order(order_request_p order_request);
+		void on_cancel_order(order_request_p  order_request);
 	public:
 		order_request_p find_order_request(const std::string& custom_info); 
+		void set_simulation(const bool mode) {
+			simulation_ = mode;
+		}
+		bool get_simulation() {
+			return simulation_;
+		}
+		int order_no_{ 0 };
+		int get_order_no() {
+			return ++order_no_;
+		}
 	};
 }

@@ -3,6 +3,13 @@
 #include "OrderRequestManager.h"
 #include "../../Global/SmTotalManager.h"
 #include "../../Client/ViStockClient.h"
+#include "../../Global/SmTotalManager.h"
+#include "../../Json/json.hpp"
+#include "../../Global/SmTotalManager.h"
+#include "../OrderProcess/OrderProcessor.h"
+#include "../../Client/ViClient.h"
+#include "../../Util/VtStringUtil.h"
+
 namespace DarkHorse {
 int OrderRequestManager::id_ = 0;
 //using order_request_p = std::shared_ptr<OrderRequest>;
@@ -62,6 +69,8 @@ bool OrderRequestManager::handle_order_request(order_request_p order_request)
 {
 	if (!order_request) return false;
 
+	if (simulation_) { handle_order_simulation(order_request); return true; }
+
 	switch (order_request->order_type) {
 	case SmOrderType::New: mainApp.Client()->NewOrder(order_request); break;
 	case SmOrderType::Modify: mainApp.Client()->ChangeOrder(order_request); break;
@@ -91,6 +100,18 @@ bool OrderRequestManager::handle_order_request(
 	return true;
 }
 
+bool OrderRequestManager::handle_order_simulation(order_request_p order_request)
+{
+	if (!order_request) return false;
+
+	switch (order_request->order_type) {
+	case SmOrderType::New: on_new_order(order_request); break;
+	case SmOrderType::Modify: on_change_order(order_request); break;
+	case SmOrderType::Cancel: on_cancel_order(order_request); break;
+	}
+	return true;
+}
+
 order_request_p OrderRequestManager::make_dummy_order_request()
 {
 	return std::make_shared<OrderRequest>();
@@ -101,6 +122,84 @@ void OrderRequestManager::add_order_request_map(order_request_p order_request)
 	if (!order_request) return;
 	std::unique_lock<std::mutex> lock(order_request_map_mutex_);
 	order_request_map[order_request->request_id] = order_request;
+}
+
+void OrderRequestManager::dm_make_accepted_order_event(order_request_p order_request)
+{
+	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["account_no"] = order_request->account_no;
+	order_info["order_no"] =  std::to_string(get_order_no());
+	order_info["symbol_code"] = order_request->symbol_code;
+	order_info["order_price"] = order_request->order_price;
+	order_info["order_amount"] = order_request->order_amount;
+	order_info["positon_type"] = order_request->position_type == SmPositionType::Buy ? "1" : "2";
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	order_info["original_order_no"] = "";
+	order_info["first_order_no"] = "";
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	order_info["order_time"] = "13:05:05";
+	order_info["order_type"] = "20230423";
+	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+	std::string user_defined;
+	ViClient::make_custom_order_info(order_request, user_defined);
+	std::string temp = VtStringUtil::PadRight(user_defined, '0', 60);
+	order_info["custom_info"] = temp;
+
+	mainApp.order_processor()->add_order_event(std::move(order_info));
+}
+
+void OrderRequestManager::dm_make_unfilled_order_event(order_request_p order_request)
+{
+
+}
+
+void OrderRequestManager::dm_make_filled_order_event(order_request_p order_request)
+{
+
+}
+
+void OrderRequestManager::ab_make_accepted_order_event(order_request_p order_request)
+{
+
+}
+
+void OrderRequestManager::ab_make_unfilled_order_event(order_request_p order_request)
+{
+
+}
+
+void OrderRequestManager::ab_make_filled_order_event(order_request_p order_request)
+{
+
+}
+
+void OrderRequestManager::on_new_order(order_request_p order_request)
+{
+	if (order_request->request_type == OrderRequestType::Abroad)
+		ab_make_accepted_order_event(order_request);
+	else
+		dm_make_accepted_order_event(order_request);
+}
+
+void OrderRequestManager::on_change_order(order_request_p order_request)
+{
+	if (order_request->request_type == OrderRequestType::Abroad)
+		ab_make_accepted_order_event(order_request);
+	else
+		ab_make_accepted_order_event(order_request);
+}
+
+void OrderRequestManager::on_cancel_order(order_request_p order_request)
+{
+	if (order_request->request_type == OrderRequestType::Abroad)
+		ab_make_accepted_order_event(order_request);
+	else
+		ab_make_accepted_order_event(order_request);
 }
 
 void OrderRequestManager::start_handle_order_request() noexcept

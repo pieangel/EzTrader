@@ -22,6 +22,7 @@ class DmAccountOrderCenterWindow
 #include "../../View/SymbolOrderView.h"
 #include "../../View/SymbolPositionView.h"
 #include "../../View/SymbolTickView.h"
+#include "../OrderRequest/OrderRequest.h"
 
 // SmOrderWnd dialog
 namespace DarkHorse {

@@ -3,7 +3,11 @@
 #include "../SmOrderConst.h"
 #include "../OrderContext.h"
 namespace DarkHorse {
+	enum class OrderRequestType {
+		None, Domestic, Abroad 
+	};
 	struct OrderRequest {
+		OrderRequestType request_type{ OrderRequestType::None };
 		/// <summary>
 		/// Order Source ID
 		/// 주문이 시작된 곳의 ID. 보통은 주문창의 아이디를 가리키며, 시스템일 경우 시스템의 아이디,

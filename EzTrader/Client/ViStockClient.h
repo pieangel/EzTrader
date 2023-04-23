@@ -72,6 +72,10 @@ namespace DarkHorse {
 		void ChangeOrder(order_request_p order_req);
 		void CancelOrder(order_request_p order_req);
 
+		void dm_new_order(order_request_p order_req);
+		void dm_change_order(order_request_p order_req);
+		void dm_cancel_order(order_request_p order_req);
+
 		void SendOrderAcceptedData(const std::shared_ptr<SmOrderRequest>& order_req);
 		void SendOrderUnfilledData();
 		void SendOrderFilledData();

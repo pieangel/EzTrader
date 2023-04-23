@@ -63,6 +63,7 @@
 
 #include "Order/OrderUi/DmAccountOrderWindow.h"
 #include "Order/OrderUi/DmFundOrderWindow.h"
+#include "Order/OrderRequest/OrderRequestManager.h"
 
 // -----------------------------------------------------------------------------
 
@@ -266,6 +267,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_32927, &CMainFrame::OnDomesticAccountOrder)
 	ON_COMMAND(ID_32929, &CMainFrame::OnDomesticFundOrder)
 	ON_COMMAND(ID_DM_ACNT_ORDER, &CMainFrame::OnDmAcntOrder)
+	ON_COMMAND(ID_SET_SIMULATION_MODE, &CMainFrame::OnSetSimulationMode)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1256,4 +1258,13 @@ void CMainFrame::OnDmAcntOrder()
 	acnt_order_wnd->Create(IDD_DM_ACNT_ORDER_MAIN, this);
 	dm_account_order_wnd_map_[acnt_order_wnd->GetSafeHwnd()] = acnt_order_wnd;
 	acnt_order_wnd->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnSetSimulationMode()
+{
+	if (mainApp.order_request_manager()->get_simulation())
+		mainApp.order_request_manager()->set_simulation(false);
+	else
+		mainApp.order_request_manager()->set_simulation(true);
 }

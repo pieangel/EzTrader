@@ -169,6 +169,21 @@ void ViStockClient::CancelOrder(order_request_p order_req)
 	_ViCtrol->CancelOrder(order_req);
 }
 
+void ViStockClient::dm_new_order(order_request_p order_req)
+{
+	_ViCtrol->dm_new_order(order_req);
+}
+
+void ViStockClient::dm_change_order(order_request_p order_req)
+{
+	_ViCtrol->dm_change_order(order_req);
+}
+
+void ViStockClient::dm_cancel_order(order_request_p order_req)
+{
+	_ViCtrol->dm_cancel_order(order_req);
+}
+
 void DarkHorse::ViStockClient::NewOrder(const std::shared_ptr<SmOrderRequest>& order_req)
 {
 	if (_TestMode) SendOrderAcceptedData(order_req);

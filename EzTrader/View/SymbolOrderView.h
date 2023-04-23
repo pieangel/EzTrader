@@ -16,6 +16,7 @@ class SymbolOrderView
 #include "../SmGrid/SmButtonId.h"
 #include "../Order/SmOrderSettings.h"
 #include "../SmGrid/SmCellType.h"
+#include "../Order/OrderRequest/OrderRequest.h"
 
 
 namespace DarkHorse {
@@ -116,6 +117,9 @@ public:
 	void on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_update_order();
 	void on_update_position();
+	void set_order_request_type(DarkHorse::OrderRequestType order_req_type) {
+		order_request_type_ = order_req_type;
+	}
 private:
 	void draw_cell(const int row, const int col, const int value);
 	void draw_order_cell(DarkHorse::SmPositionType position, const int price, const int count);
@@ -188,6 +192,7 @@ private:
 	SmOrderGridResource _Resource;
 	void CreateResource();
 
+	DarkHorse::OrderRequestType order_request_type_{ DarkHorse::OrderRequestType::None };
 
 	std::vector<std::shared_ptr<DarkHorse::SmCell>> _SelectedCells;
 
