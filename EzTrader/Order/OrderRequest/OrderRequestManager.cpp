@@ -192,7 +192,7 @@ void OrderRequestManager::on_change_order(order_request_p order_request)
 	if (order_request->request_type == OrderRequestType::Abroad)
 		ab_make_accepted_order_event(order_request);
 	else
-		ab_make_accepted_order_event(order_request);
+		dm_make_accepted_order_event(order_request);
 }
 
 void OrderRequestManager::on_cancel_order(order_request_p order_request)
@@ -200,7 +200,7 @@ void OrderRequestManager::on_cancel_order(order_request_p order_request)
 	if (order_request->request_type == OrderRequestType::Abroad)
 		ab_make_accepted_order_event(order_request);
 	else
-		ab_make_accepted_order_event(order_request);
+		dm_make_accepted_order_event(order_request);
 }
 
 void OrderRequestManager::start_handle_order_request() noexcept

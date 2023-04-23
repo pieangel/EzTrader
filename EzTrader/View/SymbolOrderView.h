@@ -36,6 +36,7 @@ namespace DarkHorse {
 	struct SmHoga;
 	struct SmQuote;
 	struct SubOrderControl;
+	struct PriceOrderMap;
 }
 
 class DmAccountOrderWindow;
@@ -77,7 +78,7 @@ public:
 	void SetUp();
 	//int RecalRowCount();
 	int RecalRowCount(const int& height);
-	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
+	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	void UpdateOrder(const std::string& symbol_code);
 	void ConnectOrderUpdateSignal();
@@ -185,6 +186,7 @@ private:
 	void ProcesButtonClick(const std::shared_ptr<DarkHorse::SmCell>& cell);
 	bool ProcesButtonClickByPos(const CPoint& point);
 	std::pair<int, int> GetOrderCount(const std::shared_ptr<DarkHorse::SmCell>& cell);
+	std::pair<int, int> get_order_count(const std::shared_ptr<DarkHorse::SmCell>& cell);
 	bool _Editing = false;
 	// 원래 헤더 너비는 정해져 있지만 빈틈을 없애기 위하여 헤더 너비를 다시 설정한다.
 	void ResetHeaderWidth(const int& wnd_width);
@@ -229,9 +231,9 @@ private:
 	std::set<std::pair<int, int>> _TotalHogaMap;
 	// key : (row, column) value : price
 	std::set<std::pair<int, int>> cell_to_price;
-	std::shared_ptr<DarkHorse::SmSymbol> _Symbol{ nullptr };
+	std::shared_ptr<DarkHorse::SmSymbol> symbol_{ nullptr };
 
-	std::shared_ptr<DarkHorse::SmAccount> _Account{ nullptr };
+	std::shared_ptr<DarkHorse::SmAccount> account_{ nullptr };
 
 	std::shared_ptr<DarkHorse::SmStopOrderManager> _SellStopOrderMgr{ nullptr };
 	std::shared_ptr<DarkHorse::SmStopOrderManager> _BuyStopOrderMgr{ nullptr };
@@ -268,7 +270,8 @@ private:
 
 	void CancelOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void ChangeOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& tgt_price);
-
+	void change_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& target_price);
+	void change_order_by_price(DarkHorse::PriceOrderMap& price_order_map, const int& target_price);
 	void ChangeStop
 	(
 		const std::shared_ptr<DarkHorse::SmCell>& src_cell, 
