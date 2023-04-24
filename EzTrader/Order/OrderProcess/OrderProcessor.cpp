@@ -15,13 +15,13 @@ unsigned int OrderProcessor::ThreadHandlerProc(void)
 		if (bulk_operation_) {
 			std::array<order_event, BulkOrderProcessSize> order_event_arr;
 			size_t taken{ 0 };
-			auto status = order_event_q.try_take_bulk(order_event_arr.begin(), order_event_arr.size(), taken);
+			auto status = order_event_q.take_bulk(order_event_arr.begin(), order_event_arr.size(), taken);
 			if (status != BlockingCollectionStatus::Ok) continue;
 			handle_order_event(order_event_arr, taken);
 		}
 		else {
 			order_event order_event_t;
-			auto status = order_event_q.try_take(order_event_t);
+			auto status = order_event_q.take(order_event_t);
 			if (status != BlockingCollectionStatus::Ok) continue;
 			handle_order_event(std::move(order_event_t));
 		}

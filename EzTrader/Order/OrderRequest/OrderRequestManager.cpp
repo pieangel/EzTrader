@@ -45,13 +45,13 @@ unsigned int OrderRequestManager::ThreadHandlerProc(void)
 		if (bulk_operation_) {
 			std::array<order_request_p, BulkOrderRequestSize> order_request_arr;
 			size_t taken{ 0 };
-			auto status = order_request_q.try_take_bulk(order_request_arr.begin(), order_request_arr.size(), taken);
+			auto status = order_request_q.take_bulk(order_request_arr.begin(), order_request_arr.size(), taken);
 			if (status != BlockingCollectionStatus::Ok) continue;
 			handle_order_request(order_request_arr, taken);
 		}
 		else {
 			order_request_p order_request;
-			auto status = order_request_q.try_take(order_request);
+			auto status = order_request_q.take(order_request);
 			if (status != BlockingCollectionStatus::Ok) continue;
 			handle_order_request(order_request);
 		}
@@ -301,6 +301,8 @@ order_request_p OrderRequestManager::make_default_sell_order_request(
 {
 	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
 	order_req->request_id = get_id();
+	order_req->account_no = account_no;
+	order_req->password = password;
 	order_req->order_price = order_price;
 	order_req->order_amount = order_amount;
 	order_req->symbol_code = symbol_code;
@@ -345,6 +347,8 @@ order_request_p OrderRequestManager::make_default_buy_order_request(
 {
 	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
 	order_req->request_id = get_id();
+	order_req->account_no = account_no;
+	order_req->password = password;
 	order_req->order_price = order_price;
 	order_req->order_amount = order_amount;
 	order_req->symbol_code = symbol_code;

@@ -1141,7 +1141,7 @@ void DarkHorse::ViClient::NewOrder(task_arg&& arg)
 
 void ViClient::ChangeOrder(order_request_p order_req)
 {
-	if (!order_req) return;
+	if (!order_req || order_req->request_type == OrderRequestType::None) return;
 
 	if (order_req->request_type == OrderRequestType::Abroad)
 		ab_change_order(order_req);
@@ -1323,7 +1323,7 @@ void DarkHorse::ViClient::ChangeOrder(task_arg&& arg)
 
 void ViClient::CancelOrder(order_request_p order_req)
 {
-	if (!order_req) return;
+	if (!order_req || order_req->request_type == OrderRequestType::None) return;
 	if (order_req->request_type == OrderRequestType::Abroad)
 		ab_cancel_order(order_req);
 	else
@@ -1832,7 +1832,7 @@ void ViClient::dm_new_order(order_request_p order_req)
 
 void ViClient::NewOrder(order_request_p order_req)
 {
-	if (!order_req) return;
+	if (!order_req || order_req->request_type == OrderRequestType::None) return;
 
 	if (order_req->request_type == OrderRequestType::Abroad)
 		ab_new_order(order_req);
