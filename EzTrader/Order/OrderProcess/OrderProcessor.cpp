@@ -23,6 +23,7 @@ unsigned int OrderProcessor::ThreadHandlerProc(void)
 			order_event order_event_t;
 			auto status = order_event_q.take(order_event_t);
 			if (status != BlockingCollectionStatus::Ok) continue;
+			if (order_event_t.is_null()) return 1;
 			handle_order_event(std::move(order_event_t));
 		}
 	}
