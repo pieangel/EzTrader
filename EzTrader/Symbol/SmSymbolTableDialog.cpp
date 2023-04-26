@@ -19,6 +19,8 @@
 #include "../CompOrder/SmOrderLeftComp.h"
 #include "../ChartDialog/GaSpreadChart.h"
 #include "../ChartDialog/SmMultiSpreadChart.h"
+#include "../Global/SmTotalManager.h"
+#include "../Event/EventHub.h"
 
 
 // SmSymbolTableDialog dialog
@@ -171,10 +173,15 @@ LRESULT SmSymbolTableDialog::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
 		title.append(symbol->SymbolNameKr());
 		title.append("]");
 		SetWindowText(title.c_str());
+
+		mainApp.event_hub()->process_symbol_event(symbol);
+
 	}
 	else {
 		SetWindowText("종목선택");
 	}
+
+
 
 	if (OrderWnd) OrderWnd->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);
 	if (FundOrderWnd) FundOrderWnd->SendMessage(UM_SYMBOL_SELECTED, symbol_id, 0);

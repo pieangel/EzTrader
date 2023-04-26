@@ -48,7 +48,7 @@ IMPLEMENT_DYNAMIC(SmOrderWnd, CBCGPDialog)
 SmOrderWnd::SmOrderWnd(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
-	
+	_OrderArea.set_order_request_type(OrderRequestType::Abroad);
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }

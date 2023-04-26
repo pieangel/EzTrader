@@ -4179,6 +4179,7 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문구분");
 	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
 	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	CString strOrderDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문일자");
 	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문시간");
 	
 
@@ -4187,6 +4188,8 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	CString strMsg;
 	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount);
 	
+	LOGINFO(CMyLogger::getInstance(), "OnOrderAcceptedHd 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount);
+
 	//TRACE(strMsg);
 	strCustom.Trim();
 	strAccountNo.TrimRight(); // 계좌 번호
@@ -4210,7 +4213,7 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
 	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
-	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
 	order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
 	order_info["order_type"] = static_cast<const char*>(strMan.Trim());
 	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
@@ -4245,7 +4248,8 @@ void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRe
 
 	CString strMsg;
 	strMsg.Format("OnOrderUnfilled 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s] ,주문순서[%s], 주문수량[%s], 잔량[%s], 체결수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
-	
+	LOGINFO(CMyLogger::getInstance(), "OnOrderUnfilled 종목[%s] 주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s], 주문구분[%s], 주문수량[%s], 체결수량[%s], 잔량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount, strFilledCnt, strRemain);
+
 	//TRACE(strMsg);
 
 	strCustom.Trim();
@@ -4320,6 +4324,7 @@ void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nReal
 
 	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결가격");
 	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결수량");
+	CString strFilledDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결일자");
 	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
 	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
 
@@ -4371,9 +4376,9 @@ void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nReal
 	order_info["filled_price"] = filled_price;
 	order_info["filled_count"] = _ttoi(strFilledAmount.Trim());
 
-	LOGINFO(CMyLogger::getInstance(), "order_no = %s, account_no = %s, symbol_code = %s, filled_amount = %s", strOrderNo, strAccountNo, strSymbolCode, strFilledAmount);
+	LOGINFO(CMyLogger::getInstance(), "OnOrderFilled order_no = %s, account_no = %s, symbol_code = %s, filled_amount = %s", strOrderNo, strAccountNo, strSymbolCode, strFilledAmount);
 
-	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
 	order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
