@@ -3,17 +3,17 @@
 #include <string>
 #include <memory>
 #include "../ViewModel/VmOrder.h"
+#include "../Order/Order.h"
 namespace DarkHorse {
 	enum SubOrderControlType { CT_NONE = 0, CT_BUY, CT_SELL };
-	class SmOrder;
 	struct PriceOrderMap {
 		int price{ 0 };
 		size_t count{ 0 };
 		// key : order no, value : accepted order object.
-		std::map<std::string, AcceptedOrder> order_map;
-		void add_order(AcceptedOrder&& order) {
-			if (order.order_price != price) return;
-			order_map[order.order_no] = std::move(order);
+		std::map<std::string, std::shared_ptr<Order>> order_map;
+		void add_order(std::shared_ptr<Order> order) {
+			if (order->order_price != price) return;
+			order_map[order->order_no] = order;
 			count = order_map.size();
 		}
 		void remove_order(const std::string& order_no) {
@@ -34,17 +34,17 @@ namespace DarkHorse {
 		size_t total_count{ 0 };
 		// key : price as integer, value : order list on the price. 
 		std::map<int, PriceOrderMap> order_map;
-		void add_order(const int order_price, AcceptedOrder&& order) {
+		void add_order(const int order_price, std::shared_ptr<Order> order) {
 			auto it = order_map.find(order_price);
 			if (it == order_map.end()) {
 				PriceOrderMap price_order_map;
 				price_order_map.price = order_price;
-				price_order_map.add_order(std::move(order));
+				price_order_map.add_order(order);
 				order_map[order_price] = std::move(price_order_map);
 			}
 			else {
 				PriceOrderMap& price_order_map = it->second;
-				price_order_map.add_order(std::move(order));
+				price_order_map.add_order(order);
 			}
 			calculate_total_count();
 		}

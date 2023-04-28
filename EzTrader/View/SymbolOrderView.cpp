@@ -190,6 +190,19 @@ void SymbolOrderView::on_update_position()
 
 }
 
+void SymbolOrderView::set_order_request_type(DarkHorse::OrderRequestType order_req_type)
+{
+	order_request_type_ = order_req_type;
+}
+
+void SymbolOrderView::set_filled_condition(DarkHorse::OrderRequestType order_req_type)
+{
+	if (order_req_type == DarkHorse::OrderRequestType::Domestic)
+		fill_condition_ = DarkHorse::SmFilledCondition::Fas;
+	else
+		fill_condition_ = DarkHorse::SmFilledCondition::Day;
+}
+
 void SymbolOrderView::draw_cell(const int row, const int col, const int value)
 {
 	std::shared_ptr<SmCell> cell = _Grid->FindCell(row, col);
@@ -1436,22 +1449,16 @@ void SymbolOrderView::PutOrder(const SmPositionType& type, const int& price, con
 	if (price <= 0) return;
 
 	std::shared_ptr<OrderRequest> order_req = nullptr;
-	if (type == SmPositionType::Sell)
-		order_req = OrderRequestManager::make_default_sell_order_request(
-			account_->No(), 
-			account_->Pwd(), 
-			symbol_->SymbolCode(), 
-			price, 
-			_OrderAmount, 
-			price_type);
-	else
-		order_req = OrderRequestManager::make_default_buy_order_request(
-			account_->No(), 
-			account_->Pwd(), 
-			symbol_->SymbolCode(), 
-			price, 
-			_OrderAmount, 
-			price_type);
+	order_req = OrderRequestManager::make_order_request(
+		account_->No(),
+		account_->Pwd(),
+		price,
+		_OrderAmount,
+		symbol_->SymbolCode(),
+		type,
+		SmOrderType::New,
+		price_type,
+		fill_condition_);
 	if (order_req) {
 		order_req->request_type = order_request_type_;
 		SetProfitLossCut(order_req);
@@ -1649,11 +1656,12 @@ void SymbolOrderView::change_order_by_price(DarkHorse::PriceOrderMap& price_orde
 	for (auto it = price_order_map.order_map.begin(); it != price_order_map.order_map.end(); ++it) {
 		const auto& accepted_order = it->second;
 		auto order_req = OrderRequestManager::make_change_order_request(
-			accepted_order.account_no,
+			accepted_order->account_no,
 			account_->Pwd(),
-			accepted_order.symbol_code,
-			accepted_order.order_no, target_price, accepted_order.position,
-			accepted_order.order_amount);
+			accepted_order->symbol_code,
+			accepted_order->order_no, target_price, 
+			accepted_order->position,
+			accepted_order->order_amount);
 		SetProfitLossCut(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}

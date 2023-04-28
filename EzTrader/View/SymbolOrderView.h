@@ -118,10 +118,9 @@ public:
 	void on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_update_order();
 	void on_update_position();
-	void set_order_request_type(DarkHorse::OrderRequestType order_req_type) {
-		order_request_type_ = order_req_type;
-	}
+	void set_order_request_type(DarkHorse::OrderRequestType order_req_type);
 private:
+	void set_filled_condition(DarkHorse::OrderRequestType order_req_type);
 	void draw_cell(const int row, const int col, const int value);
 	void draw_order_cell(DarkHorse::SmPositionType position, const int price, const int count);
 	void draw_order();
@@ -241,7 +240,7 @@ private:
 
 	int id_{ 0 };
 	int _OrderAmount{ 1 };
-
+	DarkHorse::SmFilledCondition fill_condition_{DarkHorse::SmFilledCondition::Fas};
 	int _X{ 0 };
 	int _Y{ 0 };
 

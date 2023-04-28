@@ -45,17 +45,10 @@ namespace DarkHorse {
 
 	void OrderControl::on_order_accepted(std::shared_ptr<Order> order)
 	{
-		AcceptedOrder order_t;
-		order_t.account_no = order->account_no;
-		order_t.symbol_code = order->symbol_code;
-		order_t.order_no = order->order_no;
-		order_t.order_amount = order->order_amount;
-		order_t.position = order->position;
-		order_t.order_price = order->order_price;
 		if (order->position == SmPositionType::Buy)
-			buy_order_control_.add_order(order->order_price, std::move(order_t));
+			buy_order_control_.add_order(order->order_price, order);
 		else
-			sell_order_control_.add_order(order->order_price, std::move(order_t));
+			sell_order_control_.add_order(order->order_price, order);
 	}
 
 	void OrderControl::add_account_id(const int account_id)

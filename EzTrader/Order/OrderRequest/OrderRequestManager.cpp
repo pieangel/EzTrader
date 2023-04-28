@@ -257,6 +257,8 @@ order_request_p OrderRequestManager::make_order_request(
 {
 	std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
 	order_req->request_id = get_id();
+	order_req->account_no = account_no;
+	order_req->password = password;
 	order_req->order_price = order_price;
 	order_req->order_amount = order_amount;
 	order_req->symbol_code = symbol_code;

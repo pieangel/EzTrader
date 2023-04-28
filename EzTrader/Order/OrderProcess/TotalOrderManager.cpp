@@ -107,6 +107,8 @@ order_p TotalOrderManager::make_order(const order_event& order_info)
 			order->original_order_no = order_info["original_order_no"];
 			order->first_order_no = order_info["first_order_no"];
 			order->remain_count = order_info["remain_count"];
+			order->modified_count = order_info["modified_count"];
+			order->cancelled_count = order_info["cancelled_count"];
 			order->filled_count = order_info["filled_count"];
 		}
 		break;
