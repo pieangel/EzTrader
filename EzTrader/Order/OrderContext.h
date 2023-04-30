@@ -9,5 +9,7 @@ struct OrderContext {
 	AccountType account_type = AccountType::None;
 	// The id of the window that the order came from.
 	int order_window_id;
+	int close;
+	int virtual_filled_price;
 };
 }

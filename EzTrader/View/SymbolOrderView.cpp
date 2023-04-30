@@ -224,7 +224,10 @@ void SymbolOrderView::draw_order_cell(
 		OrderGridHeader::BUY_ORDER :
 		OrderGridHeader::SELL_ORDER;
 	draw_cell(row, col, count);
-	_OldOrderBuyRowIndex.insert(row);
+	if (position == SmPositionType::Buy)
+		_OldOrderBuyRowIndex.insert(row);
+	else
+		_OldOrderSellRowIndex.insert(row);
 }
 
 void SymbolOrderView::draw_order_by_price(
@@ -1416,6 +1419,20 @@ void SymbolOrderView::SetStopOrderCut(std::shared_ptr<SmOrderRequest> order_req)
 	order_req->CutSlip = _OrderSettings.SlipTick;
 }
 
+void SymbolOrderView::set_order_close(std::shared_ptr<DarkHorse::OrderRequest> order_req)
+{
+	if (!quote_control_ ) return;
+	const VmQuote quote = quote_control_->get_quote();
+	order_req->order_context.close = quote.close;
+}
+
+void SymbolOrderView::set_virtual_filled_value(std::shared_ptr<DarkHorse::OrderRequest> order_req)
+{
+	if (!quote_control_ || !product_control_) return;
+	const VmQuote quote = quote_control_->get_quote();
+	order_req->order_context.virtual_filled_price = quote.close + product_control_->get_product().int_tick_size * 4;
+}
+
 void SymbolOrderView::PutStopOrder(const DarkHorse::SmPositionType& type, const int& price)
 {
 	if (!account_ || !symbol_) return;
@@ -1700,6 +1717,9 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 			order->price_type,
 			fill_condition_);
 		SetProfitLossCut(order_req);
+		set_order_close(order_req);
+		order_req->order_context.virtual_filled_price = target_price;
+		//set_virtual_filled_value(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
 	price_order_map->clear();

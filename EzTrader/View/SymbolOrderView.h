@@ -166,6 +166,8 @@ private:
 	void SetProfitLossCut(std::shared_ptr<DarkHorse::SmOrderRequest> order_req);
 	void SetProfitLossCut(std::shared_ptr<DarkHorse::OrderRequest> order_req);
 	void SetStopOrderCut(std::shared_ptr<DarkHorse::SmOrderRequest> order_req);
+	void set_order_close(std::shared_ptr<DarkHorse::OrderRequest> order_req);
+	void set_virtual_filled_value(std::shared_ptr<DarkHorse::OrderRequest> order_req);
 	DarkHorse::SmOrderSettings _OrderSettings;
 	bool _EnableOrderShow = false;
 	bool _EnableQuoteShow = false;
