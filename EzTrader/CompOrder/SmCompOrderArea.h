@@ -16,7 +16,7 @@ namespace DarkHorse {
 	class SmFund;
 }
 
-class SmMainOrderDialog;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
 class SmOrderCompMainDialog;
 class SmFundCompMainDialog;
@@ -44,7 +44,7 @@ public:
 		_FundOrderWnd = fund_order_wnd;
 	}
 
-	void SetMainWnd(SmMainOrderDialog* main_wnd) {
+	void SetMainWnd(AbAccountOrderWindow* main_wnd) {
 		_OrderWnd = main_wnd;
 	}
 	size_t GetRowCount();
@@ -77,7 +77,7 @@ private:
 	void LiqAllForAccount();
 	void LiqAllForFund();
 	SmFundOrderDialog* _FundOrderWnd = nullptr;
-	SmMainOrderDialog* _OrderWnd = nullptr;
+	AbAccountOrderWindow* _OrderWnd = nullptr;
 	// 0 : account , 1 : fund
 	int _Mode = 0;
 	void UpdateAccountPositionInfo();

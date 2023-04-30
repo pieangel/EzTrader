@@ -18,7 +18,7 @@
 #include "../Fund/SmFund.h"
 
 #include "../Event/SmCallbackManager.h"
-#include "SmMainOrderDialog.h"
+#include "AbAccountOrderWindow.h"
 #include "../Fund/SmFundOrderDialog.h"
 #include "../CompOrder/SmOrderCompMainDialog.h"
 #include "../CompOrder/SmFundCompMainDialog.h"

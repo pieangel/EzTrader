@@ -14,7 +14,7 @@ class DmAccountOrderCenterWindow
 #include "../../StatusBar/extstatuscontrolbar.h"
 //#include "../../SmGrid/SmPositionArea.h"
 //#include "../../SmGrid/SmQuoteArea.h"
-#include "../SmOrderSetGrid.h"
+#include "../OrderSetView.h"
 #include "../SmOrderSettings.h"
 #include "../OrderWndConst.h"
 #include "../SmFilledRemainButton.h"
@@ -73,7 +73,7 @@ public:
 	SymbolOrderView symbol_order_view_;
 	SymbolTickView symbol_tick_view_;
 	SymbolPositionView  symbol_position_view_;
-	SmOrderSetGrid order_set_view_;
+	OrderSetView order_set_view_;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnEnterSizeMove(WPARAM, LPARAM);
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);

@@ -154,10 +154,13 @@ void SymbolPositionView::Clear()
 void SymbolPositionView::update_quote()
 {
 	if (!quote_control_ || !_Symbol) return;
-	const VmQuote quote = quote_control_->get_quote();
+	if (!position_control_) return;
+	const VmQuote& quote = quote_control_->get_quote();
+	const VmPosition& position = position_control_->get_position();
 	std::string value = std::to_string(quote.close);
 	SmUtil::insert_decimal(value, _Symbol->Decimal());
 	auto cell = _Grid->FindCell(1, 4);
+	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	cell->Text(value);
 }
 

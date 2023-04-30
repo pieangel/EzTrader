@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "../DarkHorse.h"
-#include "OrderLeftDialog.h"
+#include "AbAccountOrderLeftWindow.h"
 #include "afxdialogex.h"
 #include "../Symbol/SmSymbolTableDialog.h"
 
@@ -14,27 +14,27 @@
 
 // OrderLeftDialog dialog
 
-IMPLEMENT_DYNAMIC(OrderLeftDialog, CBCGPDialog)
+IMPLEMENT_DYNAMIC(AbAccountOrderLeftWindow, CBCGPDialog)
 
-OrderLeftDialog::OrderLeftDialog(CWnd* pParent /*=nullptr*/)
+AbAccountOrderLeftWindow::AbAccountOrderLeftWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_LEFT, pParent)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }
 
-OrderLeftDialog::~OrderLeftDialog()
+AbAccountOrderLeftWindow::~AbAccountOrderLeftWindow()
 {
 	//KillTimer(1);
 }
 
-void OrderLeftDialog::DoDataExchange(CDataExchange* pDX)
+void AbAccountOrderLeftWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
 	//DDX_Control(pDX, IDC_STATIC_ACCEPTED, _AcceptedArea);
 	//DDX_Control(pDX, IDC_STATIC_FILLED, _FilledArea);
 	//DDX_Control(pDX, IDC_STATIC_FAVORITE, _FavoriteArea);
-	DDX_Control(pDX, IDC_STATIC_ACCOUNT, _AccountArea);
+	DDX_Control(pDX, IDC_STATIC_ACCOUNT, account_profit_loss_view_);
 	//DDX_Control(pDX, IDC_SCROLLBAR_VER_ACPT, _VScrollBarAcpt);
 	//DDX_Control(pDX, IDC_SCROLLBAR_VER_POSI, _VScrollBarPosi);
 	//DDX_Control(pDX, IDC_SCROLLBAR_VER_FAV, _VScrollBarFav);
@@ -43,35 +43,35 @@ void OrderLeftDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(OrderLeftDialog, CBCGPDialog)
-	ON_BN_CLICKED(IDC_BTN_ADD_FAV, &OrderLeftDialog::OnBnClickedBtnAddFav)
-	ON_MESSAGE(UM_SYMBOL_SELECTED, &OrderLeftDialog::OnUmSymbolSelected)
+BEGIN_MESSAGE_MAP(AbAccountOrderLeftWindow, CBCGPDialog)
+	ON_BN_CLICKED(IDC_BTN_ADD_FAV, &AbAccountOrderLeftWindow::OnBnClickedBtnAddFav)
+	ON_MESSAGE(UM_SYMBOL_SELECTED, &AbAccountOrderLeftWindow::OnUmSymbolSelected)
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_BTN_CANCEL_SEL, &OrderLeftDialog::OnBnClickedBtnCancelSel)
-	ON_BN_CLICKED(IDC_BTN_CANCEL_ALL, &OrderLeftDialog::OnBnClickedBtnCancelAll)
-	ON_BN_CLICKED(IDC_BTN_LIQ_SEL, &OrderLeftDialog::OnBnClickedBtnLiqSel)
-	ON_BN_CLICKED(IDC_BTN_LIQ_ALL, &OrderLeftDialog::OnBnClickedBtnLiqAll)
+	ON_BN_CLICKED(IDC_BTN_CANCEL_SEL, &AbAccountOrderLeftWindow::OnBnClickedBtnCancelSel)
+	ON_BN_CLICKED(IDC_BTN_CANCEL_ALL, &AbAccountOrderLeftWindow::OnBnClickedBtnCancelAll)
+	ON_BN_CLICKED(IDC_BTN_LIQ_SEL, &AbAccountOrderLeftWindow::OnBnClickedBtnLiqSel)
+	ON_BN_CLICKED(IDC_BTN_LIQ_ALL, &AbAccountOrderLeftWindow::OnBnClickedBtnLiqAll)
 END_MESSAGE_MAP()
 
 
 // OrderLeftDialog message handlers
 
 
-void OrderLeftDialog::SetMainWnd(SmMainOrderDialog* main_wnd)
+void AbAccountOrderLeftWindow::SetMainWnd(AbAccountOrderWindow* main_wnd)
 {
 	//_AcceptedGrid.SetMainWnd(main_wnd);
 	//_PositionGrid.SetMainWnd(main_wnd);
-	_FavoriteGrid.SetMainWnd(main_wnd);
+	favorite_symbol_view_.SetMainWnd(main_wnd);
 }
 
-BOOL OrderLeftDialog::OnInitDialog()
+BOOL AbAccountOrderLeftWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
 	//_AcceptedArea.SetUp();
 	//_FilledArea.SetUp();
 	//_FavoriteArea.SetUp();
-	_AccountArea.SetUp();
+	account_profit_loss_view_.SetUp();
 	
 
 
@@ -82,14 +82,14 @@ BOOL OrderLeftDialog::OnInitDialog()
 	ScreenToClient(&rect);
 
 	// Create the Windows control and attach it to the Grid object
-	_AcceptedGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID1);
+	account_order_view_.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID1);
 
 	pWnd = GetDlgItem(IDC_STATIC_FILLED);
 	pWnd->GetWindowRect(&rect);
 	ScreenToClient(&rect);
 
 	// Create the Windows control and attach it to the Grid object
-	_PositionGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID2);
+	account_position_view_.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID2);
 	//_PositionGrid.ShowWindow(SW_HIDE);
 
 
@@ -98,7 +98,7 @@ BOOL OrderLeftDialog::OnInitDialog()
 	ScreenToClient(&rect);
 
 	// Create the Windows control and attach it to the Grid object
-	_FavoriteGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID3);
+	favorite_symbol_view_.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID3);
 
 
 	SetTimer(1, 100, NULL);
@@ -141,12 +141,12 @@ BOOL OrderLeftDialog::OnInitDialog()
 	*/
 
 
-	_AcceptedGrid.UpdateAcceptedOrder();
-	_PositionGrid.UpdatePositionInfo();
+	account_order_view_.UpdateAcceptedOrder();
+	account_position_view_.UpdatePositionInfo();
 
 	//_AcceptedGrid.StartTimer();
 
-	_FavoriteGrid.SetFavorite();
+	favorite_symbol_view_.SetFavorite();
 
 	//_AcceptedGrid.UpdateAcceptedOrder();
 	//_PositionGrid.UpdatePositionInfo();
@@ -161,7 +161,7 @@ BOOL OrderLeftDialog::OnInitDialog()
 
 
 
-void OrderLeftDialog::OnBnClickedBtnAddFav()
+void AbAccountOrderLeftWindow::OnBnClickedBtnAddFav()
 {
 	_SymbolTableDlg = std::make_shared<SmSymbolTableDialog>(this);
 	_SymbolTableDlg->Create(IDD_SYMBOL_TABLE, this);
@@ -169,59 +169,59 @@ void OrderLeftDialog::OnBnClickedBtnAddFav()
 	_SymbolTableDlg->ShowWindow(SW_SHOW);
 }
 
-void OrderLeftDialog::OnTimer(UINT_PTR nIDEvent)
+void AbAccountOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 {
-	_AcceptedGrid.Update();
-	_PositionGrid.Update();
-	_FavoriteGrid.Update();
+	account_order_view_.Update();
+	account_position_view_.Update();
+	favorite_symbol_view_.Update();
 	//_AcceptedGrid.UpdateAcceptedOrder();
 	//_PositionGrid.UpdatePositionInfo();
 	//_AccountArea.UpdateAssetInfo();
 	//_FavoriteGrid.SetFavorite();
 }
 
-void OrderLeftDialog::SetAccount(std::shared_ptr<DarkHorse::SmAccount> account)
+void AbAccountOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> account)
 {
-	_AcceptedGrid.Account(account);
-	_PositionGrid.Account(account);
-	_AccountArea.Account(account);
-	_AccountArea.UpdateAssetInfo();
+	account_order_view_.Account(account);
+	account_position_view_.Account(account);
+	account_profit_loss_view_.Account(account);
+	account_profit_loss_view_.UpdateAssetInfo();
 	//_FilledArea.Account(account);
 	//_AcceptedArea.Account(account);
 }
 
-LRESULT OrderLeftDialog::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
+LRESULT AbAccountOrderLeftWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
 {
 	//_FavoriteGrid.AddSymbol(static_cast<int>(wParam));
 	return 1;
 }
 
-void OrderLeftDialog::OnOrderChanged(const int& account_id, const int& symbol_id)
+void AbAccountOrderLeftWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
 {
 	//_AcceptedGrid.UpdateAcceptedOrder();
 	//_PositionGrid.UpdatePositionInfo();
 }
 
 
-void OrderLeftDialog::OnBnClickedBtnCancelSel()
+void AbAccountOrderLeftWindow::OnBnClickedBtnCancelSel()
 {
-	_AcceptedGrid.CancelSelOrders();
+	account_order_view_.CancelSelOrders();
 }
 
 
-void OrderLeftDialog::OnBnClickedBtnCancelAll()
+void AbAccountOrderLeftWindow::OnBnClickedBtnCancelAll()
 {
-	_AcceptedGrid.CancelAll();
+	account_order_view_.CancelAll();
 }
 
 
-void OrderLeftDialog::OnBnClickedBtnLiqSel()
+void AbAccountOrderLeftWindow::OnBnClickedBtnLiqSel()
 {
-	_PositionGrid.LiqSelPositions();
+	account_position_view_.LiqSelPositions();
 }
 
 
-void OrderLeftDialog::OnBnClickedBtnLiqAll()
+void AbAccountOrderLeftWindow::OnBnClickedBtnLiqAll()
 {
-	_PositionGrid.LiqAll();
+	account_position_view_.LiqAll();
 }

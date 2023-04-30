@@ -15,7 +15,7 @@ namespace DarkHorse {
 	class SmOrder;
 	class SmFund;
 }
-class SmMainOrderDialog;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
 class SmOrderCompMainDialog;
 class SmFilledGrid : public CBCGPGridCtrl
@@ -69,7 +69,7 @@ public:
 	void SetFundOrderWnd(SmFundOrderDialog* fund_order_wnd) {
 		_FundOrderWnd = fund_order_wnd;
 	}
-	void SetMainWnd(SmMainOrderDialog* main_wnd) {
+	void SetMainWnd(AbAccountOrderWindow* main_wnd) {
 		_OrderWnd = main_wnd;
 	}
 	virtual ~SmFilledGrid();
@@ -100,7 +100,7 @@ private:
 	void ClearCheck();
 	SmOrderCompMainDialog* _CompOrderWnd = nullptr;
 	SmFundOrderDialog* _FundOrderWnd = nullptr;
-	SmMainOrderDialog* _OrderWnd = nullptr;
+	AbAccountOrderWindow* _OrderWnd = nullptr;
 	COLORREF _DefaultBackColor;
 	bool _EnableOrderShow = false;
 	bool _HeaderCheck = false;

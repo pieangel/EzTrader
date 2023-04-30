@@ -2,7 +2,7 @@
 #include <BCGPDialog.h>
 
 // SmOrderSetDialog dialog
-class SmOrderWnd;
+class AbAccountOrderCenterWindow;
 class SmFundOrderCenterWnd;
 class SmOrderSetDialog : public CBCGPDialog
 {
@@ -17,7 +17,7 @@ public:
 	enum { IDD = IDD_ORDER_SET };
 #endif
 
-	void OrderWnd(SmOrderWnd* val) { _OrderWnd = val; }
+	void OrderWnd(AbAccountOrderCenterWindow* val) { _OrderWnd = val; }
 	void FundWnd(SmFundOrderCenterWnd* val) { _FundWnd = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -26,7 +26,7 @@ protected:
 public:
 	afx_msg void OnBnClickedCheckSetWide();
 private:
-	SmOrderWnd* _OrderWnd = nullptr;
+	AbAccountOrderCenterWindow* _OrderWnd = nullptr;
 	SmFundOrderCenterWnd* _FundWnd = nullptr;
 public:
 	CBCGPButton _CheckAlignByAlt;

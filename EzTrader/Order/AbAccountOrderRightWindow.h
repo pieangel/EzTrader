@@ -14,13 +14,13 @@ namespace DarkHorse {
 }
 
 
-class OrderRightDialog : public CBCGPDialog
+class AbAccountOrderRightWindow : public CBCGPDialog
 {
-	DECLARE_DYNAMIC(OrderRightDialog)
+	DECLARE_DYNAMIC(AbAccountOrderRightWindow)
 
 public:
-	OrderRightDialog(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~OrderRightDialog();
+	AbAccountOrderRightWindow(CWnd* pParent = nullptr);   // standard constructor
+	virtual ~AbAccountOrderRightWindow();
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME

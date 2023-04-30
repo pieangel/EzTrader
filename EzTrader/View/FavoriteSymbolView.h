@@ -16,7 +16,7 @@ namespace DarkHorse {
 	class QuoteControl;
 }
 class SmSymbolTableDialog;
-class SmMainOrderDialog;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
 class SmOrderCompMainDialog;
 class SmFundCompMainDialog;
@@ -36,7 +36,7 @@ protected:
 
 	// Operations
 public:
-	void SetMainWnd(SmMainOrderDialog* main_wnd) {
+	void SetMainWnd(AbAccountOrderWindow* main_wnd) {
 		_OrderWnd = main_wnd;
 	}
 	void SetFundOrderWnd(SmFundOrderDialog* fund_order_wnd) {
@@ -103,7 +103,7 @@ private:
 	SmFundCompMainDialog* _CompFundWnd = nullptr;
 	SmOrderCompMainDialog* _CompOrderWnd = nullptr;
 	SmFundOrderDialog* _FundOrderWnd = nullptr;
-	SmMainOrderDialog* _OrderWnd = nullptr;
+	AbAccountOrderWindow* _OrderWnd = nullptr;
 	bool _HeaderCheck = false;
 	int _OldMaxRow = -1;
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;

@@ -5,7 +5,7 @@
 #include "../DarkHorse.h"
 #include "SmOrderSetDialog.h"
 #include "afxdialogex.h"
-#include "SmOrderWnd.h"
+#include "AbAccountOrderCenterWindow.h"
 #include "../Fund/SmFundOrderCenterWnd.h"
 
 // SmOrderSetDialog dialog

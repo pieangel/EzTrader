@@ -172,9 +172,6 @@
     <ClCompile Include="Order\SmOrderRequestManager.cpp">
       <Filter>Order</Filter>
     </ClCompile>
-    <ClCompile Include="Order\SmOrderWnd.cpp">
-      <Filter>Order</Filter>
-    </ClCompile>
     <ClCompile Include="Order\SmSymbolOrderManager.cpp">
       <Filter>Order</Filter>
     </ClCompile>
@@ -211,9 +208,6 @@
     <ClCompile Include="SmGrid\SmQuoteArea.cpp">
       <Filter>SmGrid</Filter>
     </ClCompile>
-    <ClCompile Include="Order\OrderLeftDialog.cpp">
-      <Filter>Order</Filter>
-    </ClCompile>
     <ClCompile Include="SmGrid\SmAcceptedArea.cpp">
       <Filter>SmGrid</Filter>
     </ClCompile>
@@ -231,9 +225,6 @@
     </ClCompile>
     <ClCompile Include="SmGrid\SmSymbolArea.cpp">
       <Filter>SmGrid</Filter>
-    </ClCompile>
-    <ClCompile Include="Order\OrderRightDialog.cpp">
-      <Filter>Order</Filter>
     </ClCompile>
     <ClCompile Include="Order\SmOrderViewer.cpp">
       <Filter>Order</Filter>
@@ -301,10 +292,7 @@
     <ClCompile Include="Order\SmListCtrl.cpp">
       <Filter>Order</Filter>
     </ClCompile>
-    <ClCompile Include="Order\SmMainOrderDialog.cpp">
-      <Filter>Order</Filter>
-    </ClCompile>
-    <ClCompile Include="Order\SmOrderSetGrid.cpp">
+    <ClCompile Include="Order\OrderSetView.cpp">
       <Filter>Order</Filter>
     </ClCompile>
     <ClCompile Include="Order\SmPositionGrid.cpp">
@@ -817,6 +805,18 @@
     <ClCompile Include="Controller\OrderControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
+    <ClCompile Include="Order\AbAccountOrderLeftWindow.cpp">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\AbAccountOrderRightWindow.cpp">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\AbAccountOrderWindow.cpp">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\AbAccountOrderCenterWindow.cpp">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1062,9 +1062,6 @@
     <ClInclude Include="Order\SmOrderRequestManager.h">
       <Filter>Order</Filter>
     </ClInclude>
-    <ClInclude Include="Order\SmOrderWnd.h">
-      <Filter>Order</Filter>
-    </ClInclude>
     <ClInclude Include="Order\SmSymbolOrderManager.h">
       <Filter>Order</Filter>
     </ClInclude>
@@ -1110,9 +1107,6 @@
     <ClInclude Include="SmGrid\SmCellType.h">
       <Filter>SmGrid</Filter>
     </ClInclude>
-    <ClInclude Include="Order\OrderLeftDialog.h">
-      <Filter>Order</Filter>
-    </ClInclude>
     <ClInclude Include="SmGrid\SmAcceptedArea.h">
       <Filter>SmGrid</Filter>
     </ClInclude>
@@ -1130,9 +1124,6 @@
     </ClInclude>
     <ClInclude Include="SmGrid\SmSymbolArea.h">
       <Filter>SmGrid</Filter>
-    </ClInclude>
-    <ClInclude Include="Order\OrderRightDialog.h">
-      <Filter>Order</Filter>
     </ClInclude>
     <ClInclude Include="GridDefine.h">
       <Filter>Grid</Filter>
@@ -1215,10 +1206,7 @@
     <ClInclude Include="Order\SmListCtrl.h">
       <Filter>Order</Filter>
     </ClInclude>
-    <ClInclude Include="Order\SmMainOrderDialog.h">
-      <Filter>Order</Filter>
-    </ClInclude>
-    <ClInclude Include="Order\SmOrderSetGrid.h">
+    <ClInclude Include="Order\OrderSetView.h">
       <Filter>Order</Filter>
     </ClInclude>
     <ClInclude Include="Order\SmPositionGrid.h">
@@ -1857,6 +1845,18 @@
     <ClInclude Include="ViewModel\VmPosition.h">
       <Filter>ViewModel</Filter>
     </ClInclude>
+    <ClInclude Include="Order\AbAccountOrderLeftWindow.h">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\AbAccountOrderRightWindow.h">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\AbAccountOrderWindow.h">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\AbAccountOrderCenterWindow.h">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -2106,6 +2106,9 @@
     </Filter>
     <Filter Include="Controller">
       <UniqueIdentifier>{79216b13-be01-4308-a327-9f56a4e7a7ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Order\OrderUI_AB">
+      <UniqueIdentifier>{909fecc4-7d82-405d-8393-7b1ff09b0892}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

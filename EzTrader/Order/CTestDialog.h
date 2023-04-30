@@ -4,9 +4,9 @@
 #include "../Order/SmCheckGrid.h"
 #include "../Util/SmButton.h"
 // CTestDialog dialog
-class SmOrderWnd;
-class OrderLeftDialog;
-class OrderRightDialog;
+class AbAccountOrderCenterWindow;
+class AbAccountOrderLeftWindow;
+class AbAccountOrderRightWindow;
 class CTestDialog : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(CTestDialog)
@@ -26,9 +26,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	std::shared_ptr<OrderLeftDialog> _LeftWnd = nullptr;
-	std::shared_ptr<OrderRightDialog> _RightWnd = nullptr;
-	std::unordered_map<HWND, std::shared_ptr<SmOrderWnd>> _CenterWndMap;
+	std::shared_ptr<AbAccountOrderLeftWindow> _LeftWnd = nullptr;
+	std::shared_ptr<AbAccountOrderRightWindow> _RightWnd = nullptr;
+	std::unordered_map<HWND, std::shared_ptr<AbAccountOrderCenterWindow>> _CenterWndMap;
 	virtual BOOL OnInitDialog();
 	afx_msg LRESULT OnEnterSizeMove(WPARAM, LPARAM);
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);

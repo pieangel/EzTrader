@@ -15,7 +15,7 @@
 #include "../Fund/SmFundManager.h"
 #include "../Fund/SmFund.h"
 #include "../Account/SmAccountManager.h"
-#include "SmMainOrderDialog.h"
+#include "AbAccountOrderWindow.h"
 #include "../Fund/SmFundOrderDialog.h"
 #include <functional>
 #include "../CompOrder/SmOrderCompMainDialog.h"

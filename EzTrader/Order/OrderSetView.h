@@ -2,13 +2,13 @@
 
 #include <BCGCBProInc.h>
 
-class SmOrderSetGrid : public CBCGPGridCtrl
+class OrderSetView : public CBCGPGridCtrl
 {
-	DECLARE_DYNAMIC(SmOrderSetGrid)
+	DECLARE_DYNAMIC(OrderSetView)
 
 	// Construction
 public:
-	SmOrderSetGrid();
+	OrderSetView();
 
 	// Attributes
 protected:
@@ -45,7 +45,7 @@ public:
 // Implementation
 public:
 
-	virtual ~SmOrderSetGrid();
+	virtual ~OrderSetView();
 
 	virtual void OnHeaderCheckBoxClick(int 	nColumn);
 

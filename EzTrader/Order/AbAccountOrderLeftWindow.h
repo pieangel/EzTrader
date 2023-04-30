@@ -20,14 +20,14 @@ namespace DarkHorse {
 	class SmAccount;
 }
 class SmSymbolTableDialog;
-class SmMainOrderDialog;
-class OrderLeftDialog : public CBCGPDialog
+class AbAccountOrderWindow;
+class AbAccountOrderLeftWindow : public CBCGPDialog
 {
-	DECLARE_DYNAMIC(OrderLeftDialog)
+	DECLARE_DYNAMIC(AbAccountOrderLeftWindow)
 
 public:
-	OrderLeftDialog(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~OrderLeftDialog();
+	AbAccountOrderLeftWindow(CWnd* pParent = nullptr);   // standard constructor
+	virtual ~AbAccountOrderLeftWindow();
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -41,10 +41,10 @@ protected:
 
 private:
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
-	AccountProfitLossView _AccountArea;
-	AccountOrderView _AcceptedGrid;
-	AccountPositionView _PositionGrid;
-	FavoriteSymbolView _FavoriteGrid;
+	AccountProfitLossView account_profit_loss_view_;
+	AccountOrderView account_order_view_;
+	AccountPositionView account_position_view_;
+	FavoriteSymbolView favorite_symbol_view_;
 
 	//SmFilledArea _FilledArea;
 	//SmFavoriteArea _FavoriteArea;
@@ -53,7 +53,7 @@ private:
 	//CBCGPScrollBar _VScrollBarPosi;
 	//CBCGPScrollBar _VScrollBarFav;
 public:
-	void SetMainWnd(SmMainOrderDialog* main_wnd);
+	void SetMainWnd(AbAccountOrderWindow* main_wnd);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedBtnAddFav();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

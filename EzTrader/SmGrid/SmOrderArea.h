@@ -20,12 +20,12 @@ namespace DarkHorse {
 	struct SmOrderRequest;
 }
 
-class SmMainOrderDialog;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
 class SmOrderArea : public CBCGPStatic
 {
 public:
-	void SetMainDialog(SmMainOrderDialog* main_dialog) {
+	void SetMainDialog(AbAccountOrderWindow* main_dialog) {
 		_MainDialog = main_dialog;
 	}
 	void SetFundDialog(SmFundOrderDialog* fund_dialog) {
@@ -109,7 +109,7 @@ private:
 	bool _MovingOrder = false;
 	void PutStopOrder(const DarkHorse::SmPositionType& type, const int& price);
 	void PutOrder(const DarkHorse::SmPositionType& type, const int& price, const DarkHorse::SmPriceType& price_type = DarkHorse::SmPriceType::Price);
-	SmMainOrderDialog* _MainDialog = nullptr;
+	AbAccountOrderWindow* _MainDialog = nullptr;
 	SmFundOrderDialog* _FundDialog = nullptr;
 	void ProcesButtonClick(const std::shared_ptr<DarkHorse::SmCell>& cell);
 	bool ProcesButtonClickByPos(const CPoint& point);

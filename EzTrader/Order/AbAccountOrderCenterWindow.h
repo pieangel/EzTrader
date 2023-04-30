@@ -8,7 +8,7 @@
 #include "../StatusBar/extstatuscontrolbar.h"
 #include "../SmGrid/SmPositionArea.h"
 #include "../SmGrid/SmQuoteArea.h"
-#include "SmOrderSetGrid.h"
+#include "OrderSetView.h"
 #include "SmOrderSettings.h"
 #include "OrderWndConst.h"
 #include "SmFilledRemainButton.h"
@@ -26,16 +26,16 @@ namespace DarkHorse {
 
 class SmOrderSetDialog;
 class SmSymbolTableDialog;
-class SmMainOrderDialog;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
-class SmOrderWnd : public CBCGPDialog
+class AbAccountOrderCenterWindow : public CBCGPDialog
 {
-	DECLARE_DYNAMIC(SmOrderWnd)
+	DECLARE_DYNAMIC(AbAccountOrderCenterWindow)
 
 public:
 	static int DeltaOrderArea;
-	SmOrderWnd(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~SmOrderWnd();
+	AbAccountOrderCenterWindow(CWnd* pParent = nullptr);   // standard constructor
+	virtual ~AbAccountOrderCenterWindow();
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -64,15 +64,15 @@ public:
 	void OnClickSymbol(const std::string& symbol_info);
 	//CComboBox _ComboAccount;
 	CBCGPComboBox _ComboSymbol;
-	SymbolOrderView _OrderArea;
-	SymbolTickView _QuoteArea;
-	SymbolPositionView  _PositionArea;
-	SmOrderSetGrid _OrderSetGrid;
+	SymbolOrderView symbol_order_view_;
+	SymbolTickView symbol_tick_view_;
+	SymbolPositionView  symbol_position_view_;
+	OrderSetView order_set_view_;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnEnterSizeMove(WPARAM, LPARAM);
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);
 
-	void SetMainDialog(SmMainOrderDialog* main_dialog);
+	void SetMainDialog(AbAccountOrderWindow* main_dialog);
 	void SetFundDialog(SmFundOrderDialog* fund_dialog);
 	int ID() const { return _ID; }
 	void ID(int val) { _ID = val; }

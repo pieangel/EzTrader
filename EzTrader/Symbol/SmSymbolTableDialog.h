@@ -10,9 +10,9 @@ namespace DarkHorse {
 	class SmAccount;
 	class SmMarket;
 }
-class SmOrderWnd;
+class AbAccountOrderCenterWindow;
 class SmFundOrderCenterWnd;
-class OrderLeftDialog;
+class AbAccountOrderLeftWindow;
 class SmFavoriteGrid;
 class SmFundOrderLeft;
 class SmCompOrderDialog;
@@ -60,9 +60,9 @@ public:
 	afx_msg LRESULT OnUmProductWheeled(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUmSymbolSelected(WPARAM wParam, LPARAM lParam);
 
-	SmOrderWnd* OrderWnd = nullptr;
+	AbAccountOrderCenterWindow* OrderWnd = nullptr;
 	SmFundOrderCenterWnd* FundOrderWnd = nullptr;
-	OrderLeftDialog* OrderLeftWnd = nullptr;
+	AbAccountOrderLeftWindow* OrderLeftWnd = nullptr;
 	SmFavoriteGrid* FavoriteGrid = nullptr;
 	SmFundOrderLeft* FundOrderLeft = nullptr;
 	SmCompOrderDialog* CompOrderWnd = nullptr;

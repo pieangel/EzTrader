@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SmRemainButton.h"
 #include "../Fund/SmFundOrderCenterWnd.h"
-#include "SmOrderWnd.h"
+#include "AbAccountOrderCenterWindow.h"
 #include "../Global/SmTotalManager.h"
 #include <format>
 

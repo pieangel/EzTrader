@@ -27,7 +27,7 @@ namespace DarkHorse {
 	class SmFund;
 }
 
-class SmMainOrderDialog;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
 
 class SmFundOrderArea : public CBCGPStatic

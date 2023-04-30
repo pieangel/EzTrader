@@ -22,7 +22,7 @@ namespace DarkHorse {
 // SmMainOrderDialog dialog
 class SmCompOrderDialog;
 class SmOrderLeftComp;
-class OrderRightDialog;
+class AbAccountOrderRightWindow;
 class SmOrderRightComp;
 class SmOrderCompMainDialog : public CBCGPDialog
 {

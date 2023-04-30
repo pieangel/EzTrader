@@ -3,11 +3,11 @@
 
 #include "stdafx.h"
 #include "../DarkHorse.h"
-#include "SmMainOrderDialog.h"
+#include "AbAccountOrderWindow.h"
 #include "afxdialogex.h"
-#include "OrderLeftDialog.h"
-#include "OrderRightDialog.h"
-#include "SmOrderWnd.h"
+#include "AbAccountOrderLeftWindow.h"
+#include "AbAccountOrderRightWindow.h"
+#include "AbAccountOrderCenterWindow.h"
 #include <set>
 #include "../MainFrm.h"
 #include "../Account/SmAccount.h"
@@ -31,9 +31,9 @@ using namespace DarkHorse;
 
 const int CtrlHeight = 32;
 
-int SmMainOrderDialog::_Id = 0;
+int AbAccountOrderWindow::_Id = 0;
 
-void SmMainOrderDialog::SetAccount()
+void AbAccountOrderWindow::SetAccount()
 {
 	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
 	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
@@ -67,20 +67,20 @@ void SmMainOrderDialog::SetAccount()
 
 // SmMainOrderDialog dialog
 
-IMPLEMENT_DYNAMIC(SmMainOrderDialog, CBCGPDialog)
+IMPLEMENT_DYNAMIC(AbAccountOrderWindow, CBCGPDialog)
 
-SmMainOrderDialog::SmMainOrderDialog(CWnd* pParent /*=nullptr*/)
+AbAccountOrderWindow::AbAccountOrderWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_MAIN, pParent)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }
 
-SmMainOrderDialog::~SmMainOrderDialog()
+AbAccountOrderWindow::~AbAccountOrderWindow()
 {
 }
 
-void SmMainOrderDialog::DoDataExchange(CDataExchange* pDX)
+void AbAccountOrderWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_ACCOUNT, _ComboAccount);
@@ -99,22 +99,22 @@ void SmMainOrderDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(SmMainOrderDialog, CBCGPDialog)
-	ON_BN_CLICKED(IDC_BTN_ADD, &SmMainOrderDialog::OnBnClickedBtnAdd)
-	ON_BN_CLICKED(IDC_BTN_REMOVE, &SmMainOrderDialog::OnBnClickedBtnRemove)
-	ON_BN_CLICKED(IDC_BTN_LEFT, &SmMainOrderDialog::OnBnClickedBtnLeft)
-	ON_BN_CLICKED(IDC_BTN_RIGHT, &SmMainOrderDialog::OnBnClickedBtnRight)
+BEGIN_MESSAGE_MAP(AbAccountOrderWindow, CBCGPDialog)
+	ON_BN_CLICKED(IDC_BTN_ADD, &AbAccountOrderWindow::OnBnClickedBtnAdd)
+	ON_BN_CLICKED(IDC_BTN_REMOVE, &AbAccountOrderWindow::OnBnClickedBtnRemove)
+	ON_BN_CLICKED(IDC_BTN_LEFT, &AbAccountOrderWindow::OnBnClickedBtnLeft)
+	ON_BN_CLICKED(IDC_BTN_RIGHT, &AbAccountOrderWindow::OnBnClickedBtnRight)
 	ON_MESSAGE(WM_ENTERSIZEMOVE, OnEnterSizeMove)
 	ON_MESSAGE(WM_EXITSIZEMOVE, OnExitSizeMove)
 	//ON_STN_CLICKED(IDC_STATIC_ACCOUNT_NAME, &SmMainOrderDialog::OnStnClickedStaticAccountName)
-	ON_BN_CLICKED(IDC_BUTTON6, &SmMainOrderDialog::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON6, &AbAccountOrderWindow::OnBnClickedButton6)
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
-	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &SmMainOrderDialog::OnCbnSelchangeComboAccount)
-	ON_MESSAGE(WM_ORDER_UPDATE, &SmMainOrderDialog::OnUmOrderUpdate)
-	ON_MESSAGE(WM_SERVER_MSG, &SmMainOrderDialog::OnUmServerMsg)
+	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &AbAccountOrderWindow::OnCbnSelchangeComboAccount)
+	ON_MESSAGE(WM_ORDER_UPDATE, &AbAccountOrderWindow::OnUmOrderUpdate)
+	ON_MESSAGE(WM_SERVER_MSG, &AbAccountOrderWindow::OnUmServerMsg)
 	ON_WM_CLOSE()
-	ON_BN_CLICKED(IDC_BTN_LIQ_ALL, &SmMainOrderDialog::OnBnClickedBtnLiqAll)
+	ON_BN_CLICKED(IDC_BTN_LIQ_ALL, &AbAccountOrderWindow::OnBnClickedBtnLiqAll)
 	ON_WM_SYSCOMMAND()
 	ON_WM_DESTROY()
 END_MESSAGE_MAP()
@@ -123,7 +123,7 @@ END_MESSAGE_MAP()
 // SmMainOrderDialog message handlers
 
 
-LRESULT SmMainOrderDialog::OnEnterSizeMove(WPARAM wparam, LPARAM lparam)
+LRESULT AbAccountOrderWindow::OnEnterSizeMove(WPARAM wparam, LPARAM lparam)
 {
 	
 
@@ -131,7 +131,7 @@ LRESULT SmMainOrderDialog::OnEnterSizeMove(WPARAM wparam, LPARAM lparam)
 	// do stuff      
 	return (LRESULT)0;
 }
-LRESULT SmMainOrderDialog::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
+LRESULT AbAccountOrderWindow::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
 {
 	
 
@@ -147,7 +147,7 @@ LRESULT SmMainOrderDialog::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
 }
 
 
-BOOL SmMainOrderDialog::OnInitDialog()
+BOOL AbAccountOrderWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
@@ -167,13 +167,13 @@ BOOL SmMainOrderDialog::OnInitDialog()
 	GetWindowRect(rcWnd);
 
 
-	_LeftWnd = std::make_shared<OrderLeftDialog>(this);
+	_LeftWnd = std::make_shared<AbAccountOrderLeftWindow>(this);
 	_LeftWnd->Create(IDD_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
 	_LeftWnd->SetMainWnd(this);
 
 
-	std::shared_ptr<SmOrderWnd> center_wnd = std::make_shared<SmOrderWnd>(this);
+	std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = std::make_shared<AbAccountOrderCenterWindow>(this);
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_SHOW);
 	center_wnd->SetMainDialog(this);
@@ -182,7 +182,7 @@ BOOL SmMainOrderDialog::OnInitDialog()
 
 	center_wnd->GetWindowRect(rcWnd);
 	
-	_RightWnd = std::make_shared<OrderRightDialog>(this);
+	_RightWnd = std::make_shared<AbAccountOrderRightWindow>(this);
 	_RightWnd->Create(IDD_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
 
@@ -222,12 +222,12 @@ BOOL SmMainOrderDialog::OnInitDialog()
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void SmMainOrderDialog::OnQuoteAreaShowHide()
+void AbAccountOrderWindow::OnQuoteAreaShowHide()
 {
 
 }
 
-void SmMainOrderDialog::RecalcChildren(CmdMode mode)
+void AbAccountOrderWindow::RecalcChildren(CmdMode mode)
 {
 
 	std::set<CWnd*> wnd_set;
@@ -276,7 +276,7 @@ void SmMainOrderDialog::RecalcChildren(CmdMode mode)
 	
 
 	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
-		std::shared_ptr<SmOrderWnd> center_wnd = it->second;
+		std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 		center_wnd->GetWindowRect(rcWnd);
 		
 		
@@ -398,7 +398,7 @@ void SmMainOrderDialog::RecalcChildren(CmdMode mode)
 }
 
 
-void SmMainOrderDialog::RecalcChildren2(CmdMode mode)
+void AbAccountOrderWindow::RecalcChildren2(CmdMode mode)
 {
 	// 전체 길이 계산
 	const int hor_gap = 2;
@@ -432,7 +432,7 @@ void SmMainOrderDialog::RecalcChildren2(CmdMode mode)
 	SetWindowPos(nullptr, rcWnd.left, rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_NOZORDER | SWP_NOREDRAW);
 }
 
-void SmMainOrderDialog::SetAccountForOrderWnd()
+void AbAccountOrderWindow::SetAccountForOrderWnd()
 {
 	if (_ComboAccountMap.size() > 0) {
 		const int cur_sel = _ComboAccount.GetCurSel();
@@ -445,7 +445,7 @@ void SmMainOrderDialog::SetAccountForOrderWnd()
 }
 
 
-void SmMainOrderDialog::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account)
+void AbAccountOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account)
 {
 	if (!account || _CurrentAccountIndex < 0) return;
 
@@ -461,7 +461,7 @@ void SmMainOrderDialog::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> acc
 	_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
 }
 
-void SmMainOrderDialog::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+void AbAccountOrderWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
 		if (it->second->Selected()) {
@@ -472,7 +472,7 @@ void SmMainOrderDialog::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> sym
 	_RightWnd->OnSymbolClicked(symbol);
 }
 
-void SmMainOrderDialog::OnSymbolClicked(const std::string& symbol_code)
+void AbAccountOrderWindow::OnSymbolClicked(const std::string& symbol_code)
 {
 	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
 		if (it->second->Selected()) {
@@ -482,14 +482,14 @@ void SmMainOrderDialog::OnSymbolClicked(const std::string& symbol_code)
 	}
 }
 
-void SmMainOrderDialog::OnBnClickedBtnAdd()
+void AbAccountOrderWindow::OnBnClickedBtnAdd()
 {
 	// 먼저 현재 창의 크기를 구한다.
 	CRect rcWnd, rcCenter, rcRight, rcClient;
 	GetWindowRect(rcWnd);
 	GetClientRect(rcClient);
 
-	std::shared_ptr<SmOrderWnd> center_wnd = std::make_shared<SmOrderWnd>();
+	std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = std::make_shared<AbAccountOrderCenterWindow>();
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetMainDialog(this);
@@ -545,7 +545,7 @@ void SmMainOrderDialog::OnBnClickedBtnAdd()
 }
 
 
-void SmMainOrderDialog::OnBnClickedBtnRemove()
+void AbAccountOrderWindow::OnBnClickedBtnRemove()
 {
 	if (_CenterWndMap.size() == 1) return;
 
@@ -558,7 +558,7 @@ void SmMainOrderDialog::OnBnClickedBtnRemove()
 }
 
 
-void SmMainOrderDialog::OnBnClickedBtnLeft()
+void AbAccountOrderWindow::OnBnClickedBtnLeft()
 {
 	_ShowLeft ? _ShowLeft = false : _ShowLeft = true;
 	//LockWindowUpdate();
@@ -568,7 +568,7 @@ void SmMainOrderDialog::OnBnClickedBtnLeft()
 }
 
 
-void SmMainOrderDialog::OnBnClickedBtnRight()
+void AbAccountOrderWindow::OnBnClickedBtnRight()
 {
 	_ShowRight ? _ShowRight = false : _ShowRight = true;
 	//LockWindowUpdate();
@@ -578,17 +578,17 @@ void SmMainOrderDialog::OnBnClickedBtnRight()
 }
 
 
-void SmMainOrderDialog::OnStnClickedStaticAccountName()
+void AbAccountOrderWindow::OnStnClickedStaticAccountName()
 {
 	
 }
 
 
-void SmMainOrderDialog::OnBnClickedButton6()
+void AbAccountOrderWindow::OnBnClickedButton6()
 {
 	int max_delta_height = 0;
 	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
-		std::shared_ptr<SmOrderWnd> center_wnd = it->second;
+		std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 		int delta_height = center_wnd->RecalcOrderAreaHeight(this);
 		if (delta_height > max_delta_height) max_delta_height = delta_height;
 	}
@@ -605,7 +605,7 @@ void SmMainOrderDialog::OnBnClickedButton6()
 }
 
 
-void SmMainOrderDialog::OnSize(UINT nType, int cx, int cy)
+void AbAccountOrderWindow::OnSize(UINT nType, int cx, int cy)
 {
 	CBCGPDialog::OnSize(nType, cx, cy);
 
@@ -618,13 +618,13 @@ void SmMainOrderDialog::OnSize(UINT nType, int cx, int cy)
 }
 
 
-BOOL SmMainOrderDialog::OnEraseBkgnd(CDC* pDC)
+BOOL AbAccountOrderWindow::OnEraseBkgnd(CDC* pDC)
 {
 	return CBCGPDialog::OnEraseBkgnd(pDC);
 }
 
 
-void SmMainOrderDialog::OnCbnSelchangeComboAccount()
+void AbAccountOrderWindow::OnCbnSelchangeComboAccount()
 {
 	_CurrentAccountIndex = _ComboAccount.GetCurSel();
 	if (_CurrentAccountIndex < 0) return;
@@ -634,7 +634,7 @@ void SmMainOrderDialog::OnCbnSelchangeComboAccount()
 	SetAccountForOrderWnd();
 }
 
-LRESULT SmMainOrderDialog::OnUmOrderUpdate(WPARAM wParam, LPARAM lParam)
+LRESULT AbAccountOrderWindow::OnUmOrderUpdate(WPARAM wParam, LPARAM lParam)
 {
 	const int account_id = (int)wParam;
 	const int symbol_id = (int)lParam;
@@ -649,12 +649,12 @@ LRESULT SmMainOrderDialog::OnUmOrderUpdate(WPARAM wParam, LPARAM lParam)
 	return 1;
 }
 
-void SmMainOrderDialog::ChangedSymbol(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+void AbAccountOrderWindow::ChangedSymbol(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	_RightWnd->SetSymbol(symbol);
 }
 
-void SmMainOrderDialog::ChangedCenterWindow(const int& center_wnd_id)
+void AbAccountOrderWindow::ChangedCenterWindow(const int& center_wnd_id)
 {
 	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
 		it->second->ID() == center_wnd_id ? it->second->SetSelected(true) : it->second->SetSelected(false);
@@ -662,7 +662,7 @@ void SmMainOrderDialog::ChangedCenterWindow(const int& center_wnd_id)
 }
 
 
-void SmMainOrderDialog::OnClose()
+void AbAccountOrderWindow::OnClose()
 {
 	mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
 	mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
@@ -673,7 +673,7 @@ void SmMainOrderDialog::OnClose()
 }
 
 
-void SmMainOrderDialog::OnBnClickedBtnLiqAll()
+void AbAccountOrderWindow::OnBnClickedBtnLiqAll()
 {
 	if (!_Account) return;
 
@@ -689,7 +689,7 @@ void SmMainOrderDialog::OnBnClickedBtnLiqAll()
 	}
 }
 
-LRESULT SmMainOrderDialog::OnUmServerMsg(WPARAM wParam, LPARAM lParam)
+LRESULT AbAccountOrderWindow::OnUmServerMsg(WPARAM wParam, LPARAM lParam)
 {
 	_StaticMsg.Text(mainApp.TotalOrderMgr()->ServerMsg.c_str());
 	_StaticMsg.Invalidate();
@@ -697,7 +697,7 @@ LRESULT SmMainOrderDialog::OnUmServerMsg(WPARAM wParam, LPARAM lParam)
 }
 
 
-void SmMainOrderDialog::OnSysCommand(UINT nID, LPARAM lParam)
+void AbAccountOrderWindow::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0x0000FFF0) == SC_MINIMIZE)
 	{
@@ -713,7 +713,7 @@ void SmMainOrderDialog::OnSysCommand(UINT nID, LPARAM lParam)
 
 	if ((nID & 0x0000FFF0) == SC_KEYMENU) {
 		for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
-			std::shared_ptr<SmOrderWnd> center_wnd = it->second;
+			std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 			center_wnd->ArrangeCenterValue();
 		}
 		return;
@@ -723,7 +723,7 @@ void SmMainOrderDialog::OnSysCommand(UINT nID, LPARAM lParam)
 }
 
 
-void SmMainOrderDialog::OnDestroy()
+void AbAccountOrderWindow::OnDestroy()
 {
 	CBCGPDialog::OnDestroy();
 
@@ -731,7 +731,7 @@ void SmMainOrderDialog::OnDestroy()
 }
 
 
-void SmMainOrderDialog::PostNcDestroy()
+void AbAccountOrderWindow::PostNcDestroy()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->RemoveOrderWnd(GetSafeHwnd());

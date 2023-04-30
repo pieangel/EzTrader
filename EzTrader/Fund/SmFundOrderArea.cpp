@@ -9,7 +9,7 @@
 #include "../Order/SmOrderRequestManager.h"
 #include "../Order/SmStopOrderManager.h"
 #include "../SmGrid/SmCellType.h"
-#include "../Order/SmOrderWnd.h"
+#include "../Order/AbAccountOrderCenterWindow.h"
 #include <windows.h>
 #include "../Global/SmTotalManager.h"
 #include "../Client/ViStockClient.h"
@@ -22,7 +22,7 @@
 #include "../Position/SmTotalPositionManager.h"
 #include "../Position/SmPosition.h"
 #include "../Symbol/SmSymbol.h"
-#include "../Order/SmMainOrderDialog.h"
+#include "../Order/AbAccountOrderWindow.h"
 #include "../Util/SmNumberFunc.h"
 #include "../Event/SmCallbackManager.h"
 #include "../Order/SmOrderRequest.h"
@@ -725,7 +725,7 @@ int SmFundOrderArea::RecalRowCount(const int& height)
 
 	//Invalidate(FALSE);
 
-	SmOrderWnd::DeltaOrderArea = delta_height;
+	AbAccountOrderCenterWindow::DeltaOrderArea = delta_height;
 
 	return delta_height;
 }

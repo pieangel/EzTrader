@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "SmOrderSetGrid.h"
+#include "OrderSetView.h"
 #include "../Grid/CustomCells.h"
 
-IMPLEMENT_DYNAMIC(SmOrderSetGrid, CBCGPGridCtrl)
+IMPLEMENT_DYNAMIC(OrderSetView, CBCGPGridCtrl)
 
-SmOrderSetGrid::SmOrderSetGrid()
+OrderSetView::OrderSetView()
 {
 	m_bExtendedPadding = FALSE;
 }
 
-SmOrderSetGrid::~SmOrderSetGrid()
+OrderSetView::~OrderSetView()
 {
 }
 
-void SmOrderSetGrid::OnHeaderCheckBoxClick(int nColumn)
+void OrderSetView::OnHeaderCheckBoxClick(int nColumn)
 {
 	CString msg;
 	msg.Format("%d", nColumn);
@@ -33,7 +33,7 @@ void SmOrderSetGrid::OnHeaderCheckBoxClick(int nColumn)
 	Invalidate();
 }
 
-void SmOrderSetGrid::OnRowCheckBoxClick(CBCGPGridRow* pRow)
+void OrderSetView::OnRowCheckBoxClick(CBCGPGridRow* pRow)
 {
 	CString msg;
 	msg.Format("%d", pRow->GetRowId());
@@ -45,7 +45,7 @@ void SmOrderSetGrid::OnRowCheckBoxClick(CBCGPGridRow* pRow)
 	Invalidate();
 }
 
-BEGIN_MESSAGE_MAP(SmOrderSetGrid, CBCGPGridCtrl)
+BEGIN_MESSAGE_MAP(OrderSetView, CBCGPGridCtrl)
 	//{{AFX_MSG_MAP(CBasicGridCtrl)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
@@ -57,7 +57,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CBasicGridCtrl message handlers
 
-int SmOrderSetGrid::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int OrderSetView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CBCGPGridCtrl::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -224,13 +224,13 @@ int SmOrderSetGrid::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void SmOrderSetGrid::OnDestroy()
+void OrderSetView::OnDestroy()
 {
 	SaveState(_T("BasicGrid"));
 	CBCGPGridCtrl::OnDestroy();
 }
 
-void SmOrderSetGrid::ToggleExtendedPadding()
+void OrderSetView::ToggleExtendedPadding()
 {
 	m_bExtendedPadding = !m_bExtendedPadding;
 
@@ -239,7 +239,7 @@ void SmOrderSetGrid::ToggleExtendedPadding()
 }
 
 
-void SmOrderSetGrid::OnLButtonDown(UINT nFlags, CPoint point)
+void OrderSetView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	
 	CBCGPGridItemID id;

@@ -8,7 +8,7 @@ namespace DarkHorse {
 }
 
 class SmFundOrderCenterWnd;
-class SmOrderWnd;
+class AbAccountOrderCenterWindow;
 class SmRemainButton : public CBCGPStatic
 {
 public:
@@ -22,8 +22,8 @@ public:
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
 	SmFundOrderCenterWnd* FundOrderCenterWnd() const { return _FundOrderCenterWnd; }
 	void FundOrderCenterWnd(SmFundOrderCenterWnd* val) { _FundOrderCenterWnd = val; }
-	SmOrderWnd* OrderCenterWnd() const { return _OrderCenterWnd; }
-	void OrderCenterWnd(SmOrderWnd* val) { _OrderCenterWnd = val; }
+	AbAccountOrderCenterWindow* OrderCenterWnd() const { return _OrderCenterWnd; }
+	void OrderCenterWnd(AbAccountOrderCenterWindow* val) { _OrderCenterWnd = val; }
 public:
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void OnQuoteEvent(const std::string& symbol_code);
@@ -41,7 +41,7 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	DECLARE_MESSAGE_MAP()
 private:
-	SmOrderWnd* _OrderCenterWnd = nullptr;
+	AbAccountOrderCenterWindow* _OrderCenterWnd = nullptr;
 	SmFundOrderCenterWnd* _FundOrderCenterWnd = nullptr;
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
 	bool _EnableOrderShow = false;

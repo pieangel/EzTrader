@@ -14,7 +14,7 @@ namespace DarkHorse {
 
 
 class SmSymbolTableDialog;
-class SmMainOrderDialog;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
 class SmFavoriteArea : public CBCGPStatic
 {
@@ -46,9 +46,9 @@ private:
 	// key : row index, value : smsymbol object
 	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> _RowToSymbolMap;
 	SmFundOrderDialog* _FundOrderWnd = nullptr;
-	SmMainOrderDialog* _OrderWnd = nullptr;
+	AbAccountOrderWindow* _OrderWnd = nullptr;
 public:
-	void SetMainWnd(SmMainOrderDialog* main_wnd) {
+	void SetMainWnd(AbAccountOrderWindow* main_wnd) {
 		_OrderWnd = main_wnd;
 	}
 	void SetFundOrderWnd(SmFundOrderDialog* fund_order_wnd) {

@@ -11,7 +11,7 @@
 #include "../resource.h"
 #include "../Symbol/SmSymbolTableDialog.h"
 #include "../Symbol/SmSymbolManager.h"
-#include "SmMainOrderDialog.h"
+#include "AbAccountOrderWindow.h"
 #include "../Fund/SmFundOrderDialog.h"
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"

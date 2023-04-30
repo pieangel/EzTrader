@@ -3,27 +3,27 @@
 
 #include "stdafx.h"
 #include "../DarkHorse.h"
-#include "OrderRightDialog.h"
+#include "AbAccountOrderRightWindow.h"
 #include "afxdialogex.h"
 
 
 // OrderRightDialog dialog
 
-IMPLEMENT_DYNAMIC(OrderRightDialog, CBCGPDialog)
+IMPLEMENT_DYNAMIC(AbAccountOrderRightWindow, CBCGPDialog)
 
-OrderRightDialog::OrderRightDialog(CWnd* pParent /*=nullptr*/)
+AbAccountOrderRightWindow::AbAccountOrderRightWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_RIGHT, pParent)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }
 
-OrderRightDialog::~OrderRightDialog()
+AbAccountOrderRightWindow::~AbAccountOrderRightWindow()
 {
 	//KillTimer(1);
 }
 
-void OrderRightDialog::DoDataExchange(CDataExchange* pDX)
+void AbAccountOrderRightWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_STATIC_ACCOUNT, _AssetArea);
@@ -31,7 +31,7 @@ void OrderRightDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(OrderRightDialog, CBCGPDialog)
+BEGIN_MESSAGE_MAP(AbAccountOrderRightWindow, CBCGPDialog)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
@@ -39,30 +39,30 @@ END_MESSAGE_MAP()
 // OrderRightDialog message handlers
 
 
-void OrderRightDialog::SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account)
+void AbAccountOrderRightWindow::SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account)
 {
 	_AssetArea.Account(account);
 	_AssetArea.SetAssetInfo();
 }
 
-void OrderRightDialog::SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol)
+void AbAccountOrderRightWindow::SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol)
 {
 	_SymbolArea.Symbol(symbol);
 }
 
-void OrderRightDialog::OnOrderChanged(const int& account_id, const int& symbol_id)
+void AbAccountOrderRightWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
 {
 
 }
 
-void OrderRightDialog::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+void AbAccountOrderRightWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol) return;
 
 	_SymbolArea.Symbol(symbol);
 }
 
-BOOL OrderRightDialog::OnInitDialog()
+BOOL AbAccountOrderRightWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
@@ -77,7 +77,7 @@ BOOL OrderRightDialog::OnInitDialog()
 }
 
 
-void OrderRightDialog::OnTimer(UINT_PTR nIDEvent)
+void AbAccountOrderRightWindow::OnTimer(UINT_PTR nIDEvent)
 {
 	CBCGPDialog::OnTimer(nIDEvent);
 }

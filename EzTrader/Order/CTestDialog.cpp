@@ -6,9 +6,9 @@
 #include "CTestDialog.h"
 #include "afxdialogex.h"
 
-#include "../Order/OrderLeftDialog.h"
-#include "../Order/OrderRightDialog.h"
-#include "../Order/SmOrderWnd.h"
+#include "../Order/AbAccountOrderLeftWindow.h"
+#include "../Order/AbAccountOrderRightWindow.h"
+#include "../Order/AbAccountOrderCenterWindow.h"
 #include <set>
 #include "../MainFrm.h"
 #include "../Account/SmAccount.h"
@@ -130,7 +130,7 @@ LRESULT CTestDialog::OnEnterSizeMove(WPARAM, LPARAM)
 {
 	CRect rcWnd;
 	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
-		std::shared_ptr<SmOrderWnd> center_wnd = it->second;
+		std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 		center_wnd->GetWindowRect(rcWnd);
 
 
@@ -195,7 +195,7 @@ void CTestDialog::OnSize(UINT nType, int cx, int cy)
 	start_x++;
 
 	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
-		std::shared_ptr<SmOrderWnd> center_wnd = it->second;
+		std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 		center_wnd->GetWindowRect(rcWnd);
 
 

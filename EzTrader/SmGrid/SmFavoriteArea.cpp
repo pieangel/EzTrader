@@ -15,7 +15,7 @@
 
 #include <functional>
 
-#include "../Order/SmMainOrderDialog.h"
+#include "../Order/AbAccountOrderWindow.h"
 #include "../Fund/SmFundOrderDialog.h"
 
 using namespace std;

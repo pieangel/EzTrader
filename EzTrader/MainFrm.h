@@ -14,10 +14,10 @@ class SmChartData;
 }
 
 class CTestDialog;
-class SmOrderWnd;
-class OrderLeftDialog;
-class OrderRightDialog;
-class SmMainOrderDialog;
+class AbAccountOrderCenterWindow;
+class AbAccountOrderLeftWindow;
+class AbAccountOrderRightWindow;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
 class SmFundDialog;
 class SmOrderCompMainDialog;
@@ -108,12 +108,12 @@ public:
 	void UpdateChart();
 	void SetChartData(std::shared_ptr<DarkHorse::SmChartData> chart_data, const int& window_id, const int& series_index = 0);
 	afx_msg void OnTestOrderwnd();
-	std::shared_ptr<SmOrderWnd> _OrderWnd = nullptr;
+	std::shared_ptr<AbAccountOrderCenterWindow> _OrderWnd = nullptr;
 	afx_msg void OnTestLeftorderdialog();
 
-	std::shared_ptr<OrderLeftDialog> _LeftOrderWnd = nullptr;
-	std::shared_ptr<OrderRightDialog> _RightOrderWnd = nullptr;
-	std::shared_ptr<SmMainOrderDialog> _MainOrderWnd = nullptr;
+	std::shared_ptr<AbAccountOrderLeftWindow> _LeftOrderWnd = nullptr;
+	std::shared_ptr<AbAccountOrderRightWindow> _RightOrderWnd = nullptr;
+	std::shared_ptr<AbAccountOrderWindow> _MainOrderWnd = nullptr;
 	std::shared_ptr<SmFundOrderDialog> _FundOrderWnd = nullptr;
 	std::shared_ptr< SmOrderCompMainDialog> _CompOrderWnd = nullptr;
 	std::shared_ptr<CTestDialog> _TestDlg = nullptr;
@@ -129,7 +129,7 @@ public:
 	std::map<HWND, DmAccountOrderWindow*> dm_account_order_wnd_map_;
 	std::map<HWND, std::shared_ptr<DmFundOrderWindow>> dm_fund_order_wnd_map_;
 
-	std::map<HWND, SmMainOrderDialog*> _OrderWndMap;
+	std::map<HWND, AbAccountOrderWindow*> _OrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmOrderCompMainDialog>> _CompOrderWndMap;
 	std::map<HWND, std::shared_ptr<SmJangGoDialog>> _JangoWndMap;

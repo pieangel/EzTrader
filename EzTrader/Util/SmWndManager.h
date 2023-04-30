@@ -2,7 +2,7 @@
 #include <map>
 #include <memory>
 #include <windows.h>
-class SmMainOrderDialog;
+class AbAccountOrderWindow;
 class SmFundOrderDialog;
 class GaSpreadChart;
 namespace DarkHorse {	
@@ -11,12 +11,12 @@ namespace DarkHorse {
 	public:
 		SmWndManager() {};
 		~SmWndManager() {};
-		void AddOrderWnd(std::shared_ptr<SmMainOrderDialog> order_wnd);
+		void AddOrderWnd(std::shared_ptr<AbAccountOrderWindow> order_wnd);
 		void AddFundOrderWnd(std::shared_ptr<SmFundOrderDialog> order_wnd);
 		void AddSpreadChart(std::shared_ptr<GaSpreadChart> chart);
 
 	private:
-		std::map<HWND, std::shared_ptr<SmMainOrderDialog>> _OrderWndMap;
+		std::map<HWND, std::shared_ptr<AbAccountOrderWindow>> _OrderWndMap;
 		std::map<HWND, std::shared_ptr<SmFundOrderDialog>> _FundOrderWndMap;
 		std::map<HWND, std::shared_ptr<GaSpreadChart>> _SpreadChartMap;
 	};

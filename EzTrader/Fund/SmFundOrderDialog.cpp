@@ -5,8 +5,8 @@
 #include "../DarkHorse.h"
 #include "SmFundOrderDialog.h"
 #include "afxdialogex.h"
-#include "../Order/OrderLeftDialog.h"
-#include "../Order/OrderRightDialog.h"
+#include "../Order/AbAccountOrderLeftWindow.h"
+#include "../Order/AbAccountOrderRightWindow.h"
 #include "SmFundOrderCenterWnd.h"
 #include <set>
 #include "../MainFrm.h"

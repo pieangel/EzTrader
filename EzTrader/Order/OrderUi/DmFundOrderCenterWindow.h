@@ -17,7 +17,7 @@ class DmFundOrderCenterWindow
 #include "../../StatusBar/extstatuscontrolbar.h"
 #include "../../Fund/SmFundPositionArea.h"
 #include "../../SmGrid/SmQuoteArea.h"
-#include "../../Order/SmOrderSetGrid.h"
+#include "../../Order/OrderSetView.h"
 #include "../../Order/SmOrderSettings.h"
 #include "../../Order/OrderWndConst.h"
 #include "../../Order/SmFilledRemainButton.h"
@@ -76,7 +76,7 @@ public:
 	SmFundOrderArea _OrderArea;
 	SmQuoteArea _QuoteArea;
 	SmFundPositionArea  _PositionArea;
-	SmOrderSetGrid _OrderSetGrid;
+	OrderSetView _OrderSetGrid;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnEnterSizeMove(WPARAM, LPARAM);
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);

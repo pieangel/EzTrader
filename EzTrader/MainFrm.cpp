@@ -14,11 +14,11 @@
 #include "Global/SmTotalManager.h"
 #include "Task/DataProgressDialog.h"
 #include "Json/json.hpp"
-#include "Order/SmOrderWnd.h"
+#include "Order/AbAccountOrderCenterWindow.h"
 #include "MfcMdiAppGlue.h"
-#include "Order/OrderLeftDialog.h"
-#include "Order/OrderRightDialog.h"
-#include "Order/SmMainOrderDialog.h"
+#include "Order/AbAccountOrderLeftWindow.h"
+#include "Order/AbAccountOrderRightWindow.h"
+#include "Order/AbAccountOrderWindow.h"
 #include "Util/Delegate.h"
 #include "Symbol/SmSymbolTableDialog.h"
 #include "Order/CTestDialog.h"
@@ -859,8 +859,8 @@ void CMainFrame::OnTestOrderwnd()
 	//m_wndWorkSpace.symbol_click.Connect(&dlg, &SmOrderWnd::OnClickSymbol);
 	
 
-	_OrderWnd = std::make_shared<SmOrderWnd>(this);
-	m_wndWorkSpace.symbol_click.Connect(_OrderWnd.get(), &SmOrderWnd::OnClickSymbol);
+	_OrderWnd = std::make_shared<AbAccountOrderCenterWindow>(this);
+	m_wndWorkSpace.symbol_click.Connect(_OrderWnd.get(), &AbAccountOrderCenterWindow::OnClickSymbol);
 	_OrderWnd->Create(IDD_ORDER_MAIN, this);
 	_OrderWnd->ShowWindow(SW_SHOW);
 }
@@ -868,7 +868,7 @@ void CMainFrame::OnTestOrderwnd()
 
 void CMainFrame::OnTestLeftorderdialog()
 {
-	_LeftOrderWnd = std::make_shared<OrderLeftDialog>(this);
+	_LeftOrderWnd = std::make_shared<AbAccountOrderLeftWindow>(this);
 	//m_wndWorkSpace.symbol_click.Connect(_LeftOrderWnd.get(), &SmOrderWnd::OnClickSymbol);
 	_LeftOrderWnd->Create(IDD_ORDER_LEFT, this);
 	_LeftOrderWnd->ShowWindow(SW_SHOW);
@@ -877,7 +877,7 @@ void CMainFrame::OnTestLeftorderdialog()
 
 void CMainFrame::OnTestRightorderdialog()
 {
-	_RightOrderWnd = std::make_shared<OrderRightDialog>(this);
+	_RightOrderWnd = std::make_shared<AbAccountOrderRightWindow>(this);
 	//m_wndWorkSpace.symbol_click.Connect(_LeftOrderWnd.get(), &SmOrderWnd::OnClickSymbol);
 	_RightOrderWnd->Create(IDD_ORDER_RIGHT, this);
 	_RightOrderWnd->ShowWindow(SW_SHOW);
@@ -886,12 +886,12 @@ void CMainFrame::OnTestRightorderdialog()
 
 void CMainFrame::OnTestOrdermain()
 {
-	_MainOrderWnd = std::make_shared<SmMainOrderDialog>();
+	_MainOrderWnd = std::make_shared<AbAccountOrderWindow>();
 	_MainOrderWnd->Create(IDD_ORDER_MAIN, this);
-	const std::map<int, std::shared_ptr<SmOrderWnd>>& center_wnd_map = _MainOrderWnd->GetCenterWndMap();
+	const std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>>& center_wnd_map = _MainOrderWnd->GetCenterWndMap();
 	for (auto it = center_wnd_map.begin(); it != center_wnd_map.end(); ++it) {
-		std::shared_ptr<SmOrderWnd> order_wnd = it->second;
-		m_wndWorkSpace.symbol_click.Connect(order_wnd.get(), &SmOrderWnd::OnClickSymbol);
+		std::shared_ptr<AbAccountOrderCenterWindow> order_wnd = it->second;
+		m_wndWorkSpace.symbol_click.Connect(order_wnd.get(), &AbAccountOrderCenterWindow::OnClickSymbol);
 	}
 	_MainOrderWnd->ShowWindow(SW_SHOW);
 }
@@ -935,7 +935,7 @@ void CMainFrame::OnTestFund()
 
 void CMainFrame::OnOrderOrdermain()
 {
-	_MainOrderWnd = std::make_shared<SmMainOrderDialog>();
+	_MainOrderWnd = std::make_shared<AbAccountOrderWindow>();
 	_MainOrderWnd->Create(IDD_ORDER_MAIN, this);
 	
 	_MainOrderWnd->ShowWindow(SW_SHOW);
@@ -1013,7 +1013,7 @@ void CMainFrame::OnManagePwd()
 
 void CMainFrame::OnOrderWnd()
 {
-	SmMainOrderDialog* mainOrderWnd = new SmMainOrderDialog();
+	AbAccountOrderWindow* mainOrderWnd = new AbAccountOrderWindow();
 	mainOrderWnd->Create(IDD_ORDER_MAIN, this);
 	_OrderWndMap[mainOrderWnd->GetSafeHwnd()] = mainOrderWnd;
 	mainOrderWnd->ShowWindow(SW_SHOW);

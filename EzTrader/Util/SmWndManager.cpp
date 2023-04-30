@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "SmWndManager.h"
-#include "../Order/SmMainOrderDialog.h"
+#include "../Order/AbAccountOrderWindow.h"
 #include "../Fund/SmFundOrderDialog.h"
 #include "../ChartDialog/GaSpreadChart.h"
 using namespace  DarkHorse;
-void DarkHorse::SmWndManager::AddOrderWnd(std::shared_ptr<SmMainOrderDialog> order_wnd)
+void DarkHorse::SmWndManager::AddOrderWnd(std::shared_ptr<AbAccountOrderWindow> order_wnd)
 {
 	if (!order_wnd) return;
 
