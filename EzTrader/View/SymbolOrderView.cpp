@@ -1705,6 +1705,8 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 	const std::map<std::string, std::shared_ptr<Order>>& order_map = price_order_map->get_order_map();
 	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
 		const auto& order = it->second;
+		// 잔량이 설정되지 않으면 주문 정정을 못하게 막는다. 
+		if (order->remain_count == 0) continue;
 		auto order_req = OrderRequestManager::make_change_order_request(
 			order->account_no,
 			account_->Pwd(),

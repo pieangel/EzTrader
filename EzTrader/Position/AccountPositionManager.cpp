@@ -2,6 +2,14 @@
 #include "AccountPositionManager.h"
 #include "Position.h"
 #include "../Order/Order.h"
+#include "../Global/SmTotalManager.h"
+#include "../Event/EventHub.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Account/SmAccount.h"
+#include "../Account/SmAccountManager.h"
 
 namespace DarkHorse {
 position_p AccountPositionManager::get_position(const std::string& symbol_code)
@@ -19,6 +27,7 @@ position_p AccountPositionManager::find_position(const std::string& symbol_code)
 position_p AccountPositionManager::create_position(const std::string& symbol_code)
 {
 	position_p position = std::make_shared<Position>();
+	position->symbol_code = symbol_code;
 	position_map_[symbol_code] = position;
 	return position;
 }
@@ -28,6 +37,10 @@ void AccountPositionManager::update_position(order_p order)
 	if (!order) return;
 
 	position_p position = get_position(order->symbol_code);
+	position->account_no = order->account_no;
+	set_symbol_id(position, order->symbol_code);
+	set_account_id(position, order->account_no);
+	auto symbol = mainApp.SymMgr()->FindSymbol(order->symbol_code);
 	const int position_count = calculate_position_count(order, position);
 	const int unsettled_count = calculate_unsettled_count(order, position);
 	const double traded_profit_loss = calculate_traded_profit_loss(order, position);
@@ -39,6 +52,27 @@ void AccountPositionManager::update_position(order_p order)
 	update_open_profit_loss(position);
 	// update the involved order.
 	order->unsettled_count = unsettled_count;
+
+	mainApp.event_hub()->process_position_event(position);
+}
+
+void AccountPositionManager::set_symbol_id(position_p position, const std::string& symbol_code)
+{
+	if (!position || position->symbol_id != 0) return;
+
+	auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+	if (!symbol) return;
+	position->symbol_id = symbol->Id();
+}
+
+void AccountPositionManager::set_account_id(position_p position, const std::string& account_no)
+{
+	if (!position || position->account_id != 0) return;
+
+	auto account = mainApp.AcntMgr()->FindAccount(account_no);
+	if (!account) return;
+
+	position->account_id = account->id();
 }
 
 int AccountPositionManager::calculate_position_count(order_p order, position_p position)
@@ -76,9 +110,14 @@ double AccountPositionManager::calculate_average_price(order_p order, position_p
 }
 void AccountPositionManager::update_open_profit_loss(position_p position)
 {
+	if (!position) return;
+	std::shared_ptr<SmQuote> quote = mainApp.QuoteMgr()->get_quote(position->symbol_code);
+	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->symbol_code);
+	if (!quote || !symbol) return;
+
 	double open_profit_loss = 0;
-	//open_profit_loss = position->open_quantity * (curClose - position->average_price) * symbol->SeungSu();
-	//open_profit_loss = open_profit_loss / pow(10, symbol->Decimal());
+	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->SeungSu();
+	open_profit_loss = open_profit_loss / pow(10, symbol->Decimal());
 	position->open_profit_loss = open_profit_loss;
 }
 

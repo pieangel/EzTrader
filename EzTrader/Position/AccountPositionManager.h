@@ -13,6 +13,8 @@ public:
 	position_p get_position(const std::string& symbol_code);
 	void update_position(order_p order);
 private:
+	void set_symbol_id(position_p position, const std::string& symbol_code);
+	void set_account_id(position_p position, const std::string& account_no);
 	int calculate_position_count(order_p order, position_p position);
 	int calculate_unsettled_count(order_p order, position_p position);
 	int calculate_traded_count(order_p order, position_p position);

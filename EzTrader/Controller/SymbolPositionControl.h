@@ -10,7 +10,7 @@ namespace DarkHorse {
 	public:
 		SymbolPositionControl();
 		~SymbolPositionControl();
-		void update_position(std::shared_ptr<Position> quote);
+		void update_position(std::shared_ptr<Position> position);
 		const VmPosition& get_position()
 		{
 			return position_;

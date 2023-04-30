@@ -17,6 +17,8 @@
 #include "../Quote/SmQuote.h"
 #include "../Quote/SmQuoteManager.h"
 #include "../Util/SmUtil.h"
+#include "../Controller/SymbolPositionControl.h"
+#include "../ViewModel/VmPosition.h"
 #include <format>
 
 #include <functional>
@@ -39,11 +41,19 @@ SymbolPositionView::SymbolPositionView()
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->set_event_handler(std::bind(&SymbolPositionView::on_update_quote, this));
+	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
+	position_control_->set_event_handler(std::bind(&SymbolPositionView::on_update_position, this));
 }
 
 void SymbolPositionView::on_update_quote()
 {
-	_EnableQuoteShow = true;
+	enable_quote_show_ = true;
+}
+
+void SymbolPositionView::on_update_position()
+{
+	enable_position_show_ = true;
+	enable_quote_show_ = true;
 }
 
 SymbolPositionView::~SymbolPositionView()
@@ -141,7 +151,7 @@ void SymbolPositionView::Clear()
 	Invalidate();
 }
 
-void SymbolPositionView::UpdateSymbolInfo()
+void SymbolPositionView::update_quote()
 {
 	if (!quote_control_ || !_Symbol) return;
 	const VmQuote quote = quote_control_->get_quote();
@@ -158,7 +168,7 @@ void SymbolPositionView::Symbol(std::shared_ptr<SmSymbol> val)
 	quote->symbol_id = val->Id();
 	quote_control_->set_symbol_id(val->Id());
 	quote_control_->update_quote(quote);
-	UpdateSymbolInfo();
+	update_quote();
 	UpdatePositionInfo();
 	Invalidate();
 }
@@ -222,12 +232,56 @@ void SymbolPositionView::OnOrderChanged(const int& account_id, const int& symbol
 
 void SymbolPositionView::OnQuoteEvent(const std::string& symbol_code)
 {
-	_EnableQuoteShow = true;
+	enable_quote_show_ = true;
 }
 
 void SymbolPositionView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
-	_EnableOrderShow = true;
+	enable_position_show_ = true;
+}
+
+void SymbolPositionView::update_position()
+{
+	if (!position_control_) return;
+
+	const VmPosition& position = position_control_->get_position();
+
+	if (position.open_quantity == 0) return Clear();
+	std::shared_ptr<SmCell> cell = _Grid->FindCell(1, 0);
+	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	cell->Text(_Symbol->SymbolCode());
+	/*
+	cell = _Grid->FindCell(1, 4);
+	std::string value_string = std::format("{0}", _Symbol->Qoute.close);
+	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
+		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	cell->Text(value_string);
+	*/
+	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+
+	const int avg_price = static_cast<int>(position.average_price);
+	cell = _Grid->FindCell(1, 1);
+	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	if (position.open_quantity > 0)
+		cell->Text("매수");
+	else if (position.open_quantity < 0)
+		cell->Text("매도");
+	cell = _Grid->FindCell(1, 2);
+	cell->Text(std::to_string(position.open_quantity));
+	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	cell = _Grid->FindCell(1, 3);
+	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	std::string value_string = std::format("{0}", avg_price);
+	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
+		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	cell->Text(value_string);
+	cell = _Grid->FindCell(1, 5);
+	if (position.open_profit_loss != 0)
+		position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	else
+		cell->CellType(SmCellType::CT_NORMAL);
+	const std::string open_pl = std::format("{0:.2f}", position.open_profit_loss);
+	cell->Text(open_pl);
 }
 
 void SymbolPositionView::CreateResource()
@@ -320,14 +374,14 @@ void SymbolPositionView::OnTimer(UINT_PTR nIDEvent)
 {
 	if (!_Symbol) return;
 	bool needDraw = false;
-	if (_EnableQuoteShow) {
-		UpdateSymbolInfo();
-		_EnableQuoteShow = false;
+	if (enable_quote_show_) {
+		update_quote();
+		enable_quote_show_ = false;
 		needDraw = true;
 	}
-	if (_EnableOrderShow) {
-		UpdatePositionInfo();
-		_EnableOrderShow = false;
+	if (enable_position_show_) {
+		update_position();
+		enable_position_show_ = false;
 		needDraw = true;
 	}
 

@@ -6,6 +6,7 @@
 #include "../../Position/TotalPositionManager.h"
 #include "../../Event/EventHub.h"
 #include "../SmOrder.h"
+#include "../../Log/MyLogger.h"
 
 namespace DarkHorse {
 	using total_position_manager_p = std::shared_ptr<TotalPositionManager>;
@@ -38,13 +39,12 @@ void SymbolOrderManager::on_order_accepted(order_p order, OrderEvent order_event
 void SymbolOrderManager::on_order_unfilled(order_p order, OrderEvent order_event)
 {
 	if (order->remain_count == 0)
-		remove_accepted_order(order);
+		update_accepted_order(order);
 	mainApp.event_hub()->process_order_event(order, order_event);
 }
 void SymbolOrderManager::on_order_filled(order_p order, OrderEvent order_event)
 {
 	order->order_state = SmOrderState::Filled;
-	update_accepted_order(order);
 	total_position_manager_p total_position_manager = mainApp.total_position_manager();
 	total_position_manager->update_position(order);
 }
@@ -56,7 +56,21 @@ void SymbolOrderManager::add_accepted_order(order_p order)
 
 void SymbolOrderManager::update_accepted_order(order_p order)
 {
-	;
+	if (order->filled_count > 0) {
+		if (order->order_amount == order->filled_count) // 완전 체결
+			remove_accepted_order(order);
+		else if (order->filled_count < order->order_amount) { // 부분체결
+			CString message;
+			message.Format("부분 체결 : 주문번호[%s], 주문 개수[%d], 체결개수[%d], 잔량[%d]", 
+				order->order_no.c_str(), 
+				order->order_amount, 
+				order->filled_count, 
+				order->remain_count);
+			LOGINFO(CMyLogger::getInstance(), "주문 정보 = %s", message);
+		}
+	}
+	else
+		remove_accepted_order(order);
 }
 
 void SymbolOrderManager::remove_accepted_order(order_p order)

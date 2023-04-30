@@ -33,7 +33,7 @@ struct Order {
 	std::string filled_date;
 	// 체결 시간
 	std::string filled_time;
-	// 잔량
+	// 잔량 : 체결되지 않은 수량. 주문 수량과 일치하나 부분 체결시 주문 수량과 일치하지 않을 수 있다. 
 	int remain_count{ 0 };
 	// 정정 수량
 	int modified_count{ 0 };
