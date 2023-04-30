@@ -314,7 +314,7 @@ void DarkHorse::SmServerDataReceiver::OnTimer()
 	
 	CString msg;
 	msg.Format("TryCount = %d\n", _TryCount);
-	TRACE(msg);
+	//TRACE(msg);
 
 	DoNextTask();
 }

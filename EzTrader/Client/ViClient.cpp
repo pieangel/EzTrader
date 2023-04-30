@@ -566,7 +566,7 @@ int DarkHorse::ViClient::GetSymbolQuote(task_arg&& arg)
 
 		CString msg;
 		msg.Format("symbol_code = %s\n", symbol_code.c_str());
-		TRACE(msg);
+		//TRACE(msg);
 
 		_ReqMap[nRqID] = arg;
 
@@ -3097,7 +3097,7 @@ void DarkHorse::ViClient::OnAccountAsset(const CString& sTrCode, const LONG& nRq
 		CString msg;
 
 		msg.Format("OnAccountAsset strAccountNo = %s\n", account_no.c_str());
-		TRACE(msg);
+		//TRACE(msg);
 
 		nlohmann::json account_asset;
 		account_asset["account_no"] = account_no;

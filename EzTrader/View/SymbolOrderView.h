@@ -174,7 +174,7 @@ private:
 	int _CutMode = 0;
 	bool _MovingOrder = false;
 	void PutStopOrder(const DarkHorse::SmPositionType& type, const int& price);
-	void PutOrder
+	void put_order
 	(
 		const DarkHorse::SmPositionType& type, 
 		const int& price, 
@@ -268,17 +268,19 @@ private:
 	void DrawMovingRect();
 
 	void CancelOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
+	void cancel_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
+	void cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map);
 	void ChangeOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& tgt_price);
 	void change_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& target_price);
-	void change_order_by_price(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map, const int& target_price);
-	void ChangeStop
+	void change_order(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map, const int& target_price);
+	void change_stop
 	(
 		const std::shared_ptr<DarkHorse::SmCell>& src_cell, 
 		const std::shared_ptr<DarkHorse::SmCell>& tgt_cell, 
 		const int& src_price, 
 		const int& tgt_price
 	);
-	void CancelStop(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
+	void cancel_stop(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void ProcessButtonMsg(const BUTTON_ID& id);
 protected:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);

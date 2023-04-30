@@ -37,6 +37,7 @@ namespace DarkHorse {
 	}
 	void OrderControl::on_order_unfilled(std::shared_ptr<Order> order)
 	{
+		if (order->remain_count != 0) return;
 		if (order->position == SmPositionType::Buy)
 			buy_order_control_.remove_order(order->order_price, order->order_no);
 		else
