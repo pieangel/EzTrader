@@ -22,14 +22,18 @@ namespace DarkHorse {
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}
-		SubOrderControl* get_buy_order_control() {
-			return &buy_order_control_;
+		SubOrderControl& get_buy_order_control() {
+			return buy_order_control_;
 		}
-		SubOrderControl* get_sell_order_control() {
-			return &sell_order_control_;
+		SubOrderControl& get_sell_order_control() {
+			return sell_order_control_;
 		}
 		void add_account_id(const int account_id);
+		std::pair<int, int> get_order_count(const SmPositionType& position, const int price);
+		std::shared_ptr<PriceOrderMap> get_order_map(const SmPositionType& position, const int price);
 	private:
+		std::shared_ptr<PriceOrderMap> get_order_map(DarkHorse::SubOrderControl& order_control, const int price);
+		std::pair<int, int> get_order_count(DarkHorse::SubOrderControl& order_control, const int price);
 		SubOrderControl buy_order_control_;
 		SubOrderControl sell_order_control_;
 		int symbol_id_{ 0 };

@@ -133,11 +133,13 @@ namespace DarkHorse {
 		order_request_p make_dummy_order_request();
 		void add_order_request_map(order_request_p order_request);
 		bool simulation_{ false };
-		void dm_make_accepted_order_event(order_request_p order_request);
-		void dm_make_unfilled_order_event(order_request_p order_request);
+		void dm_make_new_order_event(order_request_p order_request);
+		void dm_make_change_order_event(order_request_p order_request);
+		void dm_make_cancel_order_event(order_request_p order_request);
 		void dm_make_filled_order_event(order_request_p order_request);
-		void ab_make_accepted_order_event(order_request_p order_request);
-		void ab_make_unfilled_order_event(order_request_p order_request);
+		void ab_make_new_order_event(order_request_p order_request);
+		void ab_make_change_order_event(order_request_p order_request);
+		void ab_make_cancel_order_event(order_request_p order_request);
 		void ab_make_filled_order_event(order_request_p order_request);
 		void on_new_order(order_request_p order_request);
 		void on_change_order(order_request_p order_request);

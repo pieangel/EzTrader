@@ -35,8 +35,8 @@ namespace DarkHorse {
 	class SymbolPositionControl;
 	struct SmHoga;
 	struct SmQuote;
-	struct SubOrderControl;
-	struct PriceOrderMap;
+	class SubOrderControl;
+	class PriceOrderMap;
 }
 
 class DmAccountOrderWindow;
@@ -126,12 +126,12 @@ private:
 	void draw_order();
 	void draw_order_by_price
 	(
-		DarkHorse::SubOrderControl* sub_order_control, 
+		DarkHorse::SubOrderControl& sub_order_control,
 		DarkHorse::SmPositionType position
 	);
 	void draw_total_order
 	(
-		DarkHorse::SubOrderControl* sub_order_control,
+		const DarkHorse::SubOrderControl& sub_order_control,
 		DarkHorse::SmPositionType position
 	);
 	int find_close_row_from_end_row();
@@ -197,7 +197,7 @@ private:
 
 	std::vector<std::shared_ptr<DarkHorse::SmCell>> _SelectedCells;
 
-	std::shared_ptr<DarkHorse::SmCell> _FixedSelectedCell{ nullptr };
+	std::shared_ptr<DarkHorse::SmCell> selected_cell_{ nullptr };
 	std::pair<int, int> _SelectedValue{ 0, 0 };
 
 	/// <summary>
@@ -270,7 +270,7 @@ private:
 	void CancelOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void ChangeOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& tgt_price);
 	void change_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& target_price);
-	void change_order_by_price(DarkHorse::PriceOrderMap& price_order_map, const int& target_price);
+	void change_order_by_price(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map, const int& target_price);
 	void ChangeStop
 	(
 		const std::shared_ptr<DarkHorse::SmCell>& src_cell, 

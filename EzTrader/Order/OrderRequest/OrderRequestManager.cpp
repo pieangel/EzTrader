@@ -124,12 +124,14 @@ void OrderRequestManager::add_order_request_map(order_request_p order_request)
 	order_request_map[order_request->request_id] = order_request;
 }
 
-void OrderRequestManager::dm_make_accepted_order_event(order_request_p order_request)
+void OrderRequestManager::dm_make_new_order_event(order_request_p order_request)
 {
+	const std::string order_no = std::to_string(get_order_no());
+	
 	nlohmann::json order_info;
 	order_info["order_event"] = OrderEvent::DM_Accepted;
 	order_info["account_no"] = order_request->account_no;
-	order_info["order_no"] =  std::to_string(get_order_no());
+	order_info["order_no"] = order_no;
 	order_info["symbol_code"] = order_request->symbol_code;
 	order_info["order_price"] = order_request->order_price;
 	order_info["order_amount"] = order_request->order_amount;
@@ -140,7 +142,7 @@ void OrderRequestManager::dm_make_accepted_order_event(order_request_p order_req
 	order_info["first_order_no"] = "";
 	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
 	order_info["order_time"] = "13:05:05";
-	order_info["order_type"] = "20230423";
+	order_info["order_date"] = "20230423";
 	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
 	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
 
@@ -148,13 +150,49 @@ void OrderRequestManager::dm_make_accepted_order_event(order_request_p order_req
 	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
 	std::string user_defined;
 	ViClient::make_custom_order_info(order_request, user_defined);
-	std::string temp = VtStringUtil::PadRight(user_defined, '0', 60);
-	order_info["custom_info"] = temp;
+	std::string user_defined_string = VtStringUtil::PadRight(user_defined, '0', 60);
+	order_info["custom_info"] = user_defined_string;
 
 	mainApp.order_processor()->add_order_event(std::move(order_info));
+	
+
+	nlohmann::json order_info2;
+	order_info2["order_event"] = OrderEvent::DM_Unfilled;
+	order_info2["account_no"] = order_request->account_no;
+	order_info2["order_no"] = order_no;
+	order_info2["symbol_code"] = order_request->symbol_code;
+	order_info2["order_price"] = order_request->order_price;
+	order_info2["order_amount"] = order_request->order_amount;
+	order_info2["position_type"] = order_request->position_type;
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	order_info2["original_order_no"] = "0";
+	order_info2["first_order_no"] = "0";
+	//order_info["order_type"] = static_cast<const char*>(strMan.Trim());
+	order_info2["remain_count"] = order_request->order_amount;
+	order_info2["cancelled_count"] = 0;
+	order_info2["modified_count"] = 0;
+	order_info2["filled_count"] = 0;
+	order_info2["order_sequence"] = 2;
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+
+	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+	order_info2["custom_info"] = user_defined_string;
+
+	mainApp.order_processor()->add_order_event(std::move(order_info2));
 }
 
-void OrderRequestManager::dm_make_unfilled_order_event(order_request_p order_request)
+void OrderRequestManager::dm_make_change_order_event(order_request_p order_request)
+{
+
+}
+
+void OrderRequestManager::dm_make_cancel_order_event(order_request_p order_request)
 {
 
 }
@@ -164,12 +202,75 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 
 }
 
-void OrderRequestManager::ab_make_accepted_order_event(order_request_p order_request)
+void OrderRequestManager::ab_make_new_order_event(order_request_p order_request)
+{
+	const std::string order_no = std::to_string(get_order_no());
+
+	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["account_no"] = order_request->account_no;
+	order_info["order_no"] = order_no;
+	order_info["symbol_code"] = order_request->symbol_code;
+	order_info["order_price"] = order_request->order_price;
+	order_info["order_amount"] = order_request->order_amount;
+	const std::string position = order_request->position_type == SmPositionType::Buy ? "1" : "2";;
+	order_info["position_type"] = position;
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	order_info["original_order_no"] = "";
+	order_info["first_order_no"] = "";
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	order_info["order_time"] = "13:05:05";
+	order_info["order_date"] = "20230423";
+	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+	std::string user_defined;
+	ViClient::make_custom_order_info(order_request, user_defined);
+	std::string user_defined_string = VtStringUtil::PadRight(user_defined, '0', 60);
+	order_info["custom_info"] = user_defined_string;
+
+	mainApp.order_processor()->add_order_event(std::move(order_info));
+
+
+	nlohmann::json order_info2;
+	order_info2["order_event"] = OrderEvent::DM_Unfilled;
+	order_info2["account_no"] = order_request->account_no;
+	order_info2["order_no"] = order_no;
+	order_info2["symbol_code"] = order_request->symbol_code;
+	order_info2["order_price"] = order_request->order_price;
+	order_info2["order_amount"] = order_request->order_amount;
+	order_info2["position_type"] = order_request->position_type;
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	order_info2["original_order_no"] = "0";
+	order_info2["first_order_no"] = "0";
+	//order_info["order_type"] = static_cast<const char*>(strMan.Trim());
+	order_info2["remain_count"] = order_request->order_amount;
+	order_info2["cancelled_count"] = 0;
+	order_info2["modified_count"] = 0;
+	order_info2["filled_count"] = 0;
+	order_info2["order_sequence"] = 2;
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+
+	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+	order_info2["custom_info"] = user_defined_string;
+
+	mainApp.order_processor()->add_order_event(std::move(order_info2));
+}
+
+void OrderRequestManager::ab_make_change_order_event(order_request_p order_request)
 {
 
 }
 
-void OrderRequestManager::ab_make_unfilled_order_event(order_request_p order_request)
+void OrderRequestManager::ab_make_cancel_order_event(order_request_p order_request)
 {
 
 }
@@ -182,25 +283,25 @@ void OrderRequestManager::ab_make_filled_order_event(order_request_p order_reque
 void OrderRequestManager::on_new_order(order_request_p order_request)
 {
 	if (order_request->request_type == OrderRequestType::Abroad)
-		ab_make_accepted_order_event(order_request);
+		ab_make_new_order_event(order_request);
 	else
-		dm_make_accepted_order_event(order_request);
+		dm_make_new_order_event(order_request);
 }
 
 void OrderRequestManager::on_change_order(order_request_p order_request)
 {
 	if (order_request->request_type == OrderRequestType::Abroad)
-		ab_make_accepted_order_event(order_request);
+		ab_make_new_order_event(order_request);
 	else
-		dm_make_accepted_order_event(order_request);
+		dm_make_new_order_event(order_request);
 }
 
 void OrderRequestManager::on_cancel_order(order_request_p order_request)
 {
 	if (order_request->request_type == OrderRequestType::Abroad)
-		ab_make_accepted_order_event(order_request);
+		ab_make_new_order_event(order_request);
 	else
-		dm_make_accepted_order_event(order_request);
+		dm_make_new_order_event(order_request);
 }
 
 void OrderRequestManager::start_handle_order_request() noexcept

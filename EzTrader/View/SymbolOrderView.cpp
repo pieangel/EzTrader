@@ -228,28 +228,24 @@ void SymbolOrderView::draw_order_cell(
 }
 
 void SymbolOrderView::draw_order_by_price(
-	DarkHorse::SubOrderControl* sub_order_control, 
+	DarkHorse::SubOrderControl& sub_order_control,
 	DarkHorse::SmPositionType position)
 {
-	if (!sub_order_control) return;
-
-	const std::map<int, PriceOrderMap>& price_order_map = sub_order_control->order_map;
+	const std::map<int, std::shared_ptr<PriceOrderMap>>& price_order_map = sub_order_control.get_order_map();
 	for (auto it = price_order_map.begin(); it != price_order_map.end(); it++) {
-		draw_order_cell(position, it->second.price, it->second.count);
+		draw_order_cell(position, it->second->get_price(), it->second->count());
 	}
 }
 
 void SymbolOrderView::draw_total_order(
-	DarkHorse::SubOrderControl* sub_order_control,
+	const DarkHorse::SubOrderControl& sub_order_control,
 	DarkHorse::SmPositionType position)
 {
-	if (!sub_order_control) return;
-
 	const int col = (position == SmPositionType::Buy) ?
 		OrderGridHeader::BUY_ORDER :
 		OrderGridHeader::SELL_ORDER;
 	const int row = 1;
-	draw_cell(row, col, sub_order_control->total_count);
+	draw_cell(row, col, sub_order_control.total_count());
 }
 
 void SymbolOrderView::draw_order()
@@ -257,12 +253,12 @@ void SymbolOrderView::draw_order()
 	if (!order_control_) return;
 	if (_MovingOrder) return;
 
-	DarkHorse::SubOrderControl* order_control = order_control_->get_buy_order_control();
-	draw_order_by_price(order_control, SmPositionType::Buy);
-	draw_total_order(order_control, SmPositionType::Buy);
-	order_control = order_control_->get_sell_order_control();
-	draw_order_by_price(order_control, SmPositionType::Sell);
-	draw_total_order(order_control, SmPositionType::Sell);
+	DarkHorse::SubOrderControl& buy_order_control = order_control_->get_buy_order_control();
+	draw_order_by_price(buy_order_control, SmPositionType::Buy);
+	draw_total_order(buy_order_control, SmPositionType::Buy);
+	DarkHorse::SubOrderControl& sell_order_control = order_control_->get_sell_order_control();
+	draw_order_by_price(sell_order_control, SmPositionType::Sell);
+	draw_total_order(sell_order_control, SmPositionType::Sell);
 }
 
 void SymbolOrderView::update_quote()
@@ -1025,15 +1021,16 @@ std::pair<int, int> SymbolOrderView::get_order_count(const std::shared_ptr<DarkH
 	auto it_row = row_to_price_.find(source_cell->Row());
 	if (it_row == row_to_price_.end()) return std::make_pair(0, 0);
 
-	DarkHorse::SubOrderControl* order_control = nullptr;
 	if (source_cell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER)
-		order_control = order_control_->get_sell_order_control();
+		return order_control_->get_order_count(
+			DarkHorse::SmPositionType::Sell,
+			it_row->second
+		);
 	else
-		order_control = order_control_->get_buy_order_control();
-	auto it_price = order_control->order_map.find(it_row->second);
-	if (it_price == order_control->order_map.end()) return std::make_pair(0, 0);
-	const DarkHorse::PriceOrderMap& price_order_map = it_price->second;
-	return std::make_pair(it_price->first, price_order_map.count);
+		return order_control_->get_order_count(
+			DarkHorse::SmPositionType::Buy,
+			it_row->second
+		);
 }
 
 void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
@@ -1126,17 +1123,17 @@ void SymbolOrderView::PutOrderBySpaceBar()
 {
 	if (!account_ || !symbol_) return;
 
-	if (!_FixedSelectedCell) return;
+	if (!selected_cell_) return;
 
-	const int price = FindValue(_FixedSelectedCell->Row());
+	const int price = FindValue(selected_cell_->Row());
 
-	if (_FixedSelectedCell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER)
+	if (selected_cell_->Col() == DarkHorse::OrderGridHeader::SELL_ORDER)
 		PutOrder(SmPositionType::Sell, price);
-	else if (_FixedSelectedCell->Col() == DarkHorse::OrderGridHeader::BUY_ORDER)
+	else if (selected_cell_->Col() == DarkHorse::OrderGridHeader::BUY_ORDER)
 		PutOrder(SmPositionType::Buy, price);
-	else if (_FixedSelectedCell->Col() == DarkHorse::OrderGridHeader::BUY_STOP)
+	else if (selected_cell_->Col() == DarkHorse::OrderGridHeader::BUY_STOP)
 		PutStopOrder(SmPositionType::Buy, price);
-	else if (_FixedSelectedCell->Col() == DarkHorse::OrderGridHeader::SELL_STOP)
+	else if (selected_cell_->Col() == DarkHorse::OrderGridHeader::SELL_STOP)
 		PutStopOrder(SmPositionType::Sell, price);
 
 	_EnableOrderShow = true;
@@ -1638,22 +1635,20 @@ void SymbolOrderView::change_order(const std::shared_ptr<DarkHorse::SmCell>& src
 	if (!src_cell || !account_) return;
 	auto it_row = row_to_price_.find(src_cell->Row());
 	if (it_row == row_to_price_.end()) return;
-
-	DarkHorse::SubOrderControl* order_control = nullptr;
+	std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map = nullptr;
 	if (src_cell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER)
-		order_control = order_control_->get_sell_order_control();
+		price_order_map = order_control_->get_order_map(SmPositionType::Sell, it_row->second);
 	else
-		order_control = order_control_->get_buy_order_control();
-	auto it_price = order_control->order_map.find(it_row->second);
-	if (it_price == order_control->order_map.end()) return;
-	DarkHorse::PriceOrderMap& price_order_map = it_price->second;
+		price_order_map = order_control_->get_order_map(SmPositionType::Buy, it_row->second);
+	if (!price_order_map) return;
 	change_order_by_price(price_order_map, target_price);
 	_EnableOrderShow = true;
 }
 
-void SymbolOrderView::change_order_by_price(DarkHorse::PriceOrderMap& price_order_map, const int& target_price)
+void SymbolOrderView::change_order_by_price(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map, const int& target_price)
 {
-	for (auto it = price_order_map.order_map.begin(); it != price_order_map.order_map.end(); ++it) {
+	const std::map<std::string, std::shared_ptr<Order>>& order_map = price_order_map->get_order_map();
+	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
 		const auto& accepted_order = it->second;
 		auto order_req = OrderRequestManager::make_change_order_request(
 			accepted_order->account_no,
@@ -1665,7 +1660,7 @@ void SymbolOrderView::change_order_by_price(DarkHorse::PriceOrderMap& price_orde
 		SetProfitLossCut(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
-	price_order_map.order_map.clear();
+	price_order_map->clear();
 }
 
 void SymbolOrderView::ChangeStop(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const std::shared_ptr<DarkHorse::SmCell>& tgt_cell, const int& src_price, const int& tgt_price)
@@ -1838,7 +1833,7 @@ void SymbolOrderView::OnMouseLeave()
 {
 	if (_MouseMode == MouseMode::Normal) {
 		ClearOldSelectedCells();
-		_FixedSelectedCell = nullptr;
+		selected_cell_ = nullptr;
 		_SelectedValue.first = -1;
 		_SelectedValue.second = -1;
 	}
@@ -1863,7 +1858,7 @@ void SymbolOrderView::OnLButtonDown(UINT nFlags, CPoint point)
 	auto cell = _Grid->FindCellByPos(_X, _Y);
 	if (!cell) return;
 
-	if (cell) { _FixedSelectedCell = cell; }
+	if (cell) { selected_cell_ = cell; }
 
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
 	if (cell_pos.second == DarkHorse::OrderGridHeader::SELL_ORDER ||
@@ -1900,19 +1895,19 @@ void SymbolOrderView::OnRButtonDown(UINT nFlags, CPoint point)
 		///ClearOldSelectedCells();
 
 		auto cell = _Grid->FindCellByPos(_X, _Y);
-		if (cell) { _FixedSelectedCell = cell; }
+		if (cell) { selected_cell_ = cell; }
 
 		const auto order_count = get_order_count(cell);
 
 		if (order_count.second > 0) {
 			if (cell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER)
-				CancelOrder(_FixedSelectedCell);
+				CancelOrder(selected_cell_);
 			else if (cell->Col() == DarkHorse::OrderGridHeader::BUY_ORDER)
-				CancelOrder(_FixedSelectedCell);
+				CancelOrder(selected_cell_);
 			else if (cell->Col() == DarkHorse::OrderGridHeader::BUY_STOP)
-				CancelStop(_FixedSelectedCell);
+				CancelStop(selected_cell_);
 			else if (cell->Col() == DarkHorse::OrderGridHeader::SELL_STOP)
-				CancelStop(_FixedSelectedCell);
+				CancelStop(selected_cell_);
 
 			_EnableOrderShow = true;
 			_EnableStopShow = true;
@@ -1931,39 +1926,47 @@ void SymbolOrderView::OnLButtonUp(UINT nFlags, CPoint point)
 		_EndY = point.y;
 
 		auto cell = _Grid->FindCellByPos(_EndX, _EndY);
+
 		if (!cell) {
 			if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_ORDER)
-				CancelOrder(_FixedSelectedCell);
+				CancelOrder(selected_cell_);
 			else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_ORDER)
-				CancelOrder(_FixedSelectedCell);
+				CancelOrder(selected_cell_);
 			else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_STOP)
-				CancelStop(_FixedSelectedCell);
+				CancelStop(selected_cell_);
 			else if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_STOP)
-				CancelStop(_FixedSelectedCell);
+				CancelStop(selected_cell_);
 		}
 		else {
+			if (cell->Row() == selected_cell_->Row()) {
+				_DraggingOrder = false;
+				ReleaseCapture();
+				_MovingOrder = false;
+				CBCGPStatic::OnLButtonUp(nFlags, point);
+				return;
+			}
 			if (cell->Col() == _OrderStartCol) {
 				auto found = row_to_price_.find(cell->Row());
 				if (found == row_to_price_.end()) return;
 
 				if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_ORDER)
-					change_order(_FixedSelectedCell, found->second);
+					change_order(selected_cell_, found->second);
 				else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_ORDER)
-					change_order(_FixedSelectedCell, found->second);
+					change_order(selected_cell_, found->second);
 				else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_STOP)
-					ChangeStop(_FixedSelectedCell, cell, _OrderStartPrice, found->second);
+					ChangeStop(selected_cell_, cell, _OrderStartPrice, found->second);
 				else if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_STOP)
-					ChangeStop(_FixedSelectedCell, cell, _OrderStartPrice, found->second);
+					ChangeStop(selected_cell_, cell, _OrderStartPrice, found->second);
 			}
 			else {
 				if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_ORDER)
-					CancelOrder(_FixedSelectedCell);
+					CancelOrder(selected_cell_);
 				else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_ORDER)
-					CancelOrder(_FixedSelectedCell);
+					CancelOrder(selected_cell_);
 				else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_STOP)
-					CancelStop(_FixedSelectedCell);
+					CancelStop(selected_cell_);
 				else if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_STOP)
-					CancelStop(_FixedSelectedCell);
+					CancelStop(selected_cell_);
 			}
 		}
 
@@ -1972,9 +1975,8 @@ void SymbolOrderView::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	_EnableStopShow = true;
 	_EnableOrderShow = true;
-	Invalidate();
 	_MovingOrder = false;
-
+	Invalidate();
 	CBCGPStatic::OnLButtonUp(nFlags, point);
 }
 
