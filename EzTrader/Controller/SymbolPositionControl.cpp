@@ -4,17 +4,36 @@
 #include "../Event/EventHub.h"
 #include "../Position/Position.h"
 #include "../Log/MyLogger.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Symbol/SmSymbolManager.h"
 
 namespace DarkHorse {
 	SymbolPositionControl::SymbolPositionControl()
 		: id_(IdGenerator::get_id())
 	{
 		subscribe_position_control();
+
+		mainApp.event_hub()->subscribe_quote_event_handler
+		(
+			id_,
+			std::bind(&SymbolPositionControl::update_quote, this, std::placeholders::_1)
+		);
 	}
 
 	SymbolPositionControl::~SymbolPositionControl()
 	{
+		mainApp.event_hub()->unsubscribe_position_event_handler(id_);
 		mainApp.event_hub()->unsubscribe_quote_event_handler(id_);
+	}
+
+	void SymbolPositionControl::update_quote(std::shared_ptr<SmQuote> quote)
+	{
+		if (symbol_id_ != 0 && quote->symbol_id != symbol_id_ ) return;
+		double open_profit_loss = 0;
+		open_profit_loss = position_.open_quantity * (quote->close - position_.average_price) * symbol_seung_su_;
+		open_profit_loss = open_profit_loss / pow(10, symbol_decimal_);
+		position_.open_profit_loss = open_profit_loss;
+		if (event_handler_) event_handler_();
 	}
 
 	void SymbolPositionControl::update_position(std::shared_ptr<Position> position)
@@ -41,6 +60,20 @@ namespace DarkHorse {
 			const std::string error = e.what();
 			LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 		}
+	}
+
+	void SymbolPositionControl::set_symbol_id(const int symbol_id)
+	{
+		symbol_id_ = symbol_id;
+		auto symbol = mainApp.SymMgr()->FindSymbolById(symbol_id_);
+		if (!symbol) return;
+		symbol_decimal_ = symbol->Decimal();
+		symbol_seung_su_ = symbol->SeungSu();
+	}
+
+	void SymbolPositionControl::set_account_id(const int account_id)
+	{
+		account_id_ = account_id;
 	}
 
 	void SymbolPositionControl::subscribe_position_control()

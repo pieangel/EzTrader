@@ -166,7 +166,7 @@ LRESULT AbAccountOrderCenterWindow::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
 
 void AbAccountOrderCenterWindow::SetMainDialog(AbAccountOrderWindow* main_dialog)
 {
-	//_OrderArea.SetMainDialog(main_dialog);
+	//symbol_order_view_.SetMainDialog(main_dialog);
 }
 
 void AbAccountOrderCenterWindow::SetFundDialog(SmFundOrderDialog* fund_dialog)

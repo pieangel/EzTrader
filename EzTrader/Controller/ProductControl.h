@@ -19,7 +19,7 @@ namespace DarkHorse {
 
 	public:
 		ProductControl();
-		~ProductControl() {};
+		~ProductControl();
 		void update_product(std::shared_ptr<SmSymbol> symbol);
 		const VmProduct& get_product()
 		{

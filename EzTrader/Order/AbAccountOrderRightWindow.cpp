@@ -26,8 +26,8 @@ AbAccountOrderRightWindow::~AbAccountOrderRightWindow()
 void AbAccountOrderRightWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_STATIC_ACCOUNT, _AssetArea);
-	DDX_Control(pDX, IDC_STATIC_SYMBOL_MASTER, _SymbolArea);
+	DDX_Control(pDX, IDC_STATIC_ACCOUNT, asset_view_);
+	DDX_Control(pDX, IDC_STATIC_SYMBOL_MASTER, symbol_info_view_);
 }
 
 
@@ -41,13 +41,13 @@ END_MESSAGE_MAP()
 
 void AbAccountOrderRightWindow::SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account)
 {
-	_AssetArea.Account(account);
-	_AssetArea.SetAssetInfo();
+	asset_view_.Account(account);
+	asset_view_.SetAssetInfo();
 }
 
 void AbAccountOrderRightWindow::SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol)
 {
-	_SymbolArea.Symbol(symbol);
+	symbol_info_view_.Symbol(symbol);
 }
 
 void AbAccountOrderRightWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
@@ -59,15 +59,15 @@ void AbAccountOrderRightWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSym
 {
 	if (!symbol) return;
 
-	_SymbolArea.Symbol(symbol);
+	symbol_info_view_.Symbol(symbol);
 }
 
 BOOL AbAccountOrderRightWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
-	_AssetArea.SetUp();
-	_SymbolArea.SetUp();
+	asset_view_.SetUp();
+	symbol_info_view_.SetUp();
 	
 
 	//SetTimer(1, 100, NULL);

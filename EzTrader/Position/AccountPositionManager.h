@@ -14,6 +14,9 @@ class AccountPositionManager
 public:
 	position_p get_position(const std::string& symbol_code);
 	void update_position(order_p order);
+	const std::map<std::string, position_p>& get_position_map() {
+		return position_map_;
+	}
 private:
 	void add_cut_stop_order(order_p order);
 	order_request_p make_loss_cut_stop_order(order_request_p prev_order_req, order_p order);

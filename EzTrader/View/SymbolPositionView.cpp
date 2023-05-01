@@ -19,6 +19,7 @@
 #include "../Util/SmUtil.h"
 #include "../Controller/SymbolPositionControl.h"
 #include "../ViewModel/VmPosition.h"
+#include "../Account/SmAccountManager.h"
 #include <format>
 
 #include <functional>
@@ -153,12 +154,12 @@ void SymbolPositionView::Clear()
 
 void SymbolPositionView::update_quote()
 {
-	if (!quote_control_ || !_Symbol) return;
+	if (!quote_control_ || !symbol_) return;
 	if (!position_control_) return;
 	const VmQuote& quote = quote_control_->get_quote();
 	const VmPosition& position = position_control_->get_position();
 	std::string value = std::to_string(quote.close);
-	SmUtil::insert_decimal(value, _Symbol->Decimal());
+	SmUtil::insert_decimal(value, symbol_->Decimal());
 	auto cell = _Grid->FindCell(1, 4);
 	if (position.open_quantity == 0)
 		cell->CellType(SmCellType::CT_NORMAL);
@@ -171,29 +172,30 @@ void SymbolPositionView::update_quote()
 
 void SymbolPositionView::Symbol(std::shared_ptr<SmSymbol> val)
 {
-	_Symbol = val;
-	auto quote = mainApp.QuoteMgr()->get_quote(_Symbol->SymbolCode());
-	quote->symbol_id = val->Id();
-	quote_control_->set_symbol_id(val->Id());
+	symbol_ = val;
+	auto quote = mainApp.QuoteMgr()->get_quote(symbol_->SymbolCode());
+	quote->symbol_id = symbol_->Id();
+	quote_control_->set_symbol_id(symbol_->Id());
 	quote_control_->update_quote(quote);
+	position_control_->set_symbol_id(symbol_->Id());
 	update_quote();
-	UpdatePositionInfo();
-	Invalidate();
+	update_position();
+	enable_position_show_ = true;
 }
 
 void SymbolPositionView::UpdatePositionInfo()
 {
-	if (!_Account || !_Symbol) return Clear();
+	if (!account_ || !symbol_) return Clear();
 
-	std::shared_ptr<SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(_Account->No(), _Symbol->SymbolCode());
+	std::shared_ptr<SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(account_->No(), symbol_->SymbolCode());
 	if (position->OpenQty == 0) return Clear();
 	std::shared_ptr<SmCell> cell = _Grid->FindCell(1, 0);
 	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	cell->Text(_Symbol->SymbolCode());
+	cell->Text(symbol_->SymbolCode());
 	cell = _Grid->FindCell(1, 4);
-	std::string value_string = std::format("{0}", _Symbol->Qoute.close);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	std::string value_string = std::format("{0}", symbol_->Qoute.close);
+	if (symbol_->Decimal() > 0 && value_string.length() > (size_t)symbol_->Decimal())
+		value_string.insert(value_string.length() - symbol_->Decimal(), 1, '.');
 	cell->Text(value_string);
 	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 
@@ -210,8 +212,8 @@ void SymbolPositionView::UpdatePositionInfo()
 	cell = _Grid->FindCell(1, 3);
 	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	value_string = std::format("{0}", avg_price);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	if (symbol_->Decimal() > 0 && value_string.length() > (size_t)symbol_->Decimal())
+		value_string.insert(value_string.length() - symbol_->Decimal(), 1, '.');
 	cell->Text(value_string);
 	cell = _Grid->FindCell(1, 5);
 	if (position->OpenPL != 0)
@@ -231,6 +233,14 @@ void SymbolPositionView::OnEndEditCell(int nRow, int nCol, CString str)
 	_Grid->SetCellText(nRow, nCol, std::string(str));
 	_Grid->OnEndEdit();
 	_Editing = false;
+}
+
+void SymbolPositionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	account_ = val;
+	position_control_->set_account_id(account_->id());
+	update_position();
+	enable_position_show_ = true;
 }
 
 void SymbolPositionView::OnOrderChanged(const int& account_id, const int& symbol_id)
@@ -257,7 +267,7 @@ void SymbolPositionView::update_position()
 	if (position.open_quantity == 0) return Clear();
 	std::shared_ptr<SmCell> cell = _Grid->FindCell(1, 0);
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	cell->Text(_Symbol->SymbolCode());
+	cell->Text(symbol_->SymbolCode());
 	/*
 	cell = _Grid->FindCell(1, 4);
 	std::string value_string = std::format("{0}", _Symbol->Qoute.close);
@@ -280,8 +290,8 @@ void SymbolPositionView::update_position()
 	cell = _Grid->FindCell(1, 3);
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	std::string value_string = std::format("{0}", avg_price);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	if (symbol_->Decimal() > 0 && value_string.length() > (size_t)symbol_->Decimal())
+		value_string.insert(value_string.length() - symbol_->Decimal(), 1, '.');
 	cell->Text(value_string);
 	cell = _Grid->FindCell(1, 5);
 	if (position.open_profit_loss != 0)
@@ -380,7 +390,7 @@ void SymbolPositionView::OnEndInPlaceEdit(NMHDR* pNMHDR, LRESULT* pResult)
 
 void SymbolPositionView::OnTimer(UINT_PTR nIDEvent)
 {
-	if (!_Symbol) return;
+	if (!symbol_) return;
 	bool needDraw = false;
 	if (enable_quote_show_) {
 		update_quote();

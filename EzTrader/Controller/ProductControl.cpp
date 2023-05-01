@@ -10,7 +10,12 @@ namespace DarkHorse {
 	ProductControl::ProductControl()
 		: id_(IdGenerator::get_id())
 	{
-		subscribe_product_control();
+		
+	}
+
+	ProductControl::~ProductControl()
+	{
+		
 	}
 
 	int ProductControl::get_next_up_value(const int value)
@@ -211,13 +216,7 @@ namespace DarkHorse {
 
 	void ProductControl::subscribe_product_control()
 	{
-		/*
-		mainApp.event_hub()->subscribe_product_event_handler
-		(
-			id_,
-			std::bind(&ProductControl::update_product, this, std::placeholders::_1)
-		);
-		*/
+		
 	}
 	void ProductControl::update_product(std::shared_ptr<SmSymbol> symbol)
 	{

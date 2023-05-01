@@ -5,11 +5,13 @@
 #include <functional>
 namespace DarkHorse {
 	struct Position;
+	struct SmQuote;
 	class SymbolPositionControl
 	{
 	public:
 		SymbolPositionControl();
 		~SymbolPositionControl();
+		void update_quote(std::shared_ptr<SmQuote> quote);
 		void update_position(std::shared_ptr<Position> position);
 		const VmPosition& get_position()
 		{
@@ -19,16 +21,14 @@ namespace DarkHorse {
 		{
 			return id_;
 		}
-		void set_symbol_id(const int symbol_id) {
-			symbol_id_ = symbol_id;
-		}
-		void set_account_id(const int account_id) {
-			symbol_id_ = account_id;
-		}
+		void set_symbol_id(const int symbol_id);
+		void set_account_id(const int account_id);
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}
 	private:
+		int symbol_seung_su_{ 1 };
+		int symbol_decimal_{ 1 };
 		int id_{ 0 };
 		int symbol_id_{ 0 };
 		int account_id_{ 0 };

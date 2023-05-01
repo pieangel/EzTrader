@@ -31,16 +31,13 @@ public:
 	DECLARE_MESSAGE_MAP()
 public:
 	void Clear();
-	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
+	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return symbol_; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 	void update_quote();
 	void UpdatePositionInfo();
 	void  OnEndEditCell(int nRow, int nCol, CString str);
-	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
-	void Account(std::shared_ptr<DarkHorse::SmAccount> val) {
-		_Account = val;
-
-	}
+	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
+	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
@@ -66,8 +63,8 @@ private:
 
 	CBCGPGraphicsManager* m_pGM{ nullptr };
 
-	std::shared_ptr<DarkHorse::SmSymbol> _Symbol{ nullptr };
-	std::shared_ptr<DarkHorse::SmAccount> _Account{ nullptr };
+	std::shared_ptr<DarkHorse::SmSymbol> symbol_{ nullptr };
+	std::shared_ptr<DarkHorse::SmAccount> account_{ nullptr };
 public:
 	// OnLButtonDblClk
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
