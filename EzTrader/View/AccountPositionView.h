@@ -23,6 +23,7 @@ namespace DarkHorse {
 	class SmAccount;
 	struct SmPosition;
 	class SmFund;
+	struct Position;
 }
 
 class DmAccountOrderWindow;
@@ -143,6 +144,7 @@ private:
 	void ClearOldContents(const int& last_index);
 	// key : row, value : SmPosition Object
 	std::map<int, std::shared_ptr<DarkHorse::SmPosition>> _RowToPositionMap;
+	std::map<int, std::shared_ptr<DarkHorse::Position>> row_to_position_;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

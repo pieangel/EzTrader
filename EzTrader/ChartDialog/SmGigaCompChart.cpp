@@ -466,12 +466,12 @@ void SmGigaCompChart::SetChartData()
 	for (size_t i = 0; i < index.size(); i++) {
 		auto symbol = mainApp.SymMgr()->FindSymbol(_CompData.KospiSymbolCode());
 		if (symbol) {
-			main_divedend = pow(10, symbol->Decimal());
+			main_divedend = pow(10, symbol->decimal());
 			data_nasdaq = main[i] / main_divedend, index[i];
 		}
 		symbol = mainApp.SymMgr()->FindSymbol(_CompData.NqSymbolCode());
 		if (symbol) {
-			comp_divedend = pow(10, symbol->Decimal());
+			comp_divedend = pow(10, symbol->decimal());
 			data_kospi200 = comp[i] / comp_divedend, index[i];
 			data_vir1 = vir1[i] / comp_divedend, index[i];
 			data_vir2 = vir2[i] / comp_divedend, index[i];

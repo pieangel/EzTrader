@@ -12,11 +12,10 @@ namespace DarkHorse {
 		: id_(IdGenerator::get_id())
 	{
 		subscribe_position_control();
-
 		mainApp.event_hub()->subscribe_quote_event_handler
 		(
 			id_,
-			std::bind(&SymbolPositionControl::update_quote, this, std::placeholders::_1)
+			std::bind(&SymbolPositionControl::update_profit_loss, this, std::placeholders::_1)
 		);
 	}
 
@@ -26,7 +25,7 @@ namespace DarkHorse {
 		mainApp.event_hub()->unsubscribe_quote_event_handler(id_);
 	}
 
-	void SymbolPositionControl::update_quote(std::shared_ptr<SmQuote> quote)
+	void SymbolPositionControl::update_profit_loss(std::shared_ptr<SmQuote> quote)
 	{
 		if (symbol_id_ != 0 && quote->symbol_id != symbol_id_ ) return;
 		double open_profit_loss = 0;
@@ -67,8 +66,8 @@ namespace DarkHorse {
 		symbol_id_ = symbol_id;
 		auto symbol = mainApp.SymMgr()->FindSymbolById(symbol_id_);
 		if (!symbol) return;
-		symbol_decimal_ = symbol->Decimal();
-		symbol_seung_su_ = symbol->SeungSu();
+		symbol_decimal_ = symbol->decimal();
+		symbol_seung_su_ = symbol->seung_su();
 	}
 
 	void SymbolPositionControl::set_account_id(const int account_id)

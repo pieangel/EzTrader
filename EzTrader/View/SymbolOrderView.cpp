@@ -346,7 +346,7 @@ void SymbolOrderView::SetPosition()
 	std::shared_ptr<SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(account_->No(), symbol_->SymbolCode());
 	if (position->OpenQty == 0) return;
 	int avg_price = static_cast<int>(position->AvgPrice);
-	const int int_tick_size = static_cast<int>(symbol_->TickSize() * pow(10, symbol_->Decimal()));
+	const int int_tick_size = static_cast<int>(symbol_->TickSize() * pow(10, symbol_->decimal()));
 	const int mod = avg_price % int_tick_size;
 	const int half_tick_size = (int)(int_tick_size / 2);
 	// 나머지 보다 작으면 빼주고 아니면 틱크기에서 나머지를 뺀 값을 더해 준다.

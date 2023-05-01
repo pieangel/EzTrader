@@ -13,8 +13,27 @@
 #include "../Order/OrderRequest/OrderRequest.h"
 #include "../Order/OrderRequest/OrderRequestManager.h"
 #include "../Order/SmOrderConst.h"
-
+#include <functional>
+#include "../Util/IdGenerator.h"
 namespace DarkHorse {
+
+	AccountPositionManager::AccountPositionManager()
+	{
+		id_ = IdGenerator::get_id();
+		/*
+		mainApp.event_hub()->subscribe_quote_event_handler
+		(
+			id_,
+			std::bind(&AccountPositionManager::update_profit_loss, this, std::placeholders::_1)
+		);
+		*/
+	}
+
+	AccountPositionManager::~AccountPositionManager()
+	{
+		//mainApp.event_hub()->unsubscribe_position_event_handler(id_);
+	}
+
 position_p AccountPositionManager::get_position(const std::string& symbol_code)
 {
 	position_p position = find_position(symbol_code);
@@ -61,6 +80,21 @@ void AccountPositionManager::update_position(order_p order)
 	mainApp.event_hub()->process_position_event(position);
 }
 
+void AccountPositionManager::update_profit_loss(std::shared_ptr<SmQuote> quote)
+{
+	if (!quote) return;
+	auto symbol = mainApp.SymMgr()->FindSymbol(quote->symbol_code);
+	if (!symbol) return;
+	position_p position = get_position(quote->symbol_code);
+	if (!position) return;
+	double open_profit_loss = 0;
+	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
+	open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
+	position->open_profit_loss = open_profit_loss;
+
+	mainApp.event_hub()->process_position_event(position);
+}
+
 order_request_p AccountPositionManager::make_loss_cut_stop_order(order_request_p prev_order_req, order_p order)
 {
 	return nullptr;
@@ -79,7 +113,7 @@ void AccountPositionManager::add_cut_stop_order(order_p order)
 	const auto account = mainApp.AcntMgr()->FindAccount(order->account_no);
 	if (!account) return;
 
-	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
+	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	int loss_cut_price = 0, profit_cut_price = 0;
 	if (order->position == SmPositionType::Buy) {
 		profit_cut_price = order->filled_price + old_req->profit_cut_tick * int_tick_size;
@@ -218,8 +252,8 @@ void AccountPositionManager::update_open_profit_loss(position_p position)
 	if (!quote || !symbol) return;
 
 	double open_profit_loss = 0;
-	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->SeungSu();
-	open_profit_loss = open_profit_loss / pow(10, symbol->Decimal());
+	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
+	open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
 	position->open_profit_loss = open_profit_loss;
 }
 

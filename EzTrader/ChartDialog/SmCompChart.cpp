@@ -629,13 +629,13 @@ void SmCompChart::SetChartData(std::shared_ptr<DarkHorse::SmChartData> chart_dat
 
 	CBCGPChartAxis* pAxisY = pChart->GetChartAxis(BCGP_CHART_Y_PRIMARY_AXIS);
 	CString yAxisFormat;
-	yAxisFormat.Format("%%.%df", symbol->Decimal());
+	yAxisFormat.Format("%%.%df", symbol->decimal());
 	pAxisY->m_strDataFormat = yAxisFormat;
 
-	yAxisFormat.Format("O: %% .%df, H : %% .%df, L : %% .%df, C : %% .%df", symbol->Decimal(), symbol->Decimal(), symbol->Decimal(), symbol->Decimal());
+	yAxisFormat.Format("O: %% .%df, H : %% .%df, L : %% .%df, C : %% .%df", symbol->decimal(), symbol->decimal(), symbol->decimal(), symbol->decimal());
 	_OhlcFormat = yAxisFormat;
 
-	yAxisFormat.Format("RSI(%%d), Value: %%.%df", symbol->Decimal());
+	yAxisFormat.Format("RSI(%%d), Value: %%.%df", symbol->decimal());
 	_RsiFormat = yAxisFormat;
 
 	int found_index = -1;
@@ -886,7 +886,7 @@ void SmCompChart::AddChartData()
 	std::vector<int> ymd = SmUtil::IntToDate(data.date_time.date());
 	COleDateTime ole_date_time;
 	ole_date_time.SetDateTime(ymd[0], ymd[1], ymd[2], data.date_time.hour(), data.date_time.minute(), data.date_time.sec());
-	double divedend = pow(10, symbol->Decimal());
+	double divedend = pow(10, symbol->decimal());
 	CBCGPChartStockData stockData;
 	stockData.m_dateTime = ole_date_time;
 	stockData.m_dblHigh = data.high / divedend;
@@ -907,7 +907,7 @@ void SmCompChart::UpdateChartData()
 
 	SmStockData data;
 	_ChartData->GetLastData(data);
-	double divedend = pow(10, symbol->Decimal());
+	double divedend = pow(10, symbol->decimal());
 	//_MainStorage.UpdateData(data.open / divedend, data.high / divedend, data.low / divedend, data.close / divedend);
 }
 

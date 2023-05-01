@@ -200,7 +200,7 @@ void SmFavoriteArea::SetFavorite()
 		std::string value;
 		std::string value_precision;
 		value_precision.append("{0:.");
-		value_precision.append(std::to_string(it->second->Decimal()));
+		value_precision.append(std::to_string(it->second->decimal()));
 		value_precision.append("f}");
 		value = std::format("{0:.2f}", static_cast<double>(it->second->Qoute.close));
 		if (cell) cell->Text(value);
@@ -228,7 +228,7 @@ void SmFavoriteArea::UpdateQuote()
 		std::string value;
 		std::string value_precision;
 		value_precision.append("{0:.");
-		value_precision.append(std::to_string(it->second->Decimal()));
+		value_precision.append(std::to_string(it->second->decimal()));
 		value_precision.append("f}");
 		value = std::format("{0:.2f}", static_cast<double>(it->second->Qoute.close));
 		

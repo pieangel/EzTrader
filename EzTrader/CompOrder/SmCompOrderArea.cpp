@@ -410,8 +410,8 @@ void SmCompOrderArea::SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 			std::string value_string;
 		
 			value_string = std::format("{0}", symbol->Hoga.Ary[i].SellPrice);
-			if (symbol->Decimal() > 0)
-				value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+			if (symbol->decimal() > 0)
+				value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
 
 			pCell->Text(value_string);
 
@@ -420,8 +420,8 @@ void SmCompOrderArea::SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 
 
 			value_string = std::format("{0}", symbol->Hoga.Ary[i].BuyPrice);
-			if (symbol->Decimal() > 0)
-				value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+			if (symbol->decimal() > 0)
+				value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
 
 			pCell->Text(value_string);
 
@@ -449,8 +449,8 @@ void SmCompOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	std::string value_text;
 
 	std::string  close_text = std::format("시가 : {0}", symbol->Qoute.open);
-	if (symbol->Decimal() > 0)
-		close_text.insert(close_text.length() - symbol->Decimal(), 1, '.');
+	if (symbol->decimal() > 0)
+		close_text.insert(close_text.length() - symbol->decimal(), 1, '.');
 
 	value_text.append(close_text);
 	value_text.append("\n");
@@ -458,8 +458,8 @@ void SmCompOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 
 
 	close_text = std::format("고가 : {0}", symbol->Qoute.high);
-	if (symbol->Decimal() > 0)
-		close_text.insert(close_text.length() - symbol->Decimal(), 1, '.');
+	if (symbol->decimal() > 0)
+		close_text.insert(close_text.length() - symbol->decimal(), 1, '.');
 
 	value_text.append(close_text);
 	value_text.append("\n");
@@ -467,8 +467,8 @@ void SmCompOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 
 
 	close_text = std::format("저가 : {0}", symbol->Qoute.low);
-	if (symbol->Decimal() > 0)
-		close_text.insert(close_text.length() - symbol->Decimal(), 1, '.');
+	if (symbol->decimal() > 0)
+		close_text.insert(close_text.length() - symbol->decimal(), 1, '.');
 
 	value_text.append(close_text);
 	value_text.append("\n");
@@ -476,8 +476,8 @@ void SmCompOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 
 
 	close_text = std::format("종가 : {0}", symbol->Qoute.close);
-	if (symbol->Decimal() > 0)
-		close_text.insert(close_text.length() - symbol->Decimal(), 1, '.');
+	if (symbol->decimal() > 0)
+		close_text.insert(close_text.length() - symbol->decimal(), 1, '.');
 
 	value_text.append(close_text);
 	//value_text.append("\n");

@@ -1823,7 +1823,7 @@ void SmGigaSpreadChart::SetChartData2(std::shared_ptr<DarkHorse::SmChartData> ch
 
 	CBCGPChartAxis* pAxisY = pChart->GetChartAxis(BCGP_CHART_Y_SECONDARY_AXIS);
 	CString yAxisFormat;
-	yAxisFormat.Format("%%.%df", symbol->Decimal());
+	yAxisFormat.Format("%%.%df", symbol->decimal());
 	pAxisY->m_strDataFormat = yAxisFormat;
 
 	pChart->RecalcMinMaxValues();
@@ -2063,7 +2063,7 @@ void SmGigaSpreadChart::AddChartData()
 	std::vector<int> ymd = SmUtil::IntToDate(data.date_time.date());
 	COleDateTime ole_date_time;
 	ole_date_time.SetDateTime(ymd[0], ymd[1], ymd[2], data.date_time.hour(), data.date_time.minute(), data.date_time.sec());
-	double divedend = pow(10, symbol->Decimal());
+	double divedend = pow(10, symbol->decimal());
 	CBCGPChartStockData stockData;
 	stockData.m_dateTime = ole_date_time;
 	stockData.m_dblHigh = data.high / divedend;
@@ -2084,7 +2084,7 @@ void SmGigaSpreadChart::UpdateChartData()
 
 	SmStockData data;
 	_ChartData->GetLastData(data);
-	double divedend = pow(10, symbol->Decimal());
+	double divedend = pow(10, symbol->decimal());
 	//_MainStorage.UpdateData(data.open / divedend, data.high / divedend, data.low / divedend, data.close / divedend);
 }
 

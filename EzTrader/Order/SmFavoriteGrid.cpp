@@ -267,8 +267,8 @@ void SmFavoriteGrid::SetFavorite()
 		std::string value_string;
 
 		value_string = std::format("{0}", it->second->Qoute.close);
-		if (it->second->Decimal() > 0 && value_string.length() > (size_t)it->second->Decimal())
-			value_string.insert(value_string.length() - it->second->Decimal(), 1, '.');
+		if (it->second->decimal() > 0 && value_string.length() > (size_t)it->second->decimal())
+			value_string.insert(value_string.length() - it->second->decimal(), 1, '.');
 
 		pRow->GetItem(1)->SetValue(value_string.c_str(), TRUE);
 		row++;
@@ -297,8 +297,8 @@ void SmFavoriteGrid::UpdateQuote()
 		std::string value_string;
 
 		value_string = std::format("{0}", it->second->Qoute.close);
-		if (it->second->Decimal() > 0 && value_string.length() > (size_t)it->second->Decimal())
-			value_string.insert(value_string.length() - it->second->Decimal(), 1, '.');
+		if (it->second->decimal() > 0 && value_string.length() > (size_t)it->second->decimal())
+			value_string.insert(value_string.length() - it->second->decimal(), 1, '.');
 
 		pRow->GetItem(1)->SetValue(value_string.c_str(), TRUE);
 		row++;

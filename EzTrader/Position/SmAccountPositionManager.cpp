@@ -41,9 +41,9 @@ void DarkHorse::SmAccountPositionManager::UpdatePosition(const std::string& symb
 	auto position = found->second;
 	if (position->OpenQty == 0) { SumAccountPL(); return; }
 
-	const double open_pl = position->OpenQty * (symbol->Qoute.close - position->AvgPrice) * symbol->SeungSu();
+	const double open_pl = position->OpenQty * (symbol->Qoute.close - position->AvgPrice) * symbol->seung_su();
 
-	const double open_pl_value = open_pl / pow(10, symbol->Decimal());
+	const double open_pl_value = open_pl / pow(10, symbol->decimal());
 
 	position->OpenPL = open_pl_value;
 

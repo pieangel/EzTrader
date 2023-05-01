@@ -374,7 +374,7 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		VmOption option_info;
 		option_info.strike = symbol->Strike();
 		option_info.atm = symbol->AtmType();
-		option_info.decimal = symbol->Decimal();
+		option_info.decimal = symbol->decimal();
 		if (option_info.atm == 1) atm_index_ = i;
 		option_info.close = quote->close;
 		option_info.expected = quote->expected;

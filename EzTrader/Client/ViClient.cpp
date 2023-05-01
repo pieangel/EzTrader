@@ -1847,7 +1847,7 @@ int DarkHorse::ViClient::ConvertToInt(CString& strSymbolCode, CString& strValue)
 	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol((LPCTSTR)strSymbolCode);
 	if (!symbol) return -1;
 	double converted_value = _ttof(strValue);
-	converted_value = converted_value * pow(10, symbol->Decimal());
+	converted_value = converted_value * pow(10, symbol->decimal());
 	return static_cast<int>(converted_value);
 }
 
@@ -2631,7 +2631,7 @@ void DarkHorse::ViClient::OnDomesticSymbolCode(const CString& sTrCode, const LON
 		if (symbol) {
 			symbol->MarketName(product->MarketName());
 			symbol->ProductCode(product_code);
-			symbol->Decimal(2);
+			symbol->decimal(2);
 			symbol->SymbolNameKr("ÄÚ½ºÇÇ200");
 			symbol->SymbolNameEn("Kospi200");
 		}
@@ -3286,11 +3286,11 @@ void DarkHorse::ViClient::OnAcceptedList(const CString& sTrCode, const LONG& nRq
 		int pos = strOrderPrice.Find(".");
 		if (pos == -1) {
 			strOrderPrice.Append(".");
-			for (int i = 0; i < symbol->Decimal(); i++)
+			for (int i = 0; i < symbol->decimal(); i++)
 				strOrderPrice.Append("0");
 		}
 		else {
-			int delta = (pos + symbol->Decimal() + 1) - whole_len;
+			int delta = (pos + symbol->decimal() + 1) - whole_len;
 			for (int i = 0; i < delta; i++)
 				strOrderPrice.Append("0");
 		}

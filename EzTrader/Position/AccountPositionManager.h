@@ -4,6 +4,8 @@
 #include <memory>
 namespace DarkHorse {
 	struct Position;
+	struct SmQuote;
+	using quote_p = std::shared_ptr<SmQuote>;
 	using position_p = std::shared_ptr<Position>;
 	struct Order;
 	struct OrderRequest;
@@ -12,8 +14,11 @@ namespace DarkHorse {
 class AccountPositionManager
 {
 public:
+	AccountPositionManager();
+	~AccountPositionManager();
 	position_p get_position(const std::string& symbol_code);
 	void update_position(order_p order);
+	void update_profit_loss(std::shared_ptr<SmQuote> quote);
 	const std::map<std::string, position_p>& get_position_map() {
 		return position_map_;
 	}
@@ -33,6 +38,7 @@ private:
 	position_p create_position(const std::string& symbol_code);
 	// key : symbol coode, value : position object.
 	std::map<std::string, position_p> position_map_;
+	int id_{ 0 };
 };
 }
 

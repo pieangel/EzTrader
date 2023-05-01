@@ -45,13 +45,6 @@ private:
 	AccountOrderView account_order_view_;
 	AccountPositionView account_position_view_;
 	FavoriteSymbolView favorite_symbol_view_;
-
-	//SmFilledArea _FilledArea;
-	//SmFavoriteArea _FavoriteArea;
-	//SmAcceptedArea _AcceptedArea;
-	//CBCGPScrollBar _VScrollBarAcpt;
-	//CBCGPScrollBar _VScrollBarPosi;
-	//CBCGPScrollBar _VScrollBarFav;
 public:
 	void SetMainWnd(AbAccountOrderWindow* main_wnd);
 	virtual BOOL OnInitDialog();

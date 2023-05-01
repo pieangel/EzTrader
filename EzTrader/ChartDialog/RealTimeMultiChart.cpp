@@ -1857,13 +1857,13 @@ void RealTimeMultiChart::LoadChartData()
 	for (size_t i = 0; i < index.size(); i++) {
 		auto symbol = mainApp.SymMgr()->FindSymbol(_ChartData.KospiSymbolCode());
 		if (symbol) {
-			main_divedend = pow(10, symbol->Decimal());
+			main_divedend = pow(10, symbol->decimal());
 			//m_arSeries[0]->AddDataPoint(main[i] / main_divedend, index[i]);
 			//m_arSeries[0]->m_strSeriesName = symbol->SymbolNameKr().c_str();
 		}
 		symbol = mainApp.SymMgr()->FindSymbol(_ChartData.NqSymbolCode());
 		if (symbol) {
-			comp_divedend = pow(10, symbol->Decimal());
+			comp_divedend = pow(10, symbol->decimal());
 			//m_arSeries[1]->m_strSeriesName = symbol->SymbolNameKr().c_str();
 			//m_arSeries[1]->AddDataPoint(comp[i] / comp_divedend, index[i]);
 			//m_arSeries[2]->AddDataPoint(vir1[i] / comp_divedend, index[i]);

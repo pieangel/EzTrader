@@ -196,8 +196,8 @@ void SmJangoPositionArea::UpdateAccountPositionInfo()
 
 		std::shared_ptr<DarkHorse::SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->SymbolCode);
 		if (symbol) {
-			if (symbol->Decimal() > 0 && value_string.length() > (size_t)symbol->Decimal())
-				value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+			if (symbol->decimal() > 0 && value_string.length() > (size_t)symbol->decimal())
+				value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
 			if (cell) cell->Text(value_string);
 		}
 		
@@ -271,8 +271,8 @@ void SmJangoPositionArea::UpdateFundPositionInfo()
 
 			std::shared_ptr<DarkHorse::SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->SymbolCode);
 			if (symbol) {
-				if (symbol->Decimal() > 0 && value_string.length() > (size_t)symbol->Decimal())
-					value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+				if (symbol->decimal() > 0 && value_string.length() > (size_t)symbol->decimal())
+					value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
 				if (cell) cell->Text(value_string);
 			}
 

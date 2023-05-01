@@ -257,7 +257,7 @@ void DmFutureView::init_dm_future()
 			if (symbol) {
 				auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
 				VmFuture future_info;
-				future_info.decimal = symbol->Decimal();
+				future_info.decimal = symbol->decimal();
 				future_info.close = quote->close;
 				future_info.expected = quote->expected;
 				future_info.ordered = false;

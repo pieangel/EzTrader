@@ -352,7 +352,7 @@ void SmChartData::SetChartData(std::vector<double>&& cd_v, std::vector<double>&&
 	if (!symbol) return;
 
 	
-	double divedend = pow(10, symbol->Decimal());
+	double divedend = pow(10, symbol->decimal());
 	double open = 0, high = 0, low = 0, close = 0;
 	for (size_t i = 0; i < _DataFrame.shape().first; i++) {
 		const std::vector<hmdf::DateTime>& index = _DataFrame.get_index();
@@ -566,7 +566,7 @@ void DarkHorse::SmChartData::OnTickData(const SmTick& tick_data)
 			//CString msg;
 			//msg.Format("date = %d, hour = %d, min = %d, sec = %d, msec =%d\n", local_now.date(), local_now.hour(), local_now.minute(), local_now.sec(), msec);
 			//TRACE(msg);
-			double divedend = pow(10, symbol->Decimal());
+			double divedend = pow(10, symbol->decimal());
 			// 변환되지 않은 상태로 오기 때문에 차트에 맞게 변환을 해준다. 
 			const double close = tick_data.close / divedend;
 			AddChartData(close, close, close, close, tick_data.qty, std::stoi(date), std::stoi(tick_data.time), msec);
@@ -593,7 +593,7 @@ void DarkHorse::SmChartData::UpdateLastData(const SmTick& tick_data)
 	if (_DataFrame.shape().first == 0) return;
 	auto symbol = mainApp.SymMgr()->FindSymbol(_SymbolCode);
 	if (!symbol) return;
-	double divedend = pow(10, symbol->Decimal());
+	double divedend = pow(10, symbol->decimal());
 
 	const double close = tick_data.close / divedend;
 

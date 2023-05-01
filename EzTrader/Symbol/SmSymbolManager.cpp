@@ -375,8 +375,8 @@ void SmSymbolManager::set_product_info(std::shared_ptr<SmSymbol> symbol)
 	if (!product) return;
 	symbol->TickSize(_ttof(product->tick_size().c_str()));
 	symbol->TickValue(product->tick_value());
-	symbol->Decimal(product->decimal());
-	symbol->SeungSu(product->seung_su());
+	symbol->decimal(product->decimal());
+	symbol->seung_su(product->seung_su());
 }
 
 void SmSymbolManager::set_quote_preday_close(std::shared_ptr<SmSymbol> symbol, const std::string& pre_day_str)
@@ -385,7 +385,7 @@ void SmSymbolManager::set_quote_preday_close(std::shared_ptr<SmSymbol> symbol, c
 	auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
 
 	double converted_value = _ttof(pre_day_str.c_str());
-	converted_value = converted_value * pow(10, symbol->Decimal());
+	converted_value = converted_value * pow(10, symbol->decimal());
 
 	quote->pre_day_close = static_cast<int>(converted_value);
 }

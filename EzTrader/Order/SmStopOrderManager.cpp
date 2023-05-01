@@ -70,7 +70,7 @@ void DarkHorse::SmStopOrderManager::CheckStopOrder(std::shared_ptr<SmSymbol> sym
 	if (_ProcessStop) return;
 	_ProcessStop = true;
 	int counter_req_id = -1;
-	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
+	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	for (auto it = _OrderReqMap.begin(); it != _OrderReqMap.end(); it++) {
 		auto order_req = it->second;
 		if (order_req->OrderPrice == symbol->Qoute.close) {

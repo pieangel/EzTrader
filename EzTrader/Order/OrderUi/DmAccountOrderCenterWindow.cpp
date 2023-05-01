@@ -361,7 +361,7 @@ void DmAccountOrderCenterWindow::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> s
 
 
 	const int& close = symbol->Qoute.close;
-	const int int_tick_size = static_cast<int>(symbol->TickSize() * std::pow(10, symbol->Decimal()));
+	const int int_tick_size = static_cast<int>(symbol->TickSize() * std::pow(10, symbol->decimal()));
 	const int start_value = close + (close_row_ - value_start_row_) * int_tick_size;
 	try {
 		std::shared_ptr<SmGrid> grid = symbol_order_view_.Grid();

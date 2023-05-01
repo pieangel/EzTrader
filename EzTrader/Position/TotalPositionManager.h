@@ -13,7 +13,7 @@ class TotalPositionManager
 {
 public:
 	position_p get_position(const std::string& account_no, const std::string& symbol_code);
-	account_position_manager_p get_position_manager(const std::string& account_no);
+	account_position_manager_p get_account_position_manager(const std::string& account_no);
 	/// <summary>
 	/// 순서는 update_position->update_account_position->update_fund_position로 진행한다. 
 	/// 반드시 이 순서를 지켜야 한다. 그리고 모든 주문에 대하여 이 세개의 함수를 모두 불러야 하는지 
@@ -21,8 +21,6 @@ public:
 	/// </summary>
 	/// <param name="order"></param>
 	void update_position(order_p order);
-	void update_account_position(const std::string& account_no);
-	void update_fund_position(const std::string& fund_name);
 private:
 	account_position_manager_p find_position_manager(const std::string& account_no);
 	account_position_manager_p create_position_manager(const std::string& account_no);

@@ -142,25 +142,25 @@ void SymbolInfoView::update_quote()
 
 	std::string	value_string = std::format("{0}", quote.open);
 	
-	SmUtil::insert_decimal(value_string, _Symbol->Decimal());
+	SmUtil::insert_decimal(value_string, _Symbol->decimal());
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(2, 1);
 	value_string = std::format("{0}", quote.high);
 	
-	SmUtil::insert_decimal(value_string, _Symbol->Decimal());
+	SmUtil::insert_decimal(value_string, _Symbol->decimal());
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(3, 1);
 	value_string = std::format("{0}", quote.low);
 	
-	SmUtil::insert_decimal(value_string, _Symbol->Decimal());
+	SmUtil::insert_decimal(value_string, _Symbol->decimal());
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(4, 1);
 	value_string = std::format("{0}", quote.close);
 	
-	SmUtil::insert_decimal(value_string, _Symbol->Decimal());
+	SmUtil::insert_decimal(value_string, _Symbol->decimal());
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(5, 1);
@@ -171,7 +171,7 @@ void SymbolInfoView::update_quote()
 
 	std::string value_precision;
 	value_precision.append("{0:.");
-	value_precision.append(std::to_string(_Symbol->Decimal()));
+	value_precision.append(std::to_string(_Symbol->decimal()));
 	value_precision.append("f}");
 
 	cell = _Grid->FindCell(7, 1);

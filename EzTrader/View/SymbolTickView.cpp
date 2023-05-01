@@ -41,7 +41,7 @@ SymbolTickView::~SymbolTickView()
 void SymbolTickView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
 	tick_control_->set_symbol_id(val->Id());
-	tick_control_->set_symbol_decimal(val->Decimal());
+	tick_control_->set_symbol_decimal(val->decimal());
 	on_update_tick();
 	Invalidate();
 }

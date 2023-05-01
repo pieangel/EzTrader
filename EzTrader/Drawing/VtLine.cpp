@@ -234,7 +234,7 @@ void VtLine::DrawLine(const VtPoint start, const VtPoint end, XYChart* chart, co
 		double first = chart->getYValue(start.y);
 		double last = chart->getYValue(end.y);
 		double height = abs(last - first);
-		double tick_size = symbol->TickSize() * std::pow(10, symbol->Decimal());
+		double tick_size = symbol->TickSize() * std::pow(10, symbol->decimal());
 		double tick_count = height / tick_size;
 
 		double total_value = tick_count * 5;
@@ -277,7 +277,7 @@ void VtLine::DrawLine(const bool& show_text, const VtPoint& start, const VtPoint
 		double last = chart->getYValue(end.y);
 		double height = abs(last - first);
 
-		double tick_size = symbol->TickSize() * std::pow(10, symbol->Decimal());
+		double tick_size = symbol->TickSize() * std::pow(10, symbol->decimal());
 		double tick_count = height / tick_size;
 
 		double total_value = tick_count * 5;

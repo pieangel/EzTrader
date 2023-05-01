@@ -153,8 +153,8 @@ void SmFundOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	if (close_row >= 2 && cell) {
 		cell->CellType(SmCellType::CT_QUOTE_CLOSE);
 		value_string = std::format("{0}", symbol->Qoute.close);
-		if (symbol->Decimal() > 0)
-			value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+		if (symbol->decimal() > 0)
+			value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
 		cell->Text(value_string);
 		_QuoteValueMap.insert(std::make_pair(cell->Row(), cell->Col()));
 	}
@@ -164,8 +164,8 @@ void SmFundOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	if (open_row >= 2 && cell) {
 		cell->CellType(SmCellType::CT_QUOTE_OPEN);
 		value_string = std::format("{0}", symbol->Qoute.open);
-		if (symbol->Decimal() > 0)
-			value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+		if (symbol->decimal() > 0)
+			value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
 		cell->Text(value_string);
 		_QuoteValueMap.insert(std::make_pair(cell->Row(), cell->Col()));
 	}
@@ -175,8 +175,8 @@ void SmFundOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	if (high_row >= 2 && cell) {
 		cell->CellType(SmCellType::CT_QUOTE_HIGH);
 		value_string = std::format("{0}", symbol->Qoute.high);
-		if (symbol->Decimal() > 0)
-			value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+		if (symbol->decimal() > 0)
+			value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
 		cell->Text(value_string);
 		_QuoteValueMap.insert(std::make_pair(cell->Row(), cell->Col()));
 	}
@@ -186,8 +186,8 @@ void SmFundOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	if (low_row >= 2 && cell) {
 		cell->CellType(SmCellType::CT_QUOTE_LOW);
 		value_string = std::format("{0}", symbol->Qoute.low);
-		if (symbol->Decimal() > 0)
-			value_string.insert(value_string.length() - symbol->Decimal(), 1, '.');
+		if (symbol->decimal() > 0)
+			value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
 		cell->Text(value_string);
 		_QuoteValueMap.insert(std::make_pair(cell->Row(), cell->Col()));
 	}
@@ -273,7 +273,7 @@ void SmFundOrderArea::SetPosition()
 	
 	
 	fund_avg_price = static_cast<int>(fund_avg_price / account_vec.size());
-	const int int_tick_size = static_cast<int>(_Symbol->TickSize() * pow(10, _Symbol->Decimal()));
+	const int int_tick_size = static_cast<int>(_Symbol->TickSize() * pow(10, _Symbol->decimal()));
 	const int mod = fund_avg_price % int_tick_size;
 	const int half_tick_size = (int)(int_tick_size / 2);
 	// 나머지 보다 작으면 빼주고 아니면 틱크기에서 나머지를 뺀 값을 더해 준다.
@@ -972,7 +972,7 @@ void SmFundOrderArea::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbo
 	_SettingCenterValue = true;
 
 	const int& close = _Symbol->Qoute.close;
-	const int int_tick_size = static_cast<int>(_Symbol->TickSize() * pow(10, _Symbol->Decimal()));
+	const int int_tick_size = static_cast<int>(_Symbol->TickSize() * pow(10, _Symbol->decimal()));
 	const int start_value = close + (_CloseRow - _ValueStartRow) * int_tick_size;
 	try {
 		if (make_row_map) {
@@ -987,8 +987,8 @@ void SmFundOrderArea::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbo
 			//ss << value;
 			//value_string = ss.str();
 			value_string = std::format("{0}", value);
-			if (_Symbol->Decimal() > 0)
-				value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+			if (_Symbol->decimal() > 0)
+				value_string.insert(value_string.length() - _Symbol->decimal(), 1, '.');
 			_Grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, value_string);
 
 			_QuoteToRowIndexMap[value] = i;
@@ -1160,7 +1160,7 @@ int SmFundOrderArea::FindRowFromCenterValue(std::shared_ptr<DarkHorse::SmSymbol>
 	if (!symbol || _QuoteToRowIndexMap.empty())
 		return -1;
 
-	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
+	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	auto it = _QuoteToRowIndexMap.find(value);
 	if (it != _QuoteToRowIndexMap.end()) { // 값이 보이는 범위 안에 있을 때
 		return it->second;

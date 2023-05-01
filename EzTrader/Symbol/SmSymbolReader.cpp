@@ -420,9 +420,9 @@ void SmSymbolReader::ReadAbroadSymbolFile(const std::string& fullPath) const
 			symbol->SymbolNameKr(symbol_name_kr);
 			symbol->SymbolNameEn(symbol_name_en);
 			// 소수점
-			symbol->Decimal(std::stoi(Pdesz));
+			symbol->decimal(std::stoi(Pdesz));
 			// 숭수
-			symbol->SeungSu(std::stoi(MltiPler));
+			symbol->seung_su(std::stoi(MltiPler));
 			// 계약 크기
 			symbol->CtrtSize(std::stod(CtrtSize));
 			// 틱 가치

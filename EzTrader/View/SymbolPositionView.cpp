@@ -159,7 +159,7 @@ void SymbolPositionView::update_quote()
 	const VmQuote& quote = quote_control_->get_quote();
 	const VmPosition& position = position_control_->get_position();
 	std::string value = std::to_string(quote.close);
-	SmUtil::insert_decimal(value, symbol_->Decimal());
+	SmUtil::insert_decimal(value, symbol_->decimal());
 	auto cell = _Grid->FindCell(1, 4);
 	if (position.open_quantity == 0)
 		cell->CellType(SmCellType::CT_NORMAL);
@@ -194,8 +194,8 @@ void SymbolPositionView::UpdatePositionInfo()
 	cell->Text(symbol_->SymbolCode());
 	cell = _Grid->FindCell(1, 4);
 	std::string value_string = std::format("{0}", symbol_->Qoute.close);
-	if (symbol_->Decimal() > 0 && value_string.length() > (size_t)symbol_->Decimal())
-		value_string.insert(value_string.length() - symbol_->Decimal(), 1, '.');
+	if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
+		value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
 	cell->Text(value_string);
 	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 
@@ -212,8 +212,8 @@ void SymbolPositionView::UpdatePositionInfo()
 	cell = _Grid->FindCell(1, 3);
 	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	value_string = std::format("{0}", avg_price);
-	if (symbol_->Decimal() > 0 && value_string.length() > (size_t)symbol_->Decimal())
-		value_string.insert(value_string.length() - symbol_->Decimal(), 1, '.');
+	if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
+		value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
 	cell->Text(value_string);
 	cell = _Grid->FindCell(1, 5);
 	if (position->OpenPL != 0)
@@ -290,12 +290,12 @@ void SymbolPositionView::update_position()
 	cell = _Grid->FindCell(1, 3);
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	std::string value_string = std::format("{0}", avg_price);
-	if (symbol_->Decimal() > 0 && value_string.length() > (size_t)symbol_->Decimal())
-		value_string.insert(value_string.length() - symbol_->Decimal(), 1, '.');
+	if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
+		value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
 	cell->Text(value_string);
 	cell = _Grid->FindCell(1, 5);
 	if (position.open_profit_loss != 0)
-		position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+		position.open_profit_loss > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	else
 		cell->CellType(SmCellType::CT_NORMAL);
 	const std::string open_pl = std::format("{0:.2f}", position.open_profit_loss);

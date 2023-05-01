@@ -171,8 +171,8 @@ void SmFundPositionArea::UpdatePositionInfo()
 	cell->Text(_Symbol->SymbolCode());
 	cell = _Grid->FindCell(1, 4);
 	std::string value_string = std::format("{0}", _Symbol->Qoute.close);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	if (_Symbol->decimal() > 0 && value_string.length() > (size_t)_Symbol->decimal())
+		value_string.insert(value_string.length() - _Symbol->decimal(), 1, '.');
 	cell->Text(value_string);
 	//fund_open_qty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 
@@ -190,8 +190,8 @@ void SmFundPositionArea::UpdatePositionInfo()
 	cell = _Grid->FindCell(1, 3);
 	//fund_open_qty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	value_string = std::format("{0}", fund_avg_price);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	if (_Symbol->decimal() > 0 && value_string.length() > (size_t)_Symbol->decimal())
+		value_string.insert(value_string.length() - _Symbol->decimal(), 1, '.');
 	cell->Text(value_string);
 	cell = _Grid->FindCell(1, 5);
 	//fund_open_qty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);

@@ -487,7 +487,7 @@ void SmFundCompMainDialog::OnDoOrder(const DarkHorse::SmPriceType price_type, co
 
 			const DarkHorse::SmPositionType position_type = center_wnd->OrderPosition();
 			const int order_amount = center_wnd->OrderAmount();
-			const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
+			const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 
 			int price = 0;
 

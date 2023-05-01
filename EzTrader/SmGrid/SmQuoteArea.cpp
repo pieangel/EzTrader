@@ -139,9 +139,9 @@ void SmQuoteArea::UpdateSymbolInfo()
 		cell = _Grid->FindCell(i, 1);
 		std::string	value_string = std::format("{0}", _Symbol->TickVec[i].close);
 
-		if (value_string.length() > (size_t)_Symbol->Decimal()) {
-			if (_Symbol->Decimal() > 0)
-				value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+		if (value_string.length() > (size_t)_Symbol->decimal()) {
+			if (_Symbol->decimal() > 0)
+				value_string.insert(value_string.length() - _Symbol->decimal(), 1, '.');
 			if (cell) { cell->Text(value_string); up_down == 1 ? cell->CellType(SmCellType::CT_TICK_BUY) : cell->CellType(SmCellType::CT_TICK_SELL); }
 		}
 		cell = _Grid->FindCell(i, 2);

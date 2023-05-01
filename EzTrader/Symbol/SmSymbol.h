@@ -23,16 +23,16 @@ namespace DarkHorse {
 		void MarketName(std::string val) { _MarketName = val; }
 		std::string ProductCode() const { return _ProductCode; }
 		void ProductCode(std::string val) { _ProductCode = val; }
-		int SeungSu() const { return _SeungSu; }
-		void SeungSu(int val) { _SeungSu = val; }
+		int seung_su() const { return seung_su_; }
+		void seung_su(int val) { seung_su_ = val; }
 		double CtrtSize() const { return _CtrtSize; }
 		void CtrtSize(double val) { _CtrtSize = val; }
 		double TickValue() const { return _TickValue; }
 		void TickValue(double val) { _TickValue = val; }
 		double TickSize() const { return _TickSize; }
 		void TickSize(double val) { _TickSize = val; }
-		int Decimal() const { return _Decimal; }
-		void Decimal(int val) { _Decimal = val; }
+		int decimal() const { return decimal_; }
+		void decimal(int val) { decimal_ = val; }
 		std::string ExpireDate() const { return _ExpireDate; }
 		void ExpireDate(std::string val) { _ExpireDate = val; }
 		std::string SymbolNameKr() const { return _SymbolNameKr; }
@@ -101,8 +101,8 @@ namespace DarkHorse {
 		int _RemainDays{ 0 };
 		
 		int _Id{ 0 };
-		int _SeungSu{ 250000 };
-		int _Decimal{ 2 };
+		int seung_su_{ 250000 };
+		int decimal_{ 2 };
 		double _CtrtSize{ 0.05 };
 		double _TickValue{ 12500 };
 		double _TickSize{ 0.05 };

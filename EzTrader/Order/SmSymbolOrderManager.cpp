@@ -79,7 +79,7 @@ void DarkHorse::SmSymbolOrderManager::AddCutStopOrder(const std::shared_ptr<SmOr
 	const auto account = mainApp.AcntMgr()->FindAccount(filled_order->AccountNo);
 	if (!account) return;
 
-	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
+	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	int loss_cut_price = 0, profit_cut_price = 0;
 	if (filled_order->PositionType == SmPositionType::Buy) {
 		profit_cut_price = filled_order->FilledPrice + old_req->ProfitCutTick * int_tick_size;
@@ -421,7 +421,7 @@ void DarkHorse::SmSymbolOrderManager::OnFilledOrder(const std::shared_ptr<SmOrde
 		position->Position = new_filled_order->PositionType;
 		position->AvgPrice = new_filled_order->FilledPrice;
 		position->OpenQty = buho * new_filled_order->FilledCount;
-		position->OpenPL = position->OpenQty * (curClose - position->AvgPrice) * symbol->SeungSu();
+		position->OpenPL = position->OpenQty * (curClose - position->AvgPrice) * symbol->seung_su();
 		new_filled_order->UnsettledQty = position->OpenQty;
 		AddFilledOrder(new_filled_order);
 		// 포지션을 업데이트 해준다.
@@ -437,8 +437,8 @@ void DarkHorse::SmSymbolOrderManager::OnFilledOrder(const std::shared_ptr<SmOrde
 			if (position->OpenQty > 0) { // 보유수량이 매수			
 				if (position->OpenQty >= new_filled_order->FilledCount) { //보유수량이 크거나 같은 경우
 					position->OpenQty = position->OpenQty - new_filled_order->FilledCount;
-					trade_pl = double(-new_filled_order->FilledCount * (position->AvgPrice - new_filled_order->FilledPrice) * symbol->SeungSu());
-					trade_pl = trade_pl / pow(10, symbol->Decimal());
+					trade_pl = double(-new_filled_order->FilledCount * (position->AvgPrice - new_filled_order->FilledPrice) * symbol->seung_su());
+					trade_pl = trade_pl / pow(10, symbol->decimal());
 					position->TradePL += trade_pl;
 					//new_filled_order->State = SmOrderState::Settled;
 					new_filled_order->FilledCount = 0;
@@ -449,11 +449,11 @@ void DarkHorse::SmSymbolOrderManager::OnFilledOrder(const std::shared_ptr<SmOrde
 					}
 				}
 				else { //체결수량이 큰 경우
-					position->TradePL += double(position->OpenQty * (new_filled_order->FilledPrice - position->AvgPrice) * symbol->SeungSu());
+					position->TradePL += double(position->OpenQty * (new_filled_order->FilledPrice - position->AvgPrice) * symbol->seung_su());
 					position->AvgPrice = new_filled_order->FilledPrice;
 					position->OpenQty = position->OpenQty - new_filled_order->FilledCount;
-					open_pl = position->OpenQty * (curClose - position->AvgPrice) * symbol->SeungSu();
-					open_pl = open_pl / pow(10, symbol->Decimal());
+					open_pl = position->OpenQty * (curClose - position->AvgPrice) * symbol->seung_su();
+					open_pl = open_pl / pow(10, symbol->decimal());
 					position->OpenPL = open_pl;
 					// 보유수량과 상쇄되고 남은 갯수가 잔고가 된다. - 여기서는 잔고가 매도 포지션이 된다.
 					new_filled_order->FilledCount = position->OpenQty;
@@ -463,8 +463,8 @@ void DarkHorse::SmSymbolOrderManager::OnFilledOrder(const std::shared_ptr<SmOrde
 			else { // 보유수량이 매도 ( 보유수량이매도/체결수량이매도 인 경우)
 				position->AvgPrice = double((position->OpenQty * position->AvgPrice - new_filled_order->FilledCount * new_filled_order->FilledPrice) / (position->OpenQty - new_filled_order->FilledCount));
 				position->OpenQty = position->OpenQty - new_filled_order->FilledCount;
-				open_pl = position->OpenQty * (curClose - position->AvgPrice) * symbol->SeungSu();
-				open_pl = open_pl / pow(10, symbol->Decimal());
+				open_pl = position->OpenQty * (curClose - position->AvgPrice) * symbol->seung_su();
+				open_pl = open_pl / pow(10, symbol->decimal());
 				position->OpenPL = open_pl;
 				// 이경우 포지션이 같으므로 더해 주지 않는다.
 				// 잔고 수량에 더해준다. 매도는 음수, 매수는 양수, 포지션 없으면 0
@@ -476,8 +476,8 @@ void DarkHorse::SmSymbolOrderManager::OnFilledOrder(const std::shared_ptr<SmOrde
 			if (position->OpenQty >= 0) { // 보유수량이 매수/체결수량이매수 인 경우
 				position->AvgPrice = double((position->OpenQty * position->AvgPrice + new_filled_order->FilledCount * new_filled_order->FilledPrice) / (position->OpenQty + new_filled_order->FilledCount));
 				position->OpenQty = position->OpenQty + new_filled_order->FilledCount;
-				open_pl = position->OpenQty * (curClose - position->AvgPrice) * symbol->SeungSu();
-				open_pl = open_pl / pow(10, symbol->Decimal());
+				open_pl = position->OpenQty * (curClose - position->AvgPrice) * symbol->seung_su();
+				open_pl = open_pl / pow(10, symbol->decimal());
 				position->OpenPL = open_pl;
 				// 이경우 포지션이 같으므로 더해 주지 않는다.
 				// 잔고 수량에 더해 준다. 매도는 음수, 매수는 양수, 포지션 없으면 0
@@ -487,8 +487,8 @@ void DarkHorse::SmSymbolOrderManager::OnFilledOrder(const std::shared_ptr<SmOrde
 			else { //보유수량이 매도
 				if (abs(position->OpenQty) >= new_filled_order->FilledCount) { //보유수량이 큰경우
 					position->OpenQty = position->OpenQty + new_filled_order->FilledCount;
-					trade_pl = double(new_filled_order->FilledCount * (position->AvgPrice - new_filled_order->FilledPrice) * symbol->SeungSu());
-					trade_pl = trade_pl / pow(10, symbol->Decimal());
+					trade_pl = double(new_filled_order->FilledCount * (position->AvgPrice - new_filled_order->FilledPrice) * symbol->seung_su());
+					trade_pl = trade_pl / pow(10, symbol->decimal());
 					position->TradePL += trade_pl;
 					//new_filled_order->State = SmOrderState::Settled;
 					new_filled_order->FilledCount = 0;
@@ -500,11 +500,11 @@ void DarkHorse::SmSymbolOrderManager::OnFilledOrder(const std::shared_ptr<SmOrde
 					}
 				}
 				else { //체결수량이 큰 경우				
-					position->TradePL += double(position->OpenQty * (new_filled_order->FilledPrice - position->AvgPrice) * symbol->SeungSu());
+					position->TradePL += double(position->OpenQty * (new_filled_order->FilledPrice - position->AvgPrice) * symbol->seung_su());
 					position->AvgPrice = new_filled_order->FilledPrice;
 					position->OpenQty = position->OpenQty + new_filled_order->FilledCount;
-					open_pl = position->OpenQty * (curClose - position->AvgPrice) * symbol->SeungSu();
-					open_pl = open_pl / pow(10, symbol->Decimal());
+					open_pl = position->OpenQty * (curClose - position->AvgPrice) * symbol->seung_su();
+					open_pl = open_pl / pow(10, symbol->decimal());
 					position->OpenPL = open_pl;
 
 					// 이경우 기존의 매도 포지션 잔고 갯수가 상쇄되고 남은 주문의 잔고는 매수 포지션이 된다.

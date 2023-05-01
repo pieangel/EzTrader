@@ -137,27 +137,27 @@ void SmSymbolArea::UpdateSymbolInfo()
 	cell = _Grid->FindCell(1, 1);
 	
 	std::string	value_string = std::format("{0}", _Symbol->Qoute.open);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	if (_Symbol->decimal() > 0 && value_string.length() > (size_t)_Symbol->decimal())
+		value_string.insert(value_string.length() - _Symbol->decimal(), 1, '.');
 	
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(2, 1);
 	value_string = std::format("{0}", _Symbol->Qoute.high);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	if (_Symbol->decimal() > 0 && value_string.length() > (size_t)_Symbol->decimal())
+		value_string.insert(value_string.length() - _Symbol->decimal(), 1, '.');
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(3, 1);
 	value_string = std::format("{0}", _Symbol->Qoute.low);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	if (_Symbol->decimal() > 0 && value_string.length() > (size_t)_Symbol->decimal())
+		value_string.insert(value_string.length() - _Symbol->decimal(), 1, '.');
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(4, 1);
 	value_string = std::format("{0}", _Symbol->Qoute.close);
-	if (_Symbol->Decimal() > 0 && value_string.length() > (size_t)_Symbol->Decimal())
-		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
+	if (_Symbol->decimal() > 0 && value_string.length() > (size_t)_Symbol->decimal())
+		value_string.insert(value_string.length() - _Symbol->decimal(), 1, '.');
 	if (cell) cell->Text(value_string);
 
 	cell = _Grid->FindCell(5, 1);
@@ -168,7 +168,7 @@ void SmSymbolArea::UpdateSymbolInfo()
 
 	std::string value_precision;
 	value_precision.append("{0:.");
-	value_precision.append(std::to_string(_Symbol->Decimal()));
+	value_precision.append(std::to_string(_Symbol->decimal()));
 	value_precision.append("f}");
 
 	cell = _Grid->FindCell(7, 1);

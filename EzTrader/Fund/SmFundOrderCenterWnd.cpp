@@ -339,7 +339,7 @@ void SmFundOrderCenterWnd::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 
 
 	const int& close = symbol->Qoute.close;
-	const int int_tick_size = static_cast<int>(symbol->TickSize() * std::pow(10, symbol->Decimal()));
+	const int int_tick_size = static_cast<int>(symbol->TickSize() * std::pow(10, symbol->decimal()));
 	const int start_value = close + (_CloseRow - _ValueStartRow) * int_tick_size;
 	try {
 		std::shared_ptr<SmGrid> grid = _OrderArea.Grid();
