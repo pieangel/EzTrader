@@ -6,6 +6,9 @@
 #include "../Log/MyLogger.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Symbol/SmSymbolManager.h"
+#include "../Account/SmAccount.h"
+#include "../Account/SmAccountManager.h"
+#include "../Position/TotalPositionManager.h"
 
 namespace DarkHorse {
 	SymbolPositionControl::SymbolPositionControl()
@@ -68,11 +71,27 @@ namespace DarkHorse {
 		if (!symbol) return;
 		symbol_decimal_ = symbol->decimal();
 		symbol_seung_su_ = symbol->seung_su();
+		reset_position();
 	}
 
 	void SymbolPositionControl::set_account_id(const int account_id)
 	{
 		account_id_ = account_id;
+		reset_position();
+	}
+
+	void SymbolPositionControl::reset_position()
+	{
+		if (account_id_ == 0 || symbol_id_ == 0) return;
+
+		auto account = mainApp.AcntMgr()->FindAccountById(account_id_);
+		auto symbol = mainApp.SymMgr()->FindSymbolById(symbol_id_);
+		if (!account || !symbol) return;
+
+		auto position = mainApp.total_position_manager()->get_position(account->No(), symbol->SymbolCode());
+		if (!position) return;
+
+		update_position(position);
 	}
 
 	void SymbolPositionControl::subscribe_position_control()

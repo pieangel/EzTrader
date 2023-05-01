@@ -27,6 +27,7 @@ namespace DarkHorse {
 			event_handler_ = event_handler;
 		}
 	private:
+		void reset_position();
 		int symbol_seung_su_{ 1 };
 		int symbol_decimal_{ 1 };
 		int id_{ 0 };
