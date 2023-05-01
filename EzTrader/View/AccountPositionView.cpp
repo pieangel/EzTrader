@@ -22,6 +22,8 @@
 #include "../Fund/SmFundOrderDialog.h"
 #include "../CompOrder/SmOrderCompMainDialog.h"
 #include "../CompOrder/SmFundCompMainDialog.h"
+#include "../Controller/AccountPositionControl.h"
+#include "../Position/Position.h"
 #include <format>
 
 #include <functional>
@@ -37,7 +39,7 @@ using namespace DarkHorse;
 static char THIS_FILE[] = __FILE__;
 #endif
 
-void AccountPositionView::StartTimer()
+void AccountPositionView::start_timer()
 {
 	SetTimer(1, 40, NULL);
 }
@@ -50,6 +52,8 @@ IMPLEMENT_DYNAMIC(AccountPositionView, CBCGPGridCtrl)
 AccountPositionView::AccountPositionView()
 {
 	m_bExtendedPadding = FALSE;
+	account_position_control_ = std::make_shared<DarkHorse::AccountPositionControl>();
+	account_position_control_->set_event_handler(std::bind(&AccountPositionView::on_update_account_position, this));
 }
 
 void AccountPositionView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
@@ -61,8 +65,8 @@ void AccountPositionView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 AccountPositionView::~AccountPositionView()
 {
 	//KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
+	//mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
+	//mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
 }
 
 void AccountPositionView::OnHeaderCheckBoxClick(int nColumn)
@@ -99,15 +103,18 @@ void AccountPositionView::OnRowCheckBoxClick(CBCGPGridRow* pRow)
 
 void AccountPositionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
-	_Account = val;
-	UpdateAccountPositionInfo();
+	account_ = val;
+	if (!account_position_control_) return;
+
+	account_position_control_->load_position_from_account(account_->No());
+	enable_position_show_ = true;
 }
 
 void AccountPositionView::UpdateAcceptedOrder()
 {
-	if (!_Account) return;
+	if (!account_) return;
 	ClearOldContents();
-	auto account_order_mgr = mainApp.TotalOrderMgr()->FindAccountOrderManager(_Account->No());
+	auto account_order_mgr = mainApp.TotalOrderMgr()->FindAccountOrderManager(account_->No());
 	if (!account_order_mgr) return;
 
 	const std::map<std::string, std::shared_ptr<SmSymbolOrderManager>>& symbol_order_mgr_map = account_order_mgr->GetSymbolOrderMgrMap();
@@ -159,18 +166,9 @@ void AccountPositionView::LiqAll()
 	ClearCheck();
 }
 
-void AccountPositionView::Update()
+void AccountPositionView::on_update_account_position()
 {
-	if (_EnableOrderShow) {
-		UpdatePositionInfo();
-		//needDraw = true;
-		_EnableOrderShow = false;
-	}
-
-	if (_EnableQuoteShow) {
-		UpdatePositionInfo();
-		_EnableQuoteShow = false;
-	}
+	enable_position_show_ = true;
 }
 
 BEGIN_MESSAGE_MAP(AccountPositionView, CBCGPGridCtrl)
@@ -260,9 +258,8 @@ int AccountPositionView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetReadOnly(TRUE);
 
 
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&AccountPositionView::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&AccountPositionView::OnOrderEvent, this, _1, _2));
-
+	//start_timer();
+	
 
 	return 0;
 }
@@ -273,6 +270,20 @@ void AccountPositionView::OnDestroy()
 	CBCGPGridCtrl::OnDestroy();
 }
 
+void AccountPositionView::refresh_position()
+{
+	if (enable_position_show_) {
+		update_account_position();
+		//needDraw = true;
+		enable_position_show_ = false;
+	}
+
+	if (_EnableQuoteShow) {
+		UpdatePositionInfo();
+		_EnableQuoteShow = false;
+	}
+}
+
 void AccountPositionView::ClearCheck()
 {
 	_HeaderCheck = false; CheckAll(FALSE);
@@ -281,7 +292,7 @@ void AccountPositionView::ClearCheck()
 
 void AccountPositionView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
-	_EnableOrderShow = true;
+	enable_position_show_ = true;
 }
 
 void AccountPositionView::OnQuoteEvent(const std::string& symbol_code)
@@ -291,16 +302,16 @@ void AccountPositionView::OnQuoteEvent(const std::string& symbol_code)
 
 void AccountPositionView::LiqSelPositionsForAccount()
 {
-	if (!_Account) return;
+	if (!account_) return;
 
 	for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
 		CBCGPGridRow* pRow = GetRow(it->first);
 		if (pRow->GetCheck()) {
 			std::shared_ptr<SmOrderRequest> order_req = nullptr;
 			if (it->second->Position == SmPositionType::Buy)
-				order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(_Account->No(), _Account->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
+				order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account_->No(), account_->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
 			else
-				order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(_Account->No(), _Account->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
+				order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account_->No(), account_->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
 			mainApp.Client()->NewOrder(order_req);
 		}
 	}
@@ -329,14 +340,14 @@ void AccountPositionView::LiqSelPositionsForFund()
 
 void AccountPositionView::LiqAllForAccount()
 {
-	if (!_Account) return;
+	if (!account_) return;
 
 	for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
 		std::shared_ptr<SmOrderRequest> order_req = nullptr;
 		if (it->second->Position == SmPositionType::Buy)
-			order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(_Account->No(), _Account->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
+			order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account_->No(), account_->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
 		else
-			order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(_Account->No(), _Account->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
+			order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account_->No(), account_->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
 		mainApp.Client()->NewOrder(order_req);
 	}
 }
@@ -359,13 +370,82 @@ void AccountPositionView::LiqAllForFund()
 	}
 }
 
+void AccountPositionView::update_account_position()
+{
+	if (!account_position_control_) return;
+
+	row_to_position_.clear();
+	
+	const std::map<std::string, position_p>& account_pos_map = account_position_control_->get_position_map();
+	int row = 0;
+	for (auto it = account_pos_map.begin(); it != account_pos_map.end(); ++it) {
+		const auto position = it->second;
+		CBCGPGridRow* pRow = GetRow(row);
+		if (!pRow) continue;
+		if (position->open_quantity == 0) {
+			continue;
+		}
+
+		pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
+		if (position->open_quantity > 0) {
+			//pRow->GetItem(0)->SetBackgroundColor(RGB(255, 0, 0));
+			pRow->GetItem(1)->SetBackgroundColor(RGB(255, 0, 0));
+			//pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
+			//pRow->GetItem(3)->SetBackgroundColor(RGB(255, 0, 0));
+
+			//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
+			//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+			//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+
+			pRow->GetItem(1)->SetValue("매수", TRUE);
+		}
+		else if (position->open_quantity < 0){
+			pRow->GetItem(1)->SetValue("매도", TRUE);
+			//pRow->GetItem(0)->SetBackgroundColor(RGB(0, 0, 255));
+			pRow->GetItem(1)->SetBackgroundColor(RGB(0, 0, 255));
+			//pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
+			//pRow->GetItem(3)->SetBackgroundColor(RGB(0, 0, 255));
+
+			//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
+			//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+			//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+		}
+
+		pRow->GetItem(3)->SetValue(position->open_quantity, TRUE);
+		const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
+		if (position->open_profit_loss > 0) {
+			pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
+			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		}
+		else if (position->open_profit_loss < 0) {
+			pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
+			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		}
+		else {
+			pRow->GetItem(2)->SetBackgroundColor(_DefaultBackColor);
+			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		}
+		pRow->GetItem(2)->SetValue(open_pl.c_str(), TRUE);
+
+
+		_OldContentRowSet.insert(row);
+		row_to_position_[row] = position;
+		row++;
+	}
+	ClearOldContents(row);
+	_OldMaxRow = row;
+}
+
 void AccountPositionView::UpdateAccountPositionInfo()
 {
-	if (!_Account) return;
+	if (!account_) return;
 
 	//ClearOldContents();
 	_RowToPositionMap.clear();
-	auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(_Account->No());
+	auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(account_->No());
 	const std::map<std::string, std::shared_ptr<SmPosition>>& account_pos_map = account_pos_mgr->GetPositionMap();
 	int row = 0;
 	for (auto it = account_pos_map.begin(); it != account_pos_map.end(); ++it) {
@@ -625,10 +705,10 @@ void AccountPositionView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void AccountPositionView::OnTimer(UINT_PTR nIDEvent)
 {
-	if (_EnableOrderShow) {
-		UpdatePositionInfo();
+	if (enable_position_show_) {
+		update_account_position();
 		//needDraw = true;
-		_EnableOrderShow = false;
+		enable_position_show_ = false;
 	}
 
 	if (_EnableQuoteShow) {

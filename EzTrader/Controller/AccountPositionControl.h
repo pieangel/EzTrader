@@ -19,7 +19,7 @@ public:
 	void set_event_handler(std::function<void()> event_handler) {
 		event_handler_ = event_handler;
 	}
-	const std::map<std::string, position_p> get_position_map() {
+	const std::map<std::string, position_p>& get_position_map() {
 		return position_map_;
 	}
 private:

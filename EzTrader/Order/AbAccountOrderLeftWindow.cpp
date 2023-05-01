@@ -141,8 +141,8 @@ BOOL AbAccountOrderLeftWindow::OnInitDialog()
 	*/
 
 
-	account_order_view_.UpdateAcceptedOrder();
-	account_position_view_.UpdatePositionInfo();
+	account_order_view_.StartTimer();
+	account_position_view_.start_timer();
 
 	//_AcceptedGrid.StartTimer();
 
@@ -172,7 +172,7 @@ void AbAccountOrderLeftWindow::OnBnClickedBtnAddFav()
 void AbAccountOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 {
 	account_order_view_.Update();
-	account_position_view_.Update();
+	account_position_view_.refresh_position();
 	favorite_symbol_view_.Update();
 	//_AcceptedGrid.UpdateAcceptedOrder();
 	//_PositionGrid.UpdatePositionInfo();

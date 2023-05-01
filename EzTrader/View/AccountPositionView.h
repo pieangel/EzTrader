@@ -24,6 +24,7 @@ namespace DarkHorse {
 	struct SmPosition;
 	class SmFund;
 	struct Position;
+	class AccountPositionControl;
 }
 
 class DmAccountOrderWindow;
@@ -36,7 +37,7 @@ class AccountPositionView : public CBCGPGridCtrl
 
 		// Construction
 public:
-	void StartTimer();
+	void start_timer();
 	AccountPositionView();
 
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
@@ -94,7 +95,7 @@ public:
 	virtual void OnRowCheckBoxClick(CBCGPGridRow* pRow);
 
 
-	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
+	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
@@ -103,7 +104,7 @@ public:
 	void UpdatePositionInfo();
 	void LiqSelPositions();
 	void LiqAll();
-	void Update();
+	void on_update_account_position();
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
@@ -112,6 +113,7 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
+	void refresh_position();
 	void ClearCheck();
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void OnQuoteEvent(const std::string& symbol_code);
@@ -128,15 +130,16 @@ private:
 	SmOrderCompMainDialog* _CompOrderWnd = nullptr;
 	// 0 : account , 1 : fund
 	int _Mode = 0;
+	void update_account_position();
 	void UpdateAccountPositionInfo();
 	void UpdateFundPositionInfo();
 	bool _EnableQuoteShow = false;
-	bool _EnableOrderShow = false;
+	bool enable_position_show_ = false;
 	COLORREF _DefaultBackColor;
 	bool _HeaderCheck = false;
 	int _OldMaxRow = -1;
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
-	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
+	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
 
 	std::set<int> _OldContentRowSet;
@@ -144,6 +147,7 @@ private:
 	void ClearOldContents(const int& last_index);
 	// key : row, value : SmPosition Object
 	std::map<int, std::shared_ptr<DarkHorse::SmPosition>> _RowToPositionMap;
+	std::shared_ptr<DarkHorse::AccountPositionControl> account_position_control_;
 	std::map<int, std::shared_ptr<DarkHorse::Position>> row_to_position_;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
