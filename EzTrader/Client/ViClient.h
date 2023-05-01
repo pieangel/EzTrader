@@ -192,11 +192,11 @@ namespace DarkHorse {
 		void OnDomesticChartData_Init(const CString& sTrCode, const LONG& nRqID);
 
 		// 해외 주문 접수확인
-		void OnOrderAccepted(const CString& strKey, const LONG& nRealType);
+		void on_ab_order_accepted(const CString& strKey, const LONG& nRealType);
 		// 해외 주문 미체결 
-		void OnOrderUnfilled(const CString& strKey, const LONG& nRealType);
+		void on_ab_order_unfilled(const CString& strKey, const LONG& nRealType);
 		// 해외 주문 체결
-		void OnOrderFilled(const CString& strKey, const LONG& nRealType);
+		void on_ab_order_filled(const CString& strKey, const LONG& nRealType);
 
 		// 국내 주문 접수확인
 		void on_dm_order_accepted(const CString& strKey, const LONG& nRealType);
@@ -206,14 +206,14 @@ namespace DarkHorse {
 		void on_dm_order_filled(const CString& strKey, const LONG& nRealType);
 
 		// 해외 실시간 시세
-		void OnRealtimeQuote(const CString& strKey, const LONG& nRealType);
+		void on_ab_future_quote(const CString& strKey, const LONG& nRealType);
 		// 해외 실시간 호가
-		void OnRealtimeHoga(const CString& strKey, const LONG& nRealType);
+		void on_ab_future_hoga(const CString& strKey, const LONG& nRealType);
 
 		// 국내 실시간 시세
-		void OnRealtimeDomesticQuote(const CString& strKey, const LONG& nRealType);
+		void on_dm_future_quote(const CString& strKey, const LONG& nRealType);
 		// 국내 실시간 호가
-		void OnRealtimeDomesticHoga(const CString& strKey, const LONG& nRealType);
+		void on_dm_future_hoga(const CString& strKey, const LONG& nRealType);
 
 		void on_dm_expected(const CString& strKey, const LONG& nRealType);
 

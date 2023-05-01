@@ -116,7 +116,7 @@ void	CMyLogger::LoggingDataInfo(LogLevel level, LPCTSTR file, INT line, LPCTSTR 
 
 		std::string strLevel;
 		SYSTEMTIME st;
-		GetSystemTime(&st);
+		GetLocalTime(&st);
 		std::string cstrMessage = format_string("[%d-%02d-%02d %02d:%02d:%02d.%03d] %d ", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, level);
 		LoggDataPtr loggdataPtr = LoggDataPtr(new my_tupleLogger(cstrMessage, level, file, line, func, std::string(pszBuffer)));
 		MessageQue.push(std::move(loggdataPtr));

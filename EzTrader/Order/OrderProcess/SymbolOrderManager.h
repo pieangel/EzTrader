@@ -13,6 +13,7 @@ class SymbolOrderManager
 public:
     void dispatch_order(const OrderEvent order_event, order_p order);
 private:
+	
 	void on_order_accepted(order_p order, OrderEvent order_event);
 	void on_order_unfilled(order_p order, OrderEvent order_event);
 	void on_order_filled(order_p order, OrderEvent order_event);

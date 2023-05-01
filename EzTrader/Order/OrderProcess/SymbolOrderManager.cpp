@@ -8,25 +8,24 @@
 #include "../SmOrder.h"
 #include "../../Log/MyLogger.h"
 
+
 namespace DarkHorse {
 	using total_position_manager_p = std::shared_ptr<TotalPositionManager>;
 void SymbolOrderManager::dispatch_order(const OrderEvent order_event, order_p order)
 {
 	switch (order_event) {
-	case OrderEvent::AB_Accepted:
-	case OrderEvent::DM_Accepted:
+	case OrderEvent::OE_Accepted:
 		on_order_accepted(order, order_event);
 		break;
-	case OrderEvent::AB_Unfilled:
-	case OrderEvent::DM_Unfilled:
+	case OrderEvent::OE_Unfilled:
 		on_order_unfilled(order, order_event);
 		break;
-	case OrderEvent::AB_Filled:
-	case OrderEvent::DM_Filled:
+	case OrderEvent::OE_Filled:
 		on_order_filled(order, order_event);
 		break;
 	}
 }
+
 
 void SymbolOrderManager::on_order_accepted(order_p order, OrderEvent order_event)
 {

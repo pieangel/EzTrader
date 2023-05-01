@@ -28,28 +28,24 @@ namespace DarkHorse {
 	void OrderControl::update_order(std::shared_ptr<Order> order, OrderEvent order_event)
 	{
 		if (!order) return;
-		if (order_event == OrderEvent::DM_Accepted)
+		if (order_event == OrderEvent::OE_Accepted)
 			on_order_accepted(order);
-		else if (order_event == OrderEvent::DM_Unfilled)
+		else if (order_event == OrderEvent::OE_Unfilled)
 			on_order_unfilled(order);
 
 		if (event_handler_) event_handler_();
 	}
 	void OrderControl::on_order_unfilled(std::shared_ptr<Order> order)
 	{
-		if (order->remain_count != 0) return;
-		if (order->position == SmPositionType::Buy)
-			buy_order_control_.remove_order(order->order_price, order->order_no);
+		if (order->remain_count == 0)
+			remove_order(order);
 		else
-			sell_order_control_.remove_order(order->order_price, order->order_no);
+			add_order(order);
 	}
 
 	void OrderControl::on_order_accepted(std::shared_ptr<Order> order)
 	{
-		if (order->position == SmPositionType::Buy)
-			buy_order_control_.add_order(order->order_price, order);
-		else
-			sell_order_control_.add_order(order->order_price, order);
+		add_order(order);
 	}
 
 	void OrderControl::add_account_id(const int account_id)
@@ -72,6 +68,22 @@ namespace DarkHorse {
 		if (it_price == order_map.end()) return std::make_pair(0, 0);
 		const std::shared_ptr<DarkHorse::PriceOrderMap>& price_order_map = it_price->second;
 		return std::make_pair(it_price->first, price_order_map->count());
+	}
+
+	void OrderControl::add_order(std::shared_ptr<Order> order)
+	{
+		if (order->position == SmPositionType::Buy)
+			buy_order_control_.add_order(order->order_price, order);
+		else
+			sell_order_control_.add_order(order->order_price, order);
+	}
+
+	void OrderControl::remove_order(std::shared_ptr<Order> order)
+	{
+		if (order->position == SmPositionType::Buy)
+			buy_order_control_.remove_order(order->order_price, order->order_no);
+		else
+			sell_order_control_.remove_order(order->order_price, order->order_no);
 	}
 
 	std::shared_ptr<PriceOrderMap> OrderControl::get_order_map(const SmPositionType& position, const int price)

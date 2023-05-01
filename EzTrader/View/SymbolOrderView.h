@@ -119,6 +119,12 @@ public:
 	void on_update_order();
 	void on_update_position();
 	void set_order_request_type(DarkHorse::OrderRequestType order_req_type);
+	void set_fill_condition(DarkHorse::SmFilledCondition fill_condition) {
+		fill_condition_ = fill_condition;
+	}
+	void set_price_type(DarkHorse::SmPriceType price_type) {
+		price_type_ = price_type;
+	}
 private:
 	void set_filled_condition(DarkHorse::OrderRequestType order_req_type);
 	void draw_cell(const int row, const int col, const int value);
@@ -175,7 +181,7 @@ private:
 	bool _EnableStopShow = false;
 	int _CutMode = 0;
 	bool _MovingOrder = false;
-	void PutStopOrder(const DarkHorse::SmPositionType& type, const int& price);
+	void put_stop_order(const DarkHorse::SmPositionType& type, const int& price);
 	void put_order
 	(
 		const DarkHorse::SmPositionType& type, 
@@ -243,6 +249,7 @@ private:
 	int id_{ 0 };
 	int _OrderAmount{ 1 };
 	DarkHorse::SmFilledCondition fill_condition_{DarkHorse::SmFilledCondition::Fas};
+	DarkHorse::SmPriceType price_type_{ DarkHorse::SmPriceType::Price };
 	int _X{ 0 };
 	int _Y{ 0 };
 

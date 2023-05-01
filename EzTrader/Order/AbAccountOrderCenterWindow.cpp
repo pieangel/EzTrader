@@ -49,6 +49,7 @@ AbAccountOrderCenterWindow::AbAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
 	symbol_order_view_.set_order_request_type(OrderRequestType::Abroad);
+	symbol_order_view_.set_fill_condition(SmFilledCondition::Day);
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }

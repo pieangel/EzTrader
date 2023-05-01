@@ -159,27 +159,27 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 	{
 	//case 196:
  	case 296: // 해외 주문 접수
- 		OnOrderAccepted(strRecvKey, nRealType); break;
+ 		on_ab_order_accepted(strRecvKey, nRealType); break;
 	//case 186:
  	case 286: // 해외 주문 미체결
- 		OnOrderUnfilled(strRecvKey, nRealType);	break;
+ 		on_ab_order_unfilled(strRecvKey, nRealType);	break;
 	//case 189:
  	case 289: // 해외 주문 체결
- 		OnOrderFilled(strRecvKey, nRealType); break;
+ 		on_ab_order_filled(strRecvKey, nRealType); break;
 	case 76: // 해외 실시간 호가
-		OnRealtimeHoga(strRecvKey, nRealType); break;
+		on_ab_future_hoga(strRecvKey, nRealType); break;
 	case 82: // 해외 실시간 체결
-		OnRealtimeQuote(strRecvKey, nRealType); break;
+		on_ab_future_quote(strRecvKey, nRealType); break;
 	case 51: // 국내 선물 호가
 	case 75:
-		OnRealtimeDomesticHoga(strRecvKey, nRealType); break;
+		on_dm_future_hoga(strRecvKey, nRealType); break;
 	case 52: // dm option hoga
 		on_dm_option_hoga(strRecvKey, nRealType); break;
 	case 58: // dm commodity future hoga
 		on_dm_commodity_future_hoga(strRecvKey, nRealType); break;
 	case 65: // 국내 선물 시세
 	case 77:
-		OnRealtimeDomesticQuote(strRecvKey, nRealType); break;
+		on_dm_future_quote(strRecvKey, nRealType); break;
 	case 66:
 		on_dm_option_quote(strRecvKey, nRealType); break;
 	case 71:
@@ -4166,7 +4166,7 @@ void DarkHorse::ViClient::OnDomesticChartData_Init(const CString& sTrCode, const
 	OnTaskComplete(nRqID);
 }
 
-void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRealType)
+void DarkHorse::ViClient::on_ab_order_accepted(const CString& strKey, const LONG& nRealType)
 {
 	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
 	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
@@ -4177,8 +4177,8 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
 	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "가격구분");
 	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문구분");
-	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
-	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
+	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
 	CString strOrderDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문일자");
 	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문시간");
 	
@@ -4186,9 +4186,9 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	//LOG_F(INFO, _T(" OnOrderAcceptedHd Custoem = %s"), strCustom);
 
 	CString strMsg;
-	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount);
+	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s] 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 	
-	LOGINFO(CMyLogger::getInstance(), "OnOrderAcceptedHd 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount);
+	LOGINFO(CMyLogger::getInstance(), "OnOrderAcceptedHd 종목[%s]주문번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 
 	//TRACE(strMsg);
 	strCustom.Trim();
@@ -4203,7 +4203,7 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	strOrderAmount.TrimRight();
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::AB_Accepted;
+	order_info["order_event"] = OrderEvent::OE_Accepted;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -4211,8 +4211,8 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
 	order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
-	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
-	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+	//order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	//order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
 	order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
 	order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
 	order_info["order_type"] = static_cast<const char*>(strMan.Trim());
@@ -4227,7 +4227,7 @@ void DarkHorse::ViClient::OnOrderAccepted(const CString& strKey, const LONG& nRe
 	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
-void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRealType)
+void DarkHorse::ViClient::on_ab_order_unfilled(const CString& strKey, const LONG& nRealType)
 {
 	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
 	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
@@ -4281,7 +4281,7 @@ void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRe
 	strCancelCnt.TrimRight();
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::AB_Unfilled;
+	order_info["order_event"] = OrderEvent::OE_Unfilled;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -4311,7 +4311,7 @@ void DarkHorse::ViClient::OnOrderUnfilled(const CString& strKey, const LONG& nRe
 	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
-void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nRealType)
+void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& nRealType)
 {
 	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
 	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
@@ -4360,7 +4360,7 @@ void DarkHorse::ViClient::OnOrderFilled(const CString& strKey, const LONG& nReal
 	strFilledTime.TrimRight();
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::AB_Filled;
+	order_info["order_event"] = OrderEvent::OE_Filled;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -4398,15 +4398,15 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "가격구분");
 	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
 	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문구분");
-	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
-	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
+	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
 	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "접수시간");
 
 
 	//LOG_F(INFO, _T(" OnOrderAcceptedHd Custoem = %s"), strCustom);
 
 	CString strMsg;
-	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount);
+	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 
 	//TRACE(strMsg);
 	strCustom.Trim();
@@ -4421,7 +4421,7 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 	strOrderAmount.TrimRight();
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["order_event"] = OrderEvent::OE_Accepted;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -4429,11 +4429,12 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 	order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
 	order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
-	order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
-	order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+	//order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	//order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
 	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
 	order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
-	order_info["order_type"] = static_cast<const char*>(strMan.Trim());
+	order_info["order_date"] = "20230501";
+	order_info["order_type"] = "1";
 	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
 	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
 
@@ -4499,7 +4500,7 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 	strCancelCnt.TrimRight();
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::DM_Unfilled;
+	order_info["order_event"] = OrderEvent::OE_Unfilled;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -4578,7 +4579,7 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 	strFilledTime.TrimRight();
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::DM_Filled;
+	order_info["order_event"] = OrderEvent::OE_Filled;
 	order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 	order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
 	order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -4596,7 +4597,7 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 
 	LOGINFO(CMyLogger::getInstance(), "order_no = %s, account_no = %s, symbol_code = %s, filled_amount = %s", strOrderNo, strAccountNo, strSymbolCode, strFilledAmount);
 
-	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	order_info["filled_date"] = "20200501";
 	order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
@@ -4604,7 +4605,7 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 	mainApp.order_processor()->add_order_event(std::move(order_info));
 }
 
-void DarkHorse::ViClient::OnRealtimeQuote(const CString& strKey, const LONG& nRealType)
+void DarkHorse::ViClient::on_ab_future_quote(const CString& strKey, const LONG& nRealType)
 {
 	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "기준체결시간");
@@ -4648,7 +4649,7 @@ void DarkHorse::ViClient::OnRealtimeQuote(const CString& strKey, const LONG& nRe
 	}
 }
 
-void DarkHorse::ViClient::OnRealtimeHoga(const CString& strKey, const LONG& nRealType)
+void DarkHorse::ViClient::on_ab_future_hoga(const CString& strKey, const LONG& nRealType)
 {
 	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 
@@ -4749,7 +4750,7 @@ void DarkHorse::ViClient::OnRealtimeHoga(const CString& strKey, const LONG& nRea
 	}
 }
 
-void DarkHorse::ViClient::OnRealtimeDomesticQuote(const CString& strKey, const LONG& nRealType)
+void DarkHorse::ViClient::on_dm_future_quote(const CString& strKey, const LONG& nRealType)
 {
 
 	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
@@ -4787,7 +4788,7 @@ void DarkHorse::ViClient::OnRealtimeDomesticQuote(const CString& strKey, const L
 	}
 }
 
-void DarkHorse::ViClient::OnRealtimeDomesticHoga(const CString& strKey, const LONG& nRealType)
+void DarkHorse::ViClient::on_dm_future_hoga(const CString& strKey, const LONG& nRealType)
 {
 	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 

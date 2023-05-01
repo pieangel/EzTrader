@@ -32,6 +32,8 @@ namespace DarkHorse {
 		std::pair<int, int> get_order_count(const SmPositionType& position, const int price);
 		std::shared_ptr<PriceOrderMap> get_order_map(const SmPositionType& position, const int price);
 	private:
+		void add_order(std::shared_ptr<Order> order);
+		void remove_order(std::shared_ptr<Order> order);
 		std::shared_ptr<PriceOrderMap> get_order_map(DarkHorse::SubOrderControl& order_control, const int price);
 		std::pair<int, int> get_order_count(DarkHorse::SubOrderControl& order_control, const int price);
 		SubOrderControl buy_order_control_;

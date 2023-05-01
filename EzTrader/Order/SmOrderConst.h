@@ -15,7 +15,10 @@ namespace DarkHorse {
 		DM_Filled,
 		AB_Accepted,
 		AB_Unfilled,
-		AB_Filled
+		AB_Filled,
+		OE_Accepted,
+		OE_Unfilled,
+		OE_Filled
 	};
 
 	enum class SmOrderError {

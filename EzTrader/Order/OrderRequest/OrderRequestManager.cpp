@@ -129,7 +129,7 @@ void OrderRequestManager::dm_make_new_order_event(order_request_p order_request)
 	const std::string order_no = std::to_string(get_order_no());
 	
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["order_event"] = OrderEvent::OE_Accepted;
 	order_info["account_no"] = order_request->account_no;
 	order_info["order_no"] = order_no;
 	order_info["symbol_code"] = order_request->symbol_code;
@@ -157,7 +157,7 @@ void OrderRequestManager::dm_make_new_order_event(order_request_p order_request)
 	
 
 	nlohmann::json order_info2;
-	order_info2["order_event"] = OrderEvent::DM_Unfilled;
+	order_info2["order_event"] = OrderEvent::OE_Unfilled;
 	order_info2["account_no"] = order_request->account_no;
 	order_info2["order_no"] = order_no;
 	order_info2["symbol_code"] = order_request->symbol_code;
@@ -202,7 +202,7 @@ void OrderRequestManager::dm_make_change_order_event(order_request_p order_reque
 	const std::string order_no = std::to_string(get_order_no());
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["order_event"] = OrderEvent::OE_Accepted;
 	order_info["account_no"] = order_request->account_no;
 	order_info["order_no"] = order_no;
 	order_info["symbol_code"] = order_request->symbol_code;
@@ -230,7 +230,7 @@ void OrderRequestManager::dm_make_change_order_event(order_request_p order_reque
 
 
 	nlohmann::json order_info2;
-	order_info2["order_event"] = OrderEvent::DM_Unfilled;
+	order_info2["order_event"] = OrderEvent::OE_Unfilled;
 	order_info2["account_no"] = order_request->account_no;
 	order_info2["order_no"] = order_request->original_order_no;
 	order_info2["symbol_code"] = order_request->symbol_code;
@@ -261,7 +261,7 @@ void OrderRequestManager::dm_make_change_order_event(order_request_p order_reque
 	mainApp.order_processor()->add_order_event(std::move(order_info2));
 
 	nlohmann::json order_info3;
-	order_info3["order_event"] = OrderEvent::DM_Unfilled;
+	order_info3["order_event"] = OrderEvent::OE_Unfilled;
 	order_info3["account_no"] = order_request->account_no;
 	order_info3["order_no"] = order_no;
 	order_info3["symbol_code"] = order_request->symbol_code;
@@ -296,7 +296,7 @@ void OrderRequestManager::dm_make_cancel_order_event(order_request_p order_reque
 	const std::string order_no = std::to_string(get_order_no());
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["order_event"] = OrderEvent::OE_Accepted;
 	order_info["account_no"] = order_request->account_no;
 	order_info["order_no"] = order_no;
 	order_info["symbol_code"] = order_request->symbol_code;
@@ -324,7 +324,7 @@ void OrderRequestManager::dm_make_cancel_order_event(order_request_p order_reque
 
 
 	nlohmann::json order_info2;
-	order_info2["order_event"] = OrderEvent::DM_Unfilled;
+	order_info2["order_event"] = OrderEvent::OE_Unfilled;
 	order_info2["account_no"] = order_request->account_no;
 	order_info2["order_no"] = order_request->original_order_no;
 	order_info2["symbol_code"] = order_request->symbol_code;
@@ -354,7 +354,7 @@ void OrderRequestManager::dm_make_cancel_order_event(order_request_p order_reque
 	mainApp.order_processor()->add_order_event(std::move(order_info2));
 
 	nlohmann::json order_info3;
-	order_info3["order_event"] = OrderEvent::DM_Unfilled;
+	order_info3["order_event"] = OrderEvent::OE_Unfilled;
 	order_info3["account_no"] = order_request->account_no;
 	order_info3["order_no"] = order_no;
 	order_info3["symbol_code"] = order_request->symbol_code;
@@ -389,7 +389,7 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 	const std::string order_no = std::to_string(get_order_no());
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["order_event"] = OrderEvent::OE_Accepted;
 	order_info["account_no"] = order_request->account_no;
 	order_info["order_no"] = order_no;
 	order_info["symbol_code"] = order_request->symbol_code;
@@ -417,7 +417,7 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 
 
 	nlohmann::json order_info2;
-	order_info2["order_event"] = OrderEvent::DM_Unfilled;
+	order_info2["order_event"] = OrderEvent::OE_Unfilled;
 	order_info2["account_no"] = order_request->account_no;
 	order_info2["order_no"] = order_no;
 	order_info2["symbol_code"] = order_request->symbol_code;
@@ -448,7 +448,7 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 
 
 	nlohmann::json order_info3;
-	order_info3["order_event"] = OrderEvent::DM_Filled;
+	order_info3["order_event"] = OrderEvent::OE_Filled;
 	order_info3["account_no"] = order_request->account_no;
 	order_info3["order_no"] = order_request->original_order_no;
 	order_info3["symbol_code"] = order_request->symbol_code;
@@ -472,7 +472,7 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 	mainApp.order_processor()->add_order_event(std::move(order_info3));
 
 	nlohmann::json order_info4;
-	order_info4["order_event"] = OrderEvent::DM_Unfilled;
+	order_info4["order_event"] = OrderEvent::OE_Unfilled;
 	order_info4["account_no"] = order_request->account_no;
 	order_info4["order_no"] = order_no;
 	order_info4["symbol_code"] = order_request->symbol_code;
@@ -507,7 +507,7 @@ void OrderRequestManager::ab_make_new_order_event(order_request_p order_request)
 	const std::string order_no = std::to_string(get_order_no());
 
 	nlohmann::json order_info;
-	order_info["order_event"] = OrderEvent::DM_Accepted;
+	order_info["order_event"] = OrderEvent::OE_Accepted;
 	order_info["account_no"] = order_request->account_no;
 	order_info["order_no"] = order_no;
 	order_info["symbol_code"] = order_request->symbol_code;
@@ -535,7 +535,7 @@ void OrderRequestManager::ab_make_new_order_event(order_request_p order_request)
 
 
 	nlohmann::json order_info2;
-	order_info2["order_event"] = OrderEvent::DM_Unfilled;
+	order_info2["order_event"] = OrderEvent::OE_Unfilled;
 	order_info2["account_no"] = order_request->account_no;
 	order_info2["order_no"] = order_no;
 	order_info2["symbol_code"] = order_request->symbol_code;

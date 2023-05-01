@@ -1135,9 +1135,9 @@ void SymbolOrderView::PutOrderBySpaceBar()
 	else if (selected_cell_->Col() == DarkHorse::OrderGridHeader::BUY_ORDER)
 		put_order(SmPositionType::Buy, price);
 	else if (selected_cell_->Col() == DarkHorse::OrderGridHeader::BUY_STOP)
-		PutStopOrder(SmPositionType::Buy, price);
+		put_stop_order(SmPositionType::Buy, price);
 	else if (selected_cell_->Col() == DarkHorse::OrderGridHeader::SELL_STOP)
-		PutStopOrder(SmPositionType::Sell, price);
+		put_stop_order(SmPositionType::Sell, price);
 
 	_EnableOrderShow = true;
 	_EnableStopShow = true;
@@ -1433,7 +1433,7 @@ void SymbolOrderView::set_virtual_filled_value(std::shared_ptr<DarkHorse::OrderR
 	order_req->order_context.virtual_filled_price = quote.close + product_control_->get_product().int_tick_size * 4;
 }
 
-void SymbolOrderView::PutStopOrder(const DarkHorse::SmPositionType& type, const int& price)
+void SymbolOrderView::put_stop_order(const DarkHorse::SmPositionType& type, const int& price)
 {
 	if (!account_ || !symbol_) return;
 	if (price <= 0) return;
@@ -1660,6 +1660,8 @@ void SymbolOrderView::cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 			order->price_type,
 			fill_condition_);
 		SetProfitLossCut(order_req);
+		order_req->request_type = order_request_type_;
+		order_req->price_type = price_type_;
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
 	price_order_map->clear();
@@ -1720,6 +1722,8 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 			fill_condition_);
 		SetProfitLossCut(order_req);
 		set_order_close(order_req);
+		order_req->request_type = order_request_type_;
+		order_req->price_type = price_type_;
 		order_req->order_context.virtual_filled_price = target_price;
 		//set_virtual_filled_value(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
@@ -2064,11 +2068,11 @@ void SymbolOrderView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
 	if (cell_pos.second == DarkHorse::OrderGridHeader::SELL_STOP) {
 		const int price = FindValue(cell_pos.first);
-		PutStopOrder(SmPositionType::Sell, price);
+		put_stop_order(SmPositionType::Sell, price);
 	}
 	else if (cell_pos.second == DarkHorse::OrderGridHeader::BUY_STOP) {
 		const int price = FindValue(cell_pos.first);
-		PutStopOrder(SmPositionType::Buy, price);
+		put_stop_order(SmPositionType::Buy, price);
 	}
 	else if (cell_pos.second == DarkHorse::OrderGridHeader::SELL_ORDER) {
 		const int price = FindValue(cell_pos.first);

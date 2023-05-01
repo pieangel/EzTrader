@@ -160,7 +160,12 @@ void SymbolPositionView::update_quote()
 	std::string value = std::to_string(quote.close);
 	SmUtil::insert_decimal(value, _Symbol->Decimal());
 	auto cell = _Grid->FindCell(1, 4);
-	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	if (position.open_quantity == 0)
+		cell->CellType(SmCellType::CT_NORMAL);
+	else
+		position.open_quantity > 0 ? 
+		cell->CellType(SmCellType::CT_REMAIN_BUY) :
+		cell->CellType(SmCellType::CT_REMAIN_SELL);
 	cell->Text(value);
 }
 

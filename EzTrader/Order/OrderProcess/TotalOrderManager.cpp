@@ -74,26 +74,22 @@ order_p TotalOrderManager::make_order(const order_event& order_info)
 		else if (position_type.compare("2") == 0) order->position = SmPositionType::Sell;
 
 		switch (order_event) {
-		case OrderEvent::DM_Accepted: { // 국내 접수확인
+		case OrderEvent::OE_Accepted: { // 접수확인
 			order->order_price = order_info["order_price"];
 			order->order_amount = order_info["order_amount"];
 			order->order_time = order_info["order_time"];
-		}
-		break;
-		case OrderEvent::AB_Accepted: { // 해외 접수 확인
-			// 주문 타입 : 신규/정정/취소
+			order->order_date = order_info["order_date"];
+
 			const std::string order_type = order_info["order_type"];
 			if (order_type.compare("1") == 0) order->order_type = SmOrderType::New;
 			else if (order_type.compare("2") == 0) order->order_type = SmOrderType::Modify;
 			else if (order_type.compare("3") == 0) order->order_type = SmOrderType::Cancel;
-
+		}
+		break;
+		case OrderEvent::OE_Unfilled: { // 미체결
 			order->order_price = order_info["order_price"];
 			order->order_amount = order_info["order_amount"];
-			order->order_date = order_info["order_date"];
-			order->order_time = order_info["order_time"];
-		}
-		break;
-		case OrderEvent::DM_Unfilled: { // 국내 미체결
+
 			order->original_order_no = order_info["original_order_no"];
 			order->first_order_no = order_info["first_order_no"];
 
@@ -103,26 +99,11 @@ order_p TotalOrderManager::make_order(const order_event& order_info)
 			order->filled_count = order_info["filled_count"];
 		}
 		break;
-		case OrderEvent::AB_Unfilled: { // 해외 미체결
-			order->original_order_no = order_info["original_order_no"];
-			order->first_order_no = order_info["first_order_no"];
-			order->remain_count = order_info["remain_count"];
-			order->modified_count = order_info["modified_count"];
-			order->cancelled_count = order_info["cancelled_count"];
-			order->filled_count = order_info["filled_count"];
-		}
-		break;
-		case OrderEvent::DM_Filled: { // 국내 체결
+		case OrderEvent::OE_Filled: { // 체결
 			order->filled_price = order_info["filled_price"];
 			order->filled_count = order_info["filled_count"];
 			order->filled_time = order_info["filled_time"];
-		}
-		break;
-		case OrderEvent::AB_Filled: { // 해외 체결
-			order->filled_price = order_info["filled_price"];
-			order->filled_count = order_info["filled_count"];
 			order->filled_date = order_info["filled_date"];
-			order->filled_time = order_info["filled_time"];
 		}
 		break;
 		}

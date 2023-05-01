@@ -59,6 +59,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 {
 	id_ = IdGenerator::get_id();
 	symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
+	symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
 	mainApp.event_hub()->add_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
