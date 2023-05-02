@@ -174,10 +174,12 @@ SymbolOrderView::~SymbolOrderView()
 void SymbolOrderView::on_update_quote()
 {
 	_EnableQuoteShow = true;
+	enable_position_show_ = true;
 }
 void SymbolOrderView::on_update_hoga()
 {
 	_EnableHogaShow = true;
+	enable_position_show_ = true;
 }
 
 void SymbolOrderView::on_update_order()
@@ -187,12 +189,38 @@ void SymbolOrderView::on_update_order()
 
 void SymbolOrderView::on_update_position()
 {
-
+	enable_position_show_ = true;
 }
 
 void SymbolOrderView::set_order_request_type(DarkHorse::OrderRequestType order_req_type)
 {
 	order_request_type_ = order_req_type;
+}
+
+void SymbolOrderView::update_position()
+{
+	if (!symbol_ || !position_control_) return;
+	const VmPosition& position = position_control_->get_position();
+
+	if (position.open_quantity == 0) return;
+	int avg_price = static_cast<int>(position.average_price);
+	const int int_tick_size = static_cast<int>(symbol_->TickSize() * pow(10, symbol_->decimal()));
+	const int mod = avg_price % int_tick_size;
+	const int half_tick_size = (int)(int_tick_size / 2);
+	// 나머지 보다 작으면 빼주고 아니면 틱크기에서 나머지를 뺀 값을 더해 준다.
+	if (mod < half_tick_size) avg_price = avg_price - avg_price % int_tick_size;
+	else avg_price += (int_tick_size - mod);
+
+	const int position_price_row = FindRow(avg_price);
+
+	std::shared_ptr<SmCell> cell = _Grid->FindCell(position_price_row, DarkHorse::OrderGridHeader::QUOTE);
+	if (position_price_row >= 2 && cell) {
+		if (position.open_quantity > 0)
+			cell->CellType(SmCellType::CT_POSITION_BUY);
+		else if (position.open_quantity < 0)
+			cell->CellType(SmCellType::CT_POSITION_SELL);
+		cell_to_price.insert(std::make_pair(cell->Row(), cell->Col()));
+	}
 }
 
 void SymbolOrderView::set_filled_condition(DarkHorse::OrderRequestType order_req_type)
@@ -2153,6 +2181,12 @@ void SymbolOrderView::OnTimer(UINT_PTR nIDEvent)
 		update_quote();
 		needDraw = true;
 		_EnableOrderShow = false;
+	}
+
+	if (enable_position_show_) {
+		enable_position_show_ = false;
+		update_position();
+		needDraw = true;
 	}
 
 	if (needDraw) Invalidate(FALSE);

@@ -310,7 +310,7 @@ void DarkHorse::SmGrid::DrawPositionBuy(CBCGPGraphicsManager* pGM, std::shared_p
 	pGM->FillRectangle(rect, _Res.GridNormalBrush);
 	pGM->DrawText(cell->Text().c_str(), rect, _Res.TextFormat, _Res.TextBrush);
 
-	CBCGPRect right_pos_rect(cell->X() + cell->Width() - cell->Height() * 2, cell->Y(), cell->X() + cell->Width() - cell->Height(), cell->Y() + cell->Height());
+	CBCGPRect right_pos_rect(cell->X() + cell->Width() - cell->Height() * 2 + 10, cell->Y(), cell->X() + cell->Width() - cell->Height() + 10, cell->Y() + cell->Height());
 	right_pos_rect.DeflateRect(5, 5);
 
 	//CBCGPBrush brFill3(CBCGPColor::Red, CBCGPColor::White, CBCGPBrush::BCGP_GRADIENT_RADIAL_CENTER);
@@ -328,7 +328,7 @@ void DarkHorse::SmGrid::DrawPositionSell(CBCGPGraphicsManager* pGM, std::shared_
 	pGM->DrawText(cell->Text().c_str(), rect, _Res.TextFormat, _Res.TextBrush);
 
 
-	CBCGPRect left_pos_rect(cell->X() + cell->Height(), cell->Y(), cell->X() + cell->Height() * 2, cell->Y() + cell->Height());
+	CBCGPRect left_pos_rect(cell->X() + cell->Height() - 10, cell->Y(), cell->X() + cell->Height() * 2 - 10, cell->Y() + cell->Height());
 	left_pos_rect.DeflateRect(5, 5);
 
 	//CBCGPBrush brFill2(CBCGPColor::Blue, CBCGPColor::White, CBCGPBrush::BCGP_GRADIENT_RADIAL_CENTER);

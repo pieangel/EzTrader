@@ -3,9 +3,9 @@
 #include <string>
 #include <memory>
 #include "../ViewModel/VmOrder.h"
+#include "../Order/SmOrderConst.h"
 #include "../Order/Order.h"
 namespace DarkHorse {
-	enum SubOrderControlType { CT_NONE = 0, CT_BUY, CT_SELL };
 	class PriceOrderMap {
 	private:
 		int price_{ 0 };

@@ -120,4 +120,9 @@ namespace DarkHorse {
 		MainAccount,
 		Fund
 	};
+
+	enum SubOrderControlType {
+		CT_NONE = 0, 
+		CT_BUY, CT_SELL 
+	};
 }

@@ -2081,6 +2081,9 @@ void ViClient::RegisterSymbol(SmTaskArg&& arg)
 			nRealType = 82;
 			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 		}
+
+		nRealType = 310;
+		nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 	}
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);

@@ -7,16 +7,6 @@
 
 void DarkHorse::SmStopOrderManager::RemoveOrderRequest(const int& request_id)
 {
-	/*
-	for (auto it = _OrderMap.begin(); it != _OrderMap.end(); it++) {
-		std::map<int, std::shared_ptr<SmOrderRequest>>& req_vec = it->second;
-		auto found = req_vec.find(request_id);
-		if (found != req_vec.end()) {
-			req_vec.erase(found);
-			return;
-		}
-	}
-	*/
 	auto found = _OrderReqMap.find(request_id);
 	if (found == _OrderReqMap.end()) return;
 	_OrderReqMap.erase(found);
@@ -27,19 +17,6 @@ void DarkHorse::SmStopOrderManager::AddOrderRequest(std::shared_ptr<SmOrderReque
 	if (!order_req) return;
 
 	_OrderReqMap[order_req->RequestId] = order_req;
-
-	/*
-	auto found = _OrderMap.find(order_req->OrderPrice);
-	if (found == _OrderMap.end()) {
-		std::map<int , std::shared_ptr<SmOrderRequest>> req_vec;
-		req_vec[order_req->RequestId] = order_req;
-		_OrderMap[order_req->OrderPrice] = std::move(req_vec);
-	}
-	else {
-		std::map<int , std::shared_ptr<SmOrderRequest>>& req_vec = found->second;
-		req_vec[order_req->RequestId] = order_req;
-	}
-	*/
 }
 
 size_t DarkHorse::SmStopOrderManager::FindCount(const int& price)
@@ -51,18 +28,7 @@ size_t DarkHorse::SmStopOrderManager::FindCount(const int& price)
 
 void DarkHorse::SmStopOrderManager::CheckStopOrder(const int& close)
 {
-	// const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->Decimal()));
-	for (auto it = _OrderReqMap.begin(); it != _OrderReqMap.end(); it++) {
-		auto order_req = it->second;
-		if (order_req->OrderPrice == close) {
-			if (order_req->PositionType == SmPositionType::Buy) {
-				;
-			}
-			else {
-				;
-			}
-		}
-	}
+
 }
 
 void DarkHorse::SmStopOrderManager::CheckStopOrder(std::shared_ptr<SmSymbol> symbol)

@@ -126,6 +126,7 @@ public:
 		price_type_ = price_type;
 	}
 private:
+	void update_position();
 	void set_filled_condition(DarkHorse::OrderRequestType order_req_type);
 	void draw_cell(const int row, const int col, const int value);
 	void draw_order_cell(DarkHorse::SmPositionType position, const int price, const int count);
@@ -179,6 +180,7 @@ private:
 	bool _EnableQuoteShow = false;
 	bool _EnableHogaShow = false;
 	bool _EnableStopShow = false;
+	bool enable_position_show_ = false;
 	int _CutMode = 0;
 	bool _MovingOrder = false;
 	void put_stop_order(const DarkHorse::SmPositionType& type, const int& price);
