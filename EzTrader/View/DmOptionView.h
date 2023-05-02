@@ -19,6 +19,7 @@ namespace DarkHorse {
 	class SmFund;
 	class QuoteControl;
 	struct SmQuote;
+	class SymbolPositionControl;
 }
 
 class DmOptionView : public CBCGPStatic
@@ -32,19 +33,17 @@ public:
 	DECLARE_MESSAGE_MAP()
 public:
 	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
+	void update_quote();
+	void update_close(const DarkHorse::VmQuote& quote);
+	void set_option_view(
+		const int option_market_index,
+		const std::string& year_month_name
+	);
+public:
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
 	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
-	void update_quote();
-public:
-	void update_close(const DarkHorse::VmQuote& quote);
-	void update_close_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
-	void update_expected_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
-	void set_option_view(
-		const int option_market_index, 
-		const std::string& year_month_name
-	);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
@@ -55,6 +54,10 @@ public:
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void set_view_mode(ViewMode view_mode);
 private:
+	void update_position();
+	void on_update_position();
+	void update_close_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
+	void update_expected_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
 	void on_update_quote();
 	void register_symbols(const int option_market_index);
 	void register_symbol(const std::string symbol_code);
@@ -70,6 +73,7 @@ private:
 	void init_strike_index();
 
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
+	std::shared_ptr<DarkHorse::SymbolPositionControl> position_control_;
 	void register_symbols_to_server();
 	void set_option_view();
 	void set_strike_start_index(const int distance);

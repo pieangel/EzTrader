@@ -63,6 +63,7 @@ void AccountPositionManager::update_position(order_p order)
 	set_symbol_id(position, order->symbol_code);
 	set_account_id(position, order->account_no);
 	auto symbol = mainApp.SymMgr()->FindSymbol(order->symbol_code);
+	if (!symbol) return;
 	const int position_count = calculate_position_count(order, position);
 	const int unsettled_count = calculate_unsettled_count(order, position);
 	const double traded_profit_loss = calculate_traded_profit_loss(order, position);

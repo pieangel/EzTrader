@@ -270,7 +270,7 @@ void AccountPositionView::OnDestroy()
 	CBCGPGridCtrl::OnDestroy();
 }
 
-void AccountPositionView::refresh_position()
+void AccountPositionView::on_timer()
 {
 	if (enable_position_show_) {
 		update_account_position();

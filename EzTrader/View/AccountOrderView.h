@@ -20,6 +20,8 @@ namespace DarkHorse {
 	class SmAccount;
 	class SmOrder;
 	class SmFund;
+	struct Order;
+
 }
 class DmAccountOrderWindow;
 class DmFundOrderWindow;
@@ -75,6 +77,7 @@ public:
 
 // Implementation
 public:
+	void on_update_order();
 	void SetFundOrderWnd(DmFundOrderWindow* fund_order_wnd) {
 		_FundOrderWnd = fund_order_wnd;
 	}
@@ -106,21 +109,24 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	void update_order();
 	void ClearCheck();
 	SmFundCompMainDialog* _CompFundWnd = nullptr;
 	SmOrderCompMainDialog* _CompOrderWnd = nullptr;
 	DmFundOrderWindow* _FundOrderWnd = nullptr;
 	DmAccountOrderWindow* _OrderWnd = nullptr;
 	COLORREF _DefaultBackColor;
-	bool _EnableOrderShow = false;
+	bool enable_order_show_ = false;
 	bool _HeaderCheck = false;
 	int _OldMaxRow = -1;
 	// key : row, value : SmOrder object
 	std::map<int, std::shared_ptr<DarkHorse::SmOrder>> _RowToOrderMap;
+	std::map<int, std::shared_ptr<DarkHorse::Order>> row_to_order_;
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
 	std::set<int> _OldContentRowSet;
+	std::shared_ptr<DarkHorse::AccountOrderControl> account_order_control_;
 	void ClearOldContents();
 	void ClearOldContents(const int& last_index);
 
@@ -133,7 +139,7 @@ private:
 	void CancelAllAccountOrders();
 	void CancelAllFundOrders();
 public:
-
+	void on_timer();
 	void StartTimer();
 	void Update();
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);

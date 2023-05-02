@@ -34,7 +34,7 @@ void TotalOrderManager::on_order_event(order_event&& order_info)
 void TotalOrderManager::dispatch_order(const OrderEvent order_event, order_p order)
 {
 	assert(order);
-	account_order_manager_p order_manager = get_order_manager(order->account_no);
+	account_order_manager_p order_manager = get_account_order_manager(order->account_no);
 	order_manager->dispatch_order(order_event, order);
 }
 void TotalOrderManager::write_order_history(const OrderEvent order_event, order_p order)
@@ -42,22 +42,22 @@ void TotalOrderManager::write_order_history(const OrderEvent order_event, order_
 	assert(order);
 }
 
-account_order_manager_p TotalOrderManager::find_order_manager(const std::string& account_no) 
+account_order_manager_p TotalOrderManager::find_account_order_manager(const std::string& account_no) 
 {
-	auto it = order_manager_map_.find(account_no);
-	return it != order_manager_map_.end() ? it->second : nullptr;
+	auto it = account_order_manager_map_.find(account_no);
+	return it != account_order_manager_map_.end() ? it->second : nullptr;
 }
-account_order_manager_p TotalOrderManager::create_order_manager(const std::string& account_no)
+account_order_manager_p TotalOrderManager::create_account_order_manager(const std::string& account_no)
 {
 	account_order_manager_p order_manager = std::make_shared<AccountOrderManager>();
-	order_manager_map_[account_no] = order_manager;
+	account_order_manager_map_[account_no] = order_manager;
 	return order_manager;
 }
-account_order_manager_p TotalOrderManager::get_order_manager(const std::string& account_no) 
+account_order_manager_p TotalOrderManager::get_account_order_manager(const std::string& account_no) 
 {
-	account_order_manager_p order_manager = find_order_manager(account_no);
+	account_order_manager_p order_manager = find_account_order_manager(account_no);
 	if (order_manager) return order_manager;
-	return create_order_manager(account_no);
+	return create_account_order_manager(account_no);
 }
 order_p TotalOrderManager::make_order(const order_event& order_info)
 {

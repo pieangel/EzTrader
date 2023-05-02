@@ -17,8 +17,6 @@ namespace DarkHorse {
 		OrderControl();
 		~OrderControl();
 		void update_order(std::shared_ptr<Order> order, OrderEvent order_event);
-		void on_order_unfilled(std::shared_ptr<Order> order);
-		void on_order_accepted(std::shared_ptr<Order> order);
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}
@@ -32,6 +30,8 @@ namespace DarkHorse {
 		std::pair<int, int> get_order_count(const SmPositionType& position, const int price);
 		std::shared_ptr<PriceOrderMap> get_order_map(const SmPositionType& position, const int price);
 	private:
+		void on_order_unfilled(std::shared_ptr<Order> order);
+		void on_order_accepted(std::shared_ptr<Order> order);
 		void add_order(std::shared_ptr<Order> order);
 		void remove_order(std::shared_ptr<Order> order);
 		std::shared_ptr<PriceOrderMap> get_order_map(DarkHorse::SubOrderControl& order_control, const int price);

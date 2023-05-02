@@ -171,8 +171,8 @@ void AbAccountOrderLeftWindow::OnBnClickedBtnAddFav()
 
 void AbAccountOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 {
-	account_order_view_.Update();
-	account_position_view_.refresh_position();
+	account_order_view_.on_timer();
+	account_position_view_.on_timer();
 	favorite_symbol_view_.Update();
 	//_AcceptedGrid.UpdateAcceptedOrder();
 	//_PositionGrid.UpdatePositionInfo();

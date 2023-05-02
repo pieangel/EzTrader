@@ -23,6 +23,8 @@
 #include <functional>
 #include "../CompOrder/SmOrderCompMainDialog.h"
 #include "../CompOrder/SmFundCompMainDialog.h"
+#include "../Controller/AccountOrderControl.h"
+#include "../Order/Order.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -43,12 +45,19 @@ IMPLEMENT_DYNAMIC(AccountOrderView, CBCGPGridCtrl)
 AccountOrderView::AccountOrderView()
 {
 	m_bExtendedPadding = FALSE;
+	account_order_control_ = std::make_shared<DarkHorse::AccountOrderControl>();
+	account_order_control_->set_event_handler(std::bind(&AccountOrderView::on_update_order, this));
 }
 
 void AccountOrderView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 {
 	_Fund = val;
 	UpdateFundAcceptedOrders();
+}
+
+void AccountOrderView::on_update_order()
+{
+	enable_order_show_ = true;
 }
 
 AccountOrderView::~AccountOrderView()
@@ -205,6 +214,57 @@ void AccountOrderView::OnDestroy()
 {
 	SaveState(_T("BasicGrid"));
 	CBCGPGridCtrl::OnDestroy();
+}
+
+void AccountOrderView::update_order()
+{
+	if (!account_order_control_) return;
+	const std::map<std::string, order_p>& order_map = account_order_control_->get_order_map();
+
+	int row = 0;
+	for (auto it2 = order_map.begin(); it2 != order_map.end(); it2++) {
+		auto order = it2->second;
+		CBCGPGridRow* pRow = GetRow(row);
+		if (!pRow) continue;
+		pRow->GetItem(0)->SetValue(order->symbol_code.c_str());
+		pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
+		if (order->position == SmPositionType::Buy) {
+			pRow->GetItem(0)->SetBackgroundColor(RGB(255, 0, 0));
+			pRow->GetItem(1)->SetBackgroundColor(RGB(255, 0, 0));
+			pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
+			pRow->GetItem(3)->SetBackgroundColor(RGB(255, 0, 0));
+
+			pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(1)->SetValue("매수");
+
+		}
+		else {
+			pRow->GetItem(1)->SetValue("매도");
+			pRow->GetItem(0)->SetBackgroundColor(RGB(0, 0, 255));
+			pRow->GetItem(1)->SetBackgroundColor(RGB(0, 0, 255));
+			pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
+			pRow->GetItem(3)->SetBackgroundColor(RGB(0, 0, 255));
+
+			pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+			pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+		}
+		pRow->GetItem(2)->SetValue(std::to_string(order->order_amount).c_str());
+		pRow->GetItem(3)->SetValue(std::to_string(order->order_price).c_str());
+		_OldContentRowSet.insert(row);
+		row_to_order_[row] = order;
+		pRow->GetItem(0)->Redraw();
+		pRow->GetItem(1)->Redraw();
+		pRow->GetItem(2)->Redraw();
+		pRow->GetItem(3)->Redraw();
+		row++;
+	}
+	ClearOldContents(row);
+	_OldMaxRow = row;
 }
 
 void AccountOrderView::ClearCheck()
@@ -460,6 +520,16 @@ void AccountOrderView::ToggleExtendedPadding()
 
 
 
+void AccountOrderView::on_timer()
+{
+	if (enable_order_show_) {
+		update_order();
+		//needDraw = true;
+		enable_order_show_ = false;
+	}
+	//Invalidate();
+}
+
 void AccountOrderView::StartTimer()
 {
 	SetTimer(1, 40, NULL);
@@ -467,16 +537,16 @@ void AccountOrderView::StartTimer()
 
 void AccountOrderView::Update()
 {
-	if (_EnableOrderShow) {
+	if (enable_order_show_) {
 		UpdateAcceptedOrder();
 		//needDraw = true;
-		_EnableOrderShow = false;
+		enable_order_show_ = false;
 	}
 }
 
 void AccountOrderView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
-	_EnableOrderShow = true;
+	enable_order_show_ = true;
 }
 
 void AccountOrderView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -524,10 +594,10 @@ void AccountOrderView::OnTimer(UINT_PTR nIDEvent)
 {
 	//bool needDraw = false;
 
-	if (_EnableOrderShow) {
+	if (enable_order_show_) {
 		UpdateAcceptedOrder();
 		//needDraw = true;
-		_EnableOrderShow = false;
+		enable_order_show_ = false;
 	}
 
 	//if (needDraw) Invalidate(FALSE);

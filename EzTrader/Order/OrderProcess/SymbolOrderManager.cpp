@@ -39,6 +39,8 @@ void SymbolOrderManager::on_order_unfilled(order_p order, OrderEvent order_event
 {
 	if (order->remain_count == 0)
 		update_accepted_order(order);
+	else
+		add_accepted_order(order);
 	mainApp.event_hub()->process_order_event(order, order_event);
 }
 void SymbolOrderManager::on_order_filled(order_p order, OrderEvent order_event)
@@ -50,6 +52,8 @@ void SymbolOrderManager::on_order_filled(order_p order, OrderEvent order_event)
 
 void SymbolOrderManager::add_accepted_order(order_p order)
 {
+	auto it = accepted_order_map_.find(order->order_no);
+	if (it != accepted_order_map_.end()) return;
 	accepted_order_map_[order->order_no] = order;
 }
 

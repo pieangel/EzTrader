@@ -20,6 +20,7 @@ namespace DarkHorse {
 	class SmFund;
 	class QuoteControl;
 	struct SmQuote;
+	class SymbolPositionControl;
 }
 
 class DmFutureView : public CBCGPStatic
@@ -50,14 +51,15 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	void update_position();
+	void on_update_position();
 	void on_update_quote();
 	void update_close(const DarkHorse::VmQuote& quote);
-	void update_close_cell(const int row, const DarkHorse::VmFuture& future_info);
-	void update_expected_cell(const int row, const DarkHorse::VmFuture& future_info);
 	void show_values();
 	void show_value(const int row, const int col, const DarkHorse::VmFuture& future_info);
 	ViewMode view_mode_{ ViewMode::VM_Close };
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
+	std::shared_ptr<DarkHorse::SymbolPositionControl> position_control_;
 	void register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
@@ -66,7 +68,7 @@ private:
 	// 0 : account, 1 : fund
 	int _Mode = 0;
 	bool _EnableOrderShow = false;
-	bool _EnableQuoteShow = false;
+	bool enable_show_ = false;
 	SmOrderGridResource _Resource;
 	void CreateResource();
 	void InitHeader();

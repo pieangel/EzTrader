@@ -24,7 +24,7 @@
 #include "../Quote/SmQuote.h"
 #include "../Quote/SmQuoteManager.h"
 #include "../Util/IdGenerator.h"
-
+#include "../Controller/SymbolPositionControl.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -44,6 +44,9 @@ DmFutureView::DmFutureView()
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->set_event_handler(std::bind(&DmFutureView::on_update_quote, this));
 
+	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
+	position_control_->set_event_handler(std::bind(&DmFutureView::on_update_position, this));
+
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
 		id_,
@@ -60,9 +63,27 @@ DmFutureView::~DmFutureView()
 		delete m_pGM;
 }
 
+void DmFutureView::update_position()
+{
+	if (!position_control_) return;
+
+	const VmPosition& position = position_control_->get_position();
+
+	auto found = symbol_row_index_map_.find(position.symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.position = position.open_quantity;
+	show_value(found->second, 2, future_info);
+}
+
+void DmFutureView::on_update_position()
+{
+	enable_show_ = true;
+}
+
 void DmFutureView::on_update_quote()
 {
-	_EnableQuoteShow = true;
+	enable_show_ = true;
 }
 
 void DmFutureView::update_quote()
@@ -71,6 +92,7 @@ void DmFutureView::update_quote()
 	CString msg;
 	msg.Format("DmFutureView::update_quote ::  close : %d\n", quote.close);
 	TRACE(msg);
+	if (view_mode_ != ViewMode::VM_Close) return;
 	update_close(quote);
 }
 
@@ -165,7 +187,7 @@ void DmFutureView::UpdateAssetInfo()
 
 void DmFutureView::OnQuoteEvent(const std::string& symbol_code)
 {
-	_EnableQuoteShow = true;
+	enable_show_ = true;
 }
 
 void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
@@ -175,17 +197,13 @@ void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string
 
 void DmFutureView::update_expected(std::shared_ptr<SmQuote> quote)
 {
+	if (view_mode_ != ViewMode::VM_Expected) return;
+
 	auto found = symbol_row_index_map_.find(quote->symbol_code);
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.expected = quote->expected;
-	update_expected_cell(found->second, future_info);
-}
-
-void DmFutureView::update_expected_cell(const int row, const DarkHorse::VmFuture& future_info)
-{
-	if (view_mode_ != ViewMode::VM_Expected) return;
-	show_value(row, 2, future_info);
+	show_value(found->second, 2, future_info);
 }
 
 void DmFutureView::update_close(const DarkHorse::VmQuote& quote)
@@ -194,13 +212,7 @@ void DmFutureView::update_close(const DarkHorse::VmQuote& quote)
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.close = quote.close;
-	update_close_cell(found->second, future_info);
-}
-
-void DmFutureView::update_close_cell(const int row, const DarkHorse::VmFuture& future_info)
-{
-	if (view_mode_ != ViewMode::VM_Close) return;
-	show_value(row, 2, future_info);
+	show_value(found->second, 2, future_info);
 }
 
 void DmFutureView::show_values()
@@ -217,14 +229,18 @@ void DmFutureView::show_value(const int row, const int col, const DarkHorse::VmF
 	if (!cell) return;
 
 	std::string value;
-	if (view_mode_ == ViewMode::VM_Close) 
+	if (view_mode_ == ViewMode::VM_Close) {
 		value = std::to_string(future_info.close);
-	else if (view_mode_ == ViewMode::VM_Expected) 
+		SmUtil::insert_decimal(value, future_info.decimal);
+	}
+	else if (view_mode_ == ViewMode::VM_Expected) {
 		value = std::to_string(future_info.expected);
+		SmUtil::insert_decimal(value, future_info.decimal);
+	}
 	else {
 		value = std::to_string(future_info.position);
 	}
-	SmUtil::insert_decimal(value, future_info.decimal);
+	
 	cell->Text(value);
 	Invalidate();
 }
@@ -356,9 +372,13 @@ void DmFutureView::InitHeader()
 void DmFutureView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
-	if (_EnableQuoteShow) {
-		update_quote();
-		_EnableQuoteShow = false;
+	if (enable_show_) {
+		if (view_mode_ == ViewMode::VM_Close)
+			update_quote();
+		else
+			update_position();
+		
+		enable_show_ = false;
 		needDraw = true;
 	}
 

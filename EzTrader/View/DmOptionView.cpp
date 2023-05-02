@@ -31,6 +31,7 @@
 #include "../Task/SmTaskArg.h"
 #include "../Task/SmTaskRequestManager.h"
 #include "../Util/IdGenerator.h"
+#include "../Controller/SymbolPositionControl.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -50,6 +51,9 @@ DmOptionView::DmOptionView()
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->set_event_handler(std::bind(&DmOptionView::on_update_quote, this));
+
+	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
+	position_control_->set_event_handler(std::bind(&DmOptionView::on_update_position, this));
 
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
@@ -80,11 +84,14 @@ void DmOptionView::update_quote()
 	CString msg;
 	msg.Format("DmOptionView::update_quote :: %s ::  close : %d\n", quote.symbol_code.c_str(), quote.close);
 	TRACE(msg);
+	if (view_mode_ != ViewMode::VM_Close) return;
 	update_close(quote);
 }
 
 void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 {
+	if (view_mode_ != ViewMode::VM_Expected) return;
+
 	const std::string option_code = quote->symbol_code.substr(1, quote->symbol_code.length() - 1);
 	auto found = symbol_vector_index_map_.find(option_code);
 	if (found == symbol_vector_index_map_.end()) return;
@@ -117,9 +124,18 @@ void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 	}
 }
 
+void DmOptionView::update_position()
+{
+
+}
+
+void DmOptionView::on_update_position()
+{
+
+}
+
 void DmOptionView::update_close_cell(const int symbol_id, const DarkHorse::VmOption& option_info)
 {
-	if (view_mode_ != ViewMode::VM_Close) return;
 	auto found = row_col_map_.find(symbol_id);
 	if (found == row_col_map_.end()) return;
 	show_value(found->second.first, found->second.second, option_info);
@@ -127,7 +143,6 @@ void DmOptionView::update_close_cell(const int symbol_id, const DarkHorse::VmOpt
 
 void DmOptionView::update_expected_cell(const int symbol_id, const DarkHorse::VmOption& option_info)
 {
-	if (view_mode_ != ViewMode::VM_Expected) return;
 	auto found = row_col_map_.find(symbol_id);
 	if (found == row_col_map_.end()) return;
 	show_value(found->second.first, found->second.second, option_info);

@@ -12,13 +12,13 @@ void AccountOrderManager::dispatch_order(const OrderEvent order_event, order_p o
 
 symbol_order_manager_p AccountOrderManager::find_order_manager(const std::string& symbol_code)
 {
-	auto it = order_manager_map_.find(symbol_code);
-	return it != order_manager_map_.end() ? it->second : nullptr;
+	auto it = symbol_order_manager_map_.find(symbol_code);
+	return it != symbol_order_manager_map_.end() ? it->second : nullptr;
 }
 symbol_order_manager_p AccountOrderManager::create_order_manager(const std::string& symbol_code)
 {
 	symbol_order_manager_p order_manager = std::make_shared<SymbolOrderManager>();
-	order_manager_map_[symbol_code] = order_manager;
+	symbol_order_manager_map_[symbol_code] = order_manager;
 	return order_manager;
 }
 symbol_order_manager_p AccountOrderManager::get_order_manager(const std::string& symbol_code)

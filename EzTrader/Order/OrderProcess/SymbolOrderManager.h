@@ -12,6 +12,9 @@ class SymbolOrderManager
 {
 public:
     void dispatch_order(const OrderEvent order_event, order_p order);
+	const std::map<std::string, order_p>& get_accepted_order_map() {
+		return accepted_order_map_;
+	}
 private:
 	
 	void on_order_accepted(order_p order, OrderEvent order_event);

@@ -113,7 +113,7 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
-	void refresh_position();
+	void on_timer();
 	void ClearCheck();
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void OnQuoteEvent(const std::string& symbol_code);

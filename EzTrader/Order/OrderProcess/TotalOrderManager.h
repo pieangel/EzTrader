@@ -19,7 +19,10 @@ class TotalOrderManager
 public:
 	void on_order_event(const order_event& order_info);
 	void on_order_event(order_event&& order_info);
-	account_order_manager_p get_order_manager(const std::string& account_no);
+	account_order_manager_p get_account_order_manager(const std::string& account_no);
+	const std::map<std::string, account_order_manager_p>& get_account_order_manager_map() {
+		return account_order_manager_map_;
+	}
 private:
 	void write_order_history(const OrderEvent order_event, order_p order) ;
 	void dispatch_order(const OrderEvent order_event, order_p order) ;
@@ -28,8 +31,8 @@ private:
 	order_p create_order(const std::string& order_no);
 	order_p make_order(const order_event& order_info);
 	void set_order_request_info(const std::string& custom_info, order_p order);
-	account_order_manager_p find_order_manager(const std::string& account_no);
-	account_order_manager_p create_order_manager(const std::string& account_no);
+	account_order_manager_p find_account_order_manager(const std::string& account_no);
+	account_order_manager_p create_account_order_manager(const std::string& account_no);
 	/// <summary>
 	/// key : order_no, value : order_object.
 	/// </summary>
@@ -37,6 +40,6 @@ private:
 	/// <summary>
 	/// key : account_no, value : account_order_manager object.
 	/// </summary>
-	std::map<std::string, account_order_manager_p> order_manager_map_;
+	std::map<std::string, account_order_manager_p> account_order_manager_map_;
 };
 }
