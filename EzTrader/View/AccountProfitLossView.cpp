@@ -11,6 +11,7 @@
 
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
+#include "../Controller/AccountProfitLossControl.h"
 #include <format>
 
 #include <functional>
@@ -29,7 +30,8 @@ END_MESSAGE_MAP()
 
 AccountProfitLossView::AccountProfitLossView()
 {
-
+	account_profit_loss_control_ = std::make_shared<DarkHorse::AccountProfitLossControl>();
+	account_profit_loss_control_->set_event_handler(std::bind(&AccountProfitLossView::on_update_account_profit_loss, this));
 }
 
 AccountProfitLossView::~AccountProfitLossView()
@@ -78,10 +80,6 @@ void AccountProfitLossView::SetUp()
 		_Grid->SetRowHeaderTitles(_HeaderTitles);
 	}
 
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&AccountProfitLossView::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&AccountProfitLossView::OnOrderEvent, this, _1, _2));
-
-
 	SetTimer(1, 40, NULL);
 }
 
@@ -107,8 +105,6 @@ void AccountProfitLossView::OnPaint()
 		return;
 	}
 
-
-
 	m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
 	rect.right -= 1;
 	rect.bottom -= 1;
@@ -119,6 +115,21 @@ void AccountProfitLossView::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+}
+
+void AccountProfitLossView::on_update_account_profit_loss()
+{
+	enable_account_profit_loss_show_ = true;
+}
+
+void AccountProfitLossView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	account_ = val;
+
+	if (!account_profit_loss_control_) return;
+
+	account_profit_loss_control_->load_position_from_account(account_->No());
+	enable_account_profit_loss_show_ = true;
 }
 
 void AccountProfitLossView::UpdateSymbolInfo()
@@ -145,25 +156,46 @@ void AccountProfitLossView::OnQuoteEvent(const std::string& symbol_code)
 
 void AccountProfitLossView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
-	_EnableOrderShow = true;
+	enable_account_profit_loss_show_ = true;
+}
+
+void AccountProfitLossView::update_account_profit_loss()
+{
+	if (!account_profit_loss_control_) return;
+
+	const VmAccountProfitLoss& account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
+	auto cell = _Grid->FindCell(0, 1);
+	std::string value;
+	value = std::format("{0:.2f}", account_profit_loss.open_profit_loss);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(1, 1);
+	value = std::format("{0:.2f}", account_profit_loss.trade_profit_loss);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(2, 1);
+	value = std::format("{0:.2f}", account_profit_loss.trade_fee);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(3, 1);
+	const double pure_profit = account_profit_loss.open_profit_loss + account_profit_loss.trade_profit_loss - abs(account_profit_loss.trade_fee);
+	value = std::format("{0:.2f}", pure_profit);
+	if (cell) cell->Text(value);
 }
 
 void AccountProfitLossView::UpdateAccountAssetInfo()
 {
-	if (!_Account) return;
+	if (!account_) return;
 
 	auto cell = _Grid->FindCell(0, 1);
 	std::string value;
-	value = std::format("{0:.2f}", _Account->Asset.OpenProfitLoss);
+	value = std::format("{0:.2f}", account_->Asset.OpenProfitLoss);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(1, 1);
-	value = std::format("{0:.2f}", _Account->Asset.SettledProfitLose);
+	value = std::format("{0:.2f}", account_->Asset.SettledProfitLose);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(2, 1);
-	value = std::format("{0:.2f}", _Account->Asset.Fee);
+	value = std::format("{0:.2f}", account_->Asset.Fee);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(3, 1);
-	const double pure_profit = _Account->Asset.OpenProfitLoss + _Account->Asset.SettledProfitLose - abs(_Account->Asset.Fee);
+	const double pure_profit = account_->Asset.OpenProfitLoss + account_->Asset.SettledProfitLose - abs(account_->Asset.Fee);
 	value = std::format("{0:.2f}", pure_profit);
 	if (cell) cell->Text(value);
 }
@@ -225,15 +257,10 @@ void AccountProfitLossView::InitHeader()
 void AccountProfitLossView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
-	if (_EnableQuoteShow) {
-		UpdateAssetInfo();
-		_EnableQuoteShow = false;
-		needDraw = true;
-	}
 
-	if (_EnableOrderShow) {
-		UpdateAssetInfo();
-		_EnableOrderShow = false;
+	if (enable_account_profit_loss_show_) {
+		update_account_profit_loss();
+		enable_account_profit_loss_show_ = false;
 		needDraw = true;
 	}
 
