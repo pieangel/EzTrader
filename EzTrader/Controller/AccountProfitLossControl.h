@@ -1,7 +1,6 @@
 #pragma once
 namespace DarkHorse {
-	class AccountProfitLossControl
-	{
-	};
-
+class AccountProfitLossControl
+{
+};
 }

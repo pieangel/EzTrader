@@ -524,6 +524,8 @@
     <ClInclude Include="Util\SmWndRefreshManager.h" />
     <ClInclude Include="Util\VtStringUtil.h" />
     <ClInclude Include="Util\VtTime.h" />
+    <ClInclude Include="ViewModel\VmAccountProfitLoss.h" />
+    <ClInclude Include="ViewModel\VmAsset.h" />
     <ClInclude Include="ViewModel\VmFuture.h" />
     <ClInclude Include="ViewModel\VmHoga.h" />
     <ClInclude Include="ViewModel\VmOption.h" />

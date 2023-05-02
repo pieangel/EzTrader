@@ -1857,6 +1857,12 @@
     <ClInclude Include="Order\AbAccountOrderCenterWindow.h">
       <Filter>Order\OrderUI_AB</Filter>
     </ClInclude>
+    <ClInclude Include="ViewModel\VmAsset.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewModel\VmAccountProfitLoss.h">
+      <Filter>ViewModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
