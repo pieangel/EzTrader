@@ -32,9 +32,6 @@ public:
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
-	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
-	void update_quote();
-	void update_close(const DarkHorse::VmQuote& quote);
 	void set_option_view(
 		const int option_market_index,
 		const std::string& year_month_name
@@ -54,10 +51,12 @@ public:
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void set_view_mode(ViewMode view_mode);
 private:
+	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
+	void update_quote();
+	void update_close(const DarkHorse::VmQuote& quote);
 	void update_position();
 	void on_update_position();
-	void update_close_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
-	void update_expected_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
+	void update_value_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
 	void on_update_quote();
 	void register_symbols(const int option_market_index);
 	void register_symbol(const std::string symbol_code);
@@ -86,7 +85,7 @@ private:
 	int option_market_index_ = 0;
 	std::string year_month_name_;
 	int strike_start_index_ = 1;
-	bool _EnableOrderShow = false;
+	bool enable_show_ = false;
 	bool _EnableQuoteShow = false;
 	SmOrderGridResource _Resource;
 	void CreateResource();

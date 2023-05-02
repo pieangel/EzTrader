@@ -32,6 +32,7 @@
 #include "../Task/SmTaskRequestManager.h"
 #include "../Util/IdGenerator.h"
 #include "../Controller/SymbolPositionControl.h"
+#include "../Log/MyLogger.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -91,57 +92,84 @@ void DmOptionView::update_quote()
 void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 {
 	if (view_mode_ != ViewMode::VM_Expected) return;
-
+	try {
 	const std::string option_code = quote->symbol_code.substr(1, quote->symbol_code.length() - 1);
 	auto found = symbol_vector_index_map_.find(option_code);
 	if (found == symbol_vector_index_map_.end()) return;
 	if (quote->symbol_code.at(0) == '2') {
 		DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
 		option_info.expected = quote->expected;
-		update_expected_cell(quote->symbol_id, option_info);
+		update_value_cell(quote->symbol_id, option_info);
 	}
 	else {
 		DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
 		option_info.expected = quote->expected;
-		update_expected_cell(quote->symbol_id, option_info);
+		update_value_cell(quote->symbol_id, option_info);
+	}
+	Invalidate();
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
 }
 
 void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 {
+	try {
 	const std::string option_code = quote.symbol_code.substr(1, quote.symbol_code.length() - 1);
 	auto found = symbol_vector_index_map_.find(option_code);
 	if (found == symbol_vector_index_map_.end()) return;
 	if (quote.symbol_code.at(0) == '2') {
 		DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
 		option_info.close = quote.close;
-		update_close_cell(quote.symbol_id, option_info);
+		update_value_cell(quote.symbol_id, option_info);
 	}
 	else {
 		DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
 		option_info.close = quote.close;
-		update_close_cell(quote.symbol_id, option_info);
+		update_value_cell(quote.symbol_id, option_info);
+	}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
 }
 
 void DmOptionView::update_position()
 {
+	if (!position_control_) return;
+	try {
+	const VmPosition& position = position_control_->get_position();
+	if (position.symbol_code.empty()) return;
 
+	const std::string option_code = position.symbol_code.substr(1, position.symbol_code.length() - 1);
+	auto found = symbol_vector_index_map_.find(option_code);
+	if (found == symbol_vector_index_map_.end()) return;
+	if (position.symbol_code.at(0) == '2') {
+		DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+		option_info.position = position.open_quantity;
+		update_value_cell(position.symbol_id, option_info);
+	}
+	else {
+		DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+		option_info.position = position.open_quantity;
+		update_value_cell(position.symbol_id, option_info);
+	}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
 }
 
 void DmOptionView::on_update_position()
 {
-
+	enable_show_ = true;
 }
 
-void DmOptionView::update_close_cell(const int symbol_id, const DarkHorse::VmOption& option_info)
-{
-	auto found = row_col_map_.find(symbol_id);
-	if (found == row_col_map_.end()) return;
-	show_value(found->second.first, found->second.second, option_info);
-}
-
-void DmOptionView::update_expected_cell(const int symbol_id, const DarkHorse::VmOption& option_info)
+void DmOptionView::update_value_cell(const int symbol_id, const DarkHorse::VmOption& option_info)
 {
 	auto found = row_col_map_.find(symbol_id);
 	if (found == row_col_map_.end()) return;
@@ -255,7 +283,7 @@ void DmOptionView::OnQuoteEvent(const std::string& symbol_code)
 
 void DmOptionView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
-	_EnableOrderShow = true;
+	enable_show_ = true;
 }
 
 void DmOptionView::set_view_mode(ViewMode view_mode)
@@ -320,16 +348,17 @@ void DmOptionView::show_value(const int row, const int col, const DarkHorse::VmO
 	std::string value;
 	if (view_mode_ == ViewMode::VM_Close) {
 		value = std::to_string(option_info.close);
+		SmUtil::insert_decimal(value, option_info.decimal);
 	}
 	else if (view_mode_ == ViewMode::VM_Expected) {
 		value = std::to_string(option_info.expected);
+		SmUtil::insert_decimal(value, option_info.decimal);
 	}
 	else {
 		value = std::to_string(option_info.position);
 	}
-	SmUtil::insert_decimal(value, option_info.decimal);
+	
 	cell->Text(value);
-	Invalidate();
 }
 
 void DmOptionView::show_strike(const int row, const int col, const DarkHorse::VmOption& option_info)
@@ -526,9 +555,12 @@ void DmOptionView::InitHeader()
 void DmOptionView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
-	if (_EnableQuoteShow) {
-		update_quote();
-		_EnableQuoteShow = false;
+	if (enable_show_) {
+		if (view_mode_ == VM_Close)
+			update_quote();
+		else
+			update_position();
+		enable_show_ = false;
 		needDraw = true;
 	}
 

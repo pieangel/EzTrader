@@ -25,6 +25,7 @@
 #include "../Quote/SmQuoteManager.h"
 #include "../Util/IdGenerator.h"
 #include "../Controller/SymbolPositionControl.h"
+#include "../Log/MyLogger.h"
 
 using namespace std;
 using namespace std::placeholders;
