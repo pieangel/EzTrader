@@ -43,7 +43,7 @@ namespace DarkHorse {
 		double OrderDeposit;
 		double EntrustDeposit;
 		double MaintenanceMargin;
-		double SettledProfitLose;
+		double TradeProfitLoss;
 		double Fee;
 		double OpenProfitLoss;
 		double OpenTrustTotal;

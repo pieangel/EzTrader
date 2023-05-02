@@ -182,7 +182,7 @@ void SmTotalAssetArea::SetAccountAssetInfo()
 	value = std::format("{0:.2f}", _Account->Asset.OpenProfitLoss);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(2, 1);
-	value = std::format("{0:.2f}", _Account->Asset.SettledProfitLose);
+	value = std::format("{0:.2f}", _Account->Asset.TradeProfitLoss);
 	if (cell) cell->Text(value);
 
 	cell = _Grid->FindCell(3, 1);
@@ -195,7 +195,7 @@ void SmTotalAssetArea::SetAccountAssetInfo()
 
 
 	cell = _Grid->FindCell(0, 3);
-	value = std::format("{0:.2f}", _Account->Asset.SettledProfitLose);
+	value = std::format("{0:.2f}", _Account->Asset.TradeProfitLoss);
 	if (cell) cell->Text(value);
 
 
@@ -204,7 +204,7 @@ void SmTotalAssetArea::SetAccountAssetInfo()
 	if (cell) cell->Text(value);
 
 	cell = _Grid->FindCell(2, 3);
-	double pure_profit = _Account->Asset.OpenProfitLoss + _Account->Asset.SettledProfitLose - abs(_Account->Asset.Fee);
+	double pure_profit = _Account->Asset.OpenProfitLoss + _Account->Asset.TradeProfitLoss - abs(_Account->Asset.Fee);
 	value = std::format("{0:.2f}", pure_profit);
 	if (cell) cell->Text(value);
 
@@ -226,7 +226,7 @@ void SmTotalAssetArea::SetFundAssetInfo()
 	double balance = 0.0, order_margin = 0.0, open_pl = 0.0, settled_pl = 0.0, fee = 0.0, pure_pl = 0.0;
 	for (auto it = account_vec.begin(); it != account_vec.end(); it++) {
 		open_pl += (*it)->Asset.OpenProfitLoss;
-		settled_pl += (*it)->Asset.SettledProfitLose;
+		settled_pl += (*it)->Asset.TradeProfitLoss;
 		fee += (*it)->Asset.Fee;
 		pure_pl = open_pl + settled_pl - abs(fee);
 		balance += (*it)->Asset.Balance;

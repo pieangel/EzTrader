@@ -66,7 +66,7 @@ double DarkHorse::SmAccountPositionManager::SumAccountPL()
 	}
 
 	account->Asset.OpenProfitLoss = open_pl;
-	account->Asset.SettledProfitLose = trade_pl;
+	account->Asset.TradeProfitLoss = trade_pl;
 	account->Asset.Fee = fee;
 
 	return open_pl;

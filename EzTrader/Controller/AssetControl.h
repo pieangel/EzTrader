@@ -13,6 +13,7 @@ namespace DarkHorse {
 	public:
 		AssetControl();
 		~AssetControl();
+		void load_position_from_account(const std::string& account_no);
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}

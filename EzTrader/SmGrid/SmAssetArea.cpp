@@ -160,7 +160,7 @@ void SmAssetArea::SetAccountAssetInfo()
 	value = std::format("{0:.2f}", _Account->Asset.OpenProfitLoss);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(2, 1);
-	value = std::format("{0:.2f}", _Account->Asset.SettledProfitLose);
+	value = std::format("{0:.2f}", _Account->Asset.TradeProfitLoss);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(3, 1);
 	value = std::format("{0:.2f}", _Account->Asset.Fee);
@@ -179,7 +179,7 @@ void SmAssetArea::SetFundAssetInfo()
 	double balance = 0.0, order_margin = 0.0, open_pl = 0.0, settled_pl = 0.0, fee = 0.0, pure_pl = 0.0;
 	for (auto it = account_vec.begin(); it != account_vec.end(); it++) {
 		open_pl += (*it)->Asset.OpenProfitLoss;
-		settled_pl += (*it)->Asset.SettledProfitLose;
+		settled_pl += (*it)->Asset.TradeProfitLoss;
 		fee += (*it)->Asset.Fee;
 		pure_pl = open_pl + settled_pl - abs(fee);
 		balance += (*it)->Asset.Balance;

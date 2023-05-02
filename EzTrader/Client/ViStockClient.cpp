@@ -544,7 +544,7 @@ void DarkHorse::ViStockClient::OnAccountAsset(nlohmann::json&& arg)
 		account->Asset.OrderDeposit = arg["order_deposit"];
 		account->Asset.EntrustDeposit = arg["entrust_deposit"];
 		account->Asset.MaintenanceMargin = arg["maintenance_margin"];
-		account->Asset.SettledProfitLose = arg["settled_profit_loss"];
+		account->Asset.TradeProfitLoss = arg["settled_profit_loss"];
 		account->Asset.Fee = arg["fee"];
 		account->Asset.OpenProfitLoss = arg["open_profit_loss"];
 		account->Asset.OpenTrustTotal = arg["open_trust_total"];
