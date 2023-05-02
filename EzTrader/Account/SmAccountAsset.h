@@ -37,18 +37,18 @@ namespace DarkHorse {
 	{
 	public:
 		std::string Currency;
-		double EntrustTotal;
-		double Balance;
-		double OutstandingDeposit;
-		double OrderDeposit;
-		double EntrustDeposit;
-		double MaintenanceMargin;
-		double TradeProfitLoss;
-		double Fee;
-		double OpenProfitLoss;
-		double OpenTrustTotal;
-		double AdditionalMargin;
-		double OrderMargin;
+		double EntrustTotal{ 0 };
+		double Balance{ 0 };
+		double OutstandingDeposit{ 0 };
+		double OrderDeposit{ 0 };
+		double EntrustDeposit{ 0 };
+		double MaintenanceMargin{ 0 };
+		double TradeProfitLoss{ 0 };
+		double Fee{ 0 };
+		double OpenProfitLoss{ 0 };
+		double OpenTrustTotal{ 0 };
+		double AdditionalMargin{ 0 };
+		double OrderMargin{ 0 };
 	};
 }
 

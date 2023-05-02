@@ -84,7 +84,7 @@ void DmOptionView::update_quote()
 	const VmQuote& quote = quote_control_->get_quote();
 	CString msg;
 	msg.Format("DmOptionView::update_quote :: %s ::  close : %d\n", quote.symbol_code.c_str(), quote.close);
-	TRACE(msg);
+	//TRACE(msg);
 	if (view_mode_ != ViewMode::VM_Close) return;
 	update_close(quote);
 }
@@ -452,7 +452,7 @@ void DmOptionView::set_strike()
 {
 	CString msg;
 	msg.Format("set_strike begin\n");
-	TRACE(msg);
+	//TRACE(msg);
 	if (call_symbol_vector_.empty() || put_symbol_vector_.empty()) return;
 
 	symbol_map_.clear();
@@ -475,7 +475,7 @@ void DmOptionView::set_strike()
 		row_col_map_[put_symbol->Id()] = std::make_pair(i, 2);
 	}
 	msg.Format("set_strike end\n");
-	TRACE(msg);
+	//TRACE(msg);
 }
 
 void DmOptionView::UpdateAccountAssetInfo()

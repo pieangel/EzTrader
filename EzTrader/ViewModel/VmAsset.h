@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 namespace DarkHorse {
 	struct VmAsset {
 		double entrust_total; // 예탁금총액
@@ -13,5 +14,6 @@ namespace DarkHorse {
 		double open_trust_toal; // 평가예탁총액
 		double additional_margin; // 추가증거금
 		double order_margin; // 주문가능금액
+		std::string currency; // 통화 코드 
 	};
 }

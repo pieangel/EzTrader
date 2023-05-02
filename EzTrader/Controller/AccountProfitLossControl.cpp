@@ -41,11 +41,13 @@ void AccountProfitLossControl::load_position_from_account(const std::string& acc
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
 		position_map_[it->second->symbol_code] = it->second;
 	}
+
+	if (event_handler_) event_handler_();
 }
 
 void AccountProfitLossControl::update_position(position_p position)
 {
-	if (!position) return;
+	if (!position || position->account_id != account_id_) return;
 
 	if (position->open_quantity == 0)
 		remove_position(position->symbol_code);

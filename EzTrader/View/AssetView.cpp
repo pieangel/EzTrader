@@ -14,6 +14,8 @@
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
 #include "../Fund/SmFund.h"
+#include "../Controller/AssetControl.h"
+#include "../Controller/AccountProfitLossControl.h"
 #include <format>
 
 #include <functional>
@@ -31,15 +33,15 @@ END_MESSAGE_MAP()
 
 AssetView::AssetView()
 {
+	account_profit_loss_control_ = std::make_shared<DarkHorse::AccountProfitLossControl>();
+	account_profit_loss_control_->set_event_handler(std::bind(&AssetView::on_update_account_profit_loss, this));
 
+	asset_control_ = std::make_shared<DarkHorse::AssetControl>();
+	asset_control_->set_event_handler(std::bind(&AssetView::on_update_account_profit_loss, this));
 }
 
 AssetView::~AssetView()
 {
-	//KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-
 	if (m_pGM != NULL)
 	{
 		delete m_pGM;
@@ -82,9 +84,6 @@ void AssetView::SetUp()
 		_Grid->SetRowHeaderTitles(_HeaderTitles);
 	}
 
-	mainApp.CallbackMgr()->SubscribeQuoteCallback((long)this, std::bind(&AssetView::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&AssetView::OnOrderEvent, this, _1, _2));
-
 	SetTimer(1, 40, NULL);
 }
 
@@ -110,8 +109,6 @@ void AssetView::OnPaint()
 		return;
 	}
 
-
-
 	m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
 	rect.right -= 1;
 	rect.bottom -= 1;
@@ -122,6 +119,18 @@ void AssetView::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+}
+
+void AssetView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	account_ = val;
+
+	if (!account_profit_loss_control_) return;
+
+	account_profit_loss_control_->load_position_from_account(account_->No());
+	account_profit_loss_control_->set_account_id(account_->id());
+	asset_control_->load_position_from_account(account_->No());
+	enable_account_profit_loss_show_ = true;
 }
 
 void AssetView::UpdateSymbolInfo()
@@ -148,28 +157,57 @@ void AssetView::OnQuoteEvent(const std::string& symbol_code)
 
 void AssetView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
-	_EnableOrderShow = true;
+	enable_account_profit_loss_show_ = true;
+}
+
+void AssetView::on_update_account_profit_loss()
+{
+	enable_account_profit_loss_show_ = true;
+}
+
+void AssetView::update_account_profit_loss()
+{
+	if (!asset_control_ || !account_profit_loss_control_) return;
+
+	const VmAsset& asset = asset_control_->get_asset();
+	const VmAccountProfitLoss account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
+	auto cell = _Grid->FindCell(0, 1);
+	std::string value;
+	value = std::format("{0:.2f}", asset.balance);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(1, 1);
+	value = std::format("{0:.2f}", account_profit_loss.open_profit_loss);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(2, 1);
+	value = std::format("{0:.2f}", account_profit_loss.trade_profit_loss);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(3, 1);
+	value = std::format("{0:.2f}", account_profit_loss.trade_fee);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(4, 1);
+	value = std::format("{0:.2f}", asset.order_margin);
+	if (cell) cell->Text(value);
 }
 
 void AssetView::SetAccountAssetInfo()
 {
-	if (!_Account) return;
+	if (!account_) return;
 
 	auto cell = _Grid->FindCell(0, 1);
 	std::string value;
-	value = std::format("{0:.2f}", _Account->Asset.Balance);
+	value = std::format("{0:.2f}", account_->Asset.Balance);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(1, 1);
-	value = std::format("{0:.2f}", _Account->Asset.OpenProfitLoss);
+	value = std::format("{0:.2f}", account_->Asset.OpenProfitLoss);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(2, 1);
-	value = std::format("{0:.2f}", _Account->Asset.TradeProfitLoss);
+	value = std::format("{0:.2f}", account_->Asset.TradeProfitLoss);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(3, 1);
-	value = std::format("{0:.2f}", _Account->Asset.Fee);
+	value = std::format("{0:.2f}", account_->Asset.Fee);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(4, 1);
-	value = std::format("{0:.2f}", _Account->Asset.OrderMargin);
+	value = std::format("{0:.2f}", account_->Asset.OrderMargin);
 	if (cell) cell->Text(value);
 }
 
@@ -237,14 +275,9 @@ void AssetView::InitHeader()
 void AssetView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
-	if (_EnableQuoteShow) {
-		SetAssetInfo();
-		_EnableQuoteShow = false;
-		needDraw = true;
-	}
-	if (_EnableOrderShow) {
-		SetAssetInfo();
-		_EnableOrderShow = false;
+	if (enable_account_profit_loss_show_) {
+		update_account_profit_loss();
+		enable_account_profit_loss_show_ = false;
 		needDraw = true;
 	}
 

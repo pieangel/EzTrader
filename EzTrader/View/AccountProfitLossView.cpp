@@ -36,14 +36,7 @@ AccountProfitLossView::AccountProfitLossView()
 
 AccountProfitLossView::~AccountProfitLossView()
 {
-	//KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-
-	if (m_pGM != NULL)
-	{
-		delete m_pGM;
-	}
+	if (m_pGM != NULL) delete m_pGM;
 }
 
 void AccountProfitLossView::SetUp()
@@ -129,6 +122,7 @@ void AccountProfitLossView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	if (!account_profit_loss_control_) return;
 
 	account_profit_loss_control_->load_position_from_account(account_->No());
+	account_profit_loss_control_->set_account_id(account_->id());
 	enable_account_profit_loss_show_ = true;
 }
 

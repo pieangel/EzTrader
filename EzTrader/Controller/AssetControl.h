@@ -17,6 +17,9 @@ namespace DarkHorse {
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}
+		const VmAsset& get_asset() {
+			return asset_;
+		}
 	private:
 		std::function<void()> event_handler_;
 		int id_{ 0 };

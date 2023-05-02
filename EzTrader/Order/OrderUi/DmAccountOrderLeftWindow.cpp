@@ -14,6 +14,7 @@
 #include "../../Symbol/SmProduct.h"
 #include "../../Symbol/SmProductYearMonth.h"
 #include "../../Symbol/SmSymbol.h"
+#include "../../View/AssetView.h"
 
 #define WND_ID1 0x00000001
 #define WND_ID2 0x00000002
@@ -131,23 +132,14 @@ void DmAccountOrderLeftWindow::OnBnClickedBtnAddFav()
 
 void DmAccountOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 {
-	//_AcceptedGrid.Update();
-	//_PositionGrid.Update();
-	//_FavoriteGrid.Update();
-	//_AcceptedGrid.UpdateAcceptedOrder();
-	//_PositionGrid.UpdatePositionInfo();
-	//_AccountArea.UpdateAssetInfo();
-	//_FavoriteGrid.SetFavorite();
+
 }
 
 void DmAccountOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> account)
 {
-	//_AcceptedGrid.Account(account);
-	//_PositionGrid.Account(account);
+	asset_view_.Account(account);
 	account_profit_loss_view_.Account(account);
 	account_profit_loss_view_.UpdateAssetInfo();
-	//_FilledArea.Account(account);
-	//_AcceptedArea.Account(account);
 }
 
 LRESULT DmAccountOrderLeftWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)

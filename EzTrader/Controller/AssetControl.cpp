@@ -34,6 +34,7 @@ void AssetControl::load_position_from_account(const std::string& account_no)
 	asset_.open_trust_toal = account->Asset.OpenTrustTotal; // 평가예탁총액
 	asset_.additional_margin = account->Asset.AdditionalMargin; // 추가증거금
 	asset_.order_margin = account->Asset.OrderMargin; // 주문가능금액
+	asset_.currency = account->Asset.Currency;
 }
 
 }

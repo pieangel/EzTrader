@@ -39,7 +39,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	AssetView asset_veiw_;
+	AssetView asset_view_;
 	SymbolInfoView symbol_info_view_;
 public:
 	void SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account);

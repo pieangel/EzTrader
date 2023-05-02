@@ -23,7 +23,7 @@ DmAccountOrderRightWindow::~DmAccountOrderRightWindow()
 void DmAccountOrderRightWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_STATIC_ACCOUNT, asset_veiw_);
+	DDX_Control(pDX, IDC_STATIC_ACCOUNT, asset_view_);
 	DDX_Control(pDX, IDC_STATIC_SYMBOL_MASTER, symbol_info_view_);
 }
 
@@ -38,8 +38,8 @@ END_MESSAGE_MAP()
 
 void DmAccountOrderRightWindow::SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account)
 {
-	asset_veiw_.Account(account);
-	asset_veiw_.SetAssetInfo();
+	asset_view_.Account(account);
+	asset_view_.SetAssetInfo();
 }
 
 void DmAccountOrderRightWindow::SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol)
@@ -63,7 +63,7 @@ BOOL DmAccountOrderRightWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
-	asset_veiw_.SetUp();
+	asset_view_.SetUp();
 	symbol_info_view_.SetUp();
 
 

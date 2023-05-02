@@ -26,6 +26,9 @@ namespace DarkHorse {
 		const VmAccountProfitLoss& get_account_profit_loss() {
 			return account_profit_loss_;
 		}
+		void set_account_id(const int account_id) {
+			account_id_ = account_id;
+		}
 	private:
 		void calculate_total_position();
 		position_p get_position(const std::string& symbol_code);
@@ -35,6 +38,7 @@ namespace DarkHorse {
 		std::map<std::string, position_p> position_map_;
 		std::function<void()> event_handler_;
 		int id_{ 0 };
+		int account_id_{ 0 };
 		VmAccountProfitLoss account_profit_loss_;
 	};
 }

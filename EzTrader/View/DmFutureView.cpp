@@ -92,7 +92,7 @@ void DmFutureView::update_quote()
 	const VmQuote quote = quote_control_->get_quote();
 	CString msg;
 	msg.Format("DmFutureView::update_quote ::  close : %d\n", quote.close);
-	TRACE(msg);
+	//TRACE(msg);
 	if (view_mode_ != ViewMode::VM_Close) return;
 	update_close(quote);
 }
