@@ -642,6 +642,7 @@ void SmSymbolManager::RegisterSymbolToServer(const std::string& symbol_code, con
 		if (found != _RegisteredSymbolMap.end()) return;
 
 		mainApp.Client()->RegisterSymbol(symbol_code);
+		_RegisteredSymbolMap.insert(symbol_code);
 	}
 	else {
 		auto found = _RegisteredSymbolMap.find(symbol_code);

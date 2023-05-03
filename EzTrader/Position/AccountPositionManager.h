@@ -23,9 +23,6 @@ public:
 		return position_map_;
 	}
 private:
-	void add_cut_stop_order(order_p order);
-	order_request_p make_loss_cut_stop_order(order_request_p prev_order_req, order_p order);
-	order_request_p make_profit_cut_stop_order(order_request_p prev_order_req, order_p order);
 	void set_symbol_id(position_p position, const std::string& symbol_code);
 	void set_account_id(position_p position, const std::string& account_no);
 	int calculate_position_count(order_p order, position_p position);

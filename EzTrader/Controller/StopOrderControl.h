@@ -2,10 +2,17 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <mutex>
+#include <functional>
 #include "../Order/SmOrderConst.h"
 
 namespace DarkHorse {
 struct OrderRequest;
+class SmAccount;
+class SmSymbol;
+struct SmQuote;
+using account_p = std::shared_ptr<SmAccount>;
+using symbol_p = std::shared_ptr<SmSymbol>;
 using order_request_p = std::shared_ptr<OrderRequest>;
 
 class PriceOrderRequestMap {
@@ -37,14 +44,9 @@ using order_p = std::shared_ptr<Order>;
 
 class StopOrderControl
 {
-private:
-	SubOrderControlType control_type_{ CT_NONE };
-	size_t total_count_{ 0 };
-	// key : price as integer, value : order request list on the price. 
-	std::map<int, price_order_request_map_p> order_req_map_;
-	order_request_p make_profit_cut_order_request(order_p order);
-	order_request_p make_loss_cut_order_request(order_p order);
 public:
+	StopOrderControl();
+	~StopOrderControl();
 	void set_control_type(const SubOrderControlType control_type) {
 		control_type_ = control_type;
 	}
@@ -57,7 +59,32 @@ public:
 	void remove_order_request(const int order_price, const int& request_id);
 
 	void calculate_total_count();
-
+	void set_event_handler(std::function<void()> event_handler) {
+		event_handler_ = event_handler;
+	}
+	void add_stop_order_request
+	(
+		account_p account,
+		symbol_p symbol,
+		const DarkHorse::SmPositionType& type, 
+		const int price,
+		const int order_amount,
+		const int cut_slip
+	);
+private:
+	int order_control_id_{ 0 };
+	int id_{ 0 };
+	std::mutex mutex_;
+	SubOrderControlType control_type_{ CT_NONE };
+	size_t total_count_{ 0 };
+	// key : price as integer, value : order request list on the price. 
+	std::map<int, price_order_request_map_p> order_req_map_;
+	order_request_p make_profit_cut_order_request(order_p order);
+	order_request_p make_loss_cut_order_request(order_p order);
+	void on_cut_stop_order_request(order_p order);
+	void update_quote(std::shared_ptr<SmQuote> quote);
+	void check_stop_order_request(std::shared_ptr<SmQuote> quote);
+	std::function<void()> event_handler_;
 };
 }
 

@@ -86,6 +86,9 @@ namespace DarkHorse {
 	using OrderCBL = eventpp::CallbackList<void(std::shared_ptr<Order> order, OrderEvent order_event)>;
 	using OrderCBH = eventpp::CallbackList<void(std::shared_ptr<Order> order, OrderEvent order_event)>::Handle;
 
+	using StopOrderCBL = eventpp::CallbackList<void(std::shared_ptr<Order> order)>;
+	using StopOrderCBH = eventpp::CallbackList<void(std::shared_ptr<Order> order)>::Handle;
+
 class EventHub
 {
 public:
@@ -225,6 +228,24 @@ public:
 		order_cb_list_(order, order_event);
 	}
 
+
+	void subscribe_stop_order_event_handler(const int order_control_id, std::function<void(std::shared_ptr<Order> order)>&& handler)
+	{
+		StopOrderCBH handle = stop_order_cb_list_.append(handler);
+		stop_order_cb_handle_map_[order_control_id] = handle;
+	}
+	void unsubscribe_stop_order_event_handler(const int order_control_id)
+	{
+		auto found = stop_order_cb_handle_map_.find(order_control_id);
+		if (found == stop_order_cb_handle_map_.end()) return;
+		stop_order_cb_list_.remove(found->second);
+	}
+
+	void process_stop_order_event(std::shared_ptr<Order> order)
+	{
+		stop_order_cb_list_(order);
+	}
+
 private:
 	OrderCBL order_cb_list_;
 	std::map<int, OrderCBH> order_cb_handle_map_;
@@ -249,6 +270,9 @@ private:
 
 	PositionCBL position_cb_list_;
 	std::map<int, PositionCBH> position_cb_handle_map_;
+
+	StopOrderCBL stop_order_cb_list_;
+	std::map<int, StopOrderCBH> stop_order_cb_handle_map_;
 };
 }
 

@@ -16,7 +16,7 @@ namespace DarkHorse {
 		/// 이 아이디는 프로그램 초기에 설정되며 프로그램이 종료하면 모두 사라지고 
 		/// 시작될 때 다시 생성되어 각 소스에 매칭이 된다. 
 		/// </summary>
-		int order_source_id{ 0 };
+		int order_control_id{ 0 };
 		int request_id{ 0 };
 		// 반대 포지션 스탑 요청 아이디. 스탑이 없어질 때 반드시 이것도 없애야 한다.
 		int counter_request_id{ 0 };
