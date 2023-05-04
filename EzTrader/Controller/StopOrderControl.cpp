@@ -13,6 +13,7 @@
 #include "../Util/IdGenerator.h"
 #include "../Account/SmAccount.h"
 #include "../Symbol/SmSymbol.h"
+#include "../Order/OrderRequest/OrderRequestManager.h"
 
 
 namespace DarkHorse {
@@ -131,7 +132,28 @@ void StopOrderControl::update_quote(std::shared_ptr<SmQuote> quote)
 
 void StopOrderControl::check_stop_order_request(std::shared_ptr<SmQuote> quote)
 {
-	;
+	// counter order price, count order request id.
+	std::list<std::pair<int, int>> counter_req_ids;
+	auto it = order_req_map_.find(quote->close);
+	if (it == order_req_map_.end()) return;
+	std::lock_guard<std::mutex> lock(mutex_);
+	const std::map<int, order_request_p>& req_map = it->second->get_order_request_map();
+	for (auto it = req_map.begin(); it != req_map.end(); it++) {
+		int slip_order_price = it->second->order_price;
+		if (it->second->position_type == SmPositionType::Buy) 
+			slip_order_price += it->second->cut_slip * symbol_int_tick_size_;
+		else 
+			slip_order_price -= it->second->cut_slip * symbol_int_tick_size_;
+		it->second->order_price = slip_order_price;
+		if (it->second->counter_request_id != 0)
+			counter_req_ids.push_back(std::make_pair(it->second->counter_request_price, it->second->counter_request_id));
+		mainApp.order_request_manager()->add_order_request(it->second);
+	}
+	order_req_map_.erase(it);
+	// 짝을 이루는 스탑 주문을 없애준다.
+	for (auto it = counter_req_ids.begin(); it != counter_req_ids.end(); it++) {
+		remove_order_request(it->first, it->second);
+	}
 }
 
 void StopOrderControl::add_stop_order_request
@@ -162,6 +184,14 @@ void StopOrderControl::add_stop_order_request
 	order_req->cut_slip = cut_slip;
 }
 
+void StopOrderControl::set_symbol_id(const int symbol_id)
+{
+	symbol_id_ = symbol_id;
+	auto symbol = mainApp.SymMgr()->FindSymbolById(symbol_id);
+	if (!symbol) return;
+	symbol_int_tick_size_ = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
+}
+
 void StopOrderControl::on_cut_stop_order_request(order_p order)
 {
 	if (!order) return;
@@ -182,7 +212,9 @@ void StopOrderControl::on_cut_stop_order_request(order_p order)
 		auto profit_order_req = make_profit_cut_order_request(order);
 		auto loss_order_req = make_loss_cut_order_request(order);
 		profit_order_req->counter_request_id = loss_order_req->request_id;
+		profit_order_req->counter_request_price = loss_order_req->order_price;
 		loss_order_req->counter_request_id = profit_order_req->request_id;
+		loss_order_req->counter_request_price = profit_order_req->order_price;
 		add_order_request(profit_order_req->order_price, profit_order_req);
 		add_order_request(loss_order_req->order_price, loss_order_req);
 	}

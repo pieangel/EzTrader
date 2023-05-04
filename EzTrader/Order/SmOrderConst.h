@@ -123,6 +123,7 @@ namespace DarkHorse {
 
 	enum SubOrderControlType {
 		CT_NONE = 0, 
-		CT_BUY, CT_SELL 
+		CT_BUY, 
+		CT_SELL 
 	};
 }

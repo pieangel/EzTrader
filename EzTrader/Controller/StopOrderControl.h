@@ -55,10 +55,6 @@ public:
 		return order_req_map_;
 	}
 	void add_order_request(const int order_price, order_request_p order_request);
-
-	void remove_order_request(const int order_price, const int& request_id);
-
-	void calculate_total_count();
 	void set_event_handler(std::function<void()> event_handler) {
 		event_handler_ = event_handler;
 	}
@@ -71,7 +67,10 @@ public:
 		const int order_amount,
 		const int cut_slip
 	);
+	void set_symbol_id(const int symbol_id);
 private:
+	int symbol_id_{ 0 };
+	int symbol_int_tick_size_{ 1 };
 	int order_control_id_{ 0 };
 	int id_{ 0 };
 	std::mutex mutex_;
@@ -79,11 +78,13 @@ private:
 	size_t total_count_{ 0 };
 	// key : price as integer, value : order request list on the price. 
 	std::map<int, price_order_request_map_p> order_req_map_;
+	void calculate_total_count();
 	order_request_p make_profit_cut_order_request(order_p order);
 	order_request_p make_loss_cut_order_request(order_p order);
 	void on_cut_stop_order_request(order_p order);
 	void update_quote(std::shared_ptr<SmQuote> quote);
 	void check_stop_order_request(std::shared_ptr<SmQuote> quote);
+	void remove_order_request(const int order_price, const int& request_id);
 	std::function<void()> event_handler_;
 };
 }

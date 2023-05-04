@@ -20,6 +20,7 @@ namespace DarkHorse {
 		int request_id{ 0 };
 		// 반대 포지션 스탑 요청 아이디. 스탑이 없어질 때 반드시 이것도 없애야 한다.
 		int counter_request_id{ 0 };
+		int counter_request_price{ 0 };
 		std::string password{ "" };
 		std::string symbol_code{ "" };
 		std::string account_no{ "" };
