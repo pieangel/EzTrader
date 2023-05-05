@@ -1510,7 +1510,7 @@ int SymbolOrderView::find_row2(const int target_value)
 	const int& close = quote_control_->get_quote().close;
 	if (close == 0) return 0;
 	int next_value = close;
-	int next_row = _Grid->CloseRow();
+	int next_row = _Grid->index_row();
 	if (target_value == next_value) return next_row;
 	return target_value;
 }
@@ -1723,7 +1723,7 @@ void SymbolOrderView::increase_close_row(const int& delta)
 {
 	close_row_ += delta;
 	if (quote_control_->get_quote().close == 0) return;
-	_Grid->CloseRow(close_row_);
+	_Grid->index_row(close_row_);
 }
 
 void SymbolOrderView::set_close_row()
@@ -2293,7 +2293,7 @@ LRESULT SymbolOrderView::OnWmSymbolMasterReceived(WPARAM wParam, LPARAM lParam)
 	const int symbol_id = static_cast<int>(wParam);
 	if (!symbol_ || symbol_->Id() != symbol_id) return 0;
 
-	SetCenterValues(false);
+	SetCenterValues(true);
 
 	return 1;
 }

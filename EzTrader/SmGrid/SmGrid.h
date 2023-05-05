@@ -35,8 +35,8 @@ namespace DarkHorse {
 		// 병합할 셀을 지정한다.
 		void SetMergeCells();
 		void AddMergeCell(const int& row, const int& col, const int& row_span, const int& col_span);
-		int CloseRow() const { return _CloseRow; }
-		void CloseRow(int val) { _CloseRow = val; }
+		int index_row() const { return index_row_; }
+		void index_row(int val) { index_row_ = val; }
 		DarkHorse::SmHeaderMode HeaderMode() const { return _HeaderMode; }
 		void HeaderMode(DarkHorse::SmHeaderMode val) { _HeaderMode = val; }
 		DarkHorse::SmHeaderPriority HeaderPriority() const { return _HeaderPriority; }
@@ -81,7 +81,7 @@ namespace DarkHorse {
 		int _GridHeight = 0;
 		// 종가 행. 최초에 한번 결정되고 
 		// 스크롤 할 때만 바뀐다.
-		int _CloseRow{ 15 };
+		int index_row_{ 15 };
 		int _HeaderRow = 0;
 		int _HeaderCol = 0;
 		SmHeaderMode _HeaderMode = SmHeaderMode::HeaderColOnly;

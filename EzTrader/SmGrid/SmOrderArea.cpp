@@ -1305,7 +1305,7 @@ void SmOrderArea::IncreaseCloseRow(const int& delta)
 	_CloseRow += delta;
 	if (!_Symbol) return;
 
-	_Grid->CloseRow(_CloseRow);
+	_Grid->index_row(_CloseRow);
 }
 
 void SmOrderArea::ClearOldSelectedCells()

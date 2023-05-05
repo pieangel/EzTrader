@@ -65,6 +65,10 @@ namespace DarkHorse {
 		if (value_type_ == ValueType::None || base_value == 0) return -1;
 		if (source_value == base_value) return base_row;
 
+		CString msg;
+		msg.Format("sour_value = %d, base_row = %d, base_value = %d, int_tick_size = %d\n", source_value, base_row, base_value, product_.int_tick_size);
+		TRACE(msg);
+
 		if (value_type_ == ValueType::KospiOption ||
 			value_type_ == ValueType::KospiWeekly || 
 			value_type_ == ValueType::MiniKospiOption) {

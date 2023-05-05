@@ -518,7 +518,7 @@ int DarkHorse::SmGrid::RecalRowCount(const int& height, bool change_close_row)
 
 	const int extra_height = height - _GridHeight;
 
-	if (change_close_row) _CloseRow = static_cast<int>(row_count / 2.0);
+	if (change_close_row) index_row_ = static_cast<int>(row_count / 2.0);
 
 	return extra_height;
 }
