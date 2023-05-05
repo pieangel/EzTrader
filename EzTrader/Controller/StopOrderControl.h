@@ -70,6 +70,7 @@ public:
 	void set_symbol_id(const int symbol_id);
 	void remove_stop_order_request(const int order_price);
 	std::pair<int, int> get_order_count(const int order_price);
+	price_order_request_map_p get_price_order_req_map(const int price);
 private:
 	int symbol_id_{ 0 };
 	int symbol_int_tick_size_{ 1 };

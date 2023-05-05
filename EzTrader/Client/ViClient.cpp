@@ -2933,7 +2933,7 @@ void DarkHorse::ViClient::OnSymbolQuote(const CString& sTrCode, const LONG& nRqI
 	CString msg;
 
 	msg.Format("OnSymbolQuote strSymbolCode = %s, quote = %s, preday_volume = %s\n", strSymbolCode, strClose, strPreDayVolume);
-	TRACE(msg);
+	//TRACE(msg);
 
 	nlohmann::json quote;
 

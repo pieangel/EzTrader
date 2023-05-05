@@ -340,6 +340,11 @@ private:
 		const int& src_price, 
 		const int& tgt_price
 	);
+	void change_stop
+	(
+		price_order_request_map_p order_req_map, 
+		const int target_price
+	);
 	void cancel_stop(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void ProcessButtonMsg(const BUTTON_ID& id);
 protected:

@@ -193,7 +193,7 @@ void DarkHorse::SmServerDataReceiver::OnTaskComplete(const int& task_id)
 
 	CString msg;
 	msg.Format("title = %s, arg count = %d\n", top->TaskTitle.c_str(), top->argMap.size());
-	TRACE(msg);
+	//TRACE(msg);
 	
 	CheckGroupTask();
 }

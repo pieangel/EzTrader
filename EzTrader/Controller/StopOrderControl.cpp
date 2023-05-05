@@ -20,7 +20,7 @@ namespace DarkHorse {
 
 void PriceOrderRequestMap::add_order_request(order_request_p order_request)
 {
-	if (order_request->order_price != price_) return;
+	//if (order_request->order_price != price_) return;
 	order_request_map_[order_request->request_id] = order_request;
 	count_ = order_request_map_.size();
 }
@@ -265,6 +265,13 @@ std::pair<int, int> StopOrderControl::get_order_count(const int order_price)
 	auto it = order_req_map_.find(order_price);
 	if (it == order_req_map_.end()) return std::make_pair(0, 0);
 	return std::make_pair(order_price, it->second->count());
+}
+
+price_order_request_map_p StopOrderControl::get_price_order_req_map(const int price)
+{
+	auto it = order_req_map_.find(price);
+	if (it == order_req_map_.end()) return nullptr;
+	return it->second;
 }
 
 void StopOrderControl::calculate_total_count()

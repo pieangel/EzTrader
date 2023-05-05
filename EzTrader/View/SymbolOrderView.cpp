@@ -2012,21 +2012,37 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 	price_order_map->clear();
 }
 
-void SymbolOrderView::change_stop(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const std::shared_ptr<DarkHorse::SmCell>& tgt_cell, const int& src_price, const int& tgt_price)
+void SymbolOrderView::change_stop(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const std::shared_ptr<DarkHorse::SmCell>& tgt_cell, const int& src_price, const int& target_price)
 {
-	if (!src_cell) return;
-
-	if (src_cell->GetOrderReqCount() == 0) return;
-
-	const std::map<int, std::shared_ptr<SmOrderRequest>>& order_req_map = src_cell->GetOrderReqMap();
-	for (auto it = order_req_map.begin(); it != order_req_map.end(); ++it) {
-		it->second->OrderPrice = tgt_price;
-		tgt_cell->AddOrderReq(it->second);
+	if (!src_cell || !account_) return;
+	auto it_row = row_to_price_.find(src_cell->Row());
+	if (it_row == row_to_price_.end()) return;
+	price_order_request_map_p price_order_req_map = nullptr;
+	if (src_cell->Col() == DarkHorse::OrderGridHeader::SELL_STOP) {
+		enable_sell_stop_order_show_ = true;
+		price_order_req_map = sell_stop_order_control_->get_price_order_req_map(it_row->second);
+		const std::map<int, order_request_p>& req_map = price_order_req_map->get_order_request_map();
+		for (auto it = req_map.begin(); it != req_map.end(); it++)
+			sell_stop_order_control_->add_stop_order_request(target_price, it->second);
+		price_order_req_map->clear();
+		sell_stop_order_control_->remove_stop_order_request(it_row->second);
 	}
-
-	src_cell->ClearOrderReq();
+	else {
+		enable_buy_stop_order_show_ = true;
+		price_order_req_map = buy_stop_order_control_->get_price_order_req_map(it_row->second);
+		const std::map<int, order_request_p>& req_map = price_order_req_map->get_order_request_map();
+		for (auto it = req_map.begin(); it != req_map.end(); it++)
+			buy_stop_order_control_->add_stop_order_request(target_price, it->second);
+		price_order_req_map->clear();
+		buy_stop_order_control_->remove_stop_order_request(it_row->second);
+	}
 }
 
+
+void SymbolOrderView::change_stop(price_order_request_map_p order_req_map, const int target_price)
+{
+	
+}
 
 void SymbolOrderView::cancel_stop(const std::shared_ptr<DarkHorse::SmCell>& src_cell)
 {
