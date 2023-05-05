@@ -9,8 +9,6 @@
 #include "../ViewModel/VmOrder.h"
 namespace DarkHorse {
 	struct Order;
-	struct AcceptedOrder;
-	using order_p = AcceptedOrder;
 	class OrderControl
 	{
 	public:
