@@ -1,22 +1,13 @@
 #pragma once
 #include "../ViewModel/VmProduct.h"
 #include "../Util/IdGenerator.h"
-
+#include "../Symbol/MarketDefine.h"
 #include <memory>
 class SymbolOrderView;
 namespace DarkHorse {
 	class SmSymbol;
 	class ProductControl
 	{
-		enum class ValueType {
-			None,
-			Future,
-			KospiOption,
-			MiniKospiOption,
-			Kosdaq,
-			KospiWeekly
-		};
-
 	public:
 		ProductControl();
 		~ProductControl();
@@ -36,6 +27,9 @@ namespace DarkHorse {
 		int get_next_down_value(const int value);
 		int get_row(const int source_value, const int base_row, const int base_value);
 		int get_value(const int source_row, const int base_row, const int base_value);
+		ValueType get_value_type() const {
+			return value_type_;
+		}
 	private:
 		int get_row_with_turnig_point(const int source_value, const int base_row, const int base_value);
 		int get_value_with_turnig_point(const int source_row, const int base_row, const int base_value);

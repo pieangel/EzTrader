@@ -47,6 +47,7 @@
 #include "../Order/OrderRequest/OrderRequestManager.h"
 #include "../Order/OrderRequest/OrderRequest.h"
 #include "../Controller/StopOrderControl.h"
+#include "../Symbol/MarketDefine.h"
 #include <sstream>
 #include <format>
 #include <functional>
@@ -940,6 +941,8 @@ void SymbolOrderView::SetUp()
 
 	_Grid->RegisterOrderButtons(_ButtonMap);
 
+	index_row_ = get_center_row();
+
 	SetTimer(1, 10, NULL);
 
 	return;
@@ -966,12 +969,9 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	const int extra_height = _Grid->RecalRowCount(height, false);
 	price_start_row_ = 2;
 	price_end_row_ = _Grid->RowCount() - 2;
-
-
 	_Grid->CreateGrids();
-
 	_Grid->RegisterOrderButtons(_ButtonMap);
-
+	index_row_ = get_center_row();
 	SetCenterValues();
 
 	update_quote();
@@ -1021,7 +1021,7 @@ void SymbolOrderView::ArrangeCenterValue()
 	clear_buy_stop_order();
 	clear_sell_stop_order();
 
-	close_row_ = get_center_row();
+	index_row_ = get_center_row();
 
 	SetCenterValues();
 
@@ -1276,6 +1276,17 @@ void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)
 	}
 }
 
+void SymbolOrderView::set_center_values(const bool make_row_map /*= true*/)
+{
+
+}
+
+int SymbolOrderView::get_start_value()
+{
+	//int startValue = sym->Quote.intClose + (sym->intTickSize * (_IndexRow - _StartRowForValue));
+	return 0;
+}
+
 void SymbolOrderView::PutOrderBySpaceBar()
 {
 	if (!account_ || !symbol_) return;
@@ -1484,23 +1495,44 @@ int SymbolOrderView::find_close_row_from_end_row()
 int SymbolOrderView::find_zero_value_row()
 {
 	if (!product_control_) return -1;
-	return product_control_->get_row(0, close_row_, quote_control_->get_quote().close);
+	return product_control_->get_row(0, index_row_, quote_control_->get_quote().close);
 }
 
-int SymbolOrderView::find_row(const int target_value)
+int SymbolOrderView::find_row(const int value)
 {
-	/*
-	if (price_to_row_.empty() || target_value == 0) return -1;
-
-	const int int_tick_size = product_control_->get_product().int_tick_size;
-	if (int_tick_size == 0) return -1;
-	auto it = price_to_row_.find(target_value);
-	if (it != price_to_row_.end())  // 값이 보이는 범위 안에 있을 때
+	if (!product_control_ || price_to_row_.size() == 0)
+		return 0;
+	auto it = price_to_row_.find(value);
+	if (it != price_to_row_.end()) { // 값이 보이는 범위 안에 있을 때
 		return it->second;
-	else  // 값이 보이는 범위 밖에 있을 때
-		return product_control_->get_row(target_value, close_row_, quote_control_->get_quote().close);
-		*/
-	return product_control_->get_row(target_value, close_row_, quote_control_->get_quote().close);
+	}
+	else { // 값이 보이는 범위 밖에 있을 때
+		const VmProduct& product = product_control_->get_product();
+		auto itr = price_to_row_.rbegin();
+		int big_value = itr->first;
+		int big_row = itr->second;
+		int thousand_row = 0;
+		// 가격이 10인 행을 찾는 과정 - 10이상이면 승수가 변한다.
+		if (big_value >= 1000) { // 최상위 값이 10보다 이상일 경우
+			int delta = big_value - 1000;
+			int delta_row = delta / product.int_tick_size;
+			thousand_row = big_row + delta_row;
+		}
+		else { // 최상위 값이 10미만인 경우
+			int delta = 1000 - big_value;
+			thousand_row = big_row - delta;
+		}
+
+		if (value >= 1000) { // 가격이 10 이상인 있는 경우 - 종목의 틱크기 만큼 변함
+			int delta = value - 1000;
+			int delta_row = delta / product.int_tick_size;
+			return thousand_row - delta_row;
+		}
+		else { // 가격이 10 미만인 경우 - 종목에 관계없이 1씩 변함
+			int delta = 1000 - value;
+			return thousand_row + delta;
+		}
+	}
 }
 
 int SymbolOrderView::find_row2(const int target_value)
@@ -1524,7 +1556,55 @@ int SymbolOrderView::find_start_value()
 	if (!quote_control_ || !product_control_) return 0;
 	const int& close = quote_control_->get_quote().close;
 	if (close == 0) return 0;
-	return product_control_->get_value(price_start_row_, close_row_, close);
+	const DarkHorse::ValueType value_type = product_control_->get_value_type();
+	const VmProduct& product = product_control_->get_product();
+	if (value_type == ValueType::KospiOption ||
+		value_type == ValueType::KospiWeekly ||
+		value_type == ValueType::MiniKospiOption) {
+		int endValue = close;
+		int endRow = price_end_row_ - 1;
+		int zeroRow = price_end_row_;
+		if (index_row_ < endRow) {
+			for (int r = index_row_; r < endRow; ++r) {
+				// 0.01 밑으로 안나오게 함
+				if (endValue == 1 || endValue == 0) {
+					zeroRow = r;
+					break;
+				}
+				if (endValue <= 1000)
+					endValue -= product.int_tick_size;
+				else
+					endValue -= 5;
+			}
+
+			if (zeroRow < endRow) {
+				index_row_ = endRow - (zeroRow - index_row_) + 1;
+			}
+		}
+
+		int startValue = close;
+		if (index_row_ > price_start_row_) {
+			for (int r = index_row_; r > price_start_row_; --r) {
+				if (startValue < 1000)
+					startValue += product.int_tick_size;
+				else
+					startValue += 5;
+			}
+		}
+		else if (index_row_ <= price_start_row_) {
+			for (int r = index_row_; r < price_start_row_; ++r) {
+				if (startValue <= 1000)
+					startValue -= product.int_tick_size;
+				else
+					startValue -= 5;
+			}
+		}
+		return startValue;
+	}
+	else {
+		return  close + product.int_tick_size * (index_row_ - price_start_row_);
+	}
+
 }
 
 int SymbolOrderView::get_center_row()
@@ -1533,7 +1613,7 @@ int SymbolOrderView::get_center_row()
 }
 void SymbolOrderView::ProcessFixedMode()
 {
-	close_row_ = get_center_row();
+	index_row_ = get_center_row();
 
 	SetCenterValues(false);
 
@@ -1721,9 +1801,9 @@ void SymbolOrderView::CreateResource()
 
 void SymbolOrderView::increase_close_row(const int& delta)
 {
-	close_row_ += delta;
+	index_row_ += delta;
 	if (quote_control_->get_quote().close == 0) return;
-	_Grid->index_row(close_row_);
+	_Grid->index_row(index_row_);
 }
 
 void SymbolOrderView::set_close_row()
@@ -2292,7 +2372,7 @@ LRESULT SymbolOrderView::OnWmSymbolMasterReceived(WPARAM wParam, LPARAM lParam)
 {
 	const int symbol_id = static_cast<int>(wParam);
 	if (!symbol_ || symbol_->Id() != symbol_id) return 0;
-
+	index_row_ = get_center_row();
 	SetCenterValues(true);
 
 	return 1;

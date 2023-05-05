@@ -97,14 +97,7 @@ namespace DarkHorse {
 			return get_value_with_turnig_point(source_row, base_row, base_value);
 		}
 		else {
-			if (source_row > base_row) {
-				const int difference_row = source_row - base_row;
-				return base_value - difference_row * product_.int_tick_size;
-			}
-			else {
-				const int difference_row = base_row - source_row;
-				return base_value + difference_row * product_.int_tick_size;
-			}
+			return  base_value + product_.int_tick_size * (base_row - source_row);
 		}
 	}
 

@@ -98,6 +98,8 @@ public:
 	// 중앙 값을 정한다. 중앙 값은 최초에 심볼이 결정될 때 한번, 
 	// 그리고 전체 크기가 늘어나거나 줄어들때(대화상자를 늘이거나 줄일때) 다시 설정해 준다.
 	void SetCenterValues(const bool& make_row_map = true);
+	void set_center_values(const bool make_row_map = true);
+	int get_start_value();
 	bool Selected() const { return _Selected; }
 	void Selected(bool val) { _Selected = val; }
 	void PutOrderBySpaceBar();
@@ -277,7 +279,7 @@ private:
 	// 현재가가 변해도 이 값은 변화가 없고 마우스 휠을 사용하여 이 값이 변할 때
 	// 다시 현재가를 기준으로 다시 만든다. 마우스 휠을 움직일 때 이 행은 항상 현재가를 가르키지만
 	// 마우스 휠이 멈췄을 때는 더이상 현재가가 있는 행을 가르키지 않는다. 
-	int close_row_{ 13 };
+	int index_row_{ 13 };
 	std::set<int> _OldHogaBuyRowIndex;
 	std::set<int> _OldHogaSellRowIndex;
 	std::set<int> _OldOrderBuyRowIndex;

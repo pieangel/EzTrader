@@ -1725,7 +1725,7 @@
     <ClInclude Include="View\DmOptionView.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="Symbol\DomesticMarketDefine.h">
+    <ClInclude Include="Symbol\MarketDefine.h">
       <Filter>Symbol</Filter>
     </ClInclude>
     <ClInclude Include="Controller\AccountOrderControl.h">

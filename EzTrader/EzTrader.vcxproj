@@ -477,7 +477,7 @@
     <ClInclude Include="StatusBar\extstatuscontrolbar.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SymbolBar.h" />
-    <ClInclude Include="Symbol\DomesticMarketDefine.h" />
+    <ClInclude Include="Symbol\MarketDefine.h" />
     <ClInclude Include="Symbol\SmMarket.h" />
     <ClInclude Include="Symbol\SmMarketConst.h" />
     <ClInclude Include="Symbol\SmProduct.h" />
