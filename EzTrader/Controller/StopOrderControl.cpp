@@ -127,15 +127,17 @@ order_request_p StopOrderControl::make_loss_cut_order_request(order_p order)
 void StopOrderControl::update_quote(std::shared_ptr<SmQuote> quote)
 {
 	check_stop_order_request(quote);
-	if (event_handler_) event_handler_();
 }
 
 void StopOrderControl::check_stop_order_request(std::shared_ptr<SmQuote> quote)
 {
+	if (symbol_id_ != quote->symbol_id) return;
+
 	// counter order price, count order request id.
 	std::list<std::pair<int, int>> counter_req_ids;
 	auto it = order_req_map_.find(quote->close);
 	if (it == order_req_map_.end()) return;
+
 	std::lock_guard<std::mutex> lock(mutex_);
 	const std::map<int, order_request_p>& req_map = it->second->get_order_request_map();
 	for (auto it = req_map.begin(); it != req_map.end(); it++) {
@@ -151,9 +153,9 @@ void StopOrderControl::check_stop_order_request(std::shared_ptr<SmQuote> quote)
 	}
 	order_req_map_.erase(it);
 	// 짝을 이루는 스탑 주문을 없애준다.
-	for (auto it = counter_req_ids.begin(); it != counter_req_ids.end(); it++) {
-		remove_order_request(it->first, it->second);
-	}
+	for (auto it = counter_req_ids.begin(); it != counter_req_ids.end(); it++)
+		remove_stop_order_request(it->first, it->second);
+	if (event_handler_) event_handler_();
 }
 
 void StopOrderControl::add_stop_order_request
@@ -182,6 +184,8 @@ void StopOrderControl::add_stop_order_request
 			price, 
 			order_amount * account->SeungSu());
 	order_req->cut_slip = cut_slip;
+	add_stop_order_request(price, order_req);
+	if (event_handler_) event_handler_();
 }
 
 void StopOrderControl::set_symbol_id(const int symbol_id)
@@ -202,11 +206,11 @@ void StopOrderControl::on_cut_stop_order_request(order_p order)
 	if (!old_order_req || old_order_req->cut_mode == SmCutMode::None) return;
 	if (old_order_req->cut_mode == SmCutMode::ProfitCut) {
 		auto profit_order_req = make_profit_cut_order_request(order);
-		add_order_request(profit_order_req->order_price, profit_order_req);
+		add_stop_order_request(profit_order_req->order_price, profit_order_req);
 	}
 	else if (old_order_req->cut_mode == SmCutMode::LossCut) {
 		auto loss_order_req = make_loss_cut_order_request(order);
-		add_order_request(loss_order_req->order_price, loss_order_req);
+		add_stop_order_request(loss_order_req->order_price, loss_order_req);
 	}
 	else if (old_order_req->cut_mode == SmCutMode::BothCut) {
 		auto profit_order_req = make_profit_cut_order_request(order);
@@ -215,18 +219,18 @@ void StopOrderControl::on_cut_stop_order_request(order_p order)
 		profit_order_req->counter_request_price = loss_order_req->order_price;
 		loss_order_req->counter_request_id = profit_order_req->request_id;
 		loss_order_req->counter_request_price = profit_order_req->order_price;
-		add_order_request(profit_order_req->order_price, profit_order_req);
-		add_order_request(loss_order_req->order_price, loss_order_req);
+		add_stop_order_request(profit_order_req->order_price, profit_order_req);
+		add_stop_order_request(loss_order_req->order_price, loss_order_req);
 	}
 
 	if (event_handler_) event_handler_();
 }
 
-void StopOrderControl::add_order_request(const int order_price, order_request_p order_request)
+void StopOrderControl::add_stop_order_request(const int order_price, order_request_p order_request)
 {
 	auto it = order_req_map_.find(order_price);
 	if (it == order_req_map_.end()) {
-		price_order_request_map_p price_order_map = std::make_shared<PriceOrderRequestMap>();;
+		price_order_request_map_p price_order_map = std::make_shared<PriceOrderRequestMap>();
 		price_order_map->set_price(order_price);
 		price_order_map->add_order_request(order_request);
 		order_req_map_[order_price] = price_order_map;
@@ -236,15 +240,31 @@ void StopOrderControl::add_order_request(const int order_price, order_request_p 
 		price_order_map->add_order_request(order_request);
 	}
 	calculate_total_count();
+	if (event_handler_) event_handler_();
 }
 
-void StopOrderControl::remove_order_request(const int order_price, const int& request_id)
+void StopOrderControl::remove_stop_order_request(const int order_price, const int& request_id)
 {
 	auto it = order_req_map_.find(order_price);
 	if (it == order_req_map_.end()) return;
 	price_order_request_map_p price_order_map = it->second;
 	price_order_map->remove_order_request(request_id);
 	calculate_total_count();
+}
+
+void StopOrderControl::remove_stop_order_request(const int order_price)
+{
+	auto it = order_req_map_.find(order_price);
+	if (it == order_req_map_.end()) return;
+	order_req_map_.erase(it);
+	if (event_handler_) event_handler_();
+}
+
+std::pair<int, int> StopOrderControl::get_order_count(const int order_price)
+{
+	auto it = order_req_map_.find(order_price);
+	if (it == order_req_map_.end()) return std::make_pair(0, 0);
+	return std::make_pair(order_price, it->second->count());
 }
 
 void StopOrderControl::calculate_total_count()

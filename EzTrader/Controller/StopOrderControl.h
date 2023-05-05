@@ -51,10 +51,10 @@ public:
 		control_type_ = control_type;
 	}
 	int total_count() const { return total_count_; }
-	const std::map<int, price_order_request_map_p>& get_order_map() {
+	const std::map<int, price_order_request_map_p>& get_order_req_map() {
 		return order_req_map_;
 	}
-	void add_order_request(const int order_price, order_request_p order_request);
+	void add_stop_order_request(const int order_price, order_request_p order_request);
 	void set_event_handler(std::function<void()> event_handler) {
 		event_handler_ = event_handler;
 	}
@@ -68,6 +68,8 @@ public:
 		const int cut_slip
 	);
 	void set_symbol_id(const int symbol_id);
+	void remove_stop_order_request(const int order_price);
+	std::pair<int, int> get_order_count(const int order_price);
 private:
 	int symbol_id_{ 0 };
 	int symbol_int_tick_size_{ 1 };
@@ -84,7 +86,7 @@ private:
 	void on_cut_stop_order_request(order_p order);
 	void update_quote(std::shared_ptr<SmQuote> quote);
 	void check_stop_order_request(std::shared_ptr<SmQuote> quote);
-	void remove_order_request(const int order_price, const int& request_id);
+	void remove_stop_order_request(const int order_price, const int& request_id);
 	std::function<void()> event_handler_;
 };
 }

@@ -37,7 +37,12 @@ namespace DarkHorse {
 	struct SmQuote;
 	class SubOrderControl;
 	class PriceOrderMap;
+	class StopOrderControl;
+	class PriceOrderRequestMap;
 }
+
+using order_request_p = std::shared_ptr<DarkHorse::OrderRequest>;
+using price_order_request_map_p = std::shared_ptr<DarkHorse::PriceOrderRequestMap>;
 
 class DmAccountOrderWindow;
 class DmFundOrderWindow;
@@ -126,9 +131,51 @@ public:
 		price_type_ = price_type;
 	}
 private:
+	void update_buy_stop_order();
+	void update_sell_stop_order();
+	void on_update_buy_stop_order();
+	void on_update_sell_stop_order();
+
+	void draw_stop_order_cell(const DarkHorse::SmPositionType position, price_order_request_map_p price_order_req_map);
+	void draw_stop_order_line
+	(
+		std::shared_ptr<DarkHorse::SmCell> cell,
+		const DarkHorse::SmPositionType position,
+		const std::map<int, order_request_p>& order_req_map
+	);
+
+	void draw_stop_order_by_price
+	(
+		const std::map<int, price_order_request_map_p>& order_req_map,
+		const DarkHorse::SmPositionType position
+	);
+	void draw_total_stop_order
+	(
+		const int count,
+		const DarkHorse::SmPositionType position
+	);
+
+	void draw_buy_stop_order();
+	void draw_sell_stop_order();
+
+	void clear_buy_stop_order();
+	void clear_sell_stop_order();
+
+	bool enable_buy_stop_order_show_{ false };
+	bool enable_sell_stop_order_show_{ false };
+
+	std::set<int> old_stop_buy_order_index_;
+	std::set<int> old_stop_sell_order_index_;
+
+	std::shared_ptr<DarkHorse::StopOrderControl> buy_stop_order_control_{ nullptr };
+	std::shared_ptr<DarkHorse::StopOrderControl> sell_stop_order_control_{ nullptr };
+
+	std::vector<std::pair<CBCGPRect, CBCGPRect>> buy_stop_order_rect_vector_;
+	std::vector<std::pair<CBCGPRect, CBCGPRect>> sell_stop_order_rect_vector_;
+
 	void update_position();
 	void set_filled_condition(DarkHorse::OrderRequestType order_req_type);
-	void draw_cell(const int row, const int col, const int value);
+	std::shared_ptr<DarkHorse::SmCell> draw_cell(const int row, const int col, const int value);
 	void draw_order_cell(DarkHorse::SmPositionType position, const int price, const int count);
 	void draw_order();
 	void draw_order_by_price

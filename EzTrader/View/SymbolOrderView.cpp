@@ -46,6 +46,7 @@
 #include "../Util/IdGenerator.h"
 #include "../Order/OrderRequest/OrderRequestManager.h"
 #include "../Order/OrderRequest/OrderRequest.h"
+#include "../Controller/StopOrderControl.h"
 #include <sstream>
 #include <format>
 #include <functional>
@@ -97,6 +98,8 @@ BOOL SymbolOrderView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	ClearOldHoga();
 	ClearOrders();
 	ClearStopOrders();
+	clear_buy_stop_order();
+	clear_sell_stop_order();
 
 	increase_close_row(distance);
 
@@ -106,6 +109,9 @@ BOOL SymbolOrderView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	update_hoga();
 	draw_order();
 	SetStopOrder();
+
+	update_buy_stop_order();
+	update_sell_stop_order();
 
 	Invalidate();
 
@@ -145,6 +151,13 @@ SymbolOrderView::SymbolOrderView()
 	position_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_position, this));
 
 	product_control_ = std::make_shared<DarkHorse::ProductControl>();
+
+	buy_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>();
+	buy_stop_order_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_buy_stop_order, this));
+
+	sell_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>();
+	sell_stop_order_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_sell_stop_order, this));
+
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 	mainApp.event_hub()->subscribe_symbol_master_event_handler
 	(
@@ -197,6 +210,30 @@ void SymbolOrderView::set_order_request_type(DarkHorse::OrderRequestType order_r
 	order_request_type_ = order_req_type;
 }
 
+void SymbolOrderView::update_buy_stop_order()
+{
+	buy_stop_order_rect_vector_.clear();
+	const std::map<int, price_order_request_map_p>& order_req_map = buy_stop_order_control_->get_order_req_map();
+	draw_stop_order_by_price(order_req_map, SmPositionType::Buy);
+}
+
+void SymbolOrderView::update_sell_stop_order()
+{
+	sell_stop_order_rect_vector_.clear();
+	const std::map<int, price_order_request_map_p>& order_req_map = sell_stop_order_control_->get_order_req_map();
+	draw_stop_order_by_price(order_req_map, SmPositionType::Sell);
+}
+
+void SymbolOrderView::on_update_buy_stop_order()
+{
+	enable_buy_stop_order_show_ = true;
+}
+
+void SymbolOrderView::on_update_sell_stop_order()
+{
+	enable_sell_stop_order_show_ = true;
+}
+
 void SymbolOrderView::update_position()
 {
 	if (!symbol_ || !position_control_) return;
@@ -231,11 +268,12 @@ void SymbolOrderView::set_filled_condition(DarkHorse::OrderRequestType order_req
 		fill_condition_ = DarkHorse::SmFilledCondition::Day;
 }
 
-void SymbolOrderView::draw_cell(const int row, const int col, const int value)
+std::shared_ptr<DarkHorse::SmCell> SymbolOrderView::draw_cell(const int row, const int col, const int value)
 {
-	std::shared_ptr<SmCell> cell = _Grid->FindCell(row, col);
-	if (!cell) return;
+	auto cell = _Grid->FindCell(row, col);
+	if (!cell) return nullptr;
 	cell->Text(std::to_string(value));
+	return cell;
 }
 
 void SymbolOrderView::draw_order_cell(
@@ -258,6 +296,49 @@ void SymbolOrderView::draw_order_cell(
 		_OldOrderSellRowIndex.insert(row);
 }
 
+void SymbolOrderView::draw_stop_order_cell(
+	const DarkHorse::SmPositionType position,
+	price_order_request_map_p price_order_req_map)
+{
+	if (price_order_req_map->count() == 0) return;
+	int row = FindRow(price_order_req_map->get_price());
+	if (row < price_start_row_ || row > price_end_row_) return;
+
+	const int col = (position == SmPositionType::Buy) ?
+		OrderGridHeader::BUY_STOP :
+		OrderGridHeader::SELL_STOP;
+	auto cell = draw_cell(row, col, price_order_req_map->count());
+	if (position == SmPositionType::Buy) {
+		old_stop_buy_order_index_.insert(row);
+		draw_stop_order_line(cell, position, price_order_req_map->get_order_request_map());
+	}
+	else {
+		old_stop_sell_order_index_.insert(row);
+		draw_stop_order_line(cell, position, price_order_req_map->get_order_request_map());
+	}
+}
+
+void SymbolOrderView::draw_stop_order_line(
+	std::shared_ptr<DarkHorse::SmCell> cell,
+	const DarkHorse::SmPositionType position,
+	const std::map<int, order_request_p>& order_req_map)
+{
+	for (auto it = order_req_map.begin(); it != order_req_map.end(); it++) {
+		if (position == SmPositionType::Buy) {
+			std::shared_ptr<SmCell> pOrderCell = _Grid->FindCell(cell->Row() - it->second->cut_slip, DarkHorse::OrderGridHeader::BUY_ORDER);
+			if (pOrderCell && pOrderCell->Row() > 1 && pOrderCell->Row() < price_end_row_) {
+				buy_stop_order_rect_vector_.push_back(std::make_pair(cell->GetCellRect(), pOrderCell->GetCellRect()));
+			}
+		}
+		else {
+			std::shared_ptr<SmCell> pOrderCell = _Grid->FindCell(cell->Row() + it->second->cut_slip, DarkHorse::OrderGridHeader::SELL_ORDER);
+			if (pOrderCell && pOrderCell->Row() > 1 && pOrderCell->Row() < price_end_row_) {
+				sell_stop_order_rect_vector_.push_back(std::make_pair(cell->GetCellRect(), pOrderCell->GetCellRect()));
+			}
+		}
+	}
+}
+
 void SymbolOrderView::draw_order_by_price(
 	DarkHorse::SubOrderControl& sub_order_control,
 	DarkHorse::SmPositionType position)
@@ -277,6 +358,26 @@ void SymbolOrderView::draw_total_order(
 		OrderGridHeader::SELL_ORDER;
 	const int row = 1;
 	draw_cell(row, col, sub_order_control.total_count());
+}
+
+
+void SymbolOrderView::draw_stop_order_by_price(
+	const std::map<int, price_order_request_map_p>& order_req_map,
+	const DarkHorse::SmPositionType position)
+{
+	for (auto it = order_req_map.begin(); it != order_req_map.end(); it++)
+		draw_stop_order_cell(position, it->second);
+}
+
+void SymbolOrderView::draw_total_stop_order(
+	const int count,
+	const DarkHorse::SmPositionType position)
+{
+	const int col = (position == SmPositionType::Buy) ?
+		OrderGridHeader::BUY_STOP :
+		OrderGridHeader::SELL_STOP;
+	const int row = 1;
+	draw_cell(row, col, count);
 }
 
 void SymbolOrderView::draw_order()
@@ -719,10 +820,14 @@ void SymbolOrderView::Refresh()
 	ClearOldHoga();
 	ClearStopOrders();
 	ClearOrders();
+	clear_buy_stop_order();
+	clear_sell_stop_order();
 	update_quote();
 	update_hoga();
 	draw_order();
 	SetStopOrder();
+	update_buy_stop_order();
+	update_sell_stop_order();
 	Invalidate(FALSE);
 }
 
@@ -854,6 +959,8 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	ClearOldHoga();
 	ClearOrders();
 	ClearStopOrders();
+	clear_buy_stop_order();
+	clear_sell_stop_order();
 
 	_Grid->ReleaseOrderButtons(_ButtonMap);
 	const int extra_height = _Grid->RecalRowCount(height, false);
@@ -871,6 +978,8 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	update_hoga();
 	draw_order();
 	SetStopOrder();
+	update_buy_stop_order();
+	update_sell_stop_order();
 
 	//Invalidate(FALSE);
 
@@ -909,6 +1018,8 @@ void SymbolOrderView::ArrangeCenterValue()
 	ClearOldQuote();
 	ClearOldHoga();
 	ClearOrders();
+	clear_buy_stop_order();
+	clear_sell_stop_order();
 
 	close_row_ = get_center_row();
 
@@ -917,6 +1028,8 @@ void SymbolOrderView::ArrangeCenterValue()
 	update_quote();
 	update_hoga();
 	draw_order();
+	update_buy_stop_order();
+	update_sell_stop_order();
 }
 
 void SymbolOrderView::BuyByMarketPrice()
@@ -1048,7 +1161,11 @@ std::pair<int, int> SymbolOrderView::GetOrderCount(const std::shared_ptr<SmCell>
 
 std::pair<int, int> SymbolOrderView::get_order_count(const std::shared_ptr<DarkHorse::SmCell>& source_cell)
 {
-	if (!source_cell || !account_) return std::make_pair(0, 0);
+	if (!source_cell ||
+		!order_control_ ||
+		!buy_stop_order_control_ ||
+		!sell_stop_order_control_) return std::make_pair(0, 0);
+
 	auto it_row = row_to_price_.find(source_cell->Row());
 	if (it_row == row_to_price_.end()) return std::make_pair(0, 0);
 
@@ -1057,11 +1174,20 @@ std::pair<int, int> SymbolOrderView::get_order_count(const std::shared_ptr<DarkH
 			DarkHorse::SmPositionType::Sell,
 			it_row->second
 		);
-	else
+	else if (source_cell->Col() == DarkHorse::OrderGridHeader::BUY_ORDER)
 		return order_control_->get_order_count(
 			DarkHorse::SmPositionType::Buy,
 			it_row->second
 		);
+	else if (source_cell->Col() == DarkHorse::OrderGridHeader::SELL_STOP)
+		return sell_stop_order_control_->get_order_count(
+			it_row->second
+		);
+	else if (source_cell->Col() == DarkHorse::OrderGridHeader::BUY_STOP)
+		return buy_stop_order_control_->get_order_count(
+			it_row->second
+		);
+	return std::make_pair(0, 0);
 }
 
 void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
@@ -1270,7 +1396,10 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	product_control_->update_product(symbol_);
 
 	position_control_->set_symbol_id(val->Id());
-
+	sell_stop_order_control_->set_control_type(CT_SELL);
+	sell_stop_order_control_->set_symbol_id(symbol_->Id());
+	buy_stop_order_control_->set_control_type(CT_BUY);
+	buy_stop_order_control_->set_symbol_id(symbol_->Id());
 	ArrangeCenterValue();
 	on_update_quote();
 	on_update_hoga();
@@ -1282,6 +1411,24 @@ void SymbolOrderView::DrawStopOrder()
 	for (size_t i = 0; i < _StopRectVector.size(); ++i) {
 		CBCGPPoint start_point = _StopRectVector[i].first.CenterPoint();
 		CBCGPPoint end_point = _StopRectVector[i].second.CenterPoint();
+		DrawArrow(start_point, end_point, 1.0f, 6);
+	}
+}
+
+void SymbolOrderView::draw_buy_stop_order()
+{
+	for (size_t i = 0; i < buy_stop_order_rect_vector_.size(); ++i) {
+		CBCGPPoint start_point = buy_stop_order_rect_vector_[i].first.CenterPoint();
+		CBCGPPoint end_point = buy_stop_order_rect_vector_[i].second.CenterPoint();
+		DrawArrow(start_point, end_point, 1.0f, 6);
+	}
+}
+
+void SymbolOrderView::draw_sell_stop_order()
+{
+	for (size_t i = 0; i < sell_stop_order_rect_vector_.size(); ++i) {
+		CBCGPPoint start_point = sell_stop_order_rect_vector_[i].first.CenterPoint();
+		CBCGPPoint end_point = sell_stop_order_rect_vector_[i].second.CenterPoint();
 		DrawArrow(start_point, end_point, 1.0f, 6);
 	}
 }
@@ -1461,28 +1608,54 @@ void SymbolOrderView::set_virtual_filled_value(std::shared_ptr<DarkHorse::OrderR
 	order_req->order_context.virtual_filled_price = quote.close + product_control_->get_product().int_tick_size * 4;
 }
 
+
+void SymbolOrderView::clear_buy_stop_order()
+{
+	for (auto it = old_stop_buy_order_index_.begin(); it != old_stop_buy_order_index_.end(); ++it) {
+		auto pCell = _Grid->FindCell(*it, DarkHorse::OrderGridHeader::BUY_STOP);
+		if (pCell) {
+			pCell->ClearOrderReq();
+			pCell->Text("");
+		}
+	}
+	old_stop_buy_order_index_.clear();
+}
+
+void SymbolOrderView::clear_sell_stop_order()
+{
+	for (auto it = old_stop_sell_order_index_.begin(); it != old_stop_sell_order_index_.end(); ++it) {
+		auto pCell = _Grid->FindCell(*it, DarkHorse::OrderGridHeader::SELL_STOP);
+		if (pCell) {
+			pCell->ClearOrderReq();
+			pCell->Text("");
+		}
+	}
+	old_stop_sell_order_index_.clear();
+}
+
 void SymbolOrderView::put_stop_order(const DarkHorse::SmPositionType& type, const int& price)
 {
 	if (!account_ || !symbol_) return;
 	if (price <= 0) return;
 
-	const auto symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(account_->No(), symbol_->SymbolCode());
-
 	std::shared_ptr<SmOrderRequest> order_req = nullptr;
-	if (type == SmPositionType::Sell) {
-		order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account_->No(), account_->Pwd(), symbol_->SymbolCode(), price, _OrderAmount * account_->SeungSu());
-		if (order_req) {
-			SetStopOrderCut(order_req);
-			symbol_order_mgr->SellStopOrderMgr()->AddOrderRequest(order_req);
-		}
-	}
-	else {
-		order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account_->No(), account_->Pwd(), symbol_->SymbolCode(), price, _OrderAmount * account_->SeungSu());
-		if (order_req) {
-			SetStopOrderCut(order_req);
-			symbol_order_mgr->BuyStopOrderMgr()->AddOrderRequest(order_req);
-		}
-	}
+	if (type == SmPositionType::Sell)
+		sell_stop_order_control_->add_stop_order_request(
+			account_,
+			symbol_,
+			type,
+			price,
+			_OrderAmount,
+			_OrderSettings.SlipTick
+		);
+	else buy_stop_order_control_->add_stop_order_request(
+		account_,
+		symbol_,
+		type,
+		price,
+		_OrderAmount,
+		_OrderSettings.SlipTick
+	);
 }
 
 void SymbolOrderView::put_order(const SmPositionType& type, const int& price, const SmPriceType& price_type)
@@ -1778,16 +1951,14 @@ void SymbolOrderView::change_stop(const std::shared_ptr<DarkHorse::SmCell>& src_
 void SymbolOrderView::cancel_stop(const std::shared_ptr<DarkHorse::SmCell>& src_cell)
 {
 	if (!src_cell) return;
+	if (!sell_stop_order_control_ || !buy_stop_order_control_) return;
+	auto it = row_to_price_.find(src_cell->Row());
+	if (it == row_to_price_.end()) return;
 
-	if (!account_ || !symbol_) return;
-
-	std::shared_ptr<SmSymbolOrderManager> symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(account_->No(), symbol_->SymbolCode());
-
-	const std::map<int, std::shared_ptr<SmOrderRequest>>& order_req_map = src_cell->GetOrderReqMap();
-	for (auto it = order_req_map.begin(); it != order_req_map.end(); ++it) {
-		symbol_order_mgr->RemoveStopOrder(it->second->RequestId);
-	}
-	src_cell->ClearOrderReq();
+	if (src_cell->Col() == DarkHorse::OrderGridHeader::SELL_STOP)
+		sell_stop_order_control_->remove_stop_order_request(it->second);
+	else
+		buy_stop_order_control_->remove_stop_order_request(it->second);
 }
 
 void SymbolOrderView::ProcessButtonMsg(const BUTTON_ID& id)
@@ -1849,6 +2020,9 @@ void SymbolOrderView::OnPaint()
 		DrawMovingOrder();
 
 		DrawStopOrder();
+
+		draw_buy_stop_order();
+		draw_sell_stop_order();
 
 		DrawHogaLine(rect);
 
@@ -2181,6 +2355,20 @@ void SymbolOrderView::OnTimer(UINT_PTR nIDEvent)
 		update_quote();
 		needDraw = true;
 		_EnableOrderShow = false;
+	}
+
+	if (enable_sell_stop_order_show_) {
+		clear_sell_stop_order();
+		update_sell_stop_order();
+		needDraw = true;
+		enable_sell_stop_order_show_ = false;
+	}
+
+	if (enable_buy_stop_order_show_) {
+		clear_buy_stop_order();
+		update_buy_stop_order();
+		needDraw = true;
+		enable_buy_stop_order_show_ = false;
 	}
 
 	if (enable_position_show_) {
