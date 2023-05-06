@@ -64,7 +64,8 @@
 #include "Order/OrderUi/DmAccountOrderWindow.h"
 #include "Order/OrderUi/DmFundOrderWindow.h"
 #include "Order/OrderRequest/OrderRequestManager.h"
-
+#include "Task/VtProgressDlg.h"
+#include "Task/ViServerDataReceiver.h"
 // -----------------------------------------------------------------------------
 
 // DataFrame library is entirely under hmdf name-space
@@ -103,18 +104,35 @@ struct  MyData {
 };
 
 
-
-
-
-
-
-
-
-
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+void CMainFrame::StartTimer(int milisecond)
+{
+	SetTimer(DATA_REQ_TIMER, milisecond, NULL);
+}
+
+void CMainFrame::StopTimer()
+{
+	KillTimer(DATA_REQ_TIMER);
+}
+
+void CMainFrame::LoadAfterServerData()
+{
+	StopTimer();
+	HideProgress();
+	//mainApp.SymbolMgr().MrktMgr().MakeFavoriteList();
+	//mainApp.AcntMgr().RegisterAllAccounts();
+}
+
+void CMainFrame::HideProgress()
+{
+	if (ProgressDlg) {
+		ProgressDlg->ShowWindow(SW_HIDE);
+		ProgressDlg->DestroyWindow();
+	}
+}
 
 int CMainFrame::_Id = 0;
 
@@ -744,6 +762,7 @@ void CMainFrame::StartLoad()
 
 void CMainFrame::StartDataRequest()
 {
+	/*
 	std::shared_ptr<DataProgressDialog> ProgressDlg = std::make_shared<DataProgressDialog>();
 	ProgressDlg->Create(IDD_DATA_PROGRESS, nullptr);
 	ProgressDlg->ShowWindow(SW_SHOW);
@@ -751,6 +770,24 @@ void CMainFrame::StartDataRequest()
 	ProgressDlg->BringWindowToTop();
 	mainApp.SvrDataRcvr()->ProgressDlg(ProgressDlg);
 	mainApp.SvrDataRcvr()->StartDataRequest();
+	*/
+
+	// 서버 데이터 가져오기를 표시하는 대화 상자를 생성한다.
+	ProgressDlg = std::make_shared<VtProgressDlg>();
+	ProgressDlg->Create(IDD_PROGRESS, this);
+	ProgressDlg->MainFrm = this;
+	ProgressDlg->ShowWindow(SW_SHOW);
+	//ProgressDlg->SetForegroundWindow();
+	//ProgressDlg->BringWindowToTop();
+
+	// 파일에서 국내 선물/옵션 상품 정보를 읽어 온다.
+	//mainApp.LoadProductInfo();
+
+
+	// 진행상황 표시 대화상자를 할당해 준다.
+	mainApp.vi_server_data_receiver()->ProgressDlg(ProgressDlg);
+	// 심볼 코드를 가져오기 시작한다.
+	mainApp.vi_server_data_receiver()->StartGetSymbolMaster();
 }
 
 void CMainFrame::SetMarketTree()

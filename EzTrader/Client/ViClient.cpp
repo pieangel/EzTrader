@@ -3149,6 +3149,7 @@ void DarkHorse::ViClient::OnDmAccountAsset(const CString& sTrCode, const LONG& n
 		CString msg;
 		nlohmann::json account_asset;
 		account_asset["account_no"] = std::string(strAccountNo.Trim());
+		account_asset["balance"] = _ttof(strEntrustTotal.Trim());
 		account_asset["entrust_total"] = _ttof(strEntrustTotal.Trim());
 		account_asset["order_deposit"] = _ttof(strOrderMargin.Trim());
 		account_asset["entrust_deposit"] = _ttof(strEntrustMargin.Trim());

@@ -220,8 +220,6 @@ namespace DarkHorse {
 		if (!symbol) return;
 
 		product_.decimal = symbol->decimal();
-		//product_.hoga_unit = symbol->hoga_unit;
-		//product_.int_tick_size = symbol->TickSize();
 		product_.tick_size = symbol->TickSize();
 		product_.int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 		product_.seung_su = symbol->seung_su();

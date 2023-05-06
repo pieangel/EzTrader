@@ -90,6 +90,7 @@
 #define IDD_DM_FUND_ORDER_MAIN          185
 #define IDD_DM_FUND_ORDER_LEFT          186
 #define IDD_DM_FUND_ORDER_CENTER        187
+#define IDD_PROGRESS                    219
 #define IDC_STATIC_ID                   1003
 #define IDC_STATIC_PWD                  1004
 #define IDC_STATIC_CERT                 1005
@@ -251,8 +252,11 @@
 #define IDC_STATIC_LINE14               1161
 #define IDC_EDIT_VK3_NQ                 1162
 #define IDC_BTN_LIQ_SYMBOL_POSITION     1163
+#define IDC_PROGRESS_CTRL               1163
 #define IDC_SCROLLBAR_VER_FAV           1164
+#define IDC_STATIC_TASK                 1164
 #define IDC_STATIC_LINE15               1165
+#define IDC_STATIC_STATE                1165
 #define IDC_EDIT_VK3_NQ_AVG             1166
 #define IDC_STATIC_SET                  1167
 #define IDC_STATIC_LINE16               1168
@@ -508,9 +512,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        219
+#define _APS_NEXT_RESOURCE_VALUE        221
 #define _APS_NEXT_COMMAND_VALUE         32934
-#define _APS_NEXT_CONTROL_VALUE         1163
+#define _APS_NEXT_CONTROL_VALUE         1166
 #define _APS_NEXT_SYMED_VALUE           119
 #endif
 #endif

@@ -565,7 +565,7 @@ void DarkHorse::ViStockClient::OnDmAccountAsset(nlohmann::json&& arg)
 	if (!account) return;
 
 	try {
-		account->Asset.Balance = arg["balance"];
+		account->Asset.EntrustTotal = arg["balance"];
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();

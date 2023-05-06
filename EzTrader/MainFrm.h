@@ -9,6 +9,8 @@
 #include "PropertiesViewBar.h"
 #include <memory>
 #include <map>
+
+#define DATA_REQ_TIMER 100
 namespace DarkHorse {
 class SmChartData;
 }
@@ -35,6 +37,7 @@ class SmStockChart;
 class SmTrendChart;
 class DmAccountOrderWindow;
 class DmFundOrderWindow;
+class VtProgressDlg;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -67,6 +70,7 @@ protected:  // control bar embedded members
 	CWorkSpaceBar2			m_wndWorkSpace2;
 	COutputBar				m_wndOutput;
 	CBCGPPropBar			m_wndPropGrid;
+	std::shared_ptr<VtProgressDlg> ProgressDlg = nullptr;
 
 // Generated message map functions
 protected:
@@ -88,6 +92,10 @@ protected:
 	virtual CBCGPMDIChildWnd* CreateDocumentWindow(LPCTSTR lpcszDocName, CObject* /*pObj*/);
 
 public:
+	void StartTimer(int milisecond);
+	void StopTimer();
+	void LoadAfterServerData();
+	void HideProgress();
 	// window id
 	static int _Id;
 	static int GetId() { return ++_Id; }

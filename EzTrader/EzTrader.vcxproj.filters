@@ -817,6 +817,15 @@
     <ClCompile Include="Order\AbAccountOrderCenterWindow.cpp">
       <Filter>Order\OrderUI_AB</Filter>
     </ClCompile>
+    <ClCompile Include="Task\ViServerDataReceiver.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\VtProgressDlg.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\GradientStatic.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1862,6 +1871,18 @@
     </ClInclude>
     <ClInclude Include="ViewModel\VmAccountProfitLoss.h">
       <Filter>ViewModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\ViServerDataReceiver.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\SmTaskDefine.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\VtProgressDlg.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\GradientStatic.h">
+      <Filter>Task</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

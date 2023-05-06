@@ -1567,7 +1567,7 @@ int SymbolOrderView::find_start_value()
 		if (index_row_ < endRow) {
 			for (int r = index_row_; r < endRow; ++r) {
 				// 0.01 밑으로 안나오게 함
-				if (endValue == 1 || endValue == 0) {
+				if (/*endValue == 1 ||*/ endValue == 0) {
 					zeroRow = r;
 					break;
 				}

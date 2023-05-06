@@ -1165,6 +1165,15 @@ BEGIN
     CONTROL         "",IDC_STATIC_REMAIN,"Static",SS_BLACKRECT | SS_NOTIFY,181,52,40,12
 END
 
+IDD_PROGRESS DIALOGEX 0, 0, 309, 43
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_PROGRESS_CTRL,"msctls_progress32",WS_BORDER,0,30,309,14
+    CTEXT           "진행중입니다.",IDC_STATIC_TASK,0,1,309,11
+    CTEXT           "진행항목",IDC_STATIC_STATE,0,15,309,12
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1426,6 +1435,10 @@ BEGIN
     BEGIN
         BOTTOMMARGIN, 504
     END
+
+    IDD_PROGRESS, DIALOG
+    BEGIN
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1676,6 +1689,11 @@ BEGIN
 END
 
 IDD_DM_FUND_ORDER_CENTER AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PROGRESS AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
