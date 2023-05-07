@@ -223,7 +223,7 @@ void DarkHorse::SmServerDataReceiver::DoPostTask(const std::shared_ptr<SmTaskInf
 	case SmTaskType::AcceptedOrderList:
 	{
 		if (_ProgressDlg) _ProgressDlg->ShowHide(false);
-		mainApp.SymMgr()->MakeFavorite();
+		mainApp.SymMgr()->MakeAbFavorite();
 		//auto req = SmTaskRequestMaker::MakeDefaultChartDataRequest(1500);
 		//_TaskGroupQue.push_back(req);
 		((CMainFrame*)AfxGetMainWnd())->StartLoad();

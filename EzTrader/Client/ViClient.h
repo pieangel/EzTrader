@@ -60,7 +60,10 @@ namespace DarkHorse {
 		DECLARE_MESSAGE_MAP()
 	public:
 		void on_task_complete(const int& nRqId);
+		void on_task_error(const int& server_request_id, const int request_id);
 		int dm_symbol_master_file_download(DhTaskArg arg);
+		int ab_symbol_master_file_download(DhTaskArg arg);
+		int ab_symbol_master(DhTaskArg arg);
 		int GetDomesticSymbolCode(task_arg&& arg);
 		int GetFilledOrderList(const std::string& account_no, const std::string& pwd);
 		int CheckAccountPassword(task_arg&& arg);
@@ -159,6 +162,7 @@ namespace DarkHorse {
 		void OnDomesticSymbolCode(const CString& sTrCode, const LONG& nRqID);
 		void OnAccountListReceived(const CString& sTrCode, const LONG& nRqID) ;
 		void OnSymbolMaster(const CString& sTrCode, const LONG& nRqID);
+		void on_ab_symbol_master(const CString& server_trade_code, const LONG& server_request_id);
 		void OnDmSymbolMaster(const CString& sTrCode, const LONG& nRqID);
 		void on_dm_symbol_master_file(const CString& server_trade_code, const LONG& server_request_id);
 		void OnMasterFile(const CString& sTrCode, const LONG& nRqID);

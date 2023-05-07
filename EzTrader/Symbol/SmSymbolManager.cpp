@@ -212,6 +212,21 @@ void SmSymbolManager::sort_dm_option_symbol_vector()
 	}
 }
 
+void SmSymbolManager::get_ab_recent_symbols(std::set<std::shared_ptr<SmSymbol>>& ab_symbol_set)
+{
+	for (auto it = Ab_Market_Set_.begin(); it != Ab_Market_Set_.end(); it++) {
+		std::string market_name = *it;
+		auto market = mainApp.SymMgr()->FindMarket(market_name);
+		if (!market) continue;
+		const std::map<std::string, std::shared_ptr<SmProduct>>& product_map = market->GetProductMap();
+		for (auto it = product_map.begin(); it != product_map.end(); it++) {
+			const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec = it->second->GetSymbolVec();
+			if (symbol_vec.empty()) continue;
+			ab_symbol_set.insert(*symbol_vec.begin());
+		}
+	}
+}
+
 std::shared_ptr<SmMarket> SmSymbolManager::get_dm_market_by_product_code(const std::string& product_code)
 {
 	if (product_code.empty()) return nullptr;
@@ -404,7 +419,7 @@ void SmSymbolManager::AddDomesticSymbolCode(const std::string& product_code, con
 	}
 }
 
-void SmSymbolManager::MakeFavorite()
+void SmSymbolManager::MakeAbFavorite()
 {
 	for (auto it = _FavoriteProduct.begin(); it != _FavoriteProduct.end(); it++) {
 		std::string product_code = *it;

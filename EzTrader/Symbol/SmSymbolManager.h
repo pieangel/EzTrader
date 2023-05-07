@@ -21,6 +21,7 @@ namespace DarkHorse {
 		static int _Id;
 		static int GetId() { return ++_Id; }
 	private:
+		std::set<std::string> Ab_Market_Set_;
 		/// <summary>
 		/// Symbol Map.
 		/// Key : Symbol Code, value : Symbol Object.
@@ -45,6 +46,16 @@ namespace DarkHorse {
 		void set_product_info(std::shared_ptr<SmSymbol> symbol);
 		void set_quote_preday_close(std::shared_ptr<SmSymbol> symbol, const std::string& pre_day_str);
 	public:
+		void get_ab_recent_symbols(std::set<std::shared_ptr<SmSymbol>>& ab_symbol_set);
+		const std::map<int, std::shared_ptr<SmSymbol>>& get_ab_favorite_map() {
+			return _FavoriteMap;
+		}
+		void add_ab_market(const std::string& market_name) {
+			Ab_Market_Set_.insert(market_name);
+		}
+		const std::set<std::string>& get_ab_market_set() {
+			return Ab_Market_Set_;
+		}
 		const std::vector<DmFuture>& get_dm_future_vec()
 		{
 			return _DomesticFutureVec;
@@ -61,7 +72,7 @@ namespace DarkHorse {
 		void read_domestic_masterfile();
 		void read_domestic_productfile();
 		void AddDomesticSymbolCode(const std::string& product_code, const std::string& symbol_code);
-		void MakeFavorite();
+		void MakeAbFavorite();
 		void InitFavoriteProduct();
 		void Clear() {
 			

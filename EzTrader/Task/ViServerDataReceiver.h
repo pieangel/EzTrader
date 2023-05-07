@@ -66,7 +66,10 @@ namespace DarkHorse {
 		void StartGetFilledOrder();
 		void StartGetFilledDetails();
 		void start_dm_symbol_master_file_download();
+		void start_ab_symbol_master_file_download();
+		void start_ab_symbol_master();
 	private:
+		void make_ab_symbol_master();
 		void make_dm_file_download();
 		void make_ab_file_download();
 		// 차트데이터 요청 목록을 만든다.

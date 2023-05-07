@@ -8,6 +8,11 @@
 #include "../Account/SmAccount.h"
 #include "../Account/SmAccountManager.h"
 #include "../Client/ViStockClient.h"
+#include "../Global/SmTotalManager.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Symbol/SmSymbolReader.h"
+#include "../Symbol/SmSymbol.h"
+#include <set>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,8 +28,11 @@ namespace DarkHorse {
 		case DhTaskType::DmSymbolMasterFileDownload:
 			mainApp.Client()->dm_symbol_master_file_download(arg);
 			break;
+		case DhTaskType::AbSymbolMasterFileDownload:
+			mainApp.Client()->ab_symbol_master_file_download(arg);
+			break;
 		case DhTaskType::AbSymbolMaster:
-			//mainApp.Client().GetAbSymbolMaster(arg);
+			mainApp.Client()->ab_symbol_master(arg);
 			break;
 		case DhTaskType::AbSymbolQuote:
 			//mainApp.Client().GetAbSymbolSise(arg);
@@ -73,8 +81,19 @@ namespace DarkHorse {
 	{
 		// 기존 요청 목록을 먼저 모두 없앤다.
 		task_info_.argument_map.clear();
-
-		if (task_info_.task_type == DhTaskType::AbSymbolMaster) {
+		if (task_info_.task_type == DhTaskType::DmSymbolMasterFileDownload) {
+			start_ab_symbol_master_file_download();
+		}
+		else if (task_info_.task_type == DhTaskType::AbSymbolMasterFileDownload) {
+			mainApp.SymMgr()->MakeDomesticMarket();
+			mainApp.SymMgr()->ReadAbroadSymbols();
+			mainApp.SymMgr()->read_domestic_productfile();
+			mainApp.SymMgr()->read_domestic_masterfile();
+			mainApp.SymMgr()->sort_dm_option_symbol_vector();
+			mainApp.SymMgr()->MakeAbFavorite();
+			start_ab_symbol_master();
+		}
+		else if (task_info_.task_type == DhTaskType::AbSymbolMaster) {
 			StartGetCSise();
 		}
 		else if (task_info_.task_type == DhTaskType::AbSymbolQuote) {
@@ -151,11 +170,19 @@ namespace DarkHorse {
 
 	void ViServerDataReceiver::on_task_error(const int& argument_id)
 	{
-		// 오류가 나면 다시 요청을 해준다.
+		// 오류가 나면 건너 뛴다. 
+		// 요청이 완료된 일은 찾아 내어 맵에서 없애 준다.
 		auto it = task_info_.argument_map.find(argument_id);
 		if (it != task_info_.argument_map.end()) {
-			DhTaskArg& arg = it->second;
-			arg.requested = false;
+			task_info_.argument_map.erase(it);
+		}
+
+		// 남은 걧수를 다시 설정해 준다.
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		set_task_state();
+		if (task_info_.remain_task_count == 0) {
+			((CMainFrame*)AfxGetMainWnd())->stop_timer();
+			do_next_group_task();
 		}
 	}
 
@@ -319,7 +346,7 @@ namespace DarkHorse {
 		task_info_.argument_map[arg.argument_id] = arg;
 	
 
-		task_info_.task_title = "심볼 마스터 파일 다운로드 중입니다.";
+		task_info_.task_title = "국내 심볼 마스터 파일 다운로드 중입니다.";
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::DmSymbolMasterFileDownload;
@@ -327,13 +354,77 @@ namespace DarkHorse {
 
 	void ViServerDataReceiver::make_ab_file_download()
 	{
+		const std::string file_name = "all";
+		DhTaskArg arg;
+		arg.detail_task_description = file_name;
+		arg.argument_id = ViServerDataReceiver::get_argument_id();
+		arg.task_type = DhTaskType::AbSymbolMasterFileDownload;
+		arg.parameter_map["file_name"] = file_name;
 
+		task_info_.argument_map[arg.argument_id] = arg;
+
+
+		task_info_.task_title = "해외 심볼 마스터 파일 다운로드 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbSymbolMasterFileDownload;
 	}
 
 	void ViServerDataReceiver::start_dm_symbol_master_file_download()
 	{
 		make_dm_file_download();
 		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_ab_symbol_master_file_download()
+	{
+		make_ab_file_download();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_ab_symbol_master()
+	{
+		make_ab_symbol_master();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::make_ab_symbol_master()
+	{
+		const std::map<int, std::shared_ptr<SmSymbol>>& ab_symbol_favorite = mainApp.SymMgr()->get_ab_favorite_map();
+		for (auto it = ab_symbol_favorite.begin(); it != ab_symbol_favorite.end(); it++) {
+			DhTaskArg arg;
+			arg.detail_task_description = it->second->SymbolCode();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::AbSymbolMaster;
+			arg.parameter_map["symbol_code"] = it->second->SymbolCode();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "해외 심볼 마스터 다운로드 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbSymbolMaster;
+
+
+		std::set<std::shared_ptr<SmSymbol>> ab_symbol_set;
+		mainApp.SymMgr()->get_ab_recent_symbols(ab_symbol_set);
+		if (ab_symbol_set.empty()) return;
+
+		for (auto it = ab_symbol_set.begin(); it != ab_symbol_set.end(); it++) {
+			DhTaskArg arg;
+			arg.detail_task_description = (*it)->SymbolCode();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::AbSymbolMaster;
+			arg.parameter_map["symbol_code"] = (*it)->SymbolCode();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "해외 심볼 마스터 다운로드 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbSymbolMaster;
 	}
 
 }

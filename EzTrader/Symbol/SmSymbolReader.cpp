@@ -179,6 +179,7 @@ void SmSymbolReader::ReadAbroadMarketFile(const std::string& fullPath) const
 			VtStringUtil::trim(product_name_kr);
 
 			std::shared_ptr<SmMarket> market = mainApp.SymMgr()->AddMarket(market_name);
+			mainApp.SymMgr()->add_ab_market(market_name);
 			std::shared_ptr<SmProduct> product = market->AddProduct(product_code);
 			product->MarketName(market_name);
 			product->ExchangeName(exchange_name);

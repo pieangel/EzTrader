@@ -38,6 +38,7 @@ enum class DhTaskType
 	AbAcceptedOrderList, // 해외 미체결 주문
 	AbFilledOrderList, // 해외 체결 주문
 	AbFilledDetail, // 해외 체결 주문
+	AbSymbolMasterFileDownload, // 심볼 마스터 파일 다운로드
 
 	DmAcceptedHistory, // 접수확인 내역
 	DmFilledHistory, // 체결내역

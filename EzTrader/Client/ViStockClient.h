@@ -94,7 +94,8 @@ namespace DarkHorse {
 		int GetFilledOrderList(const std::string& account_no, const std::string& pwd);
 
 		int dm_symbol_master_file_download(DhTaskArg arg);
-
+		int ab_symbol_master_file_download(DhTaskArg arg);
+		int ab_symbol_master(DhTaskArg arg);
 	private:
 		int GetDomesticSymbolCode(task_arg&& arg) ;
 		bool _Enable{ true };

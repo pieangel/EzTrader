@@ -92,7 +92,7 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 		on_dm_symbol_master_file(code, req_id);
 	}
 	else if (code == DefAbSymbolMaster) {
-		OnSymbolMaster(code, req_id);
+		on_ab_symbol_master(code, req_id);
 	}
 	else if (code == DefSymbolMaster) {
 		OnDmSymbolMaster(code, req_id);
@@ -222,12 +222,17 @@ void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 				strLog.Format("RQID[%d][%s][%s]", nRqId, strCode, strMsg);
 			}
 		}
-		strLog.Format("RQID[%d][%s][%s]", nRqId, strCode, strMsg);
+		strLog.Format("RQID[%d][%s][%s]\n", nRqId, strCode, strMsg);
+		TRACE(strLog);
+		if (nRqId < 0) {
+			on_task_error(nRqId, -1);
+		}
 		CString code(strCode);
 		if (code.Compare("0332") == 0) {
 			const int res_code = std::stoi((const char*)code);
-			OnTaskComplete(nRqId);
+			on_task_complete(0);
 		}
+		
 
 		auto it = _ChartReqMap.find(nRqId);
 		if (it != _ChartReqMap.end()) {
@@ -857,6 +862,79 @@ int ViClient::dm_symbol_master_file_download(DhTaskArg arg)
 	}
 
 	return -1;
+}
+
+int ViClient::ab_symbol_master_file_download(DhTaskArg arg)
+{
+	try {
+		const std::string file_name = arg.parameter_map["file_name"];
+
+		m_CommAgent.CommReqMakeCod(file_name.c_str(), 0);
+
+		request_map_[0] = arg;
+
+		return 0;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+int ViClient::ab_symbol_master(DhTaskArg arg)
+{
+	try {
+		const std::string symbol_code = arg.parameter_map["symbol_code"];
+
+
+
+		CString msg;
+		msg.Format("GetSymbolMaster = %s\n", symbol_code.c_str());
+		TRACE(msg);
+
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+		std::string temp;
+		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
+		const CString sInput = temp.c_str();
+		const CString sReqFidInput = "000001002003004005006007008009010011012013014015016017018019020021022023";
+		const CString strNextKey = m_CommAgent.CommGetNextKey(0, "");
+		const int nRqID = m_CommAgent.CommFIDRqData(DefAbSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+		msg.Format("GetSymbolMaster = %s server_request_id = %d\n", symbol_code.c_str(), nRqID);
+		TRACE(msg);
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+			return nRqID;
+		}
+
+		request_map_[nRqID] = arg;
+
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+void ViClient::on_task_error(const int& server_request_id, const int request_id)
+{
+	if (server_request_id < 0 && request_map_.empty()) {
+		mainApp.vi_server_data_receiver()->on_task_error(request_id);
+	}
+	else {
+		auto it = request_map_.find(server_request_id);
+		if (it == request_map_.end()) {
+			auto first = request_map_.begin();
+			mainApp.vi_server_data_receiver()->on_task_error(first->second.argument_id);
+			request_map_.clear();
+		}
+		else
+			mainApp.vi_server_data_receiver()->on_task_error(it->second.argument_id);
+	}
 }
 
 int DarkHorse::ViClient::GetDomesticSymbolCode(task_arg&& arg)
@@ -2946,6 +3024,65 @@ void DarkHorse::ViClient::OnSymbolMaster(const CString& sTrCode, const LONG& nRq
 	}
 
 	OnTaskComplete(nRqID);
+}
+
+void ViClient::on_ab_symbol_master(const CString& server_trade_code, const LONG& server_request_id)
+{
+	CString m_strBusinessDay = m_CommAgent.CommGetBusinessDay(1);
+
+
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
+	for (int i = 0; i < nRepeatCnt; i++)
+	{
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "종목코드");
+
+		CString msg;
+
+
+
+		CString strLastTradeDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "최종거래일");
+		CString strExchange = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "거래소");
+		CString strExpireDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "만기일");
+		CString strPriceTag = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "가격표시");
+		CString strStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "장시작시간(CME)");
+		CString strEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "장종료시간(CME)");
+		CString strLocalStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "장시작시간(한국)");
+		CString strLocalEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "장종료시간(한국)");
+		CString strCurrency = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "거래통화");
+		CString strProduct = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "상품구분");
+		CString strTickSize = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "ticksize");
+		CString strTickValue = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "tickvalue");
+		CString strNeedMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "증거금");
+		CString strContractUnit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계약단위");
+		CString strRemainMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "유지증거금");
+
+		msg.Format("SymbolMaster strSymbolCode = %s, strLocalStartTime = %s, %s\n", strSymbolCode, strLocalStartTime, strLocalEndTime);
+		TRACE(msg);
+
+
+		nlohmann::json symbol_master;
+		symbol_master["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+		symbol_master["last_trade_day"] = static_cast<const char*>(strLastTradeDay.Trim());
+		symbol_master["exchange"] = static_cast<const char*>(strExchange.Trim());
+		symbol_master["expire_day"] = static_cast<const char*>(strExpireDay.Trim());
+		symbol_master["price_tag"] = static_cast<const char*>(strPriceTag.Trim());
+		symbol_master["start_time"] = static_cast<const char*>(strStartTime.Trim());
+		symbol_master["end_time"] = static_cast<const char*>(strEndTime.Trim());
+		symbol_master["local_start_time"] = static_cast<const char*>(strLocalStartTime.Trim());
+		symbol_master["local_end_time"] = static_cast<const char*>(strLocalEndTime.Trim());
+		symbol_master["currency"] = static_cast<const char*>(strCurrency.Trim());
+		symbol_master["product_code"] = static_cast<const char*>(strProduct.Trim());
+		symbol_master["tick_size"] = static_cast<const char*>(strTickSize.Trim());
+		symbol_master["tick_value"] = static_cast<const char*>(strTickValue.Trim());
+		symbol_master["deposit"] = static_cast<const char*>(strNeedMoney.Trim());
+		symbol_master["contract_unit"] = static_cast<const char*>(strContractUnit.Trim());
+		symbol_master["maintenance_margin"] = static_cast<const char*>(strRemainMoney.Trim());
+		if (auto wp = _Client.lock()) {
+			wp->OnSymbolMaster(std::move(symbol_master));
+		}
+	}
+
+	on_task_complete(server_request_id);
 }
 
 void ViClient::OnMasterFile(const CString& sTrCode, const LONG& nRqID)

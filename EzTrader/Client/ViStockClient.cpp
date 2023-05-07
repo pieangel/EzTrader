@@ -154,6 +154,16 @@ int DarkHorse::ViStockClient::GetFilledOrderList(const std::string& account_no, 
 	return _ViCtrol->GetFilledOrderList(account_no, pwd);
 }
 
+int ViStockClient::ab_symbol_master(DhTaskArg arg)
+{
+	return _ViCtrol->ab_symbol_master(arg);
+}
+
+int ViStockClient::ab_symbol_master_file_download(DhTaskArg arg)
+{
+	return _ViCtrol->ab_symbol_master_file_download(arg);
+}
+
 int ViStockClient::dm_symbol_master_file_download(DhTaskArg arg)
 {
 	return _ViCtrol->dm_symbol_master_file_download(arg);
@@ -459,7 +469,7 @@ void DarkHorse::ViStockClient::OnSymbolMaster(nlohmann::json&& arg)
 		symbol->Currency(arg["currency"]);
 		symbol->Exchange(arg["exchange"]);
 
-		mainApp.CallbackMgr()->OnSymbolMasterEvent(symbol->Id());
+		//mainApp.CallbackMgr()->OnSymbolMasterEvent(symbol->Id());
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
