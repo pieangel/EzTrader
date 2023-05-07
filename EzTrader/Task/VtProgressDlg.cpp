@@ -57,18 +57,18 @@ BOOL VtProgressDlg::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 	EnableLayout();
-	VERIFY(_BrushBackNor.CreateSolidBrush(RGB(3, 30, 82)));
+	VERIFY(_BrushBackNor.CreateSolidBrush(RGB(45, 45, 48)));
 	// TODO:  Add extra initialization here
 	//::AfxBeginThread((AFX_THREADPROC)threadfunc, (LPVOID)this);
 	_StaticState.SetTextColor(RGB(255, 255, 255));
-	_StaticState.SetColor(RGB(3, 30, 82));
-	_StaticState.SetGradientColor(RGB(3, 30, 82));
+	_StaticState.SetColor(RGB(45, 45, 48));
+	_StaticState.SetGradientColor(RGB(45, 45, 48));
 	_StaticState.SetTextAlign(1);
 	_StaticState.SetWindowText("작업중입니다.");
 
 	_StaticTask.SetTextColor(RGB(255, 255, 255));
-	_StaticTask.SetColor(RGB(3, 30, 82));
-	_StaticTask.SetGradientColor(RGB(3, 30, 82));
+	_StaticTask.SetColor(RGB(45, 45, 48));
+	_StaticTask.SetGradientColor(RGB(45, 45, 48));
 	_StaticTask.SetTextAlign(1);
 
 	//HdScheduler* taskMgr = HdScheduler::GetInstance();

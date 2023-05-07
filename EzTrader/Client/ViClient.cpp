@@ -903,13 +903,11 @@ int ViClient::ab_symbol_master(DhTaskArg arg)
 		const int nRqID = m_CommAgent.CommFIDRqData(DefAbSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
 		msg.Format("GetSymbolMaster = %s server_request_id = %d\n", symbol_code.c_str(), nRqID);
 		TRACE(msg);
+		request_map_[nRqID] = arg;
 		if (nRqID < 0) {
 			on_task_error(nRqID, arg.argument_id);
 			return nRqID;
 		}
-
-		request_map_[nRqID] = arg;
-
 		return nRqID;
 	}
 	catch (const std::exception& e) {
