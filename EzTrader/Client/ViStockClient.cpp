@@ -154,6 +154,11 @@ int DarkHorse::ViStockClient::GetFilledOrderList(const std::string& account_no, 
 	return _ViCtrol->GetFilledOrderList(account_no, pwd);
 }
 
+int ViStockClient::dm_symbol_master_file_download(DhTaskArg arg)
+{
+	return _ViCtrol->dm_symbol_master_file_download(arg);
+}
+
 void ViStockClient::ChangeOrder(order_request_p order_req)
 {
 	_ViCtrol->ChangeOrder(order_req);

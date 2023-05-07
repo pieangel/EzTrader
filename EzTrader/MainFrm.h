@@ -92,8 +92,8 @@ protected:
 	virtual CBCGPMDIChildWnd* CreateDocumentWindow(LPCTSTR lpcszDocName, CObject* /*pObj*/);
 
 public:
-	void StartTimer(int milisecond);
-	void StopTimer();
+	void start_timer(int milisecond);
+	void stop_timer();
 	void LoadAfterServerData();
 	void HideProgress();
 	// window id
@@ -203,4 +203,5 @@ public:
 	afx_msg void OnDomesticFundOrder();
 	afx_msg void OnDmAcntOrder();
 	afx_msg void OnSetSimulationMode();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

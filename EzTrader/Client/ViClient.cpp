@@ -32,6 +32,7 @@
 #include "../Order/SmOrderConst.h"
 #include "../Global/SmTotalManager.h"
 #include "../Order/OrderProcess/OrderProcessor.h"
+#include "../Task/ViServerDataReceiver.h"
 #include <chartdir.h>
 
 
@@ -88,7 +89,7 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 		OnAccountListReceived(code, req_id);
 	}
 	else if (code == MasterFile) {
-		OnMasterFile(code, req_id);
+		on_dm_symbol_master_file(code, req_id);
 	}
 	else if (code == DefAbSymbolMaster) {
 		OnSymbolMaster(code, req_id);
@@ -828,6 +829,27 @@ int DarkHorse::ViClient::GetAcceptedOrderList(task_arg&& arg)
 		if (type == "1") GetAbAcceptedOrderList(arg);
 		else if (type == "9") GetDmAcceptedOrderList(arg);
 		return 1;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+int ViClient::dm_symbol_master_file_download(DhTaskArg arg)
+{
+	try {
+		const std::string file_name = arg.parameter_map["file_name"];
+
+		CString sInput = file_name.c_str();
+		const CString strNextKey = _T("");
+		int nRqID = m_CommAgent.CommRqData(MasterFile, sInput, sInput.GetLength(), strNextKey);
+
+		request_map_[nRqID] = arg;
+
+		return nRqID;
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
@@ -2606,6 +2628,15 @@ void DarkHorse::ViClient::OnTaskComplete(const int& nRqId)
 	}
 }
 
+void ViClient::on_task_complete(const int& nRqId)
+{
+	auto it = request_map_.find(nRqId);
+	if (it == request_map_.end()) return;
+	const int argument_id = it->second.argument_id;
+	mainApp.vi_server_data_receiver()->on_task_complete(argument_id);
+	request_map_.erase(it);
+}
+
 void DarkHorse::ViClient::OnChartTaskComplete(const int& nRqId)
 {
 	auto it = _ChartReqMap.find(nRqId);
@@ -2814,6 +2845,48 @@ void DarkHorse::ViClient::OnDmSymbolMaster(const CString& sTrCode, const LONG& n
 	if (auto wp = _Client.lock()) {
 		wp->OnDmSymbolHoga(std::move(hoga));
 	}
+}
+
+void ViClient::on_dm_symbol_master_file(const CString& server_trade_code, const LONG& server_request_id)
+{
+	auto it = request_map_.find(server_request_id);
+	if (it == request_map_.end()) return;
+	const std::string file_name = it->second.parameter_map["file_name"];
+
+	long nFileSize = atol(m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "파일크기"));
+	CString strFileNm = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "파일명");
+	CString strProcCd = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "응답코드");
+
+	if (strProcCd == "REOK")
+	{
+		CString strBuff = m_CommAgent.CommGetDataDirect(server_trade_code, -1, 128 + 4 + 8, nFileSize, 0, "A");
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\"));
+		appPath.append(_T("mst"));
+		appPath.append(_T("\\"));
+		//TRACE(file_name.c_str());
+		std::string file_path = appPath + file_name;
+
+		CString strCommonFileName = file_path.c_str();
+
+		CFile commonfile;
+		if (!commonfile.Open(strCommonFileName, CFile::modeWrite /*| CFile::typeBinary*/))
+		{
+			if (commonfile.Open(strCommonFileName, CFile::modeCreate | CFile::modeWrite /*| CFile::typeBinary*/) == FALSE)
+			{
+				CString strMsg;
+				strMsg.Format("%s화일 생성에 실패하였습니다. ", strCommonFileName);
+				return on_task_complete(server_request_id);
+			}
+		}
+
+		commonfile.Write(strBuff, nFileSize);
+		commonfile.Close();
+	}
+
+	on_task_complete(server_request_id);
 }
 
 void DarkHorse::ViClient::OnSymbolMaster(const CString& sTrCode, const LONG& nRqID)

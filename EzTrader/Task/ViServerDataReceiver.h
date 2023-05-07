@@ -27,59 +27,32 @@ namespace DarkHorse {
 		// 앱의 상태를 나타낸다.
 		//SmAppState _AppState = SmAppState::None;
 		// Key : id, value : argument
-		std::map<int, DhTaskArg> 	_RequestMap;
-		void ExecRequest(DhTaskArg& arg);
+		//std::map<int, DhTaskArg> 	_RequestMap;
+		void execute_request(DhTaskArg& arg);
 		// 진행 상황을 나태내는 대화상자
 		//VtProgressDlg* _ProgressDlg;
-		std::shared_ptr<VtProgressDlg> _ProgressDlg;
+		std::shared_ptr<VtProgressDlg> progress_dialog_;
 		// 현재 작업 중인 작업의 정보를 기억한다.
-		DhTaskInfo _TaskInfo;
+		DhTaskInfo task_info_;
 		// 현재 작업 상태를 표시한다.
-		void SetTaskState();
+		void set_task_state();
 		// 다음 그룹 작업을 시작한다.
-		void DoNextGroupTask();
+		void do_next_group_task();
 	public:
-		//SmAppState AppState() const { return _AppState; }
-		//void AppState(SmAppState val) { _AppState = val; }
-		void InitRequestQ();
 		// 큐에 남아 있는 작업중 젤 상위의 작업을 실행 합니다.
 		// 큐가 비어 있으면 아무일도 하지 않습니다.
-		void ExecNext();
-		DhTaskArg* FindTask(const int& reqId);
-		void OnTaskComplete(const int& reqId);
-		void OnTaskError(const int& reqId);
-		int GetTaskCount() {
-			return _RequestMap.size();
-		}
-		void MakeSymbolMasterRequests();
-		// 시세 요청 목록을 만든다.
-		void MakeSymbolSiseRequests();
-		// 호가 요청 목록을 만든다.
-		void MakeSymbolHogaRequests();
-		// 심볼 요청 목록을 만든다.
-		void MakeSymbolRequests();
-		// 예탁 잔고 신청 목록을 만든다.
-		void MakeAccountAssetRequests();
-		// 일별 손익을 가져옵니다.
-		void MakeAccoutProfitLoss();
-		// 잔고 및 평가손익 신청 목록을 만든다.
-		void MakeRemainRequests();
-		// 계좌별 미체결 주문 요청 목록을 만든다.
-		void MakeAccountOrders();
-		// 계좌별 체결 주문 요청 목록을 만든다.
-		void MakeFilledOrders();
-
-		// 체결 상세 내역을 가져온다.
-		void MakeFilledOrderDatails();
-
+		void execute_next();
+		DhTaskArg* find_task(const int& argument_id);
+		void on_task_complete(const int& argument_id);
+		void on_task_error(const int& argument_id);
 		// 서버에서 정보 가져오는 과정을 종료시킨다.
-		void EndAllTask();
-		// 차트데이터 요청 목록을 만든다.
-		void MakeChartDataRequests();
-		/// <summary>
-		/// 나스닥100 차트 데이터를 가져온다.
-		/// </summary>
-		void MakeChartDataRequestsNasdaq();
+		void end_all_task();
+		static int argument_id_;
+		static int get_argument_id() {
+			return argument_id_++;
+		}
+		std::shared_ptr<VtProgressDlg> progress_dialog() const { return progress_dialog_; }
+		void progress_dialog(std::shared_ptr<VtProgressDlg> val) { progress_dialog_ = val; }
 
 		void StartGetSymbolMaster();
 		void StartGetSymbol();
@@ -92,11 +65,35 @@ namespace DarkHorse {
 		void StartGetChartData();
 		void StartGetFilledOrder();
 		void StartGetFilledDetails();
-		static int _TaskId;
-		static int GetId() {
-			return _TaskId++;
-		}
-		std::shared_ptr<VtProgressDlg> ProgressDlg() const { return _ProgressDlg; }
-		void ProgressDlg(std::shared_ptr<VtProgressDlg> val) { _ProgressDlg = val; }
+		void start_dm_symbol_master_file_download();
+	private:
+		void make_dm_file_download();
+		void make_ab_file_download();
+		// 차트데이터 요청 목록을 만든다.
+		void MakeChartDataRequests();
+		/// <summary>
+		/// 나스닥100 차트 데이터를 가져온다.
+		/// </summary>
+		void MakeChartDataRequestsNasdaq();
+		void MakeSymbolMasterRequests();
+		// 시세 요청 목록을 만든다.
+		void MakeSymbolSiseRequests();
+		// 호가 요청 목록을 만든다.
+		void MakeSymbolHogaRequests();
+		// 심볼 요청 목록을 만든다.
+		void MakeSymbolRequests();
+		// 예탁 잔고 신청 목록을 만든다.
+		void MakeAccountAssetRequests();
+		// 일별 손익을 가져옵니다.
+		void make_ab_account_profit_loss();
+		// 잔고 및 평가손익 신청 목록을 만든다.
+		void MakeRemainRequests();
+		// 계좌별 미체결 주문 요청 목록을 만든다.
+		void MakeAccountOrders();
+		// 계좌별 체결 주문 요청 목록을 만든다.
+		void MakeFilledOrders();
+
+		// 체결 상세 내역을 가져온다.
+		void MakeFilledOrderDatails();
 	};
 }

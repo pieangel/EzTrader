@@ -27,10 +27,10 @@ public:
 	enum { IDD = IDD_PROGRESS };
 #endif
 
-	int TotalCount() const { return _TotalCount; }
-	void TotalCount(int val) { _TotalCount = val; }
-	int RemainCount() const { return _RemainCount; }
-	void RemainCount(int val) { _RemainCount = val; }
+	size_t TotalCount() const { return _TotalCount; }
+	void TotalCount(size_t val) { _TotalCount = val; }
+	size_t RemainCount() const { return _RemainCount; }
+	void RemainCount(size_t val) { _RemainCount = val; }
 	std::string TaskTitle() const { return _TaskTitle; }
 	void TaskTitle(std::string val) { _TaskTitle = val; }
 	std::string TaskDetail() const { return _TaskDetail; }
@@ -56,8 +56,8 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void RefreshProgress();
 private:
-	int _TotalCount = 0;
-	int _RemainCount = 0;
+	size_t _TotalCount = 0;
+	size_t _RemainCount = 0;
 	std::string _TaskTitle;
 	std::string _TaskDetail;
 };

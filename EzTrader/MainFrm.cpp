@@ -108,19 +108,19 @@ struct  MyData {
 #define new DEBUG_NEW
 #endif
 
-void CMainFrame::StartTimer(int milisecond)
+void CMainFrame::start_timer(int milisecond)
 {
 	SetTimer(DATA_REQ_TIMER, milisecond, NULL);
 }
 
-void CMainFrame::StopTimer()
+void CMainFrame::stop_timer()
 {
 	KillTimer(DATA_REQ_TIMER);
 }
 
 void CMainFrame::LoadAfterServerData()
 {
-	StopTimer();
+	stop_timer();
 	HideProgress();
 	//mainApp.SymbolMgr().MrktMgr().MakeFavoriteList();
 	//mainApp.AcntMgr().RegisterAllAccounts();
@@ -238,6 +238,7 @@ IMPLEMENT_SERIAL(CToolbarLabel, CBCGPToolbarButton, 1)
 IMPLEMENT_DYNAMIC(CMainFrame, CBCGPMDIFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
+	ON_WM_TIMER()
 	ON_WM_CREATE()
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_WINDOW_MANAGER, OnWindowManager)
@@ -785,9 +786,19 @@ void CMainFrame::StartDataRequest()
 
 
 	// 진행상황 표시 대화상자를 할당해 준다.
-	mainApp.vi_server_data_receiver()->ProgressDlg(ProgressDlg);
+	mainApp.vi_server_data_receiver()->progress_dialog(ProgressDlg);
 	// 심볼 코드를 가져오기 시작한다.
-	mainApp.vi_server_data_receiver()->StartGetSymbolMaster();
+	mainApp.vi_server_data_receiver()->start_dm_symbol_master_file_download();
+}
+
+void CMainFrame::OnTimer(UINT_PTR nIDEvent)
+{
+	mainApp.vi_server_data_receiver()->execute_next();
+
+	std::vector<int> lc = SmUtil::GetLocalDateTime();
+	CString msg;
+	//msg.Format("hour = %d, min = %d, sec = %d\n", lc[3], lc[4], lc[5]);
+	//TRACE(msg);
 }
 
 void CMainFrame::SetMarketTree()

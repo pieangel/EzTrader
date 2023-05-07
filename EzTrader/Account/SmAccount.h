@@ -23,6 +23,7 @@ namespace DarkHorse {
 		std::string _No;
 		/// <summary>
 		/// ╟Хаб е╦ют
+		/// 1 : abroad, 9 : domestic
 		/// </summary>
 		std::string _Type;
 		/// <summary>

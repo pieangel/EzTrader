@@ -10,6 +10,7 @@
 #include "ViStockClient.h"
 #include "../Json/json.hpp"
 #include "../Task/SmTaskArg.h"
+#include "../Task/SmTaskDefine.h"
 // ViClient dialog
 namespace DarkHorse {
 	/// <summary>
@@ -58,6 +59,8 @@ namespace DarkHorse {
 
 		DECLARE_MESSAGE_MAP()
 	public:
+		void on_task_complete(const int& nRqId);
+		int dm_symbol_master_file_download(DhTaskArg arg);
 		int GetDomesticSymbolCode(task_arg&& arg);
 		int GetFilledOrderList(const std::string& account_no, const std::string& pwd);
 		int CheckAccountPassword(task_arg&& arg);
@@ -157,6 +160,7 @@ namespace DarkHorse {
 		void OnAccountListReceived(const CString& sTrCode, const LONG& nRqID) ;
 		void OnSymbolMaster(const CString& sTrCode, const LONG& nRqID);
 		void OnDmSymbolMaster(const CString& sTrCode, const LONG& nRqID);
+		void on_dm_symbol_master_file(const CString& server_trade_code, const LONG& server_request_id);
 		void OnMasterFile(const CString& sTrCode, const LONG& nRqID);
 		void OnSymbolQuote(const CString& sTrCode, const LONG& nRqID);
 		void OnSymbolHoga(const CString& sTrCode, const LONG& nRqID);
@@ -224,6 +228,7 @@ namespace DarkHorse {
 		void on_dm_option_hoga(const CString& strKey, const LONG& nRealType);
 
 		void on_dm_order_position(const CString& strKey, const LONG& nRealType);
+		std::map<int, DhTaskArg> request_map_;
 		// Key : 선물사 요청 번호, value : argument map.
 		std::map<int, task_arg> _ReqMap;
 		// Key : Order Request Id, value : order request object

@@ -5,6 +5,7 @@
 #include "../Task/SmTaskConst.h"
 #include "../Json/json.hpp"
 #include "../Task/SmTaskArg.h"
+#include "../Task/SmTaskDefine.h"
 namespace DarkHorse {
 
 	typedef std::map<std::string, std::any> task_arg;
@@ -91,6 +92,9 @@ namespace DarkHorse {
 		void Enable(bool val);
 		void UnRegAll();
 		int GetFilledOrderList(const std::string& account_no, const std::string& pwd);
+
+		int dm_symbol_master_file_download(DhTaskArg arg);
+
 	private:
 		int GetDomesticSymbolCode(task_arg&& arg) ;
 		bool _Enable{ true };
