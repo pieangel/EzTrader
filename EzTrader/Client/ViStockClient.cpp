@@ -870,3 +870,12 @@ void DarkHorse::ViStockClient::OnOrderFilled(nlohmann::json&& arg)
 	SendOrderEvent(order);
 }
 
+int DarkHorse::ViStockClient::ab_account_asset(DhTaskArg arg)
+{
+	return _ViCtrol->ab_account_asset(arg);
+}
+int DarkHorse::ViStockClient::dm_account_asset(DhTaskArg arg)
+{
+	return _ViCtrol->dm_account_asset(arg);
+}
+

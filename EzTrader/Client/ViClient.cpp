@@ -891,7 +891,7 @@ int ViClient::ab_symbol_master(DhTaskArg arg)
 
 
 		CString msg;
-		msg.Format("GetSymbolMaster = %s\n", symbol_code.c_str());
+		msg.Format("GetSymbolMaster1 = %s\n", symbol_code.c_str());
 		TRACE(msg);
 
 		//const int task_id = std::any_cast<int>(arg["task_id"]);
@@ -901,7 +901,7 @@ int ViClient::ab_symbol_master(DhTaskArg arg)
 		const CString sReqFidInput = "000001002003004005006007008009010011012013014015016017018019020021022023";
 		const CString strNextKey = m_CommAgent.CommGetNextKey(0, "");
 		const int nRqID = m_CommAgent.CommFIDRqData(DefAbSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
-		msg.Format("GetSymbolMaster = %s server_request_id = %d\n", symbol_code.c_str(), nRqID);
+		msg.Format("GetSymbolMaster2 = %s server_request_id = %d\n", symbol_code.c_str(), nRqID);
 		TRACE(msg);
 		request_map_[nRqID] = arg;
 		if (nRqID < 0) {
@@ -3299,9 +3299,9 @@ void DarkHorse::ViClient::OnAccountAsset(const CString& sTrCode, const LONG& nRq
 		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문가능금액");
 
 		std::string account_no;
-		auto found = _ReqMap.find(nRqID);
-		if (found != _ReqMap.end()) {
-			account_no = std::any_cast<std::string>(found->second["account_no"]);
+		auto found = request_map_.find(nRqID);
+		if (found != request_map_.end()) {
+			account_no = found->second.parameter_map["account_no"];
 		}
 
 
@@ -3331,7 +3331,7 @@ void DarkHorse::ViClient::OnAccountAsset(const CString& sTrCode, const LONG& nRq
 		}
 	}
 
-	OnTaskComplete(nRqID);
+	on_task_complete(nRqID);
 }
 
 void DarkHorse::ViClient::OnDmAccountAsset(const CString& sTrCode, const LONG& nRqID)
@@ -3371,7 +3371,7 @@ void DarkHorse::ViClient::OnDmAccountAsset(const CString& sTrCode, const LONG& n
 		}
 	}
 
-	OnTaskComplete(nRqID);
+	on_task_complete(nRqID);
 }
 
 
@@ -5103,6 +5103,66 @@ void DarkHorse::ViClient::on_dm_future_hoga(const CString& strKey, const LONG& n
 	if (auto wp = _Client.lock()) {
 		wp->OnRealtimeHoga(std::move(hoga));
 	}
+}
+
+int DarkHorse::ViClient::ab_account_asset(DhTaskArg arg)
+{
+	int nRqID = -1;
+	try {
+		const std::string account_no = arg.parameter_map["account_no"];
+		const std::string password = arg.parameter_map["password"];
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+
+		std::string reqString;
+		std::string temp;
+		// 계좌 번호
+		temp = VtStringUtil::PadRight(account_no, ' ', 6);
+		reqString.append(temp);
+		// 비밀번호
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+
+
+
+		const CString sInput = reqString.c_str();
+		//LOG_F(INFO, _T("AbGetAsset code = %s, input = %s"), DEF_Ab_Asset, sInput);
+		const CString strNextKey = _T("");
+		nRqID = m_CommAgent.CommRqData(DefAbAsset, sInput, sInput.GetLength(), strNextKey);
+		request_map_[nRqID] = arg;
+		//_TaskInfoMap[nRqID] = account_no;
+	}
+	catch (const std::exception& e) {
+		std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), error = "%s", error.c_str());
+	}
+
+	return nRqID;
+}
+int DarkHorse::ViClient::dm_account_asset(DhTaskArg arg)
+{
+	int nRqID = -1;
+	try {
+		const std::string account_no = arg.parameter_map["account_no"];
+		const std::string password = arg.parameter_map["password"];
+
+		std::string reqString;
+		std::string temp;
+		temp = VtStringUtil::PadRight(account_no, ' ', 11);
+		reqString.append(temp);
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+
+		CString sInput = reqString.c_str();
+		CString strNextKey = _T("");
+		nRqID = m_CommAgent.CommRqData(DefDmAsset, sInput, sInput.GetLength(), strNextKey);
+		request_map_[nRqID] = arg;
+	}
+	catch (const std::exception& e) {
+		std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), error = "%s", error.c_str());
+	}
+
+	return nRqID;
 }
 
 // ViClient message handlers

@@ -75,6 +75,8 @@ namespace DarkHorse {
 		int GetSymbolQuote(task_arg&& arg) ;
 		int GetSymbolHoga(task_arg&& arg) ;
 		int GetAccountAsset(task_arg&& arg) ;
+		int ab_account_asset(DhTaskArg arg);
+		int dm_account_asset(DhTaskArg arg);
 		int GetDeposit(task_arg&& arg) ;
 		int GetAccountProfitLoss(task_arg&& arg) ;
 		int GetSymbolProfitLoss(task_arg&& arg) ;

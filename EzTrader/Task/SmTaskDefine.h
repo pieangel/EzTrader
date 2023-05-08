@@ -50,7 +50,7 @@ enum class DhTaskType
 	DmCmeOutstanding, // cme 잔고
 	DmCmeAsset, // cme 자산
 	DmCmePureAsset, // cme 순자산
-	DmAsset, // 자산
+	DmAccountAsset, // 자산
 	DmDeposit, // 계좌 정보
 	DmDailyProfitLoss, // 일일 손익
 	DmFilledHistoryTable, // 체결 내역

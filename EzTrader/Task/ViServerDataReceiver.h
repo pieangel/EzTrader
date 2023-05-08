@@ -68,7 +68,11 @@ namespace DarkHorse {
 		void start_dm_symbol_master_file_download();
 		void start_ab_symbol_master_file_download();
 		void start_ab_symbol_master();
+		void start_dm_account_asset();
+		void start_ab_account_asset();
 	private:
+		void make_dm_account_asset();
+		void make_ab_account_asset();
 		void make_ab_symbol_master();
 		void make_dm_file_download();
 		void make_ab_file_download();

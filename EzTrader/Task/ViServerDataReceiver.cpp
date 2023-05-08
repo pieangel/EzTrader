@@ -34,15 +34,19 @@ namespace DarkHorse {
 		case DhTaskType::AbSymbolMaster:
 			mainApp.Client()->ab_symbol_master(arg);
 			break;
+		case DhTaskType::DmAccountAsset:
+			mainApp.Client()->dm_account_asset(arg);
+			break;
+		case DhTaskType::AbAccountAsset:
+			mainApp.Client()->ab_account_asset(arg);
+			break;
 		case DhTaskType::AbSymbolQuote:
 			//mainApp.Client().GetAbSymbolSise(arg);
 			break;
 		case DhTaskType::AbSymbolHoga:
 			//mainApp.Client().GetAbSymbolHoga(arg);
 			break;
-		case DhTaskType::AbAccountAsset:
-			//mainApp.Client().GetAbAsset(arg);
-			break;
+		
 		case DhTaskType::AbAccountProfitLoss:
 			//mainApp.Client().GetAbAccountProfitLoss(arg);
 			break;
@@ -94,7 +98,10 @@ namespace DarkHorse {
 			start_ab_symbol_master();
 		}
 		else if (task_info_.task_type == DhTaskType::AbSymbolMaster) {
-			StartGetCSise();
+			start_dm_account_asset();
+		}
+		else if (task_info_.task_type == DhTaskType::DmAccountAsset) {
+			start_ab_account_asset();
 		}
 		else if (task_info_.task_type == DhTaskType::AbSymbolQuote) {
 			StartGetHoga();
@@ -354,7 +361,7 @@ namespace DarkHorse {
 
 	void ViServerDataReceiver::make_ab_file_download()
 	{
-		const std::string file_name = "all";
+		const std::string file_name = "futures";
 		DhTaskArg arg;
 		arg.detail_task_description = file_name;
 		arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -425,6 +432,59 @@ namespace DarkHorse {
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::AbSymbolMaster;
+	}
+
+	void ViServerDataReceiver::start_dm_account_asset()
+	{
+		make_dm_account_asset();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+	void ViServerDataReceiver::start_ab_account_asset()
+	{
+		make_ab_account_asset();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+	void ViServerDataReceiver::make_dm_account_asset() 
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "9") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::DmAccountAsset;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "국내 계좌별 자산정보를 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::DmAccountAsset;
+	}
+	void ViServerDataReceiver::make_ab_account_asset() 
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "1") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::AbAccountAsset;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "해외 계좌별 자산 정보를 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbAccountAsset;
 	}
 
 }

@@ -102,3 +102,4 @@ const CString DEF_FX_ORD_CODE_CNL = "g12003.AO0503%";	// 취소주문
 
 // 계좌별 자산
 const CString DefDmAsset = "g11002.DQ0217&";
+
