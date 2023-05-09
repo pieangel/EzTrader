@@ -34,6 +34,8 @@
 #include "../Order/OrderProcess/OrderProcessor.h"
 #include "../Task/ViServerDataReceiver.h"
 #include <chartdir.h>
+#include "../Position/TotalPositionManager.h"
+#include "../Position/Position.h"
 
 
 class CMainFrame;
@@ -111,6 +113,9 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 	}
 	else if (code == DefAbAccountProfitLoss) {
 		OnAccountProfitLoss(code, req_id);
+	}
+	else if (code == DefDmApiCustomerProfitLoss) {
+		on_dm_account_profit_loss(code, req_id);
 	}
 	else if (code == DefAbSymbolProfitLoss) {
 		OnAccountProfitLoss(code, req_id);
@@ -2965,6 +2970,69 @@ void ViClient::on_dm_symbol_master_file(const CString& server_trade_code, const 
 	on_task_complete(server_request_id);
 }
 
+void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_code, const LONG& server_request_id)
+{
+	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁총액");
+	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁현금");
+	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "주문가능총액");
+	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "위탁증거금_당일");
+	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "위탁증거금_익일");
+	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "평가예탁총액_순자산");
+	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "오버나잇가능금");
+	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일총손익");
+	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일매매손익");
+	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일평가손익");
+	CString strData11 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "선물위탁수수료");
+	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "옵션위탁수수료");
+	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "익일예탁총액");
+	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "청산후주문가능총액");
+
+	CString strMsg = strData9 + strData10 + strData8 + _T("\n");
+	//TRACE(strMsg);
+	auto it = request_map_.find(server_request_id);
+	if (it == request_map_.end()) return on_task_error(server_request_id, -1);
+
+	const std::string& account_no = it->second.parameter_map["account_no"];
+	std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
+	if (!account) return on_task_complete(server_request_id);
+	account->Asset.EntrustDeposit = _ttoi(strData1.TrimRight());
+	account->Asset.OpenTrustTotal = _ttoi(strData6.TrimRight());
+	account->Asset.OrderDeposit = _ttoi(strData3.TrimRight());
+	account->Asset.AdditionalMargin = _ttoi(strData4.TrimRight());
+	account->Asset.MaintenanceMargin = _ttoi(strData4.TrimRight());
+	account->Asset.AdditionalMargin = _ttoi(strData4.TrimRight());
+
+	double fee = 0.0;
+	double tradePL = 0.0;
+	double totalPL = 0.0;
+
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec2");
+	for (int i = 0; i < nRepeatCnt; i++) {
+		CString strCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "종목코드");
+		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매구분");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "잔고수량");
+		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부단가");
+		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "현재가");
+		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매손익");
+		tradePL += atof(strProfit);
+		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "수수료");
+		fee += _ttof(strFee);
+		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "총손익");
+		totalPL += _ttof(strTotalProfit);
+		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부금액");
+		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "평가금액");
+		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "청산가능수량");
+		const std::string symbol_code(strCode);
+		auto symbol_position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
+		symbol_position->trade_profit_loss = atof(strProfit);
+	}
+	account->Asset.TradeProfitLoss = tradePL;
+	account->Asset.Fee = fee;
+	account->Asset.OpenTrustTotal = totalPL;
+
+	on_task_complete(server_request_id);
+}
+
 void DarkHorse::ViClient::OnSymbolMaster(const CString& sTrCode, const LONG& nRqID)
 {
 	CString m_strBusinessDay = m_CommAgent.CommGetBusinessDay(1);
@@ -3082,6 +3150,85 @@ void ViClient::on_ab_symbol_master(const CString& server_trade_code, const LONG&
 
 	on_task_complete(server_request_id);
 }
+
+int ViClient::ab_account_profit_loss(DhTaskArg arg)
+{
+	try {
+		const std::string account_no = arg.parameter_map["account_no"];
+		const std::string password = arg.parameter_map["password"];
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+
+		std::string reqString;
+		std::string temp;
+		reqString.append("1");
+		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
+		// 아이디 
+		reqString.append(temp);
+
+		temp = VtStringUtil::PadRight(account_no, ' ', 6);
+		reqString.append(temp);
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+		// 그룹명 - 공백
+		reqString.append("                    ");
+		// 통화코드
+		reqString.append("USD");
+
+
+		const CString sInput = reqString.c_str();
+		const CString strNextKey = _T("");
+		const int nRqID = m_CommAgent.CommRqData(DefAbSymbolProfitLoss, sInput, sInput.GetLength(), strNextKey);
+		request_map_[nRqID] = arg;
+
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+			return nRqID;
+		}
+
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+int ViClient::dm_account_profit_loss(DhTaskArg arg)
+{
+	try {
+		const std::string account_no = arg.parameter_map["account_no"];
+		const std::string password = arg.parameter_map["password"];
+		std::string reqString;
+		std::string temp;
+		temp = VtStringUtil::PadRight(account_no, ' ', 11);
+		reqString.append(temp);
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+
+
+		CString sTrCode = "g11002.DQ1302&";
+		CString sInput = reqString.c_str();
+		CString strNextKey = _T("");
+		int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+		request_map_[nRqID] = arg;
+
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+			return nRqID;
+		}
+
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
 
 void ViClient::OnMasterFile(const CString& sTrCode, const LONG& nRqID)
 {
@@ -3416,7 +3563,7 @@ void DarkHorse::ViClient::OnAccountProfitLoss(const CString& sTrCode, const LONG
 		}
 	}
 
-	OnTaskComplete(nRqID);
+	on_task_complete(nRqID);
 }
 
 void DarkHorse::ViClient::OnSymbolProfitLoss(const CString& sTrCode, const LONG& nRqID)

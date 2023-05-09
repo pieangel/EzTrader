@@ -17,7 +17,8 @@
 #include "../Util/IdGenerator.h"
 namespace DarkHorse {
 
-	AccountPositionManager::AccountPositionManager()
+	AccountPositionManager::AccountPositionManager(const std::string& account_no)
+		: account_no_(account_no)
 	{
 		id_ = IdGenerator::get_id();
 	}
@@ -42,6 +43,7 @@ position_p AccountPositionManager::create_position(const std::string& symbol_cod
 {
 	position_p position = std::make_shared<Position>();
 	position->symbol_code = symbol_code;
+	position->account_no = account_no_;
 	position_map_[symbol_code] = position;
 	return position;
 }

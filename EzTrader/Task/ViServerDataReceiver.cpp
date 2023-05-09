@@ -40,6 +40,12 @@ namespace DarkHorse {
 		case DhTaskType::AbAccountAsset:
 			mainApp.Client()->ab_account_asset(arg);
 			break;
+		case DhTaskType::AbAccountProfitLoss:
+			mainApp.Client()->ab_account_profit_loss(arg);
+			break;
+		case DhTaskType::DmApiCustomerProfitLoss:
+			mainApp.Client()->dm_account_profit_loss(arg);
+			break;
 		case DhTaskType::AbSymbolQuote:
 			//mainApp.Client().GetAbSymbolSise(arg);
 			break;
@@ -47,9 +53,7 @@ namespace DarkHorse {
 			//mainApp.Client().GetAbSymbolHoga(arg);
 			break;
 		
-		case DhTaskType::AbAccountProfitLoss:
-			//mainApp.Client().GetAbAccountProfitLoss(arg);
-			break;
+		
 		case DhTaskType::AbAccountSymbolRemain:
 			//mainApp.Client().GetAbOutStanding(arg);
 			break;
@@ -103,17 +107,20 @@ namespace DarkHorse {
 		else if (task_info_.task_type == DhTaskType::DmAccountAsset) {
 			start_ab_account_asset();
 		}
+		else if (task_info_.task_type == DhTaskType::AbAccountAsset) {
+			start_ab_account_profit_loss();
+		}
+		else if (task_info_.task_type == DhTaskType::AbAccountProfitLoss) {
+			start_dm_account_profit_loss();
+		}
+		else if (task_info_.task_type == DhTaskType::DmApiCustomerProfitLoss) {
+			StartGetProductRemain();
+		}
 		else if (task_info_.task_type == DhTaskType::AbSymbolQuote) {
 			StartGetHoga();
 		}
 		else if (task_info_.task_type == DhTaskType::AbSymbolHoga) {
 			StartGetAccountAsset();
-		}
-		else if (task_info_.task_type == DhTaskType::AbAccountAsset) {
-			StartGetAccountProfitLoss();
-		}
-		else if (task_info_.task_type == DhTaskType::AbAccountProfitLoss) {
-			StartGetProductRemain();
 		}
 		else if (task_info_.task_type == DhTaskType::AbAccountSymbolRemain) {
 			StartGetAccountOrder();
@@ -234,10 +241,32 @@ namespace DarkHorse {
 			task_info_.argument_map[arg.argument_id] = arg;
 		}
 
-		task_info_.task_title = "계좌별 손익을 가져오는 중입니다.";
+		task_info_.task_title = "해외 계좌별 손익을 가져오는 중입니다.";
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::AbAccountProfitLoss;
+	}
+
+	void ViServerDataReceiver::make_dm_account_profit_loss()
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "9") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::DmApiCustomerProfitLoss;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "국내 계좌별 손익을 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::DmApiCustomerProfitLoss;
 	}
 
 	void ViServerDataReceiver::MakeRemainRequests()
@@ -485,6 +514,19 @@ namespace DarkHorse {
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::AbAccountAsset;
+	}
+
+
+	void ViServerDataReceiver::start_ab_account_profit_loss()
+	{
+		make_ab_account_profit_loss();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_dm_account_profit_loss()
+	{
+		make_dm_account_profit_loss();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
 	}
 
 }

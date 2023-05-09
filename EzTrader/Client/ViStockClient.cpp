@@ -159,6 +159,16 @@ int ViStockClient::ab_symbol_master(DhTaskArg arg)
 	return _ViCtrol->ab_symbol_master(arg);
 }
 
+int ViStockClient::ab_account_profit_loss(DhTaskArg arg)
+{
+	return _ViCtrol->ab_account_profit_loss(arg);
+}
+
+int ViStockClient::dm_account_profit_loss(DhTaskArg arg)
+{
+	return _ViCtrol->dm_account_profit_loss(arg);
+}
+
 int ViStockClient::ab_symbol_master_file_download(DhTaskArg arg)
 {
 	return _ViCtrol->ab_symbol_master_file_download(arg);

@@ -16,7 +16,7 @@ account_position_manager_p TotalPositionManager::find_position_manager(const std
 }
 account_position_manager_p TotalPositionManager::create_position_manager(const std::string& account_no)
 {
-	account_position_manager_p position_manager = std::make_shared<AccountPositionManager>();
+	account_position_manager_p position_manager = std::make_shared<AccountPositionManager>(account_no);
 	position_manager_map_[account_no] = position_manager;
 	return position_manager;
 }

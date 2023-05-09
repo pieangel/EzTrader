@@ -99,6 +99,8 @@ namespace DarkHorse {
 
 		int ab_account_asset(DhTaskArg arg);
 		int dm_account_asset(DhTaskArg arg);
+		int ab_account_profit_loss(DhTaskArg arg);
+		int dm_account_profit_loss(DhTaskArg arg);
 	private:
 		int GetDomesticSymbolCode(task_arg&& arg) ;
 		bool _Enable{ true };

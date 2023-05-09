@@ -14,7 +14,7 @@ namespace DarkHorse {
 class AccountPositionManager
 {
 public:
-	AccountPositionManager();
+	AccountPositionManager(const std::string& account_no);
 	~AccountPositionManager();
 	position_p get_position(const std::string& symbol_code);
 	void update_position(order_p order);
@@ -36,6 +36,7 @@ private:
 	// key : symbol coode, value : position object.
 	std::map<std::string, position_p> position_map_;
 	int id_{ 0 };
+	std::string account_no_;
 };
 }
 

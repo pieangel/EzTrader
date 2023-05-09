@@ -64,6 +64,8 @@ namespace DarkHorse {
 		int dm_symbol_master_file_download(DhTaskArg arg);
 		int ab_symbol_master_file_download(DhTaskArg arg);
 		int ab_symbol_master(DhTaskArg arg);
+		int ab_account_profit_loss(DhTaskArg arg);
+		int dm_account_profit_loss(DhTaskArg arg);
 		int GetDomesticSymbolCode(task_arg&& arg);
 		int GetFilledOrderList(const std::string& account_no, const std::string& pwd);
 		int CheckAccountPassword(task_arg&& arg);
@@ -167,6 +169,9 @@ namespace DarkHorse {
 		void on_ab_symbol_master(const CString& server_trade_code, const LONG& server_request_id);
 		void OnDmSymbolMaster(const CString& sTrCode, const LONG& nRqID);
 		void on_dm_symbol_master_file(const CString& server_trade_code, const LONG& server_request_id);
+
+		void on_dm_account_profit_loss(const CString& server_trade_code, const LONG& server_request_id);
+
 		void OnMasterFile(const CString& sTrCode, const LONG& nRqID);
 		void OnSymbolQuote(const CString& sTrCode, const LONG& nRqID);
 		void OnSymbolHoga(const CString& sTrCode, const LONG& nRqID);

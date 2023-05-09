@@ -70,12 +70,17 @@ namespace DarkHorse {
 		void start_ab_symbol_master();
 		void start_dm_account_asset();
 		void start_ab_account_asset();
+		void start_ab_account_profit_loss();
+		void start_dm_account_profit_loss();
 	private:
 		void make_dm_account_asset();
 		void make_ab_account_asset();
 		void make_ab_symbol_master();
 		void make_dm_file_download();
 		void make_ab_file_download();
+		// 일별 손익을 가져옵니다.
+		void make_ab_account_profit_loss();
+		void make_dm_account_profit_loss();
 		// 차트데이터 요청 목록을 만든다.
 		void MakeChartDataRequests();
 		/// <summary>
@@ -91,8 +96,7 @@ namespace DarkHorse {
 		void MakeSymbolRequests();
 		// 예탁 잔고 신청 목록을 만든다.
 		void MakeAccountAssetRequests();
-		// 일별 손익을 가져옵니다.
-		void make_ab_account_profit_loss();
+		
 		// 잔고 및 평가손익 신청 목록을 만든다.
 		void MakeRemainRequests();
 		// 계좌별 미체결 주문 요청 목록을 만든다.

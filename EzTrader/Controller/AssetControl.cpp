@@ -23,7 +23,7 @@ void AssetControl::load_position_from_account(const std::string& account_no)
 	if (!account) return;
 
 	asset_.entrust_total = account->Asset.EntrustTotal; // 예탁금총액
-	asset_.balance = account->Asset.Balance; // 예탁금잔액
+	asset_.balance = account->Asset.EntrustTotal; // 예탁금잔액
 	asset_.outstanding_deposit = account->Asset.OutstandingDeposit; // 미결제증거금
 	asset_.order_deposit = account->Asset.OrderDeposit; // 주문증거금
 	asset_.entrust_deposit = account->Asset.EntrustDeposit; // 위탁증거금
