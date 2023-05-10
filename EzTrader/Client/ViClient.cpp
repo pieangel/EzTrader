@@ -1100,6 +1100,7 @@ void ViClient::on_task_error(const int& server_request_id, const int request_id)
 		else
 			mainApp.vi_server_data_receiver()->on_task_error(it->second.argument_id);
 	}
+	request_map_.clear();
 }
 
 int DarkHorse::ViClient::GetDomesticSymbolCode(task_arg&& arg)
