@@ -889,3 +889,12 @@ int DarkHorse::ViStockClient::dm_account_asset(DhTaskArg arg)
 	return _ViCtrol->dm_account_asset(arg);
 }
 
+int DarkHorse::ViStockClient::ab_accepted_order(DhTaskArg arg)
+{
+	return _ViCtrol->ab_accepted_order(arg);
+}
+int DarkHorse::ViStockClient::dm_accepted_order(DhTaskArg arg)
+{
+	return _ViCtrol->dm_accepted_order(arg);
+}
+

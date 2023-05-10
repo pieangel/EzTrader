@@ -120,11 +120,14 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 	else if (code == DefAbSymbolProfitLoss) {
 		OnAccountProfitLoss(code, req_id);
 	}
+	else if (code == DefAbAccepted) {
+		on_ab_accepted_order(code, req_id);
+	}
+	else if (code == DefDmAccepted) {
+		on_dm_accepted_order(code, req_id);
+	}
 	else if (code == DefAbOutstanding) {
 		OnSymbolProfitLoss(code, req_id);
-	}
-	else if (code == DefAbAccepted) {
-		OnAcceptedList(code, req_id);
 	}
 	else if (code == DefAbFilled2) {
 		OnFilledList(code, req_id);
@@ -210,6 +213,165 @@ void ViClient::OnGetMsg(LPCTSTR strCode, LPCTSTR strMsg)
 	CString strLog;
 	strLog.Format("[%s][%s]", strCode, strMsg);
 	LOGINFO(CMyLogger::getInstance(), strMsg);
+}
+
+void ViClient::on_ab_accepted_order(const CString& server_trade_code, const LONG& server_request_id)
+{
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
+	for (int i = 0; i < nRepeatCnt; i++)
+	{
+		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계좌번호");
+
+		CString msg;
+
+		msg.Format("OnAccountAsset strAccountNo = %s\n", strAccountNo);
+		TRACE(msg);
+
+		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문번호");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "종목코드");
+		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문가격");
+		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문수량");
+		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "매매구분");
+		CString strPriceType = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "가격조건");
+		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "원주문번호");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "최초원주문번호");
+
+		CString strOrderDate = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문일자");
+		CString strOrderTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문시간");
+
+		CString strCancelCnt = strOrderAmount;
+		CString strModyCnt = strOrderAmount;
+		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "체결수량");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "잔량");
+
+		// 주문 가격
+		strOrderPrice.Trim();
+
+
+		const int order_price = ConvertToInt(strSymbolCode, strOrderPrice);
+		if (order_price < 0) continue;
+
+		nlohmann::json order_info;
+		order_info["order_event"] = OrderEvent::OE_Unfilled;
+		order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
+		order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
+		order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+		order_info["order_price"] = order_price;
+		order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
+		order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
+		//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+		order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+		order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+		//order_info["order_type"] = static_cast<const char*>(strMan.Trim());
+		order_info["remain_count"] = _ttoi(strRemain.Trim());
+		order_info["cancelled_count"] = _ttoi(strCancelCnt.Trim());
+		order_info["modified_count"] = _ttoi(strModyCnt.Trim());
+		order_info["filled_count"] = _ttoi(strFilledCnt.Trim());
+		order_info["order_sequence"] = 1;
+		//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+		//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+
+		//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+		//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+		//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+		//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+
+		mainApp.order_processor()->add_order_event(std::move(order_info));
+	}
+
+	on_task_complete(server_request_id);
+}
+void ViClient::on_dm_accepted_order(const CString& server_trade_code, const LONG& server_request_id)
+{
+
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
+	for (int i = 0; i < nRepeatCnt; i++)
+	{
+		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계좌번호");
+		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문번호");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "종목코드");
+		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "매매구분");
+		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문가격");
+		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문수량");
+		CString strMan = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "조작구분");
+		CString strCancelCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "취소수량");
+		CString strModyCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "정정수량");
+		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "체결수량");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "잔량");
+
+		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "원주문번호");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "최초원주문번호");
+		CString strOrderSeq = "0";
+
+		CString strMsg;
+		strMsg.Format("OnOrderUnfilled 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s] ,주문순서[%s], 주문수량[%s], 잔량[%s], 체결수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+
+		//TRACE(strMsg);
+
+	
+		// 주문 가격
+		strOrderPrice.Trim();
+
+
+		const int order_price = ConvertToInt(strSymbolCode, strOrderPrice);
+		if (order_price < 0) return;
+		// 계좌 번호 트림
+		strAccountNo.TrimRight();
+		// 주문 번호 트림
+		strOrderNo.TrimLeft('0');
+		// 원주문 번호 트림
+		strOriOrderNo.TrimLeft('0');
+		// 첫주문 번호 트림
+		strFirstOrderNo.TrimLeft('0');
+		// 심볼 코드 트림
+		strSymbolCode.TrimRight();
+		// 주문 수량 트림
+		strOrderAmount.TrimRight();
+		// 정정이나 취소시 처리할 수량 트림
+		strRemain.TrimRight();
+		// 정정이 이루어진 수량
+		strModyCnt.TrimRight();
+		// 체결된 수량
+		strFilledCnt.TrimRight();
+		// 취소된 수량
+		strCancelCnt.TrimRight();
+
+		nlohmann::json order_info;
+		order_info["order_event"] = OrderEvent::OE_Unfilled;
+		order_info["account_no"] = static_cast<const char*>(strAccountNo.Trim());
+		order_info["order_no"] = static_cast<const char*>(strOrderNo.Trim());
+		order_info["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+		order_info["order_price"] = order_price;
+		order_info["order_amount"] = _ttoi(strOrderAmount.Trim());
+		order_info["position_type"] = static_cast<const char*>(strOrderPosition.Trim());
+		//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+		order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+		order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+		//order_info["order_type"] = static_cast<const char*>(strMan.Trim());
+		order_info["remain_count"] = _ttoi(strRemain.Trim());
+		order_info["cancelled_count"] = _ttoi(strCancelCnt.Trim());
+		order_info["modified_count"] = _ttoi(strModyCnt.Trim());
+		order_info["filled_count"] = _ttoi(strFilledCnt.Trim());
+		order_info["order_sequence"] = _ttoi(strOrderSeq.Trim());
+		//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+		//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+
+		//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+		//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+		//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+		//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+
+		mainApp.order_processor()->add_order_event(std::move(order_info));
+
+		
+		
+	}
+
+	on_task_complete(server_request_id);
 }
 
 void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
@@ -3195,6 +3357,80 @@ int ViClient::ab_account_profit_loss(DhTaskArg arg)
 	return -1;
 }
 
+int ViClient::ab_accepted_order(DhTaskArg arg)
+{
+	try {
+		const std::string account_no = arg.parameter_map["account_no"];
+		const std::string password = arg.parameter_map["password"];
+
+		std::string reqString;
+		std::string temp;
+		reqString.append("1");
+		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
+		// 아이디 
+		reqString.append(temp);
+
+		temp = VtStringUtil::PadRight(account_no, ' ', 6);
+		reqString.append(temp);
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+		// 그룹명 - 공백
+		reqString.append("                    ");
+
+
+
+		const CString sInput = reqString.c_str();
+		const CString strNextKey = _T("");
+		const int nRqID = m_CommAgent.CommRqData(DefAbAccepted, sInput, sInput.GetLength(), strNextKey);
+		//arg["tr_code"] = std::string(DefAbAccepted);
+		request_map_[nRqID] = arg;
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+			return nRqID;
+		}
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+int ViClient::dm_accepted_order(DhTaskArg arg)
+{
+	try {
+		const std::string account_no = arg.parameter_map["account_no"];
+		const std::string password = arg.parameter_map["password"];
+
+		std::string reqString;
+		std::string temp;
+		temp = VtStringUtil::PadRight(account_no, ' ', 11);
+		reqString.append(temp);
+		reqString.append(_T("001"));
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+
+
+		CString sInput = reqString.c_str();
+		CString strNextKey = _T("");
+		int nRqID = m_CommAgent.CommRqData(DefDmAccepted, sInput, sInput.GetLength(), strNextKey);
+		//arg["tr_code"] = std::string(sTrCode);
+		request_map_[nRqID] = arg;
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+			return nRqID;
+		}
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
 int ViClient::dm_account_profit_loss(DhTaskArg arg)
 {
 	try {
@@ -3565,6 +3801,7 @@ void DarkHorse::ViClient::OnAccountProfitLoss(const CString& sTrCode, const LONG
 
 	on_task_complete(nRqID);
 }
+
 
 void DarkHorse::ViClient::OnSymbolProfitLoss(const CString& sTrCode, const LONG& nRqID)
 {

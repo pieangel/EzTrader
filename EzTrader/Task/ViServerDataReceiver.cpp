@@ -46,19 +46,20 @@ namespace DarkHorse {
 		case DhTaskType::DmApiCustomerProfitLoss:
 			mainApp.Client()->dm_account_profit_loss(arg);
 			break;
+		case DhTaskType::AbAcceptedOrderList:
+			mainApp.Client()->ab_accepted_order(arg);
+			break;
+		case DhTaskType::DmAcceptedOrderList:
+			mainApp.Client()->dm_accepted_order(arg);
+			break;
 		case DhTaskType::AbSymbolQuote:
 			//mainApp.Client().GetAbSymbolSise(arg);
 			break;
 		case DhTaskType::AbSymbolHoga:
 			//mainApp.Client().GetAbSymbolHoga(arg);
-			break;
-		
-		
+			break;	
 		case DhTaskType::AbAccountSymbolRemain:
 			//mainApp.Client().GetAbOutStanding(arg);
-			break;
-		case DhTaskType::AbAcceptedOrderList:
-			//mainApp.Client().GetAbAccepted(arg);
 			break;
 		case DhTaskType::AbSymbolChartData:
 			//mainApp.Client().GetAbChartData(arg);
@@ -114,7 +115,13 @@ namespace DarkHorse {
 			start_dm_account_profit_loss();
 		}
 		else if (task_info_.task_type == DhTaskType::DmApiCustomerProfitLoss) {
-			StartGetProductRemain();
+			start_ab_accepted_order();
+		}
+		else if (task_info_.task_type == DhTaskType::AbAcceptedOrderList) {
+			start_dm_accepted_order();
+		}
+		else if (task_info_.task_type == DhTaskType::DmAcceptedOrderList) {
+			end_all_task();
 		}
 		else if (task_info_.task_type == DhTaskType::AbSymbolQuote) {
 			StartGetHoga();
@@ -124,9 +131,6 @@ namespace DarkHorse {
 		}
 		else if (task_info_.task_type == DhTaskType::AbAccountSymbolRemain) {
 			StartGetAccountOrder();
-		}
-		else if (task_info_.task_type == DhTaskType::AbAcceptedOrderList) {
-			StartGetFilledOrder();
 		}
 		else if (task_info_.task_type == DhTaskType::AbFilledOrderList) {
 			//EndAllTask();
@@ -527,6 +531,60 @@ namespace DarkHorse {
 	{
 		make_dm_account_profit_loss();
 		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_dm_accepted_order()
+	{
+		make_dm_accepted_order();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+	void ViServerDataReceiver::start_ab_accepted_order()
+	{
+		make_ab_accepted_order();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+	
+	void ViServerDataReceiver::make_dm_accepted_order()
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "9") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::DmAcceptedOrderList;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "국내 접수주문을 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::DmAcceptedOrderList;
+	}
+	void ViServerDataReceiver::make_ab_accepted_order()
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "1") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::AbAcceptedOrderList;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "해외 접수주문을 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbAcceptedOrderList;
 	}
 
 }

@@ -25,7 +25,7 @@ const CString DefModifyCmeOrder = "g12001.DO2001&";	//CME 취소
 const CString DefCancelCmeOrder = "g12001.DO2101&";	//CME 정정(가격,조건)주문
 
 
-const CString DefAcceptedHistory = "g11002.DQ0104&";
+
 const CString DefFilledHistory = "g11002.DQ0107&";
 const CString DefOutstandingHistory = "g11002.DQ0110&";
 const CString DefOutstanding = "g11002.DQ1305&";
@@ -104,4 +104,5 @@ const CString DEF_FX_ORD_CODE_CNL = "g12003.AO0503%";	// 취소주문
 const CString DefDmAsset = "g11002.DQ0217&";
 
 const CString DefDmApiCustomerProfitLoss = "g11002.DQ1302&";
+const CString DefDmAccepted = "g11002.DQ0104&";
 

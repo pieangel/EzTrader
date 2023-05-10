@@ -72,7 +72,11 @@ namespace DarkHorse {
 		void start_ab_account_asset();
 		void start_ab_account_profit_loss();
 		void start_dm_account_profit_loss();
+		void start_dm_accepted_order();
+		void start_ab_accepted_order();
 	private:
+		void make_dm_accepted_order();
+		void make_ab_accepted_order();
 		void make_dm_account_asset();
 		void make_ab_account_asset();
 		void make_ab_symbol_master();
