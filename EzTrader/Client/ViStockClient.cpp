@@ -36,7 +36,7 @@ int ViStockClient::ConnectToServer()
 		return -1;
 	}
 	
-	if (_ViCtrol->ConnectToServer() < 0) {
+	if (_ViCtrol->connect_to_server() < 0) {
 		LOGINFO(CMyLogger::getInstance(), "증권사와 통신이 되지 않습니다.");
 		return -1;
 	}
@@ -52,106 +52,106 @@ int ViStockClient::Login(task_arg&& login_info)
 
 int ViStockClient::GetSymbolMaster(task_arg&& arg)
 {
-	return _ViCtrol->GetSymbolMaster(std::move(arg));
+	return _ViCtrol->ab_symbol_master(std::move(arg));
 }
 
 int ViStockClient::GetSymbolQuote(task_arg&& arg)
 {
-	return _ViCtrol->GetSymbolQuote(std::move(arg));
+	return _ViCtrol->ab_symbol_quote(std::move(arg));
 }
 
 int ViStockClient::GetSymbolHoga(task_arg&& arg)
 {
-	return _ViCtrol->GetSymbolHoga(std::move(arg));
+	return _ViCtrol->ab_symbol_hoga(std::move(arg));
 }
 
 void ViStockClient::UnregisterAccount(task_arg&& arg)
 {
-	_ViCtrol->UnregisterAccount(std::move(arg));
+	_ViCtrol->unregister_account(std::move(arg));
 }
 
 void ViStockClient::RegisterAccount(task_arg&& arg)
 {
-	_ViCtrol->RegisterAccount(std::move(arg));
+	_ViCtrol->register_account(std::move(arg));
 }
 
 void ViStockClient::UnregisterSymbol(task_arg&& arg)
 {
-	_ViCtrol->UnregisterSymbol(std::move(arg));
+	_ViCtrol->unregister_symbol(std::move(arg));
 }
 
 void ViStockClient::RegisterSymbol(task_arg&& arg)
 {
-	_ViCtrol->RegisterSymbol(std::move(arg));
+	_ViCtrol->register_symbol(std::move(arg));
 }
 
 void ViStockClient::CancelOrder(task_arg&& arg)
 {
-	_ViCtrol->CancelOrder(std::move(arg));
+	_ViCtrol->ab_cancel_order(std::move(arg));
 }
 
 void ViStockClient::ChangeOrder(task_arg&& arg)
 {
-	_ViCtrol->ChangeOrder(std::move(arg));
+	_ViCtrol->ab_change_order(std::move(arg));
 }
 
 void ViStockClient::NewOrder(task_arg&& arg)
 {
-	_ViCtrol->NewOrder(std::move(arg));
+	_ViCtrol->ab_new_order(std::move(arg));
 }
 
 int ViStockClient::GetChartData(task_arg&& arg)
 {
-	return _ViCtrol->GetChartData(std::move(arg));
+	return _ViCtrol->ab_chart_data(std::move(arg));
 }
 
 int ViStockClient::GetFilledOrderList(task_arg&& arg)
 {
-	return _ViCtrol->GetFilledOrderList(std::move(arg));
+	return _ViCtrol->ab_filled_order_list(std::move(arg));
 }
 
 int ViStockClient::GetAcceptedOrderList(task_arg&& arg)
 {
-	return _ViCtrol->GetAcceptedOrderList(std::move(arg));
+	return 1; // _ViCtrol->ab_accepted_order_list(std::move(arg));
 }
 
 int ViStockClient::GetSymbolProfitLoss(task_arg&& arg)
 {
-	return _ViCtrol->GetSymbolProfitLoss(std::move(arg));
+	return _ViCtrol->ab_symbol_profit_loss(std::move(arg));
 }
 
 int ViStockClient::GetAccountProfitLoss(task_arg&& arg)
 {
-	return _ViCtrol->GetAccountProfitLoss(std::move(arg));
+	return _ViCtrol->ab_account_profit_loss(std::move(arg));
 }
 
 int ViStockClient::GetDeposit(task_arg&& arg)
 {
-	return _ViCtrol->GetDeposit(std::move(arg));
+	return _ViCtrol->ab_account_deposit(std::move(arg));
 }
 
 int ViStockClient::GetAccountAsset(task_arg&& arg)
 {
-	return _ViCtrol->GetAccountAsset(std::move(arg));
+	return _ViCtrol->ab_account_asset(std::move(arg));
 }
 
 
 
 int DarkHorse::ViStockClient::DownloadFile(task_arg&& arg)
 {
-	return _ViCtrol->DownloadFile(std::move(arg));
+	return _ViCtrol->download_file(std::move(arg));
 }
 
 
 
 int ViStockClient::DownloadMasterFile(task_arg&& arg)
 {
-	return _ViCtrol->DownloadMasterFile(std::move(arg));
+	return _ViCtrol->download_symbol_master_file(std::move(arg));
 }
 
 int DarkHorse::ViStockClient::GetFilledOrderList(const std::string& account_no, const std::string& pwd)
 {
-	return _ViCtrol->GetFilledOrderList(account_no, pwd);
+	return _ViCtrol->ab_filled_order_list(account_no, pwd);
 }
 
 int ViStockClient::ab_symbol_master(DhTaskArg arg)
@@ -181,32 +181,32 @@ int ViStockClient::dm_symbol_master_file_download(DhTaskArg arg)
 
 void ViStockClient::ChangeOrder(order_request_p order_req)
 {
-	_ViCtrol->ChangeOrder(order_req);
+	_ViCtrol->change_order(order_req);
 }
 
 void ViStockClient::NewOrder(order_request_p order_req)
 {
-	_ViCtrol->NewOrder(order_req);
+	_ViCtrol->new_order(order_req);
 }
 
 void ViStockClient::CancelOrder(order_request_p order_req)
 {
-	_ViCtrol->CancelOrder(order_req);
+	_ViCtrol->cancel_order(order_req);
 }
 
 void ViStockClient::dm_new_order(order_request_p order_req)
 {
-	_ViCtrol->dm_new_order(order_req);
+	_ViCtrol->new_order(order_req);
 }
 
 void ViStockClient::dm_change_order(order_request_p order_req)
 {
-	_ViCtrol->dm_change_order(order_req);
+	_ViCtrol->change_order(order_req);
 }
 
 void ViStockClient::dm_cancel_order(order_request_p order_req)
 {
-	_ViCtrol->dm_cancel_order(order_req);
+	_ViCtrol->cancel_order(order_req);
 }
 
 void DarkHorse::ViStockClient::NewOrder(const std::shared_ptr<SmOrderRequest>& order_req)
@@ -214,7 +214,7 @@ void DarkHorse::ViStockClient::NewOrder(const std::shared_ptr<SmOrderRequest>& o
 	if (_TestMode) SendOrderAcceptedData(order_req);
 	else {
 		_OrderReqMap[order_req->RequestId] = order_req;
-		_ViCtrol->NewOrder(order_req);
+		_ViCtrol->ab_new_order(order_req);
 	}
 }
 
@@ -223,7 +223,7 @@ void DarkHorse::ViStockClient::ChangeOrder(const std::shared_ptr<SmOrderRequest>
 	if (_TestMode) SendOrderAcceptedData(order_req);
 	else {
 		_OrderReqMap[order_req->RequestId] = order_req;
-		_ViCtrol->ChangeOrder(order_req);
+		_ViCtrol->ab_change_order(order_req);
 	}
 }
 
@@ -232,23 +232,23 @@ void DarkHorse::ViStockClient::CancelOrder(const std::shared_ptr<SmOrderRequest>
 	if (_TestMode) SendOrderAcceptedData(order_req);
 	else {
 		_OrderReqMap[order_req->RequestId] = order_req;
-		_ViCtrol->CancelOrder(order_req);
+		_ViCtrol->ab_cancel_order(order_req);
 	}
 }
 
 void DarkHorse::ViStockClient::RegisterSymbol(const std::string& symbol_code)
 {
-	_ViCtrol->RegisterSymbol(symbol_code);
+	_ViCtrol->register_symbol(symbol_code);
 }
 
 void DarkHorse::ViStockClient::UnregisterSymbol(const std::string& symbol_code)
 {
-	_ViCtrol->UnregisterSymbol(symbol_code);
+	_ViCtrol->unregister_symbol(symbol_code);
 }
 
 void DarkHorse::ViStockClient::RegisterAccount(const std::string& account_no)
 {
-	_ViCtrol->RegisterAccount(account_no);
+	_ViCtrol->register_account(account_no);
 }
 
 void DarkHorse::ViStockClient::SendOrderAcceptedData(const std::shared_ptr<SmOrderRequest>& order_req)
@@ -309,12 +309,12 @@ void DarkHorse::ViStockClient::SendOrderFilledData()
 
 int DarkHorse::ViStockClient::CheckAccountPassword(task_arg&& arg)
 {
-	return _ViCtrol->CheckAccountPassword(std::move(arg));
+	return _ViCtrol->check_account_password(std::move(arg));
 }
 
 int DarkHorse::ViStockClient::CheckDmAccountPassword(task_arg&& arg)
 {
-	return _ViCtrol->CheckDmAccountPassword(std::move(arg));
+	return _ViCtrol->dm_check_account_password(std::move(arg));
 }
 
 void DarkHorse::ViStockClient::Enable(bool val)
@@ -324,8 +324,8 @@ void DarkHorse::ViStockClient::Enable(bool val)
 
 void DarkHorse::ViStockClient::UnRegAll()
 {
-	_ViCtrol->UnregAllSymbol();
-	_ViCtrol->UnregAllAccount();
+	_ViCtrol->unregister_all_symbols();
+	_ViCtrol->unregister_all_accounts();
 }
 
 DarkHorse::ViStockClient::~ViStockClient()
@@ -419,10 +419,10 @@ void DarkHorse::ViStockClient::ExecTask(DarkHorse::SmTaskArg&& task)
 	case SmTaskType::SymbolHoga:
 		break;
 	case SmTaskType::DmSymbolMaster:
-		_ViCtrol->GetDmSymbolMaster(std::move(task));
+		_ViCtrol->dm_symbol_master(std::move(task));
 		break;
 	case SmTaskType::ChartData:
-		_ViCtrol->GetChartData(std::move(task));
+		_ViCtrol->ab_chart_data(std::move(task));
 		break;
 	case SmTaskType::AcceptedOrderList:
 		break;
@@ -431,7 +431,7 @@ void DarkHorse::ViStockClient::ExecTask(DarkHorse::SmTaskArg&& task)
 	case SmTaskType::SymbolPosition:
 		break;
 	case SmTaskType::RegisterSymbol:
-		_ViCtrol->RegisterSymbol(std::move(task));
+		_ViCtrol->register_symbol(std::move(task));
 		break;
 	case SmTaskType::RegisterAccount:
 		break;
@@ -442,7 +442,7 @@ void DarkHorse::ViStockClient::ExecTask(DarkHorse::SmTaskArg&& task)
 
 void DarkHorse::ViStockClient::RemoveTask(const int& task_id)
 {
-	_ViCtrol->RemoveTask(task_id);
+	_ViCtrol->remove_task(task_id);
 }
 
 void DarkHorse::ViStockClient::OnAccountReceived(nlohmann::json&& arg)
@@ -667,7 +667,7 @@ void DarkHorse::ViStockClient::OnFilledList(nlohmann::json&& arg)
 
 int DarkHorse::ViStockClient::GetDomesticSymbolCode(task_arg&& arg)
 {
-	return _ViCtrol->GetDomesticSymbolCode(std::move(arg));
+	return _ViCtrol->dm_symbol_code(std::move(arg));
 }
 
 void DarkHorse::ViStockClient::SetOrderAuxInfo(const std::shared_ptr<DarkHorse::SmOrder>& order)
@@ -887,6 +887,16 @@ int DarkHorse::ViStockClient::ab_account_asset(DhTaskArg arg)
 int DarkHorse::ViStockClient::dm_account_asset(DhTaskArg arg)
 {
 	return _ViCtrol->dm_account_asset(arg);
+}
+
+int ViStockClient::dm_symbol_position(DhTaskArg arg)
+{
+	return _ViCtrol->dm_symbol_position(arg);
+}
+
+int ViStockClient::ab_symbol_position(DhTaskArg arg)
+{
+	return _ViCtrol->ab_symbol_position(arg);
 }
 
 int DarkHorse::ViStockClient::ab_accepted_order(DhTaskArg arg)

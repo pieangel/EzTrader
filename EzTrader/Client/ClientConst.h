@@ -48,7 +48,7 @@ const CString DefCurrentQuote = "l41600";
 const CString DefDailyQuote = "l41601";
 const CString DefTickQuote = "l41602";
 const CString DefSecondQutoe = "l41603";
-const CString DefSymbolMaster = "s20001";
+const CString DefDmSymbolMaster = "s20001";
 const CString DefStockFutureSymbolMaster = "s31001";
 const CString DefIndustryMaster = "s10001";
 const CString DefServerTime = "o44011";
@@ -61,7 +61,7 @@ const CString DEF_HW_ORD_CODE_MOD = "g12003.AO0402%";
 const CString DEF_HW_ORD_CODE_CNL = "g12003.AO0403%";
 const CString DEF_HW_MSTINFO = "o51211";
 const CString DefAbSymbolMaster = "o51210";
-const CString DefAbSymbolSise = "o51000";
+const CString DefAbSymbolQuote = "o51000";
 // 해외선물 호가
 const CString DefAbSymbolHoga = "o51010";
 // 계좌별 자산
@@ -71,7 +71,7 @@ const CString DefAbAccountProfitLoss = "g11004.AQ0607%";
 // 종목별 손익
 const CString DefAbSymbolProfitLoss = "g11004.AQ0404%";
 // 미결제
-const CString DefAbOutstanding = "g11004.AQ0403%";
+const CString DefAbSymbolPosition = "g11004.AQ0403%";
 // 미체결
 const CString DefAbAccepted = "g11004.AQ0401%";
 // 체결
@@ -91,7 +91,7 @@ const CString DefAbsChartData2 = "o44005";
 // 해외 체결 상세 정보
 const CString DefAbFilledDetail = "g11004.AQ0408%";
 
-const CString MasterFile = "v90001";
+const CString DefDmSymbolMasterFile = "v90001";
 
 // FX마진	//@lhe 2012.06.22
 const CString DEF_FX_JANGO = "g11004.AQ0901%";		// 자산내역
@@ -105,4 +105,6 @@ const CString DefDmAsset = "g11002.DQ0217&";
 
 const CString DefDmApiCustomerProfitLoss = "g11002.DQ1302&";
 const CString DefDmAccepted = "g11002.DQ0104&";
+const CString DefDmSymbolPosition = "g12002.DQ0521&";
+
 

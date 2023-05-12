@@ -102,6 +102,9 @@ namespace DarkHorse {
 		int ab_account_profit_loss(DhTaskArg arg);
 		int dm_account_profit_loss(DhTaskArg arg);
 
+		int dm_symbol_position(DhTaskArg arg);
+		int ab_symbol_position(DhTaskArg arg);
+
 		int ab_accepted_order(DhTaskArg arg);
 		int dm_accepted_order(DhTaskArg arg);
 	private:
