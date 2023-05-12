@@ -908,3 +908,13 @@ int DarkHorse::ViStockClient::dm_accepted_order(DhTaskArg arg)
 	return _ViCtrol->dm_accepted_order(arg);
 }
 
+int ViStockClient::ab_symbol_quote(DhTaskArg arg)
+{
+	return _ViCtrol->ab_symbol_quote(arg);
+}
+
+int ViStockClient::ab_symbol_hoga(DhTaskArg arg)
+{
+	return _ViCtrol->ab_symbol_hoga(arg);
+}
+

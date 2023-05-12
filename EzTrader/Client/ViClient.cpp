@@ -758,6 +758,30 @@ int DarkHorse::ViClient::ab_symbol_quote(task_arg&& arg)
 	return -1;
 }
 
+int ViClient::ab_symbol_hoga(DhTaskArg arg)
+{
+	try {
+		const std::string symbol_code = arg.parameter_map["symbol_code"];
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+		std::string temp;
+		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
+		const CString sInput = temp.c_str();
+		const CString sReqFidInput = _T("000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061");
+		const CString strNextKey = m_CommAgent.CommGetNextKey(0, "");
+		int nRqID = m_CommAgent.CommFIDRqData(DefAbSymbolHoga, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+
+		request_map_[nRqID] = arg;
+
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
 int DarkHorse::ViClient::ab_symbol_hoga(task_arg&& arg)
 {
 	try {
@@ -967,6 +991,35 @@ int DarkHorse::ViClient::ab_accepted_order_list(task_arg arg)
 
 	return -1;
 }
+
+int ViClient::ab_symbol_quote(DhTaskArg arg)
+{
+	try {
+		const std::string symbol_code = arg.parameter_map["symbol_code"];
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+		std::string temp;
+		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
+		const CString sInput = temp.c_str();
+		const CString sReqFidInput = "000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037";
+		const CString strNextKey = m_CommAgent.CommGetNextKey(0, "");
+		const int nRqID = m_CommAgent.CommFIDRqData(DefAbSymbolQuote, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+
+		CString msg;
+		msg.Format("symbol_code = %s\n", symbol_code.c_str());
+		//TRACE(msg);
+
+		request_map_[nRqID] = arg;
+
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
 int DarkHorse::ViClient::dm_accepted_order_list(task_arg arg)
 {
 	try {

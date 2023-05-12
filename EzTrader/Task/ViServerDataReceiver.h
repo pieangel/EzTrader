@@ -54,17 +54,6 @@ namespace DarkHorse {
 		std::shared_ptr<VtProgressDlg> progress_dialog() const { return progress_dialog_; }
 		void progress_dialog(std::shared_ptr<VtProgressDlg> val) { progress_dialog_ = val; }
 
-		void StartGetSymbolMaster();
-		void StartGetSymbol();
-		void StartGetCSise();
-		void StartGetHoga();
-		void StartGetAccountAsset();
-		void StartGetProductRemain();
-		void StartGetAccountOrder();
-		void StartGetAccountProfitLoss();
-		void StartGetChartData();
-		void StartGetFilledOrder();
-		void StartGetFilledDetails();
 		void start_dm_symbol_master_file_download();
 		void start_ab_symbol_master_file_download();
 		void start_ab_symbol_master();
@@ -74,7 +63,11 @@ namespace DarkHorse {
 		void start_dm_account_profit_loss();
 		void start_dm_accepted_order();
 		void start_ab_accepted_order();
+		void start_ab_symbol_position();
+		void start_dm_symbol_position();
 	private:
+		void make_ab_symbol_position();
+		void make_dm_symbol_position();
 		void make_dm_accepted_order();
 		void make_ab_accepted_order();
 		void make_dm_account_asset();
@@ -85,30 +78,5 @@ namespace DarkHorse {
 		// 일별 손익을 가져옵니다.
 		void make_ab_account_profit_loss();
 		void make_dm_account_profit_loss();
-		// 차트데이터 요청 목록을 만든다.
-		void MakeChartDataRequests();
-		/// <summary>
-		/// 나스닥100 차트 데이터를 가져온다.
-		/// </summary>
-		void MakeChartDataRequestsNasdaq();
-		void MakeSymbolMasterRequests();
-		// 시세 요청 목록을 만든다.
-		void MakeSymbolSiseRequests();
-		// 호가 요청 목록을 만든다.
-		void MakeSymbolHogaRequests();
-		// 심볼 요청 목록을 만든다.
-		void MakeSymbolRequests();
-		// 예탁 잔고 신청 목록을 만든다.
-		void MakeAccountAssetRequests();
-		
-		// 잔고 및 평가손익 신청 목록을 만든다.
-		void MakeRemainRequests();
-		// 계좌별 미체결 주문 요청 목록을 만든다.
-		void MakeAccountOrders();
-		// 계좌별 체결 주문 요청 목록을 만든다.
-		void MakeFilledOrders();
-
-		// 체결 상세 내역을 가져온다.
-		void MakeFilledOrderDatails();
 	};
 }

@@ -53,13 +53,16 @@ namespace DarkHorse {
 			mainApp.Client()->dm_accepted_order(arg);
 			break;
 		case DhTaskType::AbSymbolQuote:
-			//mainApp.Client().GetAbSymbolSise(arg);
+			mainApp.Client()->ab_symbol_quote(arg);
 			break;
 		case DhTaskType::AbSymbolHoga:
-			//mainApp.Client().GetAbSymbolHoga(arg);
+			mainApp.Client()->ab_symbol_hoga(arg);
 			break;	
-		case DhTaskType::AbAccountSymbolRemain:
-			//mainApp.Client().GetAbOutStanding(arg);
+		case DhTaskType::AbSymbolPosition:
+			mainApp.Client()->ab_symbol_position(arg);
+			break;
+		case DhTaskType::DmSymbolPosition:
+			mainApp.Client()->dm_symbol_position(arg);
 			break;
 		case DhTaskType::AbSymbolChartData:
 			//mainApp.Client().GetAbChartData(arg);
@@ -90,6 +93,72 @@ namespace DarkHorse {
 	{
 		// 기존 요청 목록을 먼저 모두 없앤다.
 		task_info_.argument_map.clear();
+		switch (task_info_.task_type)
+		{
+		case DhTaskType::DmSymbolMasterFileDownload:
+		{
+			start_ab_symbol_master_file_download();
+		}
+			break;
+		case DhTaskType::AbSymbolMasterFileDownload:
+		{
+			mainApp.SymMgr()->MakeDomesticMarket();
+			mainApp.SymMgr()->ReadAbroadSymbols();
+			mainApp.SymMgr()->read_domestic_productfile();
+			mainApp.SymMgr()->read_domestic_masterfile();
+			mainApp.SymMgr()->sort_dm_option_symbol_vector();
+			mainApp.SymMgr()->MakeAbFavorite();
+			start_ab_symbol_master();
+		}
+			break;
+		case DhTaskType::AbSymbolMaster:
+		{
+			start_dm_account_asset();
+		}
+			break;
+		case DhTaskType::DmAccountAsset:
+		{
+			start_ab_account_asset();
+		}
+			break;
+		case DhTaskType::AbAccountAsset:
+		{
+			start_ab_account_profit_loss();
+		}
+			break;
+		case DhTaskType::AbAccountProfitLoss:
+		{
+			start_dm_account_profit_loss();
+		}
+			break;
+		case DhTaskType::DmApiCustomerProfitLoss:
+		{
+			start_ab_accepted_order();
+		}
+			break;
+		case DhTaskType::AbAcceptedOrderList:
+		{
+			start_dm_accepted_order();
+		}
+			break;
+		case DhTaskType::DmAcceptedOrderList:
+		{
+			end_all_task();
+		}
+			break;
+		case DhTaskType::DmSymbolPosition:
+		{
+			end_all_task();
+		}
+		break;
+		case DhTaskType::AbSymbolPosition:
+		{
+			end_all_task();
+		}
+		break;
+		default:
+			break;
+		}
 		if (task_info_.task_type == DhTaskType::DmSymbolMasterFileDownload) {
 			start_ab_symbol_master_file_download();
 		}
@@ -121,25 +190,6 @@ namespace DarkHorse {
 			start_dm_accepted_order();
 		}
 		else if (task_info_.task_type == DhTaskType::DmAcceptedOrderList) {
-			end_all_task();
-		}
-		else if (task_info_.task_type == DhTaskType::AbSymbolQuote) {
-			StartGetHoga();
-		}
-		else if (task_info_.task_type == DhTaskType::AbSymbolHoga) {
-			StartGetAccountAsset();
-		}
-		else if (task_info_.task_type == DhTaskType::AbAccountSymbolRemain) {
-			StartGetAccountOrder();
-		}
-		else if (task_info_.task_type == DhTaskType::AbFilledOrderList) {
-			//EndAllTask();
-			StartGetChartData();
-		}
-		else if (task_info_.task_type == DhTaskType::AbSymbolChartData) {
-			StartGetFilledDetails();
-		}
-		else if (task_info_.task_type == DhTaskType::AbFilledDetail) {
 			end_all_task();
 		}
 	}
@@ -204,31 +254,6 @@ namespace DarkHorse {
 		}
 	}
 
-	void ViServerDataReceiver::MakeSymbolMasterRequests()
-	{
-
-	}
-
-	void ViServerDataReceiver::MakeSymbolSiseRequests()
-	{
-
-
-	}
-
-	void ViServerDataReceiver::MakeSymbolHogaRequests()
-	{
-
-	}
-	void ViServerDataReceiver::MakeSymbolRequests()
-	{
-
-	}
-
-	void ViServerDataReceiver::MakeAccountAssetRequests()
-	{
-
-	}
-
 	void ViServerDataReceiver::make_ab_account_profit_loss()
 	{
 		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
@@ -273,105 +298,9 @@ namespace DarkHorse {
 		task_info_.task_type = DhTaskType::DmApiCustomerProfitLoss;
 	}
 
-	void ViServerDataReceiver::MakeRemainRequests()
-	{
-
-	}
-
-	void ViServerDataReceiver::MakeAccountOrders()
-	{
-
-	}
-
 	void ViServerDataReceiver::end_all_task()
 	{
 		((CMainFrame*)AfxGetMainWnd())->LoadAfterServerData();
-	}
-
-	void ViServerDataReceiver::MakeChartDataRequests()
-	{
-
-	}
-
-	void ViServerDataReceiver::MakeChartDataRequestsNasdaq()
-	{
-
-	}
-
-	void ViServerDataReceiver::StartGetSymbolMaster()
-	{
-		MakeSymbolMasterRequests();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
-	void ViServerDataReceiver::StartGetSymbol()
-	{
-		MakeSymbolRequests();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(1100);
-	}
-
-	void ViServerDataReceiver::StartGetCSise()
-	{
-		MakeSymbolSiseRequests();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
-	void ViServerDataReceiver::StartGetHoga()
-	{
-		MakeSymbolHogaRequests();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
-	void ViServerDataReceiver::StartGetAccountAsset()
-	{
-		MakeAccountAssetRequests();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
-	}
-
-	void ViServerDataReceiver::StartGetProductRemain()
-	{
-		MakeRemainRequests();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
-	}
-
-	void ViServerDataReceiver::StartGetAccountOrder()
-	{
-		MakeAccountOrders();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
-	}
-
-	void ViServerDataReceiver::StartGetAccountProfitLoss()
-	{
-		make_ab_account_profit_loss();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
-	}
-
-	void ViServerDataReceiver::StartGetChartData()
-	{
-		MakeChartDataRequestsNasdaq();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
-	}
-
-	void ViServerDataReceiver::MakeFilledOrders()
-	{
-
-	}
-
-	void ViServerDataReceiver::StartGetFilledOrder()
-	{
-		MakeFilledOrders();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
-	}
-
-	void ViServerDataReceiver::MakeFilledOrderDatails()
-	{
-
-	}
-
-	void ViServerDataReceiver::StartGetFilledDetails()
-	{
-		MakeFilledOrderDatails();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
 	}
 
 	void ViServerDataReceiver::make_dm_file_download()
@@ -585,6 +514,62 @@ namespace DarkHorse {
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::AbAcceptedOrderList;
+	}
+
+	void ViServerDataReceiver::start_ab_symbol_position()
+	{
+		make_ab_symbol_position();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_dm_symbol_position()
+	{
+		make_dm_symbol_position();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::make_ab_symbol_position()
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "1") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::AbSymbolPosition;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "해외 미체결 목록을 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbSymbolPosition;
+	}
+
+	void ViServerDataReceiver::make_dm_symbol_position()
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "9") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::DmSymbolPosition;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "국내 미체결 목록을 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::DmSymbolPosition;
 	}
 
 }
