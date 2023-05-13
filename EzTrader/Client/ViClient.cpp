@@ -395,7 +395,11 @@ void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 		strLog.Format("RQID[%d][%s][%s]\n", nRqId, strCode, strMsg);
 		TRACE(strLog);
 		const int result_code = _ttoi(strCode);
-		if (nRqId < 0 || result_code == 99997) {
+		if (nRqId < 0 
+			|| result_code == 99997
+			|| result_code == -9002 
+			|| result_code == 91001
+			|| result_code == -6000) {
 			LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
 			on_task_error(nRqId, -1);
 		}
@@ -1176,6 +1180,7 @@ int ViClient::dm_symbol_position(DhTaskArg arg)
 
 		CString sInput = reqString.c_str();
 		CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefDmSymbolPosition, sInput);
 		int nRqID = m_CommAgent.CommRqData(DefDmSymbolPosition, sInput, sInput.GetLength(), strNextKey);
 		//arg["tr_code"] = std::string(sTrCode);
 		request_map_[nRqID] = arg;
@@ -1216,6 +1221,7 @@ int ViClient::ab_symbol_position(DhTaskArg arg)
 
 		const CString sInput = reqString.c_str();
 		const CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefAbSymbolPosition, sInput);
 		const int nRqID = m_CommAgent.CommRqData(DefAbSymbolPosition, sInput, sInput.GetLength(), strNextKey);
 		request_map_[nRqID] = arg;
 		if (nRqID < 0) {
@@ -3394,6 +3400,7 @@ int ViClient::ab_account_profit_loss(DhTaskArg arg)
 
 		const CString sInput = reqString.c_str();
 		const CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefAbSymbolProfitLoss, sInput);
 		const int nRqID = m_CommAgent.CommRqData(DefAbSymbolProfitLoss, sInput, sInput.GetLength(), strNextKey);
 		request_map_[nRqID] = arg;
 
@@ -3436,6 +3443,7 @@ int ViClient::ab_accepted_order(DhTaskArg arg)
 
 		const CString sInput = reqString.c_str();
 		const CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefAbAccepted, sInput);
 		const int nRqID = m_CommAgent.CommRqData(DefAbAccepted, sInput, sInput.GetLength(), strNextKey);
 		//arg["tr_code"] = std::string(DefAbAccepted);
 		request_map_[nRqID] = arg;
@@ -3469,6 +3477,7 @@ int ViClient::dm_accepted_order(DhTaskArg arg)
 
 		CString sInput = reqString.c_str();
 		CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefDmAccepted, sInput);
 		int nRqID = m_CommAgent.CommRqData(DefDmAccepted, sInput, sInput.GetLength(), strNextKey);
 		//arg["tr_code"] = std::string(sTrCode);
 		request_map_[nRqID] = arg;
@@ -3502,6 +3511,7 @@ int ViClient::dm_account_profit_loss(DhTaskArg arg)
 		CString sTrCode = "g11002.DQ1302&";
 		CString sInput = reqString.c_str();
 		CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", sTrCode, sInput);
 		int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 		request_map_[nRqID] = arg;
 
@@ -3704,7 +3714,7 @@ void DarkHorse::ViClient::on_ab_account_asset(const CString& sTrCode, const LONG
 
 		CString msg;
 
-		msg.Format("OnAccountAsset strAccountNo = %s\n", account_no.c_str());
+		msg.Format("on_ab_account_asset strAccountNo = %s\n", account_no.c_str());
 		//TRACE(msg);
 
 		nlohmann::json account_asset;
@@ -3781,7 +3791,7 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 
 		CString msg;
 
-		msg.Format("OnAccountAsset strAccountNo = %s\n", strAccountNo);
+		msg.Format("on_ab_symbol_profit_loss strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
 		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
@@ -3826,7 +3836,7 @@ void DarkHorse::ViClient::on_ab_symbol_position(const CString& sTrCode, const LO
 
 		CString msg;
 
-		msg.Format("OnAccountAsset strAccountNo = %s\n", strAccountNo);
+		msg.Format("on_ab_symbol_position strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
 		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
@@ -3872,7 +3882,7 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 
 		CString msg;
 
-		msg.Format("OnAccountAsset strAccountNo = %s\n", strAccountNo);
+		msg.Format("on_dm_symbol_position strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
 		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
@@ -3943,7 +3953,7 @@ void DarkHorse::ViClient::on_ab_filled_order_list(const CString& sTrCode, const 
 		strOrderAmount.Trim();
 		strFilledAmount.Trim();
 
-		msg.Format("OnAccountAsset:: strAccountNo = [%s] symbolcode = [%s], orderno = [%s], filldate = [%s], filltime = [%s], filledcount = [%s], orderprice = [%s], filledprice = [%s]\n", strAccountNo, strSymbolCode, strOrderNo, strFilledDate, strFilledTime, strFilledAmount, strOrderPrice,  strFilledPrice);
+		msg.Format("on_ab_filled_order_list:: strAccountNo = [%s] symbolcode = [%s], orderno = [%s], filldate = [%s], filltime = [%s], filledcount = [%s], orderprice = [%s], filledprice = [%s]\n", strAccountNo, strSymbolCode, strOrderNo, strFilledDate, strFilledTime, strFilledAmount, strOrderPrice,  strFilledPrice);
 		//TRACE(msg);
 
 
@@ -4922,7 +4932,7 @@ void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& 
 	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "수수료");
 
 	CString strMsg;
-	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s]\n", strSymbolCode, strOrderNo);
+	strMsg.Format("on_ab_order_filled 종목[%s]주문번호[%s]\n", strSymbolCode, strOrderNo);
 	//strMsg.Format(_T("OnOrderFilledHd 수수료 = %s\n"), strFee);
 	//TRACE(strMsg);
 
@@ -4965,7 +4975,7 @@ void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& 
 	order_info["filled_price"] = filled_price;
 	order_info["filled_count"] = _ttoi(strFilledAmount.Trim());
 
-	LOGINFO(CMyLogger::getInstance(), "OnOrderFilled order_no = %s, account_no = %s, symbol_code = %s, filled_amount = %s", strOrderNo, strAccountNo, strSymbolCode, strFilledAmount);
+	LOGINFO(CMyLogger::getInstance(), "on_ab_order_filled order_no = %s, account_no = %s, symbol_code = %s, filled_amount = %s", strOrderNo, strAccountNo, strSymbolCode, strFilledAmount);
 
 	order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
 	order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
@@ -4995,7 +5005,7 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 	//LOG_F(INFO, _T(" OnOrderAcceptedHd Custoem = %s"), strCustom);
 
 	CString strMsg;
-	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
+	strMsg.Format("on_dm_order_accepted 종목[%s]주문번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 
 	//TRACE(strMsg);
 	strCustom.Trim();
@@ -5056,7 +5066,7 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 	CString strOrderSeq = "0";
 
 	CString strMsg;
-	strMsg.Format("OnOrderUnfilled 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s] ,주문순서[%s], 주문수량[%s], 잔량[%s], 체결수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+	strMsg.Format("on_dm_order_unfilled 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s] ,주문순서[%s], 주문수량[%s], 잔량[%s], 체결수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
 
 	//TRACE(strMsg);
 
@@ -5141,7 +5151,7 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "수수료");
 
 	CString strMsg;
-	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s]\n", strSymbolCode, strOrderNo);
+	strMsg.Format("on_dm_order_filled 종목[%s]주문번호[%s]\n", strSymbolCode, strOrderNo);
 	//strMsg.Format(_T("OnOrderFilledHd 수수료 = %s\n"), strFee);
 	//TRACE(strMsg);
 
@@ -5500,6 +5510,7 @@ int DarkHorse::ViClient::ab_account_asset(DhTaskArg arg)
 		const CString sInput = reqString.c_str();
 		//LOG_F(INFO, _T("AbGetAsset code = %s, input = %s"), DEF_Ab_Asset, sInput);
 		const CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefAbAsset, sInput);
 		nRqID = m_CommAgent.CommRqData(DefAbAsset, sInput, sInput.GetLength(), strNextKey);
 		request_map_[nRqID] = arg;
 		//_TaskInfoMap[nRqID] = account_no;
@@ -5527,6 +5538,7 @@ int DarkHorse::ViClient::dm_account_asset(DhTaskArg arg)
 
 		CString sInput = reqString.c_str();
 		CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefDmAsset, sInput);
 		nRqID = m_CommAgent.CommRqData(DefDmAsset, sInput, sInput.GetLength(), strNextKey);
 		request_map_[nRqID] = arg;
 	}

@@ -455,7 +455,7 @@ void DarkHorse::ViStockClient::OnAccountReceived(nlohmann::json&& arg)
 			account->No(arg["account_no"]);
 			account->Name(arg["account_name"]);
 			account->Type(account_type);
-			account->Pwd("1234");
+			account->Pwd("5900");
 			mainApp.AcntMgr()->AddAccount(account);
 		}
 	}

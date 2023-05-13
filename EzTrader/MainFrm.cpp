@@ -130,7 +130,7 @@ void CMainFrame::HideProgress()
 {
 	if (ProgressDlg) {
 		ProgressDlg->ShowWindow(SW_HIDE);
-		ProgressDlg->DestroyWindow();
+		//ProgressDlg->DestroyWindow();
 	}
 }
 

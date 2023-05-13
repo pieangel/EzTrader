@@ -143,54 +143,22 @@ namespace DarkHorse {
 			break;
 		case DhTaskType::DmAcceptedOrderList:
 		{
-			end_all_task();
+			start_ab_symbol_position();
 		}
 			break;
+		case DhTaskType::AbSymbolPosition:
+		{
+			start_dm_symbol_position();
+		}
+		break;
 		case DhTaskType::DmSymbolPosition:
 		{
 			end_all_task();
 		}
 		break;
-		case DhTaskType::AbSymbolPosition:
-		{
-			end_all_task();
-		}
-		break;
+		
 		default:
 			break;
-		}
-		if (task_info_.task_type == DhTaskType::DmSymbolMasterFileDownload) {
-			start_ab_symbol_master_file_download();
-		}
-		else if (task_info_.task_type == DhTaskType::AbSymbolMasterFileDownload) {
-			mainApp.SymMgr()->MakeDomesticMarket();
-			mainApp.SymMgr()->ReadAbroadSymbols();
-			mainApp.SymMgr()->read_domestic_productfile();
-			mainApp.SymMgr()->read_domestic_masterfile();
-			mainApp.SymMgr()->sort_dm_option_symbol_vector();
-			mainApp.SymMgr()->MakeAbFavorite();
-			start_ab_symbol_master();
-		}
-		else if (task_info_.task_type == DhTaskType::AbSymbolMaster) {
-			start_dm_account_asset();
-		}
-		else if (task_info_.task_type == DhTaskType::DmAccountAsset) {
-			start_ab_account_asset();
-		}
-		else if (task_info_.task_type == DhTaskType::AbAccountAsset) {
-			start_ab_account_profit_loss();
-		}
-		else if (task_info_.task_type == DhTaskType::AbAccountProfitLoss) {
-			start_dm_account_profit_loss();
-		}
-		else if (task_info_.task_type == DhTaskType::DmApiCustomerProfitLoss) {
-			start_ab_accepted_order();
-		}
-		else if (task_info_.task_type == DhTaskType::AbAcceptedOrderList) {
-			start_dm_accepted_order();
-		}
-		else if (task_info_.task_type == DhTaskType::DmAcceptedOrderList) {
-			end_all_task();
 		}
 	}
 
@@ -298,10 +266,7 @@ namespace DarkHorse {
 		task_info_.task_type = DhTaskType::DmApiCustomerProfitLoss;
 	}
 
-	void ViServerDataReceiver::end_all_task()
-	{
-		((CMainFrame*)AfxGetMainWnd())->LoadAfterServerData();
-	}
+	
 
 	void ViServerDataReceiver::make_dm_file_download()
 	{
@@ -338,25 +303,7 @@ namespace DarkHorse {
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::AbSymbolMasterFileDownload;
 	}
-
-	void ViServerDataReceiver::start_dm_symbol_master_file_download()
-	{
-		make_dm_file_download();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
-	void ViServerDataReceiver::start_ab_symbol_master_file_download()
-	{
-		make_ab_file_download();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
-	void ViServerDataReceiver::start_ab_symbol_master()
-	{
-		make_ab_symbol_master();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
+	
 	void ViServerDataReceiver::make_ab_symbol_master()
 	{
 		const std::map<int, std::shared_ptr<SmSymbol>>& ab_symbol_favorite = mainApp.SymMgr()->get_ab_favorite_map();
@@ -396,16 +343,8 @@ namespace DarkHorse {
 		task_info_.task_type = DhTaskType::AbSymbolMaster;
 	}
 
-	void ViServerDataReceiver::start_dm_account_asset()
-	{
-		make_dm_account_asset();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-	void ViServerDataReceiver::start_ab_account_asset()
-	{
-		make_ab_account_asset();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
+
+
 	void ViServerDataReceiver::make_dm_account_asset() 
 	{
 		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
@@ -449,30 +388,6 @@ namespace DarkHorse {
 		task_info_.task_type = DhTaskType::AbAccountAsset;
 	}
 
-
-	void ViServerDataReceiver::start_ab_account_profit_loss()
-	{
-		make_ab_account_profit_loss();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
-	void ViServerDataReceiver::start_dm_account_profit_loss()
-	{
-		make_dm_account_profit_loss();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
-	void ViServerDataReceiver::start_dm_accepted_order()
-	{
-		make_dm_accepted_order();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-	void ViServerDataReceiver::start_ab_accepted_order()
-	{
-		make_ab_accepted_order();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-	
 	void ViServerDataReceiver::make_dm_accepted_order()
 	{
 		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
@@ -514,18 +429,6 @@ namespace DarkHorse {
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::AbAcceptedOrderList;
-	}
-
-	void ViServerDataReceiver::start_ab_symbol_position()
-	{
-		make_ab_symbol_position();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
-	}
-
-	void ViServerDataReceiver::start_dm_symbol_position()
-	{
-		make_dm_symbol_position();
-		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
 	}
 
 	void ViServerDataReceiver::make_ab_symbol_position()
@@ -571,5 +474,76 @@ namespace DarkHorse {
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::DmSymbolPosition;
 	}
+
+
+	void ViServerDataReceiver::end_all_task()
+	{
+		((CMainFrame*)AfxGetMainWnd())->LoadAfterServerData();
+	}
+
+	void ViServerDataReceiver::start_dm_symbol_master_file_download()
+	{
+		make_dm_file_download();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_ab_symbol_master_file_download()
+	{
+		make_ab_file_download();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_ab_symbol_master()
+	{
+		make_ab_symbol_master();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_dm_account_asset()
+	{
+		make_dm_account_asset();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+	void ViServerDataReceiver::start_ab_account_asset()
+	{
+		make_ab_account_asset();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+
+	void ViServerDataReceiver::start_ab_account_profit_loss()
+	{
+		make_ab_account_profit_loss();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+
+	void ViServerDataReceiver::start_dm_account_profit_loss()
+	{
+		make_dm_account_profit_loss();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+
+	void ViServerDataReceiver::start_dm_accepted_order()
+	{
+		make_dm_accepted_order();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+	void ViServerDataReceiver::start_ab_accepted_order()
+	{
+		make_ab_accepted_order();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+
+	void ViServerDataReceiver::start_ab_symbol_position()
+	{
+		make_ab_symbol_position();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+
+	void ViServerDataReceiver::start_dm_symbol_position()
+	{
+		make_dm_symbol_position();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+
 
 }

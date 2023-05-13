@@ -105,6 +105,6 @@ const CString DefDmAsset = "g11002.DQ0217&";
 
 const CString DefDmApiCustomerProfitLoss = "g11002.DQ1302&";
 const CString DefDmAccepted = "g11002.DQ0104&";
-const CString DefDmSymbolPosition = "g12002.DQ0521&";
+const CString DefDmSymbolPosition = "g11002.DQ1305&";
 
 
