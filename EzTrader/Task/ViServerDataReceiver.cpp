@@ -447,7 +447,7 @@ namespace DarkHorse {
 			task_info_.argument_map[arg.argument_id] = arg;
 		}
 
-		task_info_.task_title = "해외 미체결 목록을 가져오는 중입니다.";
+		task_info_.task_title = "해외 미결제 목록을 가져오는 중입니다.";
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::AbSymbolPosition;
@@ -469,7 +469,7 @@ namespace DarkHorse {
 			task_info_.argument_map[arg.argument_id] = arg;
 		}
 
-		task_info_.task_title = "국내 미체결 목록을 가져오는 중입니다.";
+		task_info_.task_title = "국내 미결제 목록을 가져오는 중입니다.";
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
 		task_info_.task_type = DhTaskType::DmSymbolPosition;
