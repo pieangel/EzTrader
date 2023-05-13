@@ -10,18 +10,8 @@
 // 작업 그룹이 진행되는 과정은 프로그레스바를 통해서 표시된다.
 class VtProgressDlg;
 
-/*
-HdSymbolMaster, // 해외 종목 정보
-	HdSymbolSise, // 해외 종목 시세
-	HdSymbolHoga, // 해외 종목 호가
-	HdSymbolChartData, // 해외 종목 차트 데이터
-	HdAccountAsset, // 해외 계좌
-	HdAccountProfitLoss, // 해외 계좌 손익
-	HdAccountSymbolRemain, // 해외 종목 잔고
-	HdAcceptedOrderList // 해외 미체결 주문
-*/
 namespace DarkHorse {
-	class ViServerDataReceiver // : public TemplateSingleton<ViServerDataReceiver>
+	class ViServerDataReceiver 
 	{
 	private:
 		// 앱의 상태를 나타낸다.
