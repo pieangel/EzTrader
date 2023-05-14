@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "../Json/json.hpp"
 namespace DarkHorse {
 	class SmAccount;
 	// 계좌 관리자
@@ -34,6 +35,7 @@ namespace DarkHorse {
 		std::shared_ptr<SmAccount> FindAccountById(const int& account_id);
 		void AddTestAccounts();
 		void SetPassword(const std::string& account_no, const std::string& pwd);
+		void on_account_asset(nlohmann::json&& arg);
 	private:
 		
 		/// <summary>

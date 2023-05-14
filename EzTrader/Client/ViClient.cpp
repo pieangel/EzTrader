@@ -3733,9 +3733,7 @@ void DarkHorse::ViClient::on_ab_account_asset(const CString& sTrCode, const LONG
 		account_asset["additional_margin"] = _ttof(strAdditionalMargin.Trim());
 		account_asset["order_margin"] = _ttof(strOrderableAmount.Trim());
 
-		if (auto wp = _Client.lock()) {
-			wp->OnAccountAsset(std::move(account_asset));
-		}
+		mainApp.AcntMgr()->on_account_asset(std::move(account_asset));
 	}
 
 	on_task_complete(nRqID);
@@ -3765,17 +3763,20 @@ void DarkHorse::ViClient::on_dm_account_asset(const CString& sTrCode, const LONG
 		nlohmann::json account_asset;
 		account_asset["account_no"] = std::string(strAccountNo.Trim());
 		account_asset["balance"] = _ttof(strEntrustTotal.Trim());
+		account_asset["currency"] = "KRW";
 		account_asset["entrust_total"] = _ttof(strEntrustTotal.Trim());
+		account_asset["outstanding_deposit"] = _ttof(strOrderMargin.Trim());
 		account_asset["order_deposit"] = _ttof(strOrderMargin.Trim());
 		account_asset["entrust_deposit"] = _ttof(strEntrustMargin.Trim());
+		account_asset["maintenance_margin"] = 0;
+		account_asset["settled_profit_loss"] = 0;
 		account_asset["fee"] = _ttof(strFee.Trim());
 		account_asset["open_profit_loss"] = _ttof(strOpenProfitLoss.Trim());
 		account_asset["open_trust_total"] = _ttof(strOpenTrustTotal.Trim());
 		account_asset["order_margin"] = _ttof(strOrderableAmount.Trim());
+		account_asset["additional_margin"] = 0;
 
-		if (auto wp = _Client.lock()) {
-			wp->OnDmAccountAsset(std::move(account_asset));
-		}
+		mainApp.AcntMgr()->on_account_asset(std::move(account_asset));
 	}
 
 	on_task_complete(nRqID);
@@ -3819,7 +3820,7 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 		
 
 		if (auto wp = _Client.lock()) {
-			wp->OnAccountProfitLoss(std::move(account_profit_loss));
+			wp->on_ab_symbol_profit_loss(std::move(account_profit_loss));
 		}
 	}
 
@@ -3854,20 +3855,18 @@ void DarkHorse::ViClient::on_ab_symbol_position(const CString& sTrCode, const LO
 
 		int position = _ttoi(strSymbolPosition.Trim());
 
-		nlohmann::json symbol_profit_loss;
-		symbol_profit_loss["account_no"] = static_cast<const char*>(strAccountNo.Trim());
-		symbol_profit_loss["account_name"] = static_cast<const char*>(strAccountName.Trim());
-		symbol_profit_loss["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
-		symbol_profit_loss["symbol_position"] = position == 1 ? 1 : -1;
-		symbol_profit_loss["symbol_pre_open_qty"] = _ttoi(strSymbolPreOpenQty.Trim());
-		symbol_profit_loss["symbol_open_qty"] = _ttoi(strSymbolOpenQty.Trim());
-		symbol_profit_loss["symbol_avg_price"] = avg_price;
-		symbol_profit_loss["symbol_unit_price"] = unit_price;
-		symbol_profit_loss["symbol_open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
+		nlohmann::json symbol_position;
+		symbol_position["account_no"] = static_cast<const char*>(strAccountNo.Trim());
+		symbol_position["account_name"] = static_cast<const char*>(strAccountName.Trim());
+		symbol_position["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+		symbol_position["symbol_position"] = position == 1 ? 1 : -1;
+		symbol_position["symbol_pre_open_qty"] = _ttoi(strSymbolPreOpenQty.Trim());
+		symbol_position["symbol_open_qty"] = _ttoi(strSymbolOpenQty.Trim());
+		symbol_position["symbol_avg_price"] = avg_price;
+		symbol_position["symbol_unit_price"] = unit_price;
+		symbol_position["symbol_open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
 
-		if (auto wp = _Client.lock()) {
-			wp->OnSymbolProfitLoss(std::move(symbol_profit_loss));
-		}
+		mainApp.total_position_manager()->on_symbol_position(std::move(symbol_position));
 	}
 
 	on_task_complete(nRqID);
@@ -3896,20 +3895,18 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 
 		int position = _ttoi(strSymbolPosition.Trim());
 
-		nlohmann::json symbol_profit_loss;
-		symbol_profit_loss["account_no"] = static_cast<const char*>(strAccountNo.Trim());
-		symbol_profit_loss["account_name"] = static_cast<const char*>(strAccountName.Trim());
-		symbol_profit_loss["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
-		symbol_profit_loss["symbol_position"] = position == 1 ? 1 : -1;
-		symbol_profit_loss["symbol_pre_open_qty"] = 0;
-		symbol_profit_loss["symbol_open_qty"] = _ttoi(strSymbolOpenQty.Trim());
-		symbol_profit_loss["symbol_avg_price"] = _ttoi(strSymbolAvgPrice);
-		symbol_profit_loss["symbol_unit_price"] = _ttoi(strSymbolAvgPrice);
-		symbol_profit_loss["symbol_open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
+		nlohmann::json symbol_position;
+		symbol_position["account_no"] = static_cast<const char*>(strAccountNo.Trim());
+		symbol_position["account_name"] = static_cast<const char*>(strAccountName.Trim());
+		symbol_position["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+		symbol_position["symbol_position"] = position == 1 ? 1 : -1;
+		symbol_position["symbol_pre_open_qty"] = 0;
+		symbol_position["symbol_open_qty"] = _ttoi(strSymbolOpenQty.Trim());
+		symbol_position["symbol_avg_price"] = _ttoi(strSymbolAvgPrice);
+		symbol_position["symbol_unit_price"] = _ttoi(strSymbolAvgPrice);
+		symbol_position["symbol_open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
 
-		if (auto wp = _Client.lock()) {
-			wp->OnSymbolProfitLoss(std::move(symbol_profit_loss));
-		}
+		mainApp.total_position_manager()->on_symbol_position(std::move(symbol_position));
 	}
 
 	on_task_complete(nRqID);
@@ -3984,7 +3981,7 @@ void DarkHorse::ViClient::on_ab_filled_order_list(const CString& sTrCode, const 
 		order_info["custom"] = "";
 
 		if (auto wp = _Client.lock()) {
-			wp->OnFilledList(std::move(order_info));
+			wp->on_ab_filled_order_list(std::move(order_info));
 		}
 	}
 

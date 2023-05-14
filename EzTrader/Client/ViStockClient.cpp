@@ -23,6 +23,8 @@
 #include "../Order/SmAccountOrderManager.h"
 #include "../Global/SmTotalManager.h"
 #include "../Event/EventHub.h"
+#include "../Position/TotalPositionManager.h"
+#include "../Position/Position.h"
 
 
 using namespace nlohmann;
@@ -556,7 +558,7 @@ void DarkHorse::ViStockClient::OnRealtimeHoga(nlohmann::json&& arg)
 	mainApp.HogaMgr()->AddHoga(std::move(arg));
 }
 
-void DarkHorse::ViStockClient::OnAccountAsset(nlohmann::json&& arg)
+void DarkHorse::ViStockClient::on_ab_account_asset(nlohmann::json&& arg)
 {
 	const std::string account_no = arg["account_no"];
 	const auto account = mainApp.AcntMgr()->FindAccount(account_no);
@@ -583,7 +585,7 @@ void DarkHorse::ViStockClient::OnAccountAsset(nlohmann::json&& arg)
 }
 
 
-void DarkHorse::ViStockClient::OnDmAccountAsset(nlohmann::json&& arg)
+void DarkHorse::ViStockClient::on_dm_account_asset(nlohmann::json&& arg)
 {
 	const std::string account_no = arg["account_no"];
 	const auto account = mainApp.AcntMgr()->FindAccount(account_no);
@@ -598,7 +600,7 @@ void DarkHorse::ViStockClient::OnDmAccountAsset(nlohmann::json&& arg)
 	}
 }
 
-void DarkHorse::ViStockClient::OnAccountProfitLoss(nlohmann::json&& arg)
+void DarkHorse::ViStockClient::on_ab_symbol_profit_loss(nlohmann::json&& arg)
 {
 	try {
 		const std::string account_no = arg["account_no"];
@@ -619,40 +621,30 @@ void DarkHorse::ViStockClient::OnAccountProfitLoss(nlohmann::json&& arg)
 	}
 }
 
-void DarkHorse::ViStockClient::OnSymbolProfitLoss(nlohmann::json&& arg)
+void DarkHorse::ViStockClient::on_ab_symbol_position(nlohmann::json&& arg)
 {
 	try {
 		const std::string symbol_code = arg["symbol_code"];
 		const std::string account_no = arg["account_no"];
-		const int avg_price = arg["symbol_avg_price"];
+		const int average_price = arg["symbol_avg_price"];
 		const int order_position = arg["symbol_position"]; // buy : 1, sell : -1
 		const int pre_open_qty = arg["symbol_pre_open_qty"];
 		const int today_open_qty = arg["symbol_open_qty"];
-		const int total_open_qty = pre_open_qty + today_open_qty;
-		const double open_pl = arg["symbol_open_profit_loss"];
-		//std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		const int open_quantity = pre_open_qty + today_open_qty;
+		const double open_profit_loss = arg["symbol_open_profit_loss"];
 
 		
-		std::shared_ptr<DarkHorse::SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(account_no, symbol_code);
-
-		
-		position->AccountNo = account_no;
-		position->SymbolCode = symbol_code;
-		position->AvgPrice = avg_price;
-		position->OpenQty = total_open_qty * order_position;
-		position->Position = order_position > 0 ? SmPositionType::Buy : SmPositionType::Sell;
-		position->OpenPL = open_pl;
-
-		//mainApp.Client()->RegisterSymbol(symbol_code);
-		
-		
+		std::shared_ptr<DarkHorse::Position> position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
+		position->account_no = account_no;
+		position->symbol_code = symbol_code;
+		position->average_price = average_price;
+		position->open_quantity = open_quantity * order_position;
+		position->open_profit_loss = open_profit_loss;
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
-
-	//position->OpenPL = open_pl;
 }
 
 void DarkHorse::ViStockClient::OnAcceptedList(nlohmann::json&& arg)
@@ -660,7 +652,7 @@ void DarkHorse::ViStockClient::OnAcceptedList(nlohmann::json&& arg)
 	OnOrderAccepted(std::move(arg));
 }
 
-void DarkHorse::ViStockClient::OnFilledList(nlohmann::json&& arg)
+void DarkHorse::ViStockClient::on_ab_filled_order_list(nlohmann::json&& arg)
 {
 	OnOrderFilledList(std::move(arg));
 }
