@@ -48,6 +48,12 @@
 #include "../Order/OrderRequest/OrderRequest.h"
 #include "../Controller/StopOrderControl.h"
 #include "../Symbol/MarketDefine.h"
+#include "../Position/TotalPositionManager.h"
+#include "../Position/Position.h"
+#include "../Order/OrderProcess/TotalOrderManager.h"
+#include "../Order/OrderProcess/AccountOrderManager.h"
+#include "../Order/OrderProcess/SymbolOrderManager.h"
+
 #include <sstream>
 #include <format>
 #include <functional>
@@ -1384,6 +1390,25 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 	auto hoga = mainApp.HogaMgr()->get_hoga(symbol_code);
 }
 
+void SymbolOrderView::set_position() {
+	if (!position_control_ || !account_ || !symbol_) return;
+	auto position = mainApp.total_position_manager()->get_position(account_->No(), symbol_->SymbolCode());
+	if (!position) return;
+	position->symbol_id = symbol_->Id();
+	position->account_id = account_->id();
+	position_control_->update_position(position);
+}
+
+void SymbolOrderView::set_order() {
+	if (!order_control_ || !account_ || !symbol_) return;
+	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_->No());
+	auto symbol_order_manager = account_order_manager->get_order_manager(symbol_->SymbolCode());
+	const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
+	for (auto it = accepted_order_map.begin(); it != accepted_order_map.end(); it++) {
+		symbol_order_manager->dispatch_order(OrderEvent::OE_Unfilled, it->second);
+	}
+}
+
 void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	if (!val || !position_control_ || !order_control_) return;
@@ -1391,6 +1416,8 @@ void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	account_ = val;
 	order_control_->add_account_id(val->id());
 	position_control_->set_account_id(val->id());
+	set_position();
+	set_order();
 }
 
 void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
@@ -1407,6 +1434,8 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	product_control_->update_product(symbol_);
 
 	position_control_->set_symbol_id(val->Id());
+	set_position();
+	set_order();
 	sell_stop_order_control_->set_control_type(CT_SELL);
 	sell_stop_order_control_->set_symbol_id(symbol_->Id());
 	buy_stop_order_control_->set_control_type(CT_BUY);

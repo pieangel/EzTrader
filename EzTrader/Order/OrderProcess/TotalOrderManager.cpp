@@ -120,7 +120,7 @@ order_p TotalOrderManager::make_order(const order_event& order_info)
 
 void TotalOrderManager::set_order_request_info(const std::string& custom_info, order_p order)
 {
-	if (!order) return;
+	if (!order || custom_info.empty()) return;
 	order_request_p order_request = mainApp.order_request_manager()->find_order_request(custom_info);
 	if (!order_request) return;
 	order->order_amount = order_request->order_amount;

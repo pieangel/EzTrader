@@ -133,6 +133,7 @@ public:
 		price_type_ = price_type;
 	}
 private:
+	void update_position();
 	void update_buy_stop_order();
 	void update_sell_stop_order();
 	void on_update_buy_stop_order();
@@ -175,7 +176,8 @@ private:
 	std::vector<std::pair<CBCGPRect, CBCGPRect>> buy_stop_order_rect_vector_;
 	std::vector<std::pair<CBCGPRect, CBCGPRect>> sell_stop_order_rect_vector_;
 
-	void update_position();
+	void set_position();
+	void set_order();
 	void set_filled_condition(DarkHorse::OrderRequestType order_req_type);
 	std::shared_ptr<DarkHorse::SmCell> draw_cell(const int row, const int col, const int value);
 	void draw_order_cell(DarkHorse::SmPositionType position, const int price, const int count);

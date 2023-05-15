@@ -426,7 +426,10 @@ void SmSymbolManager::MakeAbFavorite()
 		std::shared_ptr<SmProduct> product = FindProduct(product_code);
 		if (!product) continue;
 		const auto& symbol = GetRecentSymbol(product_code);
-		if (symbol) _FavoriteMap[symbol->Id()] = symbol;
+		if (symbol) {
+			_FavoriteMap[symbol->Id()] = symbol;
+			mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
+		}
 	}
 }
 

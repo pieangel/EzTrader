@@ -271,6 +271,7 @@ void ViClient::on_ab_accepted_order(const CString& server_trade_code, const LONG
 		order_info["modified_count"] = _ttoi(strModyCnt.Trim());
 		order_info["filled_count"] = _ttoi(strFilledCnt.Trim());
 		order_info["order_sequence"] = 1;
+		order_info["custom_info"] = "";
 		//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
 		//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
 
@@ -358,6 +359,7 @@ void ViClient::on_dm_accepted_order(const CString& server_trade_code, const LONG
 		order_info["modified_count"] = _ttoi(strModyCnt.Trim());
 		order_info["filled_count"] = _ttoi(strFilledCnt.Trim());
 		order_info["order_sequence"] = _ttoi(strOrderSeq.Trim());
+		order_info["custom_info"] = "";
 		//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
 		//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
 
