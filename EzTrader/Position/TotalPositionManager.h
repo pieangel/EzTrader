@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include "../Json/json.hpp"
 namespace DarkHorse {
 class AccountPositionManager;
 struct Order;
@@ -21,6 +22,7 @@ public:
 	/// </summary>
 	/// <param name="order"></param>
 	void update_position(order_p order);
+	void on_symbol_position(nlohmann::json&& arg);
 private:
 	account_position_manager_p find_position_manager(const std::string& account_no);
 	account_position_manager_p create_position_manager(const std::string& account_no);

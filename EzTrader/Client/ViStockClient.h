@@ -48,12 +48,12 @@ namespace DarkHorse {
 		// 해외 실시간 호가
 		void OnRealtimeHoga(nlohmann::json&& arg);
 
-		void OnAccountAsset(nlohmann::json&& arg);
-		void OnDmAccountAsset(nlohmann::json&& arg);
-		void OnAccountProfitLoss(nlohmann::json&& arg);
-		void OnSymbolProfitLoss(nlohmann::json&& arg);
+		void on_ab_account_asset(nlohmann::json&& arg);
+		void on_dm_account_asset(nlohmann::json&& arg);
+		void on_ab_symbol_profit_loss(nlohmann::json&& arg);
+		void on_ab_symbol_position(nlohmann::json&& arg);
 		void OnAcceptedList(nlohmann::json&& arg);
-		void OnFilledList(nlohmann::json&& arg);
+		void on_ab_filled_order_list(nlohmann::json&& arg);
 		// 해외 주문 접수
 		void OnOrderAccepted(nlohmann::json&& arg);
 		// 해외 주문 미체결 
@@ -102,8 +102,14 @@ namespace DarkHorse {
 		int ab_account_profit_loss(DhTaskArg arg);
 		int dm_account_profit_loss(DhTaskArg arg);
 
+		int dm_symbol_position(DhTaskArg arg);
+		int ab_symbol_position(DhTaskArg arg);
+
 		int ab_accepted_order(DhTaskArg arg);
 		int dm_accepted_order(DhTaskArg arg);
+
+		int ab_symbol_hoga(DhTaskArg arg);
+		int ab_symbol_quote(DhTaskArg arg);
 	private:
 		int GetDomesticSymbolCode(task_arg&& arg) ;
 		bool _Enable{ true };
@@ -115,9 +121,6 @@ namespace DarkHorse {
 		std::shared_ptr<SmOrder> SetOrderFilled(nlohmann::json&& arg);
 		int DownloadFile(task_arg&& arg) ;
 		int DownloadMasterFile(task_arg&& arg);
-		//int GetSymbolMaster(task_arg&& arg) override;
-		//int GetSymbolQuote(task_arg&& arg) override;
-		//int GetSymbolHoga(task_arg&& arg) override;
 		int GetAccountAsset(task_arg&& arg) ;
 		int GetDeposit(task_arg&& arg) ;
 		int GetAccountProfitLoss(task_arg&& arg) ;
