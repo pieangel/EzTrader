@@ -55,7 +55,11 @@ namespace DarkHorse {
 		void start_ab_accepted_order();
 		void start_ab_symbol_position();
 		void start_dm_symbol_position();
+		void start_ab_symbol_profit_loss();
+		void start_dm_symbol_profit_loss();
 	private:
+		void make_ab_symbol_profit_loss();
+		void make_dm_symbol_profit_loss();
 		void make_ab_symbol_position();
 		void make_dm_symbol_position();
 		void make_dm_accepted_order();

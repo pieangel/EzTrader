@@ -59,6 +59,8 @@ namespace DarkHorse {
 
 		DECLARE_MESSAGE_MAP()
 	public:
+		int ab_symbol_profit_loss(DhTaskArg arg);
+		int dm_symbol_profit_loss(DhTaskArg arg);
 		int dm_symbol_position(DhTaskArg arg);
 		int ab_symbol_position(DhTaskArg arg);
 		void on_task_complete(const int& nRqId);

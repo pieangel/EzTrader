@@ -1201,6 +1201,42 @@ int ViClient::dm_symbol_position(DhTaskArg arg)
 	return -1;
 }
 
+
+int ViClient::dm_symbol_profit_loss(DhTaskArg arg)
+{
+	try {
+		const std::string account_no = arg.parameter_map["account_no"];
+		const std::string password = arg.parameter_map["password"];
+
+		std::string reqString;
+		std::string temp;
+		temp = VtStringUtil::PadRight(account_no, ' ', 11);
+		reqString.append(temp);
+		reqString.append(_T("001"));
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+
+
+		CString sInput = reqString.c_str();
+		CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefDmApiCustomerProfitLoss, sInput);
+		int nRqID = m_CommAgent.CommRqData(DefDmApiCustomerProfitLoss, sInput, sInput.GetLength(), strNextKey);
+		//arg["tr_code"] = std::string(sTrCode);
+		request_map_[nRqID] = arg;
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+			return nRqID;
+		}
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
 int ViClient::ab_symbol_position(DhTaskArg arg)
 {
 	try {
@@ -1226,6 +1262,46 @@ int ViClient::ab_symbol_position(DhTaskArg arg)
 		const CString strNextKey = _T("");
 		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefAbSymbolPosition, sInput);
 		const int nRqID = m_CommAgent.CommRqData(DefAbSymbolPosition, sInput, sInput.GetLength(), strNextKey);
+		request_map_[nRqID] = arg;
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+		}
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+
+int ViClient::ab_symbol_profit_loss(DhTaskArg arg)
+{
+	try {
+		const std::string account_no = arg.parameter_map["account_no"];
+		const std::string password = arg.parameter_map["password"];
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+		std::string reqString;
+		std::string temp;
+		reqString.append("1");
+		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
+		// 아이디 
+		reqString.append(temp);
+
+		temp = VtStringUtil::PadRight(account_no, ' ', 6);
+		reqString.append(temp);
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+		// 그룹명 - 공백
+		reqString.append("                    ");
+
+
+		const CString sInput = reqString.c_str();
+		const CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefAbSymbolProfitLoss, sInput);
+		const int nRqID = m_CommAgent.CommRqData(DefAbSymbolProfitLoss, sInput, sInput.GetLength(), strNextKey);
 		request_map_[nRqID] = arg;
 		if (nRqID < 0) {
 			on_task_error(nRqID, arg.argument_id);

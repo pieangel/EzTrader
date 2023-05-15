@@ -34,6 +34,7 @@ enum class DhTaskType
 	AbSymbolChartData, // 해외 종목 차트 데이터
 	AbAccountAsset, // 해외 계좌 
 	AbAccountProfitLoss, // 해외 계좌 손익
+	AbSymbolProfitLoss, // 해외 종목별 손익
 	AbSymbolPosition, // 해외 종목 잔고
 	AbAcceptedOrderList, // 해외 미체결 주문
 	AbFilledOrderList, // 해외 체결 주문
@@ -43,6 +44,7 @@ enum class DhTaskType
 	DmAcceptedOrderList, // 접수확인 내역
 	DmFilledHistory, // 체결내역
 	DmSymbolPosition, // 잔고내역
+	DmSymbolProfitLoss, // 국내 종목별 손익
 	DmOutstanding, // 현재잔고
 	DmCmeAcceptedHistory, // cme 접수확인 내역
 	DmCmeFilledHistory, // cme 체결내역

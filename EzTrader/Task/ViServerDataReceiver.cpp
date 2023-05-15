@@ -64,6 +64,12 @@ namespace DarkHorse {
 		case DhTaskType::DmSymbolPosition:
 			mainApp.Client()->dm_symbol_position(arg);
 			break;
+		case DhTaskType::AbSymbolProfitLoss:
+			mainApp.Client()->ab_symbol_profit_loss(arg);
+			break;
+		case DhTaskType::DmSymbolProfitLoss:
+			mainApp.Client()->dm_symbol_profit_loss(arg);
+			break;
 		case DhTaskType::AbSymbolChartData:
 			//mainApp.Client().GetAbChartData(arg);
 			break;
@@ -476,6 +482,50 @@ namespace DarkHorse {
 	}
 
 
+	void ViServerDataReceiver::make_ab_symbol_profit_loss()
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "1") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::AbSymbolProfitLoss;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "해외 종목별 손익을 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbSymbolProfitLoss;
+	}
+	void ViServerDataReceiver::make_dm_symbol_profit_loss()
+	{
+		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+		for (auto it = account_map.begin(); it != account_map.end(); it++) {
+			std::shared_ptr<SmAccount> account = it->second;
+			if (account->Type() != "9") continue;
+			DhTaskArg arg;
+			arg.detail_task_description = account->No();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::DmSymbolProfitLoss;
+			arg.parameter_map["account_no"] = account->No();
+			arg.parameter_map["password"] = account->Pwd();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "국내 종목별 손익을 가져오는 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::DmSymbolProfitLoss;
+	}
+
+
 	void ViServerDataReceiver::end_all_task()
 	{
 		((CMainFrame*)AfxGetMainWnd())->LoadAfterServerData();
@@ -545,5 +595,14 @@ namespace DarkHorse {
 		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
 	}
 
-
+	void ViServerDataReceiver::start_ab_symbol_profit_loss()
+	{
+		make_ab_symbol_profit_loss();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
+	void ViServerDataReceiver::start_dm_symbol_profit_loss()
+	{
+		make_dm_symbol_profit_loss();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
+	}
 }
