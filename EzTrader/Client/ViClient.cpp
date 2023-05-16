@@ -1157,13 +1157,16 @@ void ViClient::on_task_error(const int& server_request_id, const int request_id)
 		auto it = request_map_.find(server_request_id);
 		if (it == request_map_.end()) {
 			auto first = request_map_.begin();
-			mainApp.vi_server_data_receiver()->on_task_error(first->second.argument_id);
+			const int argument_id = first->second.argument_id;
 			request_map_.clear();
+			mainApp.vi_server_data_receiver()->on_task_error(first->second.argument_id);
 		}
-		else
-			mainApp.vi_server_data_receiver()->on_task_error(it->second.argument_id);
+		else {
+			const int argument_id = it->second.argument_id;
+			request_map_.clear();
+			mainApp.vi_server_data_receiver()->on_task_error(argument_id);
+		}
 	}
-	request_map_.clear();
 }
 
 int ViClient::dm_symbol_position(DhTaskArg arg)
@@ -3082,8 +3085,8 @@ void ViClient::on_task_complete(const int& nRqId)
 	auto it = request_map_.find(nRqId);
 	if (it == request_map_.end()) return;
 	const int argument_id = it->second.argument_id;
-	mainApp.vi_server_data_receiver()->on_task_complete(argument_id);
 	request_map_.erase(it);
+	mainApp.vi_server_data_receiver()->on_task_complete(argument_id);
 }
 
 

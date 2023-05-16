@@ -47,6 +47,7 @@ FavoriteSymbolView::FavoriteSymbolView()
 	m_bExtendedPadding = FALSE;
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->set_event_handler(std::bind(&FavoriteSymbolView::on_update_quote, this));
+	mainApp.SymMgr()->RegisterFavoriteSymbols();
 }
 
 FavoriteSymbolView::~FavoriteSymbolView()

@@ -428,7 +428,7 @@ void SmSymbolManager::MakeAbFavorite()
 		const auto& symbol = GetRecentSymbol(product_code);
 		if (symbol) {
 			_FavoriteMap[symbol->Id()] = symbol;
-			mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
+			//mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
 		}
 	}
 }
@@ -456,6 +456,13 @@ void SmSymbolManager::AddFavorite(const int& symbol_id)
 	auto symbol = FindSymbolById(symbol_id);
 	if (!symbol) return;
 	_FavoriteMap[symbol_id] = symbol;
+}
+
+void SmSymbolManager::RegisterFavoriteSymbols()
+{
+	for (auto it = _FavoriteMap.begin(); it != _FavoriteMap.end(); it++) {
+		RegisterSymbolToServer(it->second->SymbolCode(), true);
+	}
 }
 
 void SmSymbolManager::RemoveFavorite(const std::string& symbol_code)

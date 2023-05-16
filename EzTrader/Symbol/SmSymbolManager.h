@@ -80,6 +80,7 @@ namespace DarkHorse {
 		const std::map<int, std::shared_ptr<SmSymbol>>& GetFavoriteMap() {
 			return _FavoriteMap;
 		}
+		void RegisterFavoriteSymbols();
 		void AddFavorite(const int& symbol_id);
 		void RemoveFavorite(const std::string& symbol_code);
 		std::shared_ptr<SmSymbol> FindSymbolById(const int& id);
