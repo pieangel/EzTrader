@@ -176,6 +176,7 @@ namespace DarkHorse {
 		void on_dm_symbol_master_file(const CString& server_trade_code, const LONG& server_request_id);
 
 		void on_dm_account_profit_loss(const CString& server_trade_code, const LONG& server_request_id);
+		void on_ab_account_profit_loss(const CString& server_trade_code, const LONG& server_request_id);
 
 		void on_ab_accepted_order(const CString& server_trade_code, const LONG& server_request_id);
 		void on_dm_accepted_order(const CString& server_trade_code, const LONG& server_request_id);
@@ -185,6 +186,7 @@ namespace DarkHorse {
 		void on_ab_account_asset(const CString& sTrCode, const LONG& nRqID);
 		void on_dm_account_asset(const CString& sTrCode, const LONG& nRqID);
 		void on_ab_symbol_profit_loss(const CString& sTrCode, const LONG& nRqID);
+		void on_dm_symbol_profit_loss(const CString& sTrCode, const LONG& nRqID);
 		void on_ab_symbol_position(const CString& sTrCode, const LONG& nRqID);
 		void on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID);
 		void on_ab_filled_order_list(const CString& sTrCode, const LONG& nRqID);

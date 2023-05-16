@@ -103,8 +103,11 @@ const CString DEF_FX_ORD_CODE_CNL = "g12003.AO0503%";	// 취소주문
 // 계좌별 자산
 const CString DefDmAsset = "g11002.DQ0217&";
 
-const CString DefDmApiCustomerProfitLoss = "g11002.DQ1302&";
+const CString DefDmAccountProfitLoss = "g11002.DQ1302&";
 const CString DefDmAccepted = "g11002.DQ0104&";
 const CString DefDmSymbolPosition = "g11002.DQ1305&";
+
+// 종목별 손익
+const CString DefDmSymbolProfitLoss = "g11002.DQ1302&";
 
 

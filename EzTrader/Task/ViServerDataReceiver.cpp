@@ -129,15 +129,15 @@ namespace DarkHorse {
 			break;
 		case DhTaskType::AbAccountAsset:
 		{
-			start_ab_account_profit_loss();
+			start_ab_symbol_profit_loss();
 		}
 			break;
-		case DhTaskType::AbAccountProfitLoss:
+		case DhTaskType::AbSymbolProfitLoss:
 		{
-			start_dm_account_profit_loss();
+			start_dm_symbol_profit_loss();
 		}
 			break;
-		case DhTaskType::DmApiCustomerProfitLoss:
+		case DhTaskType::DmSymbolProfitLoss:
 		{
 			start_ab_accepted_order();
 		}
