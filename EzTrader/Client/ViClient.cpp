@@ -383,50 +383,26 @@ void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 {
 	try {
 		CString strLog;
-		auto found = _ReqMap.find(nRqId);
-		if (found != _ReqMap.end()) {
-			const auto& argument_map = found->second;
-			if (argument_map.contains("tr_code")) {
-				const std::string tr_code = std::any_cast<std::string>(found->second["tr_code"]);
-				strLog.Format("RQID[%d][%s][%s]", nRqId, tr_code.c_str(), strMsg);
-			}
-			else {
-				strLog.Format("RQID[%d][%s][%s]", nRqId, strCode, strMsg);
-			}
-		}
-		strLog.Format("RQID[%d][%s][%s]\n", nRqId, strCode, strMsg);
+		strLog.Format("RQID[%d], Code[%s], Message[%s]\n", nRqId, strCode, strMsg);
+		LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
 		TRACE(strLog);
 		const int result_code = _ttoi(strCode);
-		if (nRqId < 0 
+		if (result_code == 332) {
+			on_task_complete(0);
+		}
+		else if (nRqId < 0 
 			|| result_code == 99997
 			|| result_code == -9002 
 			|| result_code == 91001
 			|| result_code == -6000) {
-			LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
 			on_task_error(nRqId, -1);
 		}
-		CString code(strCode);
-		if (code.Compare("0332") == 0) {
-			const int res_code = std::stoi((const char*)code);
-			on_task_complete(0);
-		}
-		
-
-		auto it = _ChartReqMap.find(nRqId);
-		if (it != _ChartReqMap.end()) {
-			if (code.Compare("91001") == 0 || code.Compare("-2712") == 0) {
-				_ChartReqMap.erase(it);
-				AfxMessageBox(strMsg);
-			}
-		}
-
-	
 
 		if (nRqId == _CheckPwdReqId) {
 			auto found = _ReqMap.find(nRqId);
 			if (found != _ReqMap.end()) {
 				const std::string account_no = std::any_cast<std::string>(found->second["account_no"]);
-				const int result = _ttoi(code) == 0 ? 1 : 0;
+				const int result = _ttoi(strCode) == 0 ? 1 : 0;
 				auto account = mainApp.AcntMgr()->FindAccount(account_no);
 				if (account) {
 					const int account_id = account->id();
@@ -436,12 +412,6 @@ void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 			}
 			_CheckPwdReqId = -1;
 		}
-
-		mainApp.TotalOrderMgr()->ServerMsg = strMsg;
-		mainApp.CallbackMgr()->OnServerMsg(_ttoi(strCode));
-	
-		LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
-
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
