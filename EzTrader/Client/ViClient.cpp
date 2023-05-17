@@ -84,8 +84,9 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 {
 	const CString code = sTrRcvCode;
 	const LONG req_id = nRqID;
-
-	LOGINFO(CMyLogger::getInstance(), sTrRcvCode);
+	CString strLog;
+	strLog.Format("RQID[%d], Code[%s]\n", nRqID, sTrRcvCode);
+	LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
 
 	if (code == DefAccountList) {
 		on_account_list(code, req_id);
@@ -323,7 +324,7 @@ void ViClient::on_dm_accepted_order(const CString& server_trade_code, const LONG
 
 
 		const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
-		if (order_price < 0) return;
+		if (order_price < 0) continue;
 		// 계좌 번호 트림
 		strAccountNo.TrimRight();
 		// 주문 번호 트림
@@ -418,9 +419,6 @@ void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 
 		mainApp.TotalOrderMgr()->ServerMsg = strMsg;
 		mainApp.CallbackMgr()->OnServerMsg(_ttoi(strCode));
-	
-		LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
-
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
@@ -1192,9 +1190,10 @@ int ViClient::dm_symbol_profit_loss(DhTaskArg arg)
 
 		std::string reqString;
 		std::string temp;
+		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 11);
 		reqString.append(temp);
-		reqString.append(_T("001"));
+		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 

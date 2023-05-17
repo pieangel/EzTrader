@@ -2498,10 +2498,10 @@ void SymbolOrderView::OnTimer(UINT_PTR nIDEvent)
 
 	if (enable_position_show_) {
 		enable_position_show_ = false;
-		update_position();
+		//update_position();
 		needDraw = true;
 	}
-
+	update_position();
 	if (needDraw) Invalidate(FALSE);
 
 	CBCGPStatic::OnTimer(nIDEvent);
