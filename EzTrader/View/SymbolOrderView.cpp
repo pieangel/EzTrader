@@ -1297,9 +1297,10 @@ void SymbolOrderView::PutOrderBySpaceBar()
 {
 	if (!account_ || !symbol_) return;
 
-	if (!selected_cell_) return;
+	if (!selected_cell_ || !selected_center_cell_) return;
 
 	const int price = FindValue(selected_cell_->Row());
+	const std::string& price_string = selected_center_cell_->Text();
 
 	if (selected_cell_->Col() == DarkHorse::OrderGridHeader::SELL_ORDER)
 		put_order(SmPositionType::Sell, price);
@@ -2252,8 +2253,10 @@ void SymbolOrderView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	auto cell = _Grid->FindCellByPos(_X, _Y);
 	if (!cell) return;
-
-	if (cell) { selected_cell_ = cell; }
+	auto center_cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::QUOTE);
+	if (!center_cell) return;
+	selected_center_cell_ = center_cell;
+	selected_cell_ = cell;
 
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
 	if (cell_pos.second == DarkHorse::OrderGridHeader::SELL_ORDER ||
@@ -2391,7 +2394,7 @@ int SymbolOrderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void SymbolOrderView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	if (!_Grid) return;
-
+	if (!selected_center_cell_) return;
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
 	if (cell_pos.second == DarkHorse::OrderGridHeader::SELL_STOP) {
 		const int price = FindValue(cell_pos.first);

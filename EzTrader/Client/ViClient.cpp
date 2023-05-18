@@ -36,6 +36,8 @@
 #include <chartdir.h>
 #include "../Position/TotalPositionManager.h"
 #include "../Position/Position.h"
+#include "ClientConst.h"
+#include <format>
 
 
 class CMainFrame;
@@ -2011,6 +2013,7 @@ void ViClient::ab_new_order(order_request_p order_req)
 	CString sTrCode = "g12003.AO0401%";
 	CString sInput = orderString.c_str();
 	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
+	LOGINFO(CMyLogger::getInstance(), "req_id[%d], code[%s], order_info[%s]", nRqID, sTrCode, sInput);
 	order_request_map[nRqID] = order_req;
 }
 
@@ -2068,6 +2071,7 @@ void ViClient::ab_change_order(order_request_p order_req)
 	CString sTrCode = "g12003.AO0402%";
 	CString sInput = orderString.c_str();
 	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
+	LOGINFO(CMyLogger::getInstance(), "req_id[%d], code[%s], order_info[%s]", nRqID, sTrCode, sInput);
 	order_request_map[nRqID] = order_req;
 }
 
@@ -2123,7 +2127,7 @@ void ViClient::ab_cancel_order(order_request_p order_req)
 	CString sTrCode = "g12003.AO0403%";
 	CString sInput = orderString.c_str();
 	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
-
+	LOGINFO(CMyLogger::getInstance(), "req_id[%d], code[%s], order_info[%s]", nRqID, sTrCode, sInput);
 	order_request_map[nRqID] = order_req;
 }
 
@@ -2168,8 +2172,12 @@ void ViClient::dm_cancel_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Fak)
 		orderString.append(_T("3"));
 
+	CString format_price;
+	format_price.Format("%.2f", static_cast<double>(order_req->order_price / 100.0));
+	std::string order_price = std::string(CT2CA(format_price));
+
 	if (order_req->price_type == SmPriceType::Price)
-		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 13);
+		temp = VtStringUtil::PadRight(order_price, ' ', 13);
 	else if (order_req->price_type == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 13);
 	orderString.append(temp);
@@ -2188,7 +2196,10 @@ void ViClient::dm_cancel_order(order_request_p order_req)
 	CString sTrCode = "g12001.DO1701&";
 	CString sInput = orderString.c_str();
 	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
+
 	order_request_map[nRqID] = order_req;
+
+	LOGINFO(CMyLogger::getInstance(), "req_id[%d], code[%s], order_info[%s]", nRqID, sTrCode, sInput);
 }
 
 void ViClient::dm_change_order(order_request_p order_req)
@@ -2219,8 +2230,12 @@ void ViClient::dm_change_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Fak)
 		orderString.append(_T("3"));
 
+	CString format_price;
+	format_price.Format("%.2f", static_cast<double>(order_req->order_price / 100.0));
+	std::string order_price = std::string(CT2CA(format_price));
+
 	if (order_req->price_type == SmPriceType::Price)
-		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 13);
+		temp = VtStringUtil::PadRight(order_price, ' ', 13);
 	else if (order_req->price_type == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 13);
 	orderString.append(temp);
@@ -2239,6 +2254,7 @@ void ViClient::dm_change_order(order_request_p order_req)
 	CString sTrCode = "g12001.DO1901&";
 	CString sInput = orderString.c_str();
 	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
+	LOGINFO(CMyLogger::getInstance(), "req_id[%d], code[%s], order_info[%s]", nRqID, sTrCode, sInput);
 	order_request_map[nRqID] = order_req;
 }
 
@@ -2270,8 +2286,12 @@ void ViClient::dm_new_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Fak)
 		orderString.append(_T("3"));
 
+	CString format_price;
+	format_price.Format("%.2f", static_cast<double>(order_req->order_price / 100.0));
+	std::string order_price = std::string(CT2CA(format_price));
+
 	if (order_req->price_type == SmPriceType::Price)
-		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 13);
+		temp = VtStringUtil::PadRight(order_price, ' ', 13);
 	else if (order_req->price_type == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 13);
 	orderString.append(temp);
@@ -2287,6 +2307,7 @@ void ViClient::dm_new_order(order_request_p order_req)
 	CString sTrCode = "g12001.DO1601&";
 	CString sInput = orderString.c_str();
 	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
+	LOGINFO(CMyLogger::getInstance(), "req_id[%d], code[%s], order_info[%s]", nRqID, sTrCode, sInput);
 	order_request_map[nRqID] = order_req;
 }
 

@@ -2137,6 +2137,9 @@
     <Filter Include="Order\OrderUI_AB">
       <UniqueIdentifier>{909fecc4-7d82-405d-8393-7b1ff09b0892}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fmt">
+      <UniqueIdentifier>{c2263ed8-7b1c-455d-ac0b-996427abf03d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EzTrader.rc">

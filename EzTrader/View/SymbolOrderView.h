@@ -259,6 +259,7 @@ private:
 	std::vector<std::shared_ptr<DarkHorse::SmCell>> _SelectedCells;
 
 	std::shared_ptr<DarkHorse::SmCell> selected_cell_{ nullptr };
+	std::shared_ptr<DarkHorse::SmCell> selected_center_cell_{ nullptr };
 	std::pair<int, int> _SelectedValue{ 0, 0 };
 
 	/// <summary>
