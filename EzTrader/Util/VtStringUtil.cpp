@@ -6,6 +6,8 @@
 #include <ctime>
 #include <time.h>
 #include <iomanip>
+#include <locale>
+#include <iomanip> // Required for std::setprecision
 #include "DHTime.h"
 
 #ifdef _DEBUG
@@ -274,5 +276,31 @@ std::time_t VtStringUtil::GetUTCTimestampByDate()
 	std::time_t date = mktime(&timeinfo);
 
 	return date;
+}
+
+std::string VtStringUtil::get_format_value(const std::string& type, const double& value, const bool thousand_seperator)
+{
+	std::string value_string;
+	if (type == "1")
+		value_string = formatWithThousandsSeparator(value, 2);
+	else
+		value_string = formatWithThousandsSeparator(value, 0);
+	return value_string;
+}
+
+std::string VtStringUtil::get_format_value(const double& value, const int decimal, const bool thousand_separator /*= false*/)
+{
+	std::string value_string;
+	value_string = formatWithThousandsSeparator(value, decimal);
+	return value_string;
+}
+
+std::string VtStringUtil::formatWithThousandsSeparator(double value, int precision) {
+	std::stringstream ss;
+	ss.imbue(std::locale(""));  // Use the user's default locale for thousands separator
+
+	ss << std::fixed << std::setprecision(precision) << value;  // Convert the double value to string with precision
+
+	return ss.str();
 }
 

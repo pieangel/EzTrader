@@ -7,6 +7,7 @@
 namespace DarkHorse {
 	struct Position;
 	struct SmQuote;
+	class SmAccount;
 	using position_p = std::shared_ptr<Position>;
 	using quote_p = std::shared_ptr<SmQuote>;
 	class AccountProfitLossControl
@@ -29,6 +30,9 @@ namespace DarkHorse {
 		void set_account_id(const int account_id) {
 			account_id_ = account_id;
 		}
+		void set_account(std::shared_ptr<SmAccount> account) {
+			account_ = account;
+		}
 	private:
 		void calculate_total_position();
 		position_p get_position(const std::string& symbol_code);
@@ -39,6 +43,7 @@ namespace DarkHorse {
 		std::function<void()> event_handler_;
 		int id_{ 0 };
 		int account_id_{ 0 };
+		std::shared_ptr<SmAccount> account_{nullptr};
 		VmAccountProfitLoss account_profit_loss_;
 	};
 }

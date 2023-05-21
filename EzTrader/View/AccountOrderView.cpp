@@ -25,6 +25,7 @@
 #include "../CompOrder/SmFundCompMainDialog.h"
 #include "../Controller/AccountOrderControl.h"
 #include "../Order/Order.h"
+#include "../Util/VtStringUtil.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -218,7 +219,7 @@ void AccountOrderView::OnDestroy()
 
 void AccountOrderView::update_order()
 {
-	if (!account_order_control_) return;
+	if (!account_order_control_ || !_Account ) return;
 	const std::map<std::string, order_p>& order_map = account_order_control_->get_order_map();
 
 	int row = 0;
@@ -254,6 +255,10 @@ void AccountOrderView::update_order()
 			pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
 		}
 		pRow->GetItem(2)->SetValue(std::to_string(order->order_amount).c_str());
+
+		//const int decimal = _Account->Type() == "1" ? 2 : 0;
+		//const std::string open_p1 = VtStringUtil::get_format_value(order->order_price, decimal, true);
+
 		pRow->GetItem(3)->SetValue(std::to_string(order->order_price).c_str());
 		_OldContentRowSet.insert(row);
 		row_to_order_[row] = order;

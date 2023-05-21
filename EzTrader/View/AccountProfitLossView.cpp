@@ -16,6 +16,7 @@
 
 #include <functional>
 #include "../Fund/SmFund.h"
+#include "../Util/VtStringUtil.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -153,24 +154,36 @@ void AccountProfitLossView::OnOrderEvent(const std::string& account_no, const st
 	enable_account_profit_loss_show_ = true;
 }
 
+std::string AccountProfitLossView::get_format_price(const double& value)
+{
+	std::string value_string;
+	CString format_price;
+	if (account_->Type() == "1")
+		format_price.Format("%.2f", value);
+	else
+		format_price.Format("%.0f", value);
+	return std::string(CT2CA(format_price));
+}
+
 void AccountProfitLossView::update_account_profit_loss()
 {
-	if (!account_profit_loss_control_) return;
+	if (!account_profit_loss_control_ || !account_) return;
 
 	const VmAccountProfitLoss& account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
+	const int decimal = account_->Type() == "1" ? 2 : 0;
 	auto cell = _Grid->FindCell(0, 1);
 	std::string value;
-	value = std::format("{0:.2f}", account_profit_loss.open_profit_loss);
+	value = VtStringUtil::get_format_value(account_profit_loss.open_profit_loss, decimal, true);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(1, 1);
-	value = std::format("{0:.2f}", account_profit_loss.trade_profit_loss);
+	value = VtStringUtil::get_format_value(account_profit_loss.trade_profit_loss, decimal, true);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(2, 1);
-	value = std::format("{0:.2f}", account_profit_loss.trade_fee);
+	value = VtStringUtil::get_format_value(account_profit_loss.trade_fee, decimal, true);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(3, 1);
 	const double pure_profit = account_profit_loss.open_profit_loss + account_profit_loss.trade_profit_loss - abs(account_profit_loss.trade_fee);
-	value = std::format("{0:.2f}", pure_profit);
+	value = VtStringUtil::get_format_value(pure_profit, decimal, true);
 	if (cell) cell->Text(value);
 }
 

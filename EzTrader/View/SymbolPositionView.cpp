@@ -20,6 +20,7 @@
 #include "../Controller/SymbolPositionControl.h"
 #include "../ViewModel/VmPosition.h"
 #include "../Account/SmAccountManager.h"
+#include "../Util/VtStringUtil.h"
 #include <format>
 
 #include <functional>
@@ -260,7 +261,7 @@ void SymbolPositionView::OnOrderEvent(const std::string& account_no, const std::
 
 void SymbolPositionView::update_position()
 {
-	if (!position_control_) return;
+	if (!position_control_ || !symbol_ || !account_) return;
 
 	const VmPosition& position = position_control_->get_position();
 
@@ -277,7 +278,6 @@ void SymbolPositionView::update_position()
 	*/
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 
-	const int avg_price = static_cast<int>(position.average_price);
 	cell = _Grid->FindCell(1, 1);
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	if (position.open_quantity > 0)
@@ -289,17 +289,20 @@ void SymbolPositionView::update_position()
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	cell = _Grid->FindCell(1, 3);
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	std::string value_string = std::format("{0}", avg_price);
-	if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
-		value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
+
+	const int decimal = account_->Type() == "1" ? 2 : 0;
+	std::string value_string = VtStringUtil::get_format_value(position.average_price / pow(10, symbol_->decimal()), decimal, true);
+	//if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
+	//	value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
 	cell->Text(value_string);
 	cell = _Grid->FindCell(1, 5);
 	if (position.open_profit_loss != 0)
 		position.open_profit_loss > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	else
 		cell->CellType(SmCellType::CT_NORMAL);
-	const std::string open_pl = std::format("{0:.2f}", position.open_profit_loss);
-	cell->Text(open_pl);
+
+	value_string = VtStringUtil::get_format_value(position.open_profit_loss, decimal, true);
+	cell->Text(value_string);
 }
 
 void SymbolPositionView::CreateResource()

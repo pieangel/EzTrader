@@ -24,6 +24,7 @@
 #include "../CompOrder/SmFundCompMainDialog.h"
 #include "../Controller/AccountPositionControl.h"
 #include "../Position/Position.h"
+#include "../Util/VtStringUtil.h"
 #include <format>
 
 #include <functional>
@@ -415,7 +416,9 @@ void AccountPositionView::update_account_position()
 		}
 
 		pRow->GetItem(3)->SetValue(position->open_quantity, TRUE);
-		const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
+		//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
+		const int decimal = account_->Type() == "1" ? 2 : 0;
+		const std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);
 		if (position->open_profit_loss > 0) {
 			pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
 			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));

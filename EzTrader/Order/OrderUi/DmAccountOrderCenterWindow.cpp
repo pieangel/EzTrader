@@ -411,6 +411,8 @@ void DmAccountOrderCenterWindow::OnTimer(UINT_PTR nIDEvent)
 
 void DmAccountOrderCenterWindow::set_symbol_from_out(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
+	if (!selected_) return;
+
 	add_to_symbol_combo(symbol);
 	set_symbol_info(symbol);
 	set_symbol_name(symbol);

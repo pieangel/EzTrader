@@ -46,6 +46,7 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	std::string get_format_price(const double& value);
 	void update_account_profit_loss();
 	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
