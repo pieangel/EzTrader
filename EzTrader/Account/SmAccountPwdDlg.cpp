@@ -17,6 +17,7 @@
 #include "../Task/SmTaskRequestMaker.h"
 #include "../Client/ViClient.h"
 #include "../Archieve/SmSaveManager.h"
+#include "../MainFrm.h"
 
 using namespace DarkHorse;
 
@@ -66,6 +67,20 @@ void SmAccountPwdDlg::SavePassword()
 	}
 
 	mainApp.SaveMgr()->SaveAccountPasswords(_RowToAccountMap);
+}
+
+void SmAccountPwdDlg::handle_account_password_error()
+{
+	if (IDYES == AfxMessageBox("계좌비밀번호가 일치하지 않습니다.\n5회오류시 고객센터로 문의바랍니다.\n계속 진행하시겠습니까?", MB_YESNO)){
+		//AfxMessageBox("OK선택");
+		SetTimer(1, 700, NULL);
+	}
+	else if (IDNO) {
+		//AfxMessageBox("NO선택");
+		EndDialog(IDOK);
+		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+		pFrame->SendMessage(WM_CLOSE, 0, 0);
+	}
 }
 
 BOOL SmAccountPwdDlg::OnInitDialog()
@@ -220,8 +235,11 @@ LRESULT SmAccountPwdDlg::OnUmPasswordConfirmed(WPARAM wParam, LPARAM lParam)
 			CBCGPGridRow* pRow = m_wndGrid.GetRow(it->first);
 			if (result == 1)
 				pRow->GetItem(3)->SetValue("O");
-			else
+			else {
 				pRow->GetItem(3)->SetValue("X");
+				KillTimer(1);
+				handle_account_password_error();
+			}
 		}
 	}
 	return 1;

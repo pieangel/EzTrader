@@ -17,6 +17,7 @@
 #include "Client/ViStockClient.h"
 #include "Login/SmLoginDlg.h"
 #include "Dump/CrashHandler.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -185,14 +186,20 @@ BOOL CDarkHorseApp::InitInstance()
 	mainApp.Client()->CreateControl();
 	mainApp.Client()->ConnectToServer();
 
+	pMainFrame->start_login();
+	/*
 	SmLoginDlg loginDlg;
 	if (loginDlg.DoModal() == IDCANCEL)
 	{
 		pMainFrame->DestroyWindow();
 		return TRUE;
 	}
+	*/
 
-	pMainFrame->StartDataRequest();
+	//pMainFrame->login_dialog_->Create(IDD_LOGIN_MAIN, pMainFrame);
+	//pMainFrame->login_dialog_->ShowWindow(SW_SHOW);
+
+	//pMainFrame->StartDataRequest();
 
 	return TRUE;
 }

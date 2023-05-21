@@ -30,6 +30,7 @@ private:
 	CBCGPGridCtrl m_wndGrid;
 	void SavePassword();
 	std::list<std::pair<std::string, std::string>> _ReqQ;
+	void handle_account_password_error();
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedBtnSave();

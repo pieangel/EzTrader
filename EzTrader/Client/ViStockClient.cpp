@@ -632,6 +632,27 @@ void DarkHorse::ViStockClient::on_ab_symbol_profit_loss(nlohmann::json&& arg)
 	}
 }
 
+void DarkHorse::ViStockClient::on_dm_symbol_profit_loss(nlohmann::json&& arg)
+{
+	try {
+		const std::string account_no = arg["account_no"];
+		const std::string symbol_code = arg["symbol_code"];
+		auto position = mainApp.TotalPosiMgr()->FindAddPosition(account_no, symbol_code);
+		if (position) {
+			position->TradePL = arg["trade_profit_loss"];
+			position->PureTradePL = arg["pure_trade_profit_loss"];
+			position->TradeFee = arg["trade_fee"];
+			position->OpenPL = arg["open_profit_loss"];
+			position->UnsettledFee = arg["unsettled_fee"];
+			position->UnsettledPurePL = arg["pure_unsettled_profit_loss"];
+		}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+}
+
 void DarkHorse::ViStockClient::on_ab_symbol_position(nlohmann::json&& arg)
 {
 	try {

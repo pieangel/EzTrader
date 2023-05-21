@@ -43,7 +43,7 @@ namespace DarkHorse {
 		case DhTaskType::AbAccountProfitLoss:
 			mainApp.Client()->ab_account_profit_loss(arg);
 			break;
-		case DhTaskType::DmApiCustomerProfitLoss:
+		case DhTaskType::DmAccountProfitLoss:
 			mainApp.Client()->dm_account_profit_loss(arg);
 			break;
 		case DhTaskType::AbAcceptedOrderList:

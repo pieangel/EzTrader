@@ -108,6 +108,21 @@ struct  MyData {
 #define new DEBUG_NEW
 #endif
 
+void CMainFrame::start_login()
+{
+	SmLoginDlg loginDlg;
+	if (loginDlg.DoModal() == IDCANCEL)
+	{
+		SendMessage(WM_CLOSE);
+		return;
+	}
+
+	//login_dialog_->Create(IDD_LOGIN_MAIN, this);
+	//login_dialog_->ShowWindow(SW_SHOW);
+
+	StartDataRequest();
+}
+
 void CMainFrame::start_timer(int milisecond)
 {
 	SetTimer(DATA_REQ_TIMER, milisecond, NULL);

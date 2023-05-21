@@ -37,18 +37,18 @@ namespace DarkHorse {
 	{
 	public:
 		std::string Currency;
-		double EntrustTotal{ 0 };
-		double Balance{ 0 };
-		double OutstandingDeposit{ 0 };
-		double OrderDeposit{ 0 };
-		double EntrustDeposit{ 0 };
-		double MaintenanceMargin{ 0 };
-		double TradeProfitLoss{ 0 };
-		double Fee{ 0 };
-		double OpenProfitLoss{ 0 };
-		double OpenTrustTotal{ 0 };
-		double AdditionalMargin{ 0 };
-		double OrderMargin{ 0 };
+		double EntrustTotal{ 0 }; // 예탁금 총액 // 표시
+		double Balance{ 0 }; // 예탁금 잔액
+		double OutstandingDeposit{ 0 }; // 미결제 증거금
+		double OrderDeposit{ 0 }; // 주문 증거금
+		double EntrustDeposit{ 0 }; // 위탁 증거금 // 표시
+		double MaintenanceMargin{ 0 }; // 유지 증거금 // 표시
+		double TradeProfitLoss{ 0 }; // 매매손익(실현손익, 청산손익) // 표시
+		double Fee{ 0 }; // 수수료 // 표시
+		double OpenProfitLoss{ 0 }; // 평가손익 // 표시
+		double OpenTrustTotal{ 0 }; // 평가예탁 총액 // 표시
+		double AdditionalMargin{ 0 }; // 추가 증거금 // 표시
+		double OrderMargin{ 0 }; // 주문 가능 총액 // 표시
 	};
 }
 

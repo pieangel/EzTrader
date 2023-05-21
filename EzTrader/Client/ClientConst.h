@@ -105,9 +105,9 @@ const CString DefDmAsset = "g11002.DQ0217&";
 
 const CString DefDmAccountProfitLoss = "g11002.DQ1302&";
 const CString DefDmAccepted = "g11002.DQ0104&";
-const CString DefDmSymbolPosition = "g11002.DQ1305&";
+const CString DefDmSymbolPosition = "g11002.DQ0110&";
 
 // 종목별 손익
-const CString DefDmSymbolProfitLoss = "g11002.DQ1302&";
+const CString DefDmSymbolProfitLoss = "g11002.DQ0521&";
 
 

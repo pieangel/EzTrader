@@ -99,7 +99,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include; ../include/fmt;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include;../include/fmt</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
       <BrowseInformation>false</BrowseInformation>
@@ -163,9 +163,10 @@
       <MinimalRebuild>false</MinimalRebuild>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include;../include/fmt</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <BuildStlModules>false</BuildStlModules>
+      <EnableModules>false</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -1195,6 +1195,7 @@ int ViClient::dm_symbol_profit_loss(DhTaskArg arg)
 		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 11);
 		reqString.append(temp);
+		reqString.append(_T("001"));
 		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
@@ -3948,23 +3949,25 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
 		CString strSymbolUnsettledFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "미결제수수료");
 		CString strSymbolUnsettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "미결제순손익");
-
+		const std::string symbol_code(strSymbolCode.Trim());
+		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		if (!symbol) continue;
 	
-		nlohmann::json account_profit_loss;
-		account_profit_loss["account_no"] = static_cast<const char*>(strAccountNo.Trim());
-		account_profit_loss["account_name"] = static_cast<const char*>(strAccountName.Trim());
-		account_profit_loss["currency"] = static_cast<const char*>(strCurrency.Trim());
-		account_profit_loss["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
-		account_profit_loss["trade_profit_loss"] = _ttof(strSymbolSettledProfitLoss.Trim());
-		account_profit_loss["pure_trade_profit_loss"] = _ttof(strSymbolSettledPureProfitLoss.Trim());
-		account_profit_loss["trade_fee"] = _ttof(strSymbolFee.Trim());
-		account_profit_loss["open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
-		account_profit_loss["unsettled_fee"] = _ttof(strSymbolUnsettledFee.Trim());
-		account_profit_loss["pure_unsettled_profit_loss"] = _ttof(strSymbolUnsettledPureProfitLoss.Trim());
+		nlohmann::json symbol_profit_loss;
+		symbol_profit_loss["account_no"] = static_cast<const char*>(strAccountNo.Trim());
+		symbol_profit_loss["account_name"] = static_cast<const char*>(strAccountName.Trim());
+		symbol_profit_loss["currency"] = static_cast<const char*>(strCurrency.Trim());
+		symbol_profit_loss["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
+		symbol_profit_loss["trade_profit_loss"] = _ttof(strSymbolSettledProfitLoss.Trim());
+		symbol_profit_loss["pure_trade_profit_loss"] = _ttof(strSymbolSettledPureProfitLoss.Trim());
+		symbol_profit_loss["trade_fee"] = _ttof(strSymbolFee.Trim());
+		symbol_profit_loss["open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
+		symbol_profit_loss["unsettled_fee"] = _ttof(strSymbolUnsettledFee.Trim());
+		symbol_profit_loss["pure_unsettled_profit_loss"] = _ttof(strSymbolUnsettledPureProfitLoss.Trim());
 		
 
 		if (auto wp = _Client.lock()) {
-			wp->on_ab_symbol_profit_loss(std::move(account_profit_loss));
+			wp->on_ab_symbol_profit_loss(std::move(symbol_profit_loss));
 		}
 	}
 
@@ -3974,47 +3977,43 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 
 void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_code, const LONG& nRqID)
 {
-	auto it = request_map_.find(nRqID);
-	if (it == request_map_.end()) return on_task_error(nRqID, -1);
-
-	const std::string& account_no = it->second.parameter_map["account_no"];
-	std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
-	if (!account) return on_task_complete(nRqID);
-	
-
-	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec2");
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++) {
-		CString strCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "종목코드");
-		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매구분");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "잔고수량");
-		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부단가");
-		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "현재가");
-		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매손익");
-		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "수수료");
-		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "총손익");
-		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부금액");
-		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "평가금액");
-		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "청산가능수량");
-		const std::string symbol_code(strCode);
-		auto symbol_position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
-		symbol_position->trade_profit_loss = atof(strProfit);
+		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계좌번호");
+		CString strAccountName = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계좌명");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "종목코드");
+		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "매매구분");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "미결제수량");
+		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "평균단가");
+		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "현재가");
+		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "실현손익");
+		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "수수료");
+		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "순손익");
+		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "약정금액");
+		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "평가손익");
+		CString strSettle = "0";
+		const std::string symbol_code(strSymbolCode.Trim());
+		const std::string account_no(strAccountNo);
+		const std::string account_name(strAccountName.Trim());
 
+		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		if (!symbol) continue;
 
-		nlohmann::json account_profit_loss;
-		account_profit_loss["account_no"] = account_no;
-		account_profit_loss["account_name"] = "";
-		account_profit_loss["currency"] = "KRW";
-		account_profit_loss["symbol_code"] = symbol_code;
-		account_profit_loss["trade_profit_loss"] = _ttof(strProfit.Trim());
-		account_profit_loss["pure_trade_profit_loss"] = _ttof(strProfit.Trim());
-		account_profit_loss["trade_fee"] = _ttof(strFee.Trim());
-		account_profit_loss["open_profit_loss"] = _ttof(strOpenProfit.Trim());
-		account_profit_loss["unsettled_fee"] = 0;
-		account_profit_loss["pure_unsettled_profit_loss"] = 0;
+		nlohmann::json symbol_profit_loss;
+		symbol_profit_loss["account_no"] = account_no;
+		symbol_profit_loss["account_name"] = account_name;
+		symbol_profit_loss["currency"] = "KRW";
+		symbol_profit_loss["symbol_code"] = symbol_code;
+		symbol_profit_loss["trade_profit_loss"] = _ttof(strProfit.Trim());
+		symbol_profit_loss["pure_trade_profit_loss"] = _ttof(strProfit.Trim());
+		symbol_profit_loss["trade_fee"] = _ttof(strFee.Trim());
+		symbol_profit_loss["open_profit_loss"] = _ttof(strOpenProfit.Trim());
+		symbol_profit_loss["unsettled_fee"] = 0;
+		symbol_profit_loss["pure_unsettled_profit_loss"] = 0;
 
 
 		if (auto wp = _Client.lock()) {
-			wp->on_ab_symbol_profit_loss(std::move(account_profit_loss));
+			wp->on_dm_symbol_profit_loss(std::move(symbol_profit_loss));
 		}
 
 	}
@@ -4044,6 +4043,10 @@ void DarkHorse::ViClient::on_ab_symbol_position(const CString& sTrCode, const LO
 		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가");
 		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가(소수점반영)");
 		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
+
+		const std::string symbol_code(strSymbolCode.Trim());
+		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		if (!symbol) continue;
 
 		const int avg_price = convert_to_int(strSymbolCode, strSymbolUnitPrice);
 		const int unit_price = convert_to_int(strSymbolCode, strSymbolUnitPrice);
@@ -4087,7 +4090,9 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가");
 		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
 
-		
+		const std::string symbol_code(strSymbolCode.Trim());
+		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		if (!symbol) continue;
 
 		int position = _ttoi(strSymbolPosition.Trim());
 
@@ -4100,7 +4105,7 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 		symbol_position["symbol_open_qty"] = _ttoi(strSymbolOpenQty.Trim());
 		symbol_position["symbol_avg_price"] = _ttoi(strSymbolAvgPrice);
 		symbol_position["symbol_unit_price"] = _ttoi(strSymbolAvgPrice);
-		symbol_position["symbol_open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
+		symbol_position["symbol_open_profit_loss"] = 0;
 
 		mainApp.total_position_manager()->on_symbol_position(std::move(symbol_position));
 	}

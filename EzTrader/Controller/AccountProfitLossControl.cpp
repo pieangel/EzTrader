@@ -41,7 +41,7 @@ void AccountProfitLossControl::load_position_from_account(const std::string& acc
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
 		position_map_[it->second->symbol_code] = it->second;
 	}
-
+	calculate_total_position();
 	if (event_handler_) event_handler_();
 }
 

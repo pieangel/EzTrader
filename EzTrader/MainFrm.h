@@ -38,6 +38,7 @@ class SmTrendChart;
 class DmAccountOrderWindow;
 class DmFundOrderWindow;
 class VtProgressDlg;
+class SmLoginDlg;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -92,6 +93,7 @@ protected:
 	virtual CBCGPMDIChildWnd* CreateDocumentWindow(LPCTSTR lpcszDocName, CObject* /*pObj*/);
 
 public:
+	void start_login();
 	void start_timer(int milisecond);
 	void stop_timer();
 	void LoadAfterServerData();
@@ -118,6 +120,8 @@ public:
 	afx_msg void OnTestOrderwnd();
 	std::shared_ptr<AbAccountOrderCenterWindow> _OrderWnd = nullptr;
 	afx_msg void OnTestLeftorderdialog();
+
+	std::shared_ptr<SmLoginDlg> login_dialog_ = nullptr;
 
 	std::shared_ptr<AbAccountOrderLeftWindow> _LeftOrderWnd = nullptr;
 	std::shared_ptr<AbAccountOrderRightWindow> _RightOrderWnd = nullptr;
@@ -159,6 +163,8 @@ public:
 	std::map<HWND, std::shared_ptr<RealTimeMultiChart>> _RealTimeChartMap;
 
 	std::map<HWND, std::shared_ptr<SmTrendChart>> _TrendChartMap;
+
+
 	void remove_dm_account_order_window(HWND handle);
 	void RemoveOrderWnd(HWND wnd);
 	void RemoveFundOrderWnd(HWND wnd);
