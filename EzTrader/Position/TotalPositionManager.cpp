@@ -51,12 +51,34 @@ void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 		position->symbol_code = symbol_code;
 		position->average_price = average_price;
 		position->open_quantity = open_quantity * order_position;
-		position->open_profit_loss = open_profit_loss;
+		//position->open_profit_loss = open_profit_loss;
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
 }
+
+void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
+{
+	try {
+		const std::string& account_no = arg["account_no"];
+		const std::string& symbol_code = arg["symbol_code"];
+		auto position = get_position(account_no, symbol_code);
+		if (position) {
+			position->trade_profit_loss = arg["trade_profit_loss"];
+			//position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
+			position->trade_fee = arg["trade_fee"];
+			position->open_profit_loss = arg["open_profit_loss"];
+			//position-> = arg["unsettled_fee"];
+			//position-> = arg["pure_unsettled_profit_loss"];
+		}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+}
+
 
 }

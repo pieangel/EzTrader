@@ -52,6 +52,7 @@ namespace DarkHorse {
 		void on_dm_account_asset(nlohmann::json&& arg);
 		void on_ab_symbol_profit_loss(nlohmann::json&& arg);
 		void on_dm_symbol_profit_loss(nlohmann::json&& arg);
+		void on_symbol_profit_loss(nlohmann::json&& arg);
 		void on_ab_symbol_position(nlohmann::json&& arg);
 		void OnAcceptedList(nlohmann::json&& arg);
 		void on_ab_filled_order_list(nlohmann::json&& arg);
