@@ -8,7 +8,7 @@ class DmAccountOrderRightWindow
 
 //#include "../../SmGrid/SmAssetArea.h"
 //#include "../../SmGrid/SmSymbolArea.h"
-#include "../../View/AssetView.h"
+#include "../../View/AccountAssetView.h"
 #include "../../View/SymbolInfoView.h"
 #include <memory>
 
@@ -39,7 +39,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	AssetView asset_view_;
+	AccountAssetView asset_view_;
 	SymbolInfoView symbol_info_view_;
 public:
 	void SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account);

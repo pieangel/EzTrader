@@ -23,7 +23,7 @@ class DmFundOrderLeftWindow
 #include "../../View/AccountProfitLossView.h"
 #include "../../View/DmOptionView.h"
 #include "../../View/DmFutureView.h"
-#include "../../View/AssetView.h"
+#include "../../View/AccountAssetView.h"
 
 // OrderLeftDialog dialog
 
@@ -56,7 +56,7 @@ private:
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
 	
 	AccountProfitLossView account_profit_loss_view_;
-	AssetView asset_view_;
+	AccountAssetView asset_view_;
 	//AccountOrderView _AcceptedGrid;
 	//AccountPositionView _PositionGrid;
 	//SmFavoriteGrid _FavoriteGrid;

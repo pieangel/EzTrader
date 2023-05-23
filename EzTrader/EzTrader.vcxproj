@@ -271,7 +271,7 @@
     <ClInclude Include="Controller\AccountOrderControl.h" />
     <ClInclude Include="Controller\AccountPositionControl.h" />
     <ClInclude Include="Controller\AccountProfitLossControl.h" />
-    <ClInclude Include="Controller\AssetControl.h" />
+    <ClInclude Include="Controller\AccountAssetControl.h" />
     <ClInclude Include="Controller\BuyHogaControl.h" />
     <ClInclude Include="Controller\BuyOrderControl.h" />
     <ClInclude Include="Controller\BuyStopOrderControl.h" />
@@ -320,6 +320,8 @@
     <ClInclude Include="DataFrame\Vectors\HeteroView.h" />
     <ClInclude Include="DataFrame\Vectors\VectorPtrView.h" />
     <ClInclude Include="DataFrame\Vectors\VectorView.h" />
+    <ClInclude Include="Dialog\MiniJangoDialog.h" />
+    <ClInclude Include="Dialog\TotalAssetProfitLossDialog.h" />
     <ClInclude Include="Drawing\VtBaseTracker.h" />
     <ClInclude Include="Drawing\VtDrawingConstants.h" />
     <ClInclude Include="Drawing\VtElement.h" />
@@ -544,7 +546,7 @@
     <ClInclude Include="View\AccountOrderView.h" />
     <ClInclude Include="View\AccountPositionView.h" />
     <ClInclude Include="View\AccountProfitLossView.h" />
-    <ClInclude Include="View\AssetView.h" />
+    <ClInclude Include="View\AccountAssetView.h" />
     <ClInclude Include="View\BuyHogaView.h" />
     <ClInclude Include="View\BuyOrderView.h" />
     <ClInclude Include="View\BuyStopOrderView.h" />
@@ -568,6 +570,7 @@
     <ClInclude Include="View\SymbolPositionView.h" />
     <ClInclude Include="View\SymbolProfitLossView.h" />
     <ClInclude Include="View\SymbolTickView.h" />
+    <ClInclude Include="View\TotalAssetProfitLossView.h" />
     <ClInclude Include="View\TotalHogaInfoView.h" />
     <ClInclude Include="WorkSpaceBar.h" />
     <ClInclude Include="WorkSpaceBar2.h" />
@@ -619,7 +622,7 @@
     <ClCompile Include="Controller\AccountOrderControl.cpp" />
     <ClCompile Include="Controller\AccountPositionControl.cpp" />
     <ClCompile Include="Controller\AccountProfitLossControl.cpp" />
-    <ClCompile Include="Controller\AssetControl.cpp" />
+    <ClCompile Include="Controller\AccountAssetControl.cpp" />
     <ClCompile Include="Controller\BuyHogaControl.cpp" />
     <ClCompile Include="Controller\BuyOrderControl.cpp" />
     <ClCompile Include="Controller\BuyStopOrderControl.cpp" />
@@ -662,6 +665,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Dialog\MiniJangoDialog.cpp" />
+    <ClCompile Include="Dialog\TotalAssetProfitLossDialog.cpp" />
     <ClCompile Include="Drawing\VtBaseTracker.cpp" />
     <ClCompile Include="Drawing\VtElement.cpp" />
     <ClCompile Include="Drawing\VtEllipse.cpp" />
@@ -839,7 +844,7 @@
     <ClCompile Include="View\AccountOrderView.cpp" />
     <ClCompile Include="View\AccountPositionView.cpp" />
     <ClCompile Include="View\AccountProfitLossView.cpp" />
-    <ClCompile Include="View\AssetView.cpp" />
+    <ClCompile Include="View\AccountAssetView.cpp" />
     <ClCompile Include="View\BuyHogaView.cpp" />
     <ClCompile Include="View\BuyOrderView.cpp" />
     <ClCompile Include="View\BuyStopOrderView.cpp" />
@@ -863,6 +868,7 @@
     <ClCompile Include="View\SymbolPositionView.cpp" />
     <ClCompile Include="View\SymbolProfitLossView.cpp" />
     <ClCompile Include="View\SymbolTickView.cpp" />
+    <ClCompile Include="View\TotalAssetProfitLossView.cpp" />
     <ClCompile Include="View\TotalHogaInfoView.cpp" />
     <ClCompile Include="WorkSpaceBar.cpp" />
     <ClCompile Include="WorkSpaceBar2.cpp" />

@@ -14,7 +14,7 @@
 #include "../../Symbol/SmProduct.h"
 #include "../../Symbol/SmProductYearMonth.h"
 #include "../../Symbol/SmSymbol.h"
-#include "../../View/AssetView.h"
+#include "../../View/AccountAssetView.h"
 
 #define WND_ID1 0x00000001
 #define WND_ID2 0x00000002

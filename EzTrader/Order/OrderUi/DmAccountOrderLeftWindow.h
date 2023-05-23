@@ -20,7 +20,7 @@ class DmAccountOrderLeftWindow
 #include "../../View/AccountProfitLossView.h"
 #include "../../View/DmOptionView.h"
 #include "../../View/DmFutureView.h"
-#include "../../View/AssetView.h"
+#include "../../View/AccountAssetView.h"
 #include <map>
 #include <string>
 
@@ -59,7 +59,7 @@ private:
 	void init_option_market();
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
 	AccountProfitLossView account_profit_loss_view_;
-	AssetView asset_view_;
+	AccountAssetView asset_view_;
 	DmOptionView option_view_;
 	DmFutureView future_view_;
 public:

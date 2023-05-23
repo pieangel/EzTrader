@@ -1280,6 +1280,7 @@ int ViClient::ab_symbol_profit_loss(DhTaskArg arg)
 		reqString.append(temp);
 		// 그룹명 - 공백
 		reqString.append("                    ");
+		reqString.append("USD");
 
 
 		const CString sInput = reqString.c_str();

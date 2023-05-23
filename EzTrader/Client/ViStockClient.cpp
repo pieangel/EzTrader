@@ -640,9 +640,9 @@ void DarkHorse::ViStockClient::on_symbol_profit_loss(nlohmann::json&& arg)
 		const std::string& symbol_code = arg["symbol_code"];
 		auto position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
 		if (position) {
-			position->trade_profit_loss = 1000; // arg["trade_profit_loss"];
+			position->trade_profit_loss = arg["trade_profit_loss"];
 			//position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
-			position->trade_fee = 100; // arg["trade_fee"];
+			position->trade_fee = arg["trade_fee"];
 			position->open_profit_loss = arg["open_profit_loss"];
 			//position-> = arg["unsettled_fee"];
 			//position-> = arg["pure_unsettled_profit_loss"];
@@ -662,9 +662,9 @@ void DarkHorse::ViStockClient::on_dm_symbol_profit_loss(nlohmann::json&& arg)
 		const std::string symbol_code = arg["symbol_code"];
 		auto position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
 		if (position) {
-			position->trade_profit_loss = 1000; // arg["trade_profit_loss"];
+			position->trade_profit_loss = arg["trade_profit_loss"];
 			//position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
-			position->trade_fee = 100; // arg["trade_fee"];
+			position->trade_fee = arg["trade_fee"];
 			position->open_profit_loss = arg["open_profit_loss"];
 			//position-> = arg["unsettled_fee"];
 			//position-> = arg["pure_unsettled_profit_loss"];
