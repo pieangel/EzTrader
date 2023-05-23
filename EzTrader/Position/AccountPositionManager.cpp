@@ -15,6 +15,7 @@
 #include "../Order/SmOrderConst.h"
 #include <functional>
 #include "../Util/IdGenerator.h"
+#include "../Log/MyLogger.h"
 namespace DarkHorse {
 
 	AccountPositionManager::AccountPositionManager(const std::string& account_no)
@@ -58,10 +59,14 @@ void AccountPositionManager::update_position(order_p order)
 	set_account_id(position, order->account_no);
 	auto symbol = mainApp.SymMgr()->FindSymbol(order->symbol_code);
 	if (!symbol) return;
+	LOGINFO(CMyLogger::getInstance(), "position_count = [%d], filled_count = [%d], average_price = [%.2f], filled_price = [%.2f]", position->open_quantity, order->filled_count, position->average_price, order->filled_price);
+
 	const int position_count = calculate_position_count(order, position);
 	const int unsettled_count = calculate_unsettled_count(order, position);
-	const double traded_profit_loss = calculate_traded_profit_loss(order, position);
+	const double traded_profit_loss = calculate_traded_profit_loss(order, position, symbol->seung_su());
 	const double average_price = calculate_average_price(order, position);
+
+	LOGINFO(CMyLogger::getInstance(), "position_count = [%d], unsettled_count = [%d], trade_profit_loss = [%.2f], average_price = [%.2f]", position_count, unsettled_count, traded_profit_loss, average_price);
 	
 	position->trade_profit_loss += traded_profit_loss;
 	position->open_quantity = position_count;
@@ -127,13 +132,14 @@ int AccountPositionManager::calculate_traded_count(order_p order, position_p pos
 	const int signed_filled_count = order->filled_count * order_filled_sign;
 	const int old_position_count = position->open_quantity;
 	if (old_position_count * signed_filled_count >= 0) return 0;
+	// 아래 계산이 잘못 되었음. 절대값을 붙이지 않고 계산할 수 있어야 함. 
 	return min(abs(old_position_count), abs(signed_filled_count));
 }
-double AccountPositionManager::calculate_traded_profit_loss(order_p order, position_p position)
+double AccountPositionManager::calculate_traded_profit_loss(order_p order, position_p position, const int& symbol_seungsu)
 {
 	const int traded_count = calculate_traded_count(order, position);
 	const double price_gap = abs(position->average_price - order->filled_price);
-	return price_gap * traded_count; // * symbol->SeungSu() 반드시 Symbol 승수를 곱해줘야 함. 
+	return price_gap * traded_count * symbol_seungsu; // * symbol->SeungSu() 반드시 Symbol 승수를 곱해줘야 함. 
 }
 double AccountPositionManager::calculate_average_price(order_p order, position_p position)
 {

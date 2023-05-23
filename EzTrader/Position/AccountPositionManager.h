@@ -28,7 +28,7 @@ private:
 	int calculate_position_count(order_p order, position_p position);
 	int calculate_unsettled_count(order_p order, position_p position);
 	int calculate_traded_count(order_p order, position_p position);
-	double calculate_traded_profit_loss(order_p order, position_p position);
+	double calculate_traded_profit_loss(order_p order, position_p position, const int& symbol_seungsu);
 	double calculate_average_price(order_p order, position_p position);
 	void update_open_profit_loss(position_p position);
 	position_p find_position(const std::string& symbol_code);
