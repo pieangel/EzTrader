@@ -139,7 +139,13 @@ double AccountPositionManager::calculate_traded_profit_loss(order_p order, posit
 {
 	const int traded_count = calculate_traded_count(order, position);
 	const double price_gap = abs(position->average_price - order->filled_price);
-	return price_gap * traded_count * symbol_seungsu; // * symbol->SeungSu() ¹Ýµå½Ã Symbol ½Â¼ö¸¦ °öÇØÁà¾ß ÇÔ. 
+	double trade_profit_loss = price_gap * traded_count * symbol_seungsu; // * symbol->SeungSu() ¹Ýµå½Ã Symbol ½Â¼ö¸¦ °öÇØÁà¾ß ÇÔ. 
+	if (order->position == SmPositionType::Buy)
+		if (order->filled_price < position->average_price)
+			trade_profit_loss *= -1;
+	else if (order->position == SmPositionType::Sell)
+		if (order->filled_price > position->average_price)
+			trade_profit_loss *= -1;
 }
 double AccountPositionManager::calculate_average_price(order_p order, position_p position)
 {
