@@ -132,7 +132,6 @@ int AccountPositionManager::calculate_traded_count(order_p order, position_p pos
 	const int signed_filled_count = order->filled_count * order_filled_sign;
 	const int old_position_count = position->open_quantity;
 	if (old_position_count * signed_filled_count >= 0) return 0;
-	// 아래 계산이 잘못 되었음. 절대값을 붙이지 않고 계산할 수 있어야 함. 
 	return min(abs(old_position_count), abs(signed_filled_count));
 }
 double AccountPositionManager::calculate_traded_profit_loss(order_p order, position_p position, const int& symbol_seungsu)
@@ -140,12 +139,14 @@ double AccountPositionManager::calculate_traded_profit_loss(order_p order, posit
 	const int traded_count = calculate_traded_count(order, position);
 	const double price_gap = abs(position->average_price - order->filled_price);
 	double trade_profit_loss = price_gap * traded_count * symbol_seungsu; // * symbol->SeungSu() 반드시 Symbol 승수를 곱해줘야 함. 
+	// decide it is a profit or a loss
 	if (order->position == SmPositionType::Buy)
 		if (order->filled_price < position->average_price)
 			trade_profit_loss *= -1;
 	else if (order->position == SmPositionType::Sell)
 		if (order->filled_price > position->average_price)
 			trade_profit_loss *= -1;
+	return trade_profit_loss;
 }
 double AccountPositionManager::calculate_average_price(order_p order, position_p position)
 {
