@@ -62,6 +62,7 @@ using namespace std;
 using namespace std::placeholders;
 
 constexpr int Round(float x) { return static_cast<int>(x + 0.5f); }
+#define ROUNDING(x, dig)	( floor((x) * pow(float(10), dig) + 0.5f) / pow(float(10), dig) )
 
 using namespace DarkHorse;
 
@@ -247,15 +248,12 @@ void SymbolOrderView::update_position()
 	const VmPosition& position = position_control_->get_position();
 
 	if (position.open_quantity == 0) return;
-	int avg_price = static_cast<int>(position.average_price);
+	int average_price = static_cast<int>(ROUNDING(position.average_price , 1));
 	const int int_tick_size = static_cast<int>(symbol_->TickSize() * pow(10, symbol_->decimal()));
-	const int mod = avg_price % int_tick_size;
-	const int half_tick_size = (int)(int_tick_size / 2);
-	// 나머지 보다 작으면 빼주고 아니면 틱크기에서 나머지를 뺀 값을 더해 준다.
-	if (mod < half_tick_size) avg_price = avg_price - avg_price % int_tick_size;
-	else avg_price += (int_tick_size - mod);
+	const int mod_avg_price = average_price % int_tick_size;
+	average_price = average_price - average_price % int_tick_size;
 
-	const int position_price_row = FindRow(avg_price);
+	const int position_price_row = FindRow(average_price);
 
 	std::shared_ptr<SmCell> cell = _Grid->FindCell(position_price_row, DarkHorse::OrderGridHeader::QUOTE);
 	if (position_price_row >= 2 && cell) {

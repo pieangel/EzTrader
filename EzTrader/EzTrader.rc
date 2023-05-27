@@ -1818,6 +1818,7 @@ BEGIN
         MENUITEM "국내주문",                        ID_DM_ACNT_ORDER
         MENUITEM "SetSimulationMode",           ID_SET_SIMULATION_MODE
         MENUITEM "DomesticAccountPosition",     ID_32928
+        MENUITEM "EnableSimulatrionFilledOrder", ID_32934
     END
     POPUP "펀드", INACTIVE
     BEGIN

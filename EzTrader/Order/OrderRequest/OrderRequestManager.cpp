@@ -135,6 +135,7 @@ void OrderRequestManager::dm_make_new_order_event(order_request_p order_request)
 	order_info["symbol_code"] = order_request->symbol_code;
 	order_info["order_price"] = order_request->order_price;
 	order_info["order_amount"] = order_request->order_amount;
+	order_info["order_type"] = "1";
 	const std::string position = order_request->position_type == SmPositionType::Buy ? "1" : "2";;
 	order_info["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
@@ -163,6 +164,7 @@ void OrderRequestManager::dm_make_new_order_event(order_request_p order_request)
 	order_info2["symbol_code"] = order_request->symbol_code;
 	order_info2["order_price"] = order_request->order_price;
 	order_info2["order_amount"] = order_request->order_amount;
+	order_info2["order_type"] = "1";
 	order_info2["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info2["original_order_no"] = "0";
@@ -208,6 +210,7 @@ void OrderRequestManager::dm_make_change_order_event(order_request_p order_reque
 	order_info["symbol_code"] = order_request->symbol_code;
 	order_info["order_price"] = order_request->order_price;
 	order_info["order_amount"] = order_request->order_amount;
+	order_info["order_type"] = "2";
 	const std::string position = order_request->position_type == SmPositionType::Buy ? "1" : "2";;
 	order_info["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
@@ -236,6 +239,7 @@ void OrderRequestManager::dm_make_change_order_event(order_request_p order_reque
 	order_info2["symbol_code"] = order_request->symbol_code;
 	order_info2["order_price"] = order_request->order_price;
 	order_info2["order_amount"] = order_request->order_amount;
+	order_info2["order_type"] = "2";
 	
 	order_info2["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
@@ -267,6 +271,7 @@ void OrderRequestManager::dm_make_change_order_event(order_request_p order_reque
 	order_info3["symbol_code"] = order_request->symbol_code;
 	order_info3["order_price"] = order_request->order_price;
 	order_info3["order_amount"] = order_request->order_amount;
+	order_info3["order_type"] = "2";
 	order_info3["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info3["original_order_no"] = order_request->original_order_no;
@@ -302,6 +307,7 @@ void OrderRequestManager::dm_make_cancel_order_event(order_request_p order_reque
 	order_info["symbol_code"] = order_request->symbol_code;
 	order_info["order_price"] = order_request->order_price;
 	order_info["order_amount"] = order_request->order_amount;
+	order_info["order_type"] = "3";
 	const std::string position = order_request->position_type == SmPositionType::Buy ? "1" : "2";;
 	order_info["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
@@ -330,6 +336,7 @@ void OrderRequestManager::dm_make_cancel_order_event(order_request_p order_reque
 	order_info2["symbol_code"] = order_request->symbol_code;
 	order_info2["order_price"] = order_request->order_price;
 	order_info2["order_amount"] = order_request->order_amount;
+	order_info2["order_type"] = "3";
 	order_info2["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info2["original_order_no"] = "0";
@@ -360,6 +367,7 @@ void OrderRequestManager::dm_make_cancel_order_event(order_request_p order_reque
 	order_info3["symbol_code"] = order_request->symbol_code;
 	order_info3["order_price"] = order_request->order_price;
 	order_info3["order_amount"] = order_request->order_amount;
+	order_info3["order_type"] = "3";
 	order_info3["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info3["original_order_no"] = order_request->original_order_no;
@@ -395,6 +403,7 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 	order_info["symbol_code"] = order_request->symbol_code;
 	order_info["order_price"] = order_request->order_price;
 	order_info["order_amount"] = order_request->order_amount;
+	order_info["order_type"] = "2";
 	const std::string position = order_request->position_type == SmPositionType::Buy ? "1" : "2";;
 	order_info["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
@@ -423,6 +432,7 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 	order_info2["symbol_code"] = order_request->symbol_code;
 	order_info2["order_price"] = order_request->order_price;
 	order_info2["order_amount"] = order_request->order_amount;
+	order_info2["order_type"] = "2";
 	order_info2["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info2["original_order_no"] = "0";
@@ -454,6 +464,7 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 	order_info3["symbol_code"] = order_request->symbol_code;
 	order_info3["order_price"] = order_request->order_price;
 	order_info3["order_amount"] = order_request->order_amount;
+	order_info3["order_type"] = "2";
 	order_info3["position_type"] = position;
 	//order_info3["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	//order_info3["ori_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
@@ -478,6 +489,7 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 	order_info4["symbol_code"] = order_request->symbol_code;
 	order_info4["order_price"] = order_request->order_price;
 	order_info4["order_amount"] = order_request->order_amount;
+	order_info4["order_type"] = "2";
 	order_info4["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info4["original_order_no"] = "0";
@@ -513,6 +525,7 @@ void OrderRequestManager::ab_make_new_order_event(order_request_p order_request)
 	order_info["symbol_code"] = order_request->symbol_code;
 	order_info["order_price"] = order_request->order_price;
 	order_info["order_amount"] = order_request->order_amount;
+	order_info["order_type"] = "1";
 	const std::string position = order_request->position_type == SmPositionType::Buy ? "1" : "2";;
 	order_info["position_type"] = position;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
@@ -541,6 +554,7 @@ void OrderRequestManager::ab_make_new_order_event(order_request_p order_request)
 	order_info2["symbol_code"] = order_request->symbol_code;
 	order_info2["order_price"] = order_request->order_price;
 	order_info2["order_amount"] = order_request->order_amount;
+	order_info2["order_type"] = "1";
 	order_info2["position_type"] = order_request->position_type;
 	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
 	order_info2["original_order_no"] = "0";

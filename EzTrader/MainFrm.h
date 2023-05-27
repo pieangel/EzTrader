@@ -210,4 +210,5 @@ public:
 	afx_msg void OnDmAcntOrder();
 	afx_msg void OnSetSimulationMode();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnEnableSimulationFilledOrder();
 };

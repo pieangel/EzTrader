@@ -291,7 +291,7 @@ void SymbolPositionView::update_position()
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 
 	const int decimal = account_->Type() == "1" ? 2 : 0;
-	std::string value_string = VtStringUtil::get_format_value(position.average_price / pow(10, symbol_->decimal()), decimal, true);
+	std::string value_string = VtStringUtil::get_format_value(position.average_price / pow(10, symbol_->decimal()), symbol_->decimal(), true);
 	//if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
 	//	value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
 	cell->Text(value_string);

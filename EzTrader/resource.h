@@ -507,13 +507,14 @@
 #define ID_DM_ACNT_ORDER                32931
 #define ID_32932                        32932
 #define ID_SET_SIMULATION_MODE          32933
+#define ID_32934                        32934
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        221
-#define _APS_NEXT_COMMAND_VALUE         32934
+#define _APS_NEXT_COMMAND_VALUE         32935
 #define _APS_NEXT_CONTROL_VALUE         1166
 #define _APS_NEXT_SYMED_VALUE           119
 #endif

@@ -133,6 +133,7 @@ namespace DarkHorse {
 		order_request_p make_dummy_order_request();
 		void add_order_request_map(order_request_p order_request);
 		bool simulation_{ false };
+		bool enable_simulation_filled_order_{ false };
 		void dm_make_new_order_event(order_request_p order_request);
 		void dm_make_change_order_event(order_request_p order_request);
 		void dm_make_cancel_order_event(order_request_p order_request);
@@ -145,6 +146,12 @@ namespace DarkHorse {
 		void on_change_order(order_request_p order_request);
 		void on_cancel_order(order_request_p  order_request);
 	public:
+		void set_enable_simulation_filled_order(const bool flag) {
+			enable_simulation_filled_order_ = flag;
+		}
+		bool get_enable_simulation_filled_order() {
+			return enable_simulation_filled_order_;
+		}
 		order_request_p find_order_request(const std::string& custom_info); 
 		void set_simulation(const bool mode) {
 			simulation_ = mode;

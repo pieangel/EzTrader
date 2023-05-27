@@ -302,6 +302,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_32929, &CMainFrame::OnDomesticFundOrder)
 	ON_COMMAND(ID_DM_ACNT_ORDER, &CMainFrame::OnDmAcntOrder)
 	ON_COMMAND(ID_SET_SIMULATION_MODE, &CMainFrame::OnSetSimulationMode)
+	ON_COMMAND(ID_32934, &CMainFrame::OnEnableSimulationFilledOrder)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1330,4 +1331,13 @@ void CMainFrame::OnSetSimulationMode()
 		mainApp.order_request_manager()->set_simulation(false);
 	else
 		mainApp.order_request_manager()->set_simulation(true);
+}
+
+
+void CMainFrame::OnEnableSimulationFilledOrder()
+{
+	if (mainApp.order_request_manager()->get_enable_simulation_filled_order())
+		mainApp.order_request_manager()->set_enable_simulation_filled_order(false);
+	else
+		mainApp.order_request_manager()->set_enable_simulation_filled_order(true);
 }
