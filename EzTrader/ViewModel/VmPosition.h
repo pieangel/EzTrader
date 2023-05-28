@@ -11,6 +11,7 @@ struct VmPosition {
 	// 포지션의 잔고가 0이면 포지션이 없는 것이다.
 	int open_quantity{ 0 };
 	double trade_profit_loss{ 0.0f }; //	매매손익
+	// 소수점 반영 안한 값임. 
 	double average_price{ 0.0f };	// 평균가*/
 	double open_profit_loss{ 0.0f };		/*평가손익*/
 	double pure_trade_profit_loss{ 0.0f }; // 청산 순손익

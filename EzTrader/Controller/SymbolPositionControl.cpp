@@ -31,10 +31,11 @@ namespace DarkHorse {
 	void SymbolPositionControl::update_profit_loss(std::shared_ptr<SmQuote> quote)
 	{
 		if (symbol_id_ != 0 && quote->symbol_id != symbol_id_ ) return;
-		double open_profit_loss = 0;
-		open_profit_loss = position_.open_quantity * (quote->close - position_.average_price) * symbol_seung_su_;
-		open_profit_loss = open_profit_loss / pow(10, symbol_decimal_);
-		position_.open_profit_loss = open_profit_loss;
+		//double open_profit_loss = 0;
+		//open_profit_loss = position_.open_quantity * (quote->close - position_.average_price) * symbol_seung_su_;
+		//open_profit_loss = open_profit_loss / pow(10, symbol_decimal_);
+		//position_.open_profit_loss = open_profit_loss;
+		position_.open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position_.open_quantity, quote->close, position_.average_price, symbol_seung_su_, symbol_decimal_);
 		if (event_handler_) event_handler_();
 	}
 

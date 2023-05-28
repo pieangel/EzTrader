@@ -34,7 +34,7 @@ namespace DarkHorse {
 			account_ = account;
 		}
 	private:
-		void calculate_total_position();
+		void update_account_profit_loss();
 		position_p get_position(const std::string& symbol_code);
 		void add_position(position_p position);
 		void remove_position(const std::string& symbol_code);

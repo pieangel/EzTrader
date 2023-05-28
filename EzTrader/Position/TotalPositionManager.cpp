@@ -81,4 +81,16 @@ void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
 }
 
 
+double TotalPositionManager::calculate_symbol_open_profit_loss(
+	const int& position_open_quantity, 
+	const int& symbol_close, 
+	const double& position_average_price, 
+	const int& symbol_seungsu, 
+	const int& symbol_decimal)
+{
+	double open_profit_loss = 0.0;
+	open_profit_loss = position_open_quantity * (symbol_close - position_average_price) * symbol_seungsu;
+	return open_profit_loss / pow(10, symbol_decimal);
+}
+
 }

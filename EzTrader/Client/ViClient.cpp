@@ -4134,6 +4134,9 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
 
+		const int avg_price = convert_to_int(strSymbolCode, strSymbolAvgPrice);
+		if (avg_price < 0) continue;
+
 		int position = _ttoi(strSymbolPosition.Trim());
 
 		nlohmann::json symbol_position;
@@ -4143,8 +4146,8 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 		symbol_position["symbol_position"] = position == 1 ? 1 : -1;
 		symbol_position["symbol_pre_open_qty"] = 0;
 		symbol_position["symbol_open_qty"] = _ttoi(strSymbolOpenQty.Trim());
-		symbol_position["symbol_avg_price"] = _ttoi(strSymbolAvgPrice);
-		symbol_position["symbol_unit_price"] = _ttoi(strSymbolAvgPrice);
+		symbol_position["symbol_avg_price"] = avg_price;
+		symbol_position["symbol_unit_price"] = avg_price;
 		symbol_position["symbol_open_profit_loss"] = 0;
 
 		mainApp.total_position_manager()->on_symbol_position(std::move(symbol_position));

@@ -61,7 +61,7 @@
 using namespace std;
 using namespace std::placeholders;
 
-constexpr int Round(float x) { return static_cast<int>(x + 0.5f); }
+constexpr int Round(double x) { return static_cast<int>(x + 0.5f); }
 #define ROUNDING(x, dig)	( floor((x) * pow(float(10), dig) + 0.5f) / pow(float(10), dig) )
 
 using namespace DarkHorse;
@@ -248,10 +248,14 @@ void SymbolOrderView::update_position()
 	const VmPosition& position = position_control_->get_position();
 
 	if (position.open_quantity == 0) return;
-	int average_price = static_cast<int>(ROUNDING(position.average_price , 1));
+	int average_price = Round(position.average_price);
 	const int int_tick_size = static_cast<int>(symbol_->TickSize() * pow(10, symbol_->decimal()));
 	const int mod_avg_price = average_price % int_tick_size;
-	average_price = average_price - average_price % int_tick_size;
+	const double half_tick_size = int_tick_size / 2.0;
+	if (mod_avg_price > half_tick_size)
+		average_price += (int_tick_size - mod_avg_price);
+	else
+		average_price -= mod_avg_price;
 
 	const int position_price_row = FindRow(average_price);
 

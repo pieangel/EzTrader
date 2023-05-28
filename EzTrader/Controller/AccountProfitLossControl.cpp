@@ -41,7 +41,12 @@ void AccountProfitLossControl::load_position_from_account(const std::string& acc
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
 		position_map_[it->second->symbol_code] = it->second;
 	}
-	calculate_total_position();
+	auto account_profit_loss_p = acnt_position_mgr->get_account_profit_loss();
+	account_profit_loss_.trade_profit_loss = account_profit_loss_p->trade_profit_loss;
+	account_profit_loss_.open_profit_loss = account_profit_loss_p->open_profit_loss;
+	account_profit_loss_.trade_fee = account_profit_loss_p->trade_fee;
+	account_profit_loss_.pure_trade_profit_loss = account_profit_loss_p->pure_trade_profit_loss;
+
 	if (event_handler_) event_handler_();
 }
 
@@ -49,13 +54,14 @@ void AccountProfitLossControl::update_position(position_p position)
 {
 	if (!position || position->account_id != account_id_) return;
 
-	if (position->open_quantity == 0)
+	if (position->open_quantity == 0) {
+		update_account_profit_loss();
 		remove_position(position->symbol_code);
-	else
+	}
+	else {
 		add_position(position);
-
-	calculate_total_position();
-
+		update_account_profit_loss();
+	}
 	if (event_handler_) event_handler_();
 }
 
@@ -67,19 +73,20 @@ void AccountProfitLossControl::update_profit_loss(quote_p quote)
 	position_p position = get_position(quote->symbol_code);
 	if (!position) return;
 
-	double open_profit_loss = 0;
-	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
-	open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
-	position->open_profit_loss = open_profit_loss;
+	//double open_profit_loss = 0;
+	//open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
+	//open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
+	//position->open_profit_loss = open_profit_loss;
 
-	calculate_total_position();
+	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
+
+	update_account_profit_loss();
 
 	if (event_handler_) event_handler_();
 }
 
-void AccountProfitLossControl::calculate_total_position()
+void AccountProfitLossControl::update_account_profit_loss()
 {
-	if (position_map_.empty()) return;
 	double trade_profit_loss{ 0.0f };       //매매(청산)손익
 	double open_profit_loss{ 0.0f };		//평가손익
 	double pure_trade_profit_loss{ 0.0f };  // 청산 순손익

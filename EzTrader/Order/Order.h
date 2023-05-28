@@ -25,7 +25,7 @@ struct Order {
 	std::string first_order_no;
 	// 체결 주문 가격
 	int filled_price{ 0 };
-	// 체결량
+	// 체결량 - 부호가 붙지 않음. 
 	int filled_count{ 0 };
 	// 미결제량 - 최초에는 체결량과 같다.
 	int unsettled_count{ 0 };

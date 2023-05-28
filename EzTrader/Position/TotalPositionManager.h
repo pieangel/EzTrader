@@ -24,6 +24,14 @@ public:
 	void update_position(order_p order);
 	void on_symbol_position(nlohmann::json&& arg);
 	void on_symbol_profit_loss(nlohmann::json&& arg);
+	static double calculate_symbol_open_profit_loss
+	(
+		const int& position_open_quantity,
+		const int& symbol_close,
+		const double& position_average_price,
+		const int& symbol_seungsu,
+		const int& symbol_decimal
+	);
 private:
 	account_position_manager_p find_position_manager(const std::string& account_no);
 	account_position_manager_p create_position_manager(const std::string& account_no);

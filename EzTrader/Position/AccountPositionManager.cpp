@@ -16,12 +16,14 @@
 #include <functional>
 #include "../Util/IdGenerator.h"
 #include "../Log/MyLogger.h"
+#include "TotalPositionManager.h"
 namespace DarkHorse {
 
 	AccountPositionManager::AccountPositionManager(const std::string& account_no)
 		: account_no_(account_no)
 	{
 		id_ = IdGenerator::get_id();
+		account_profit_loss_ = std::make_shared<AccountProfitLoss>();
 	}
 
 	AccountPositionManager::~AccountPositionManager()
@@ -49,6 +51,25 @@ position_p AccountPositionManager::create_position(const std::string& symbol_cod
 	return position;
 }
 
+void AccountPositionManager::update_account_profit_loss()
+{
+	double trade_profit_loss{ 0.0f };       //매매(청산)손익
+	double open_profit_loss{ 0.0f };		//평가손익
+	double pure_trade_profit_loss{ 0.0f };  // 청산 순손익
+	double trade_fee{ 0.0f };               // 청산 수수료
+	for (auto it = position_map_.begin(); it != position_map_.end(); it++) {
+		auto position = it->second;
+		trade_profit_loss += position->trade_profit_loss;
+		open_profit_loss += position->open_profit_loss;
+		trade_fee += position->trade_fee;
+		pure_trade_profit_loss += position->pure_trade_profit_loss;
+	}
+	account_profit_loss_->trade_profit_loss = trade_profit_loss;
+	account_profit_loss_->open_profit_loss = open_profit_loss;
+	account_profit_loss_->trade_fee = trade_fee;
+	account_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
+}
+
 void AccountPositionManager::update_position(order_p order)
 {
 	if (!order) return;
@@ -59,39 +80,24 @@ void AccountPositionManager::update_position(order_p order)
 	set_account_id(position, order->account_no);
 	auto symbol = mainApp.SymMgr()->FindSymbol(order->symbol_code);
 	if (!symbol) return;
-	LOGINFO(CMyLogger::getInstance(), "position_count = [%d], filled_count = [%d], average_price = [%.2f], filled_price = [%.2f]", position->open_quantity, order->filled_count, position->average_price, order->filled_price);
+	LOGINFO(CMyLogger::getInstance(), "position_count = [%d], filled_count = [%d], average_price = [%.2f], filled_price = [%d]", position->open_quantity, order->filled_count, position->average_price, order->filled_price);
 
-	const int position_count = calculate_position_count(order, position);
+	const int new_position_count = calculate_position_count(order, position);
 	const int unsettled_count = calculate_unsettled_count(order, position);
-	const double traded_profit_loss = calculate_traded_profit_loss(order, position, symbol->seung_su());
-	const double average_price = calculate_average_price(order, position);
+	const double traded_profit_loss = calculate_traded_profit_loss(order, position, symbol->decimal(), symbol->seung_su());
+	const double new_average_price = calculate_average_price(order, position, new_position_count, unsettled_count);
 
-	LOGINFO(CMyLogger::getInstance(), "position_count = [%d], unsettled_count = [%d], trade_profit_loss = [%.2f], average_price = [%.2f]", position_count, unsettled_count, traded_profit_loss, average_price);
+	LOGINFO(CMyLogger::getInstance(), "position_count = [%d], unsettled_count = [%d], trade_profit_loss = [%.2f], average_price = [%.2f]", new_position_count, unsettled_count, traded_profit_loss, new_average_price);
 	
 	position->trade_profit_loss += traded_profit_loss;
-	position->open_quantity = position_count;
-	position->average_price = average_price;
+	position->open_quantity = new_position_count;
+	position->average_price = new_average_price;
 	update_open_profit_loss(position);
 	// update the involved order.
 	order->unsettled_count = unsettled_count;
 	if (order->unsettled_count == 0)
 		order->order_state = SmOrderState::Settled;
-
-	mainApp.event_hub()->process_position_event(position);
-}
-
-void AccountPositionManager::update_profit_loss(std::shared_ptr<SmQuote> quote)
-{
-	if (!quote) return;
-	auto symbol = mainApp.SymMgr()->FindSymbol(quote->symbol_code);
-	if (!symbol) return;
-	position_p position = get_position(quote->symbol_code);
-	if (!position) return;
-	double open_profit_loss = 0;
-	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
-	open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
-	position->open_profit_loss = open_profit_loss;
-
+	update_account_profit_loss();
 	mainApp.event_hub()->process_position_event(position);
 }
 
@@ -118,42 +124,43 @@ int AccountPositionManager::calculate_position_count(order_p order, position_p p
 {
 	const int order_filled_sign = order->position == SmPositionType::Buy ? 1 : -1;
 	const int signed_filled_count = order->filled_count * order_filled_sign;
-	const int old_position_count = position->open_quantity;
-	return signed_filled_count + old_position_count;
+	return signed_filled_count + position->open_quantity;
 }
 int AccountPositionManager::calculate_unsettled_count(order_p order, position_p position)
 {
-	if (abs(position->open_quantity) >= abs(order->filled_count)) return 0;
-	return abs(order->filled_count) - abs(position->open_quantity);
+	const int order_filled_sign = order->position == SmPositionType::Buy ? 1 : -1;
+	const int signed_filled_count = order->filled_count * order_filled_sign;
+	if (position->open_quantity == 0) return signed_filled_count;
+	if (position->open_quantity * signed_filled_count > 0) return signed_filled_count;
+	if (abs(position->open_quantity) >= order->filled_count) return 0;
+	return position->open_quantity + signed_filled_count;
 }
 int AccountPositionManager::calculate_traded_count(order_p order, position_p position)
 {
 	const int order_filled_sign = order->position == SmPositionType::Buy ? 1 : -1;
 	const int signed_filled_count = order->filled_count * order_filled_sign;
-	const int old_position_count = position->open_quantity;
-	if (old_position_count * signed_filled_count >= 0) return 0;
-	return min(abs(old_position_count), abs(signed_filled_count));
+	if (position->open_quantity * signed_filled_count >= 0) return 0;
+	return min(abs(position->open_quantity), abs(signed_filled_count));
 }
-double AccountPositionManager::calculate_traded_profit_loss(order_p order, position_p position, const int& symbol_seungsu)
+double AccountPositionManager::calculate_traded_profit_loss(order_p order, position_p position, const int& symbol_decimal, const int& symbol_seungsu)
 {
 	const int traded_count = calculate_traded_count(order, position);
-	const double price_gap = abs(position->average_price - order->filled_price);
+	const double price_gap = (order->filled_price - position->average_price) / pow(10, symbol_decimal);
 	double trade_profit_loss = price_gap * traded_count * symbol_seungsu; // * symbol->SeungSu() 반드시 Symbol 승수를 곱해줘야 함. 
-	// decide it is a profit or a loss
-	if (order->position == SmPositionType::Buy)
-		if (order->filled_price < position->average_price)
-			trade_profit_loss *= -1;
-	else if (order->position == SmPositionType::Sell)
-		if (order->filled_price > position->average_price)
-			trade_profit_loss *= -1;
+	// 매도는 계산이 반대로 이루어짐. 
+	if (order->position == SmPositionType::Sell) trade_profit_loss *= -1;
 	return trade_profit_loss;
 }
-double AccountPositionManager::calculate_average_price(order_p order, position_p position)
+double AccountPositionManager::calculate_average_price(order_p order, position_p position, const int& new_open_quantity, const int& unsettled_count)
 {
-	const double position_price = position->average_price * abs(position->open_quantity);
-	const double filled_price = order->filled_price * order->filled_count;
-
-	return (position_price + filled_price) / (abs(position->open_quantity) + order->filled_count);
+	if (new_open_quantity == 0) return 0;
+	if (abs(new_open_quantity) >  abs(position->open_quantity)) {
+		const double position_average_price = position->average_price * abs(position->open_quantity);
+		const double filled_price = order->filled_price * abs(unsettled_count);
+		return (position_average_price + filled_price) / (abs(new_open_quantity));
+	}
+	else
+		return position->average_price;
 }
 void AccountPositionManager::update_open_profit_loss(position_p position)
 {
@@ -162,10 +169,8 @@ void AccountPositionManager::update_open_profit_loss(position_p position)
 	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->symbol_code);
 	if (!quote || !symbol) return;
 
-	double open_profit_loss = 0;
-	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
-	open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
-	position->open_profit_loss = open_profit_loss;
+	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], quote->close = [%d], position->average_price = [%.2f], symbol->seung_su = [%d], open_profit_loss = [%.2f]", position->open_quantity, quote->close, position->average_price, symbol->seung_su(), open_profit_loss);
+	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
 }
 
 }
