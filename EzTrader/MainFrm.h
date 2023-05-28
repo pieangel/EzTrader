@@ -40,6 +40,7 @@ class DmFundOrderWindow;
 class VtProgressDlg;
 class SmLoginDlg;
 class MiniJangoDialog;
+class TotalAssetProfitLossDialog;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -154,6 +155,8 @@ public:
 	std::map<HWND, std::shared_ptr<SmFundCompMainDialog>> _FundCompOrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmTotalAssetDialog>> _AssetWndMap;
+
+	std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>> total_asset_profit_loss_map_;
 
 	std::map<HWND, std::shared_ptr<GaSpreadChart>> _ChartMap;
 	std::map<HWND, std::shared_ptr<SmMultiSpreadChart>> _SpreadChartMap;

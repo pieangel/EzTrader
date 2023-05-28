@@ -10,6 +10,9 @@
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
 #include "../Fund/SmFund.h"
+#include "../Controller/AccountAssetControl.h"
+#include "../Controller/AccountProfitLossControl.h"
+#include "../Util/VtStringUtil.h"
 #include <format>
 
 #include <functional>
@@ -27,7 +30,11 @@ END_MESSAGE_MAP()
 
 TotalAssetProfitLossView::TotalAssetProfitLossView()
 {
+	account_profit_loss_control_ = std::make_shared<DarkHorse::AccountProfitLossControl>();
+	account_profit_loss_control_->set_event_handler(std::bind(&TotalAssetProfitLossView::on_update_account_profit_loss, this));
 
+	asset_control_ = std::make_shared<DarkHorse::AccountAssetControl>();
+	asset_control_->set_event_handler(std::bind(&TotalAssetProfitLossView::on_update_account_profit_loss, this));
 }
 
 TotalAssetProfitLossView::~TotalAssetProfitLossView()
@@ -142,6 +149,18 @@ void TotalAssetProfitLossView::OnPaint()
 	m_pGM->EndDraw();
 }
 
+void TotalAssetProfitLossView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	account_ = val;
+
+	if (!account_profit_loss_control_) return;
+
+	account_profit_loss_control_->load_position_from_account(account_->No());
+	account_profit_loss_control_->set_account_id(account_->id());
+	asset_control_->load_position_from_account(account_->No());
+	enable_account_profit_loss_show_ = true;
+}
+
 void TotalAssetProfitLossView::UpdateSymbolInfo()
 {
 	if (!_Symbol) return;
@@ -169,19 +188,74 @@ void TotalAssetProfitLossView::OnOrderEvent(const std::string& account_no, const
 	_EnableOrderShow = true;
 }
 
+void TotalAssetProfitLossView::on_update_account_profit_loss()
+{
+	enable_account_profit_loss_show_ = true;
+}
+
+void TotalAssetProfitLossView::update_account_profit_loss()
+{
+	if (!asset_control_ || !account_profit_loss_control_ || !account_) return;
+
+	const VmAsset& asset = asset_control_->get_asset();
+	const VmAccountProfitLoss account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
+	auto cell = _Grid->FindCell(0, 1);
+	const int decimal = account_->Type() == "1" ? 2 : 0;
+	std::string value;
+	value = VtStringUtil::get_format_value(asset.entrust_total, decimal, true);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(1, 1);
+	value = VtStringUtil::get_format_value(account_profit_loss.open_profit_loss, decimal, true);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(2, 1);
+	value = VtStringUtil::get_format_value(account_profit_loss.trade_profit_loss, decimal, true);
+	if (cell) cell->Text(value);
+
+	cell = _Grid->FindCell(3, 1);
+	value = VtStringUtil::get_format_value(asset.entrust_deposit, decimal, true);
+	if (cell) cell->Text(value);
+
+	cell = _Grid->FindCell(4, 1);
+	value = VtStringUtil::get_format_value(asset.maintenance_margin, decimal, true);
+	if (cell) cell->Text(value);
+
+
+	cell = _Grid->FindCell(0, 3);
+	value = VtStringUtil::get_format_value(asset.open_trust_toal, decimal, true);
+	if (cell) cell->Text(value);
+
+
+	cell = _Grid->FindCell(1, 3);
+	value = VtStringUtil::get_format_value(account_profit_loss.trade_fee, decimal, true);
+	if (cell) cell->Text(value);
+
+	cell = _Grid->FindCell(2, 3);
+	double pure_profit = asset.open_profit_loss + asset.trade_profit_loss - abs(asset.fee);
+	value = VtStringUtil::get_format_value(pure_profit, decimal, true);
+	if (cell) cell->Text(value);
+
+	cell = _Grid->FindCell(3, 3);
+	value = VtStringUtil::get_format_value(asset.order_margin, decimal, true);
+	if (cell) cell->Text(value);
+
+	cell = _Grid->FindCell(4, 3);
+	value = VtStringUtil::get_format_value(asset.additional_margin, decimal, true);
+	if (cell) cell->Text(value);
+}
+
 void TotalAssetProfitLossView::SetAccountAssetInfo()
 {
-	if (!_Account) return;
+	if (!account_) return;
 
 	auto cell = _Grid->FindCell(0, 1);
 	std::string value;
-	value = std::format("{0:.2f}", _Account->Asset.Balance);
+	value = std::format("{0:.2f}", account_->Asset.Balance);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(1, 1);
-	value = std::format("{0:.2f}", _Account->Asset.OpenProfitLoss);
+	value = std::format("{0:.2f}", account_->Asset.OpenProfitLoss);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(2, 1);
-	value = std::format("{0:.2f}", _Account->Asset.TradeProfitLoss);
+	value = std::format("{0:.2f}", account_->Asset.TradeProfitLoss);
 	if (cell) cell->Text(value);
 
 	cell = _Grid->FindCell(3, 1);
@@ -194,25 +268,25 @@ void TotalAssetProfitLossView::SetAccountAssetInfo()
 
 
 	cell = _Grid->FindCell(0, 3);
-	value = std::format("{0:.2f}", _Account->Asset.TradeProfitLoss);
+	value = std::format("{0:.2f}", account_->Asset.TradeProfitLoss);
 	if (cell) cell->Text(value);
 
 
 	cell = _Grid->FindCell(1, 3);
-	value = std::format("{0:.2f}", _Account->Asset.Fee);
+	value = std::format("{0:.2f}", account_->Asset.Fee);
 	if (cell) cell->Text(value);
 
 	cell = _Grid->FindCell(2, 3);
-	double pure_profit = _Account->Asset.OpenProfitLoss + _Account->Asset.TradeProfitLoss - abs(_Account->Asset.Fee);
+	double pure_profit = account_->Asset.OpenProfitLoss + account_->Asset.TradeProfitLoss - abs(account_->Asset.Fee);
 	value = std::format("{0:.2f}", pure_profit);
 	if (cell) cell->Text(value);
 
 	cell = _Grid->FindCell(3, 3);
-	value = std::format("{0:.2f}", _Account->Asset.OrderMargin);
+	value = std::format("{0:.2f}", account_->Asset.OrderMargin);
 	if (cell) cell->Text(value);
 
 	cell = _Grid->FindCell(4, 3);
-	value = std::format("{0:.2f}", _Account->Asset.AdditionalMargin);
+	value = std::format("{0:.2f}", account_->Asset.AdditionalMargin);
 	if (cell) cell->Text(value);
 }
 
@@ -280,17 +354,12 @@ void TotalAssetProfitLossView::InitHeader()
 void TotalAssetProfitLossView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
-	if (_EnableQuoteShow) {
-		SetAssetInfo();
-		_EnableQuoteShow = false;
+	if (enable_account_profit_loss_show_) {
+		update_account_profit_loss();
+		enable_account_profit_loss_show_ = false;
 		needDraw = true;
 	}
-	if (_EnableOrderShow) {
-		SetAssetInfo();
-		_EnableOrderShow = false;
-		needDraw = true;
-	}
-
+	
 	if (needDraw) Invalidate();
 
 	CBCGPStatic::OnTimer(nIDEvent);

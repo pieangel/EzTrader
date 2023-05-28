@@ -67,6 +67,7 @@
 #include "Task/VtProgressDlg.h"
 #include "Task/ViServerDataReceiver.h"
 #include "Dialog/MiniJangoDialog.h"
+#include "Dialog/TotalAssetProfitLossDialog.h"
 // -----------------------------------------------------------------------------
 
 // DataFrame library is entirely under hmdf name-space
@@ -1062,9 +1063,9 @@ void CMainFrame::OnOpenSettings()
 
 void CMainFrame::OnAsset()
 {
-	std::shared_ptr< SmTotalAssetDialog>  totalAssetDialog = std::make_shared<SmTotalAssetDialog>();
+	std::shared_ptr< TotalAssetProfitLossDialog>  totalAssetDialog = std::make_shared<TotalAssetProfitLossDialog>();
 	totalAssetDialog->Create(IDD_TOTAL_ASSET, this);
-	_AssetWndMap[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
+	total_asset_profit_loss_map_[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
 	totalAssetDialog->ShowWindow(SW_SHOW);
 }
 
