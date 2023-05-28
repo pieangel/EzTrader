@@ -310,6 +310,8 @@ void AccountPositionView::set_column_widths(std::vector<int> column_width_vector
 	SetColumnWidth(2, column_widths_vector_[2]);
 	SetColumnWidth(3, column_widths_vector_[3]);
 
+	EnableCheckBoxes(FALSE);
+
 	AdjustLayout();
 }
 

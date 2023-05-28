@@ -33,7 +33,6 @@ public:
 	CBCGPButton _CheckBarColor;
 	CBCGPButton _CheckCancelByRightClick;
 	CBCGPButton _CheckOrderBySpace;
-	CBCGPButton _CheckSetWide;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedCheckBarColor();
 	afx_msg void OnBnClickedCheckAlignByAlt();

@@ -34,13 +34,13 @@ namespace DarkHorse {
 	{
 		{OrderGridHeader::SELL_STOP, "STOP", 40},
 		{OrderGridHeader::SELL_ORDER, "주문", 55},
-		{OrderGridHeader::SELL_CNT, "건수", 35},
+		{OrderGridHeader::SELL_CNT, "건수", 0},
 		{OrderGridHeader::SELL_QTY, "잔량", 35},
 		//{OrderGridHeader::SELL_FILLED, "체결", 35},
 		{OrderGridHeader::QUOTE, "시세", 80},
 		//{OrderGridHeader::BUY_FILLED, "체결", 35},
 		{OrderGridHeader::BUY_QTY, "잔량", 35},
-		{OrderGridHeader::BUY_CNT, "건수", 35},
+		{OrderGridHeader::BUY_CNT, "건수", 0},
 		{OrderGridHeader::BUY_ORDER, "주문", 55},
 		{OrderGridHeader::BUY_STOP, "STOP", 40}
 	};

@@ -133,6 +133,7 @@
 #define IDC_COMBO_SYMBOL_COMP           1042
 #define IDC_BTN_V3                      1043
 #define IDC_CHECK2                      1044
+#define IDC_CHECK_STOP_COL              1044
 #define IDC_CHECK_DATA_LABEL            1045
 #define IDC_BTN_ADD                     1046
 #define IDC_BUTTON4                     1047
@@ -200,6 +201,7 @@
 #define IDC_STATIC_LINE1                1109
 #define IDC_STATIC_LINE2                1110
 #define IDC_EDIT1                       1111
+#define IDC_EDIT_CELL_HEIGHT            1111
 #define IDC_EDIT_AMOUNT                 1112
 #define IDC_EDIT_NQ                     1113
 #define IDC_EDIT_VK1_NQ                 1114
@@ -272,11 +274,13 @@
 #define IDC_EDIT_VK3_HS_AVG             1178
 #define IDC_EDIT_ID                     1179
 #define IDC_CHECK3                      1180
+#define IDC_CHECK_COUNT_COL             1180
 #define IDC_CHECK_LOSS                  1181
 #define IDC_STATIC_LINE20               1182
 #define IDC_CHECK_V1                    1183
 #define IDC_EDIT_PWD                    1184
 #define IDC_EDIT2                       1185
+#define IDC_EDIT_WIDTH                  1185
 #define IDC_EDIT_SLIP                   1186
 #define IDC_STATIC_LINE21               1187
 #define IDC_EDIT_CHART_RATIO1           1188
@@ -317,6 +321,7 @@
 #define IDC_EDIT_SELL_CAP               1232
 #define IDC_BTN_SET                     1233
 #define IDC_CHECK1                      1234
+#define IDC_CHECK_SHOW_ORDER_COL        1234
 #define IDC_CHECK_BAR_COLOR             1235
 #define IDC_CHECK_MAIN                  1236
 #define IDC_CHECK_NK                    1237

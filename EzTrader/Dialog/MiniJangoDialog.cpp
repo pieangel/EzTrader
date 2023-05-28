@@ -73,10 +73,10 @@ BOOL MiniJangoDialog::OnInitDialog()
 	SetTimer(1, 100, NULL);
 
 	std::vector<int> column_width_vector;
-	column_width_vector.push_back(80);
-	column_width_vector.push_back(46);
-	column_width_vector.push_back(78);
-	column_width_vector.push_back(50);
+	column_width_vector.push_back(60);
+	column_width_vector.push_back(40);
+	column_width_vector.push_back(75);
+	column_width_vector.push_back(40);
 	account_position_view_.set_column_widths(column_width_vector);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
