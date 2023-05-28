@@ -1,7 +1,5 @@
 #pragma once
 #include <BCGCBProInc.h>
-#include "../SmGrid/SmJangoAccountArea.h"
-#include "../SmGrid/SmJangoPositionArea.h"
 #include "../View/AccountProfitLossView.h"
 #include "../View/AccountPositionView.h"
 #include <map>
@@ -31,8 +29,6 @@ public:
 	CBCGPStatic _StaticCombo;
 	AccountProfitLossView account_profit_loss_view_;
 	AccountPositionView account_position_view_;
-	SmJangoAccountArea _StaticAccount;
-	SmJangoPositionArea _StaticPosition;
 	virtual BOOL OnInitDialog();
 
 private:
@@ -45,6 +41,7 @@ private:
 	// 0 : account, 1 : fund
 	int _Mode = 0;
 public:
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnCbnSelchangeComboAccount();
 	virtual void PostNcDestroy();
 };

@@ -55,6 +55,10 @@ AccountPositionView::AccountPositionView()
 	m_bExtendedPadding = FALSE;
 	account_position_control_ = std::make_shared<DarkHorse::AccountPositionControl>();
 	account_position_control_->set_event_handler(std::bind(&AccountPositionView::on_update_account_position, this));
+	column_widths_vector_.push_back(75);
+	column_widths_vector_.push_back(40);
+	column_widths_vector_.push_back(68);
+	column_widths_vector_.push_back(40);
 }
 
 void AccountPositionView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
@@ -205,10 +209,10 @@ int AccountPositionView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetVisualManagerColorTheme(TRUE);
 
 	// Insert columns:
-	InsertColumn(0, _T("종목"), 75);
-	InsertColumn(1, _T("구분"), 40);
-	InsertColumn(2, _T("평가손익"), 68);
-	InsertColumn(3, _T("수량"), 40);
+	InsertColumn(0, _T("종목"), column_widths_vector_[0]);
+	InsertColumn(1, _T("구분"), column_widths_vector_[1]);
+	InsertColumn(2, _T("평가손익"), column_widths_vector_[2]);
+	InsertColumn(3, _T("수량"), column_widths_vector_[3]);
 
 	FreezeColumns(0);
 
@@ -273,16 +277,13 @@ void AccountPositionView::OnDestroy()
 
 void AccountPositionView::on_timer()
 {
+	bool needDraw = false;
 	if (enable_position_show_) {
 		update_account_position();
-		//needDraw = true;
+		needDraw = true;
 		enable_position_show_ = false;
 	}
-
-	if (_EnableQuoteShow) {
-		UpdatePositionInfo();
-		_EnableQuoteShow = false;
-	}
+	if (needDraw) Invalidate();
 }
 
 void AccountPositionView::ClearCheck()
@@ -299,6 +300,17 @@ void AccountPositionView::OnOrderEvent(const std::string& account_no, const std:
 void AccountPositionView::OnQuoteEvent(const std::string& symbol_code)
 {
 	_EnableQuoteShow = true;
+}
+
+void AccountPositionView::set_column_widths(std::vector<int> column_width_vector)
+{
+	column_widths_vector_ = column_width_vector;
+	SetColumnWidth(0, column_widths_vector_[0]);
+	SetColumnWidth(1, column_widths_vector_[1]);
+	SetColumnWidth(2, column_widths_vector_[2]);
+	SetColumnWidth(3, column_widths_vector_[3]);
+
+	AdjustLayout();
 }
 
 void AccountPositionView::LiqSelPositionsForAccount()

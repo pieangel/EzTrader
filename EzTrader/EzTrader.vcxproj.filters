@@ -589,9 +589,6 @@
     <ClCompile Include="View\AccountProfitLossView.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="View\AssetView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
     <ClCompile Include="View\BuyHogaView.cpp">
       <Filter>View</Filter>
     </ClCompile>
@@ -721,9 +718,6 @@
     <ClCompile Include="Controller\AccountProfitLossControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Controller\AssetControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
     <ClCompile Include="Controller\BuyHogaControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
@@ -825,6 +819,21 @@
     </ClCompile>
     <ClCompile Include="Task\GradientStatic.cpp">
       <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\AccountAssetControl.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="View\AccountAssetView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\TotalAssetProfitLossView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\MiniJangoDialog.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\TotalAssetProfitLossDialog.cpp">
+      <Filter>Dialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1599,9 +1608,6 @@
     <ClInclude Include="View\AccountProfitLossView.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="View\AssetView.h">
-      <Filter>View</Filter>
-    </ClInclude>
     <ClInclude Include="View\BuyHogaView.h">
       <Filter>View</Filter>
     </ClInclude>
@@ -1746,9 +1752,6 @@
     <ClInclude Include="Controller\AccountProfitLossControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Controller\AssetControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
     <ClInclude Include="Controller\BuyHogaControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
@@ -1883,6 +1886,21 @@
     </ClInclude>
     <ClInclude Include="Task\GradientStatic.h">
       <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller\AccountAssetControl.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="View\AccountAssetView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="View\TotalAssetProfitLossView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\MiniJangoDialog.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\TotalAssetProfitLossDialog.h">
+      <Filter>Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2139,6 +2157,9 @@
     </Filter>
     <Filter Include="Format">
       <UniqueIdentifier>{c2263ed8-7b1c-455d-ac0b-996427abf03d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dialog">
+      <UniqueIdentifier>{9630993d-84c4-4d0b-bf37-86da105b3c78}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

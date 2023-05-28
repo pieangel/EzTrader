@@ -6,7 +6,7 @@
 #include "MiniJangoDialog.h"
 #include "afxdialogex.h"
 #include <unordered_map>
-
+#include <vector>
 #include "../Account/SmAccount.h"
 #include "../Global/SmTotalManager.h"
 #include "../Account/SmAccountManager.h"
@@ -40,6 +40,7 @@ void MiniJangoDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(MiniJangoDialog, CBCGPDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &MiniJangoDialog::OnCbnSelchangeComboAccount)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -69,8 +70,22 @@ BOOL MiniJangoDialog::OnInitDialog()
 	// Create the Windows control and attach it to the Grid object
 	account_position_view_.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, 0x12345678);
 
+	SetTimer(1, 100, NULL);
+
+	std::vector<int> column_width_vector;
+	column_width_vector.push_back(80);
+	column_width_vector.push_back(46);
+	column_width_vector.push_back(78);
+	column_width_vector.push_back(50);
+	account_position_view_.set_column_widths(column_width_vector);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void MiniJangoDialog::OnTimer(UINT_PTR nIDEvent)
+{
+	account_position_view_.on_timer();
 }
 
 void MiniJangoDialog::SetAccount()

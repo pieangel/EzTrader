@@ -119,6 +119,7 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	SmFundCompMainDialog* CompFundWnd() const { return _CompFundWnd; }
 	void CompFundWnd(SmFundCompMainDialog* val) { _CompFundWnd = val; }
+	void set_column_widths(std::vector<int> column_width_vector);
 private:
 	void LiqSelPositionsForAccount();
 	void LiqSelPositionsForFund();
@@ -149,6 +150,7 @@ private:
 	std::map<int, std::shared_ptr<DarkHorse::SmPosition>> _RowToPositionMap;
 	std::shared_ptr<DarkHorse::AccountPositionControl> account_position_control_;
 	std::map<int, std::shared_ptr<DarkHorse::Position>> row_to_position_;
+	std::vector<int> column_widths_vector_;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

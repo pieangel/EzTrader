@@ -66,6 +66,7 @@
 #include "Order/OrderRequest/OrderRequestManager.h"
 #include "Task/VtProgressDlg.h"
 #include "Task/ViServerDataReceiver.h"
+#include "Dialog/MiniJangoDialog.h"
 // -----------------------------------------------------------------------------
 
 // DataFrame library is entirely under hmdf name-space
@@ -1095,10 +1096,10 @@ void CMainFrame::OnComplexOrder()
 
 void CMainFrame::OnOrderRemain()
 {
-	std::shared_ptr< SmJangGoDialog> accountJangoDialog = std::make_shared<SmJangGoDialog>();
+	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>();
 	accountJangoDialog->Mode(0);
 	accountJangoDialog->Create(IDD_JANGO, this);
-	_JangoWndMap[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
 	accountJangoDialog->ShowWindow(SW_SHOW);
 }
 

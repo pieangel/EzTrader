@@ -39,6 +39,7 @@ class DmAccountOrderWindow;
 class DmFundOrderWindow;
 class VtProgressDlg;
 class SmLoginDlg;
+class MiniJangoDialog;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -145,6 +146,7 @@ public:
 
 	std::map<HWND, std::shared_ptr<SmOrderCompMainDialog>> _CompOrderWndMap;
 	std::map<HWND, std::shared_ptr<SmJangGoDialog>> _JangoWndMap;
+	std::map<HWND, std::shared_ptr<MiniJangoDialog>> mini_jango_wnd_map_;
 	std::map<HWND, std::shared_ptr<SmFilledListDialog>> _FilledWndMap;
 
 	std::map<HWND, std::shared_ptr<SmFundOrderDialog>> _FundOrderWndMap;
