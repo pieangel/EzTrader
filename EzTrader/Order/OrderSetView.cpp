@@ -198,12 +198,12 @@ int OrderSetView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	pRow->GetItem(0)->SetValue("매수가능");
 	pSpinItem = new CBCGPGridItem(2);
-	pSpinItem->EnableSpinControl(TRUE, 0, 1000);
+	pSpinItem->EnableSpinControl(FALSE, 0, 1000);
 	pRow->ReplaceItem(1, pSpinItem);
 
 	pRow->GetItem(2)->SetValue("매도가능");
 	pSpinItem = new CBCGPGridItem(2);
-	pSpinItem->EnableSpinControl(TRUE, 0, 1000);
+	pSpinItem->EnableSpinControl(FALSE, 0, 1000);
 	pRow->ReplaceItem(3, pSpinItem);
 
 	pCheckItem = new CBCGPGridCheckItem(TRUE);

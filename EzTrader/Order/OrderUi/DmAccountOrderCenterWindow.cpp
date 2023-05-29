@@ -41,7 +41,7 @@
 #include "../../Util/IdGenerator.h"
 #include "../../Event/EventHub.h"
 #include <functional>
-
+using namespace std::placeholders;
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
 #define BTN_ORDER_SELL 0x00000002
@@ -63,6 +63,10 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	mainApp.event_hub()->add_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
+	symbol_order_view_.set_parent(this);
+	symbol_tick_view_.set_parent(this);
+	mainApp.event_hub()->add_window_resize_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_resize_event_from_order_view, this));
+	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 DmAccountOrderCenterWindow::~DmAccountOrderCenterWindow()
@@ -113,7 +117,7 @@ void DmAccountOrderCenterWindow::DoDataExchange(CDataExchange* pDX)
 
 	//DDX_Control(pDX, IDC_STATIC_CONFIG, _ConfigGrid);
 
-	DDX_Control(pDX, IDC_BTN_SEARCH, _BtnSearch);
+	DDX_Control(pDX, IDC_BTN_SEARCH, btn_grid_config_);
 	DDX_Control(pDX, IDC_STATIC_GROUP2, _Group2);
 	DDX_Control(pDX, IDC_STATIC_GROUP3, _Group3);
 	DDX_Control(pDX, IDC_STATIC_GROUP4, _Group4);
@@ -224,6 +228,29 @@ void DmAccountOrderCenterWindow::CreateResource()
 
 }
 
+void DmAccountOrderCenterWindow::on_resize_event_from_order_view()
+{
+	CRect rc_order_view, rc_tick_view,rc_window;
+	symbol_order_view_.GetWindowRect(&rc_order_view);
+	symbol_tick_view_.GetWindowRect(&rc_tick_view);
+	ScreenToClient(rc_order_view);
+	ScreenToClient(rc_tick_view);
+	const int window_width = rc_order_view.Width() + rc_tick_view.Width();
+	symbol_tick_view_.SetWindowPos(nullptr, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOSIZE | SWP_NOZORDER);
+	SetWindowPos(nullptr, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOMOVE | SWP_NOZORDER);
+
+	CWnd* parent = GetParent();
+	GetWindowRect(rc_window);
+	parent->ScreenToClient(rc_window);
+	rc_window.right = rc_order_view.Width() + rc_tick_view.Width();
+	SetWindowPos(nullptr, rc_window.right, rc_window.top, rc_window.Width(), rc_window.Height(), SWP_NOMOVE | SWP_NOZORDER);
+}
+
+void DmAccountOrderCenterWindow::on_resize_event_from_tick_view()
+{
+
+}
+
 void DmAccountOrderCenterWindow::set_symbol(std::shared_ptr<DarkHorse::SmSymbol>symbol)
 {
 	symbol_ = symbol;
@@ -298,11 +325,11 @@ void DmAccountOrderCenterWindow::init_control()
 
 	((CButton*)GetDlgItem(IDC_RADIO_PRICE))->SetCheck(BST_CHECKED);
 
-	_BtnSearch.SetImage(IDB_BITMAP_SEARCH, IDB_BITMAP_SEARCH, 0, IDB_BITMAP_SEARCH);
-	_BtnSearch.m_bRighImage = FALSE;
-	_BtnSearch.m_bTopImage = FALSE;
-	//_BtnSearch.SizeToContent();
-	_BtnSearch.RedrawWindow();
+	btn_grid_config_.SetImage(IDB_GRID_CONFIG, IDB_GRID_CONFIG, 0, IDB_GRID_CONFIG);
+	btn_grid_config_.m_bRighImage = FALSE;
+	btn_grid_config_.m_bTopImage = FALSE;
+	//btn_grid_config_.SizeToContent();
+	btn_grid_config_.RedrawWindow();
 
 	//_ConfigGrid.AttachGrid(this, IDC_STATIC_CONFIG);
 
@@ -367,7 +394,7 @@ void DmAccountOrderCenterWindow::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> s
 		std::shared_ptr<SmGrid> grid = symbol_order_view_.Grid();
 		int value = start_value;
 		for (int i = 1; i < grid->RowCount(); i++) {
-			grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, std::to_string(value));
+			grid->SetCellText(i, DarkHorse::OrderHeader::QUOTE, std::to_string(value));
 			value += int_tick_size;
 		}
 	}
@@ -494,6 +521,25 @@ void DmAccountOrderCenterWindow::request_dm_symbol_master(const std::string symb
 	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
+void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)
+{
+	//symbol_order_view_.on_paramter_event(event, event_message, enable);
+	symbol_order_view_.SetAllRowHeight(event.grid_height);
+	RecalcOrderAreaHeight(this);
+	symbol_order_view_.Invalidate();
+}
+
+void DmAccountOrderCenterWindow::on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag)
+{
+	int i = 0;
+	i = i + 0;
+}
+
+void DmAccountOrderCenterWindow::set_symbol_order_view_height_and_width(std::vector<int> value_vector)
+{
+
+}
+
 void DmAccountOrderCenterWindow::SetRowWide()
 {
 	symbol_order_view_.SetAllRowHeight(WideRowHeight);
@@ -590,21 +636,21 @@ void DmAccountOrderCenterWindow::OnBnClickedCheckShowRealQuote()
 {
 	show_symbol_tick_view_ ? show_symbol_tick_view_ = false : show_symbol_tick_view_ = true;
 	CWnd* parent = GetParent();
-	CRect rcQuote;
-	symbol_tick_view_.GetWindowRect(rcQuote);
-	CRect rcWnd;
-	GetWindowRect(rcWnd);
-	parent->ScreenToClient(rcWnd);
+	CRect rc_tick_view;
+	symbol_tick_view_.GetWindowRect(rc_tick_view);
+	CRect rc_window;
+	GetWindowRect(rc_window);
+	parent->ScreenToClient(rc_window);
 	if (show_symbol_tick_view_) {
-		rcWnd.right = rcWnd.left + rcWnd.Width() + rcQuote.Width();
+		rc_window.right = rc_window.left + rc_window.Width() + rc_tick_view.Width();
 		symbol_tick_view_.ShowWindow(SW_SHOW);
 	}
 	else {
-		rcWnd.right = rcWnd.left + rcWnd.Width() - rcQuote.Width();
+		rc_window.right = rc_window.left + rc_window.Width() - rc_tick_view.Width();
 		symbol_tick_view_.ShowWindow(SW_HIDE);
 	}
 
-	MoveWindow(rcWnd);
+	MoveWindow(rc_window);
 
 	((DmAccountOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
 }
@@ -640,7 +686,9 @@ BOOL DmAccountOrderCenterWindow::OnEraseBkgnd(CDC* pDC)
 
 void DmAccountOrderCenterWindow::OnBnClickedBtnSymbol()
 {
-
+	symbol_table_dialog_ = std::make_shared<SmSymbolTableDialog>(this);
+	symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
+	symbol_table_dialog_->ShowWindow(SW_SHOW);
 }
 
 LRESULT DmAccountOrderCenterWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
@@ -781,16 +829,21 @@ void DmAccountOrderCenterWindow::OnEnChangeEditSlip()
 
 void DmAccountOrderCenterWindow::OnBnClickedBtnSearch()
 {
-	symbol_table_dialog_ = std::make_shared<SmSymbolTableDialog>(this);
-	symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
+	//symbol_table_dialog_ = std::make_shared<SmSymbolTableDialog>(this);
+	//symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
 	//_SymbolTableDlg->OrderWnd = this;
-	symbol_table_dialog_->ShowWindow(SW_SHOW);
+	//symbol_table_dialog_->ShowWindow(SW_SHOW);
+
+	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id());
+	order_set_dialog_->Create(IDD_ORDER_SET, this);
+	//_OrderSetDlg->OrderWnd(this);
+	order_set_dialog_->ShowWindow(SW_SHOW);
 }
 
 
 void DmAccountOrderCenterWindow::OnBnClickedBtnSet()
 {
-	order_set_dialog_ = std::make_shared<SmOrderSetDialog>();
+	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id());
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
 	//_OrderSetDlg->OrderWnd(this);
 	order_set_dialog_->ShowWindow(SW_SHOW);

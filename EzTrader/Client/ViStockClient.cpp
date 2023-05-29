@@ -424,6 +424,7 @@ void DarkHorse::ViStockClient::ExecTask(DarkHorse::SmTaskArg&& task)
 	case SmTaskType::AccountAsset:
 		break;
 	case SmTaskType::AccountProfitLoss:
+		_ViCtrol->account_profit_loss(std::move(task));
 		break;
 	case SmTaskType::SymbolProfitLoss:
 		break;

@@ -2421,6 +2421,91 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 	_OrderReqMap[nRqID] = order_req;
 }
 
+int ViClient::account_profit_loss(SmTaskArg&& arg)
+{
+	if (arg.TaskType != SmTaskType::AccountProfitLoss) return -1;
+	try {
+		auto req = std::any_cast<DarkHorse::AccountProfitLossReq>(arg.Param);
+		if (req.account_type == "1")
+			ab_account_profit_loss(req);
+		else if (req.account_type == "9")
+			dm_account_profit_loss(req);
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+		return -1;
+	}
+	return 1;
+}
+
+int ViClient::ab_account_profit_loss(DarkHorse::AccountProfitLossReq arg)
+{
+	try {
+		const std::string account_no = arg.account_no;
+		const std::string password = arg.password;
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+
+		std::string reqString;
+		std::string temp;
+		reqString.append("1");
+		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
+		// 아이디 
+		reqString.append(temp);
+
+		temp = VtStringUtil::PadRight(account_no, ' ', 6);
+		reqString.append(temp);
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+		// 그룹명 - 공백
+		reqString.append("                    ");
+		// 통화코드
+		reqString.append("USD");
+
+
+		const CString sInput = reqString.c_str();
+		const CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefAbSymbolProfitLoss, sInput);
+		const int nRqID = m_CommAgent.CommRqData(DefAbSymbolProfitLoss, sInput, sInput.GetLength(), strNextKey);
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+int ViClient::dm_account_profit_loss(DarkHorse::AccountProfitLossReq arg)
+{
+	try {
+		const std::string account_no = arg.account_no;
+		const std::string password = arg.password;
+		std::string reqString;
+		std::string temp;
+		temp = VtStringUtil::PadRight(account_no, ' ', 11);
+		reqString.append(temp);
+		temp = VtStringUtil::PadRight(password, ' ', 8);
+		reqString.append(temp);
+
+
+		CString sTrCode = "g11002.DQ1302&";
+		CString sInput = reqString.c_str();
+		CString strNextKey = _T("");
+		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", sTrCode, sInput);
+		int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+
 void DarkHorse::ViClient::register_symbol(task_arg&& arg)
 {
 	const std::string symbol_code = std::any_cast<std::string>(arg["symbol_code"]);
@@ -3392,7 +3477,7 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 	}
 	account->Asset.TradeProfitLoss = tradePL;
 	account->Asset.Fee = fee;
-	account->Asset.OpenTrustTotal = totalPL;
+	//account->Asset.OpenTrustTotal = totalPL;
 
 	on_task_complete(server_request_id);
 }
@@ -4006,7 +4091,7 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 		symbol_profit_loss["currency"] = "KRW";
 		symbol_profit_loss["symbol_code"] = symbol_code;
 		symbol_profit_loss["trade_profit_loss"] = _ttof(strProfit.Trim());
-		//symbol_profit_loss["pure_trade_profit_loss"] = 0;
+		symbol_profit_loss["pure_trade_profit_loss"] = _ttof(strTotalProfit.Trim());
 		symbol_profit_loss["trade_fee"] = _ttof(strFee.Trim());
 		symbol_profit_loss["open_profit_loss"] = _ttof(strOpenProfit.Trim());
 		//symbol_profit_loss["unsettled_fee"] = 0;
@@ -4014,50 +4099,11 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 
 
 		mainApp.total_position_manager()->on_symbol_profit_loss(std::move(symbol_profit_loss));
+		
 	}
-	/*
-	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
-	for (int i = 0; i < nRepeatCnt; i++) {
-		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계좌번호");
-		CString strAccountName = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계좌명");
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "종목코드");
-		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "매매구분");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "미결제수량");
-		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "평균단가");
-		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "현재가");
-		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "실현손익");
-		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "수수료");
-		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "순손익");
-		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "약정금액");
-		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "평가손익");
-		CString strSettle = "0";
-		const std::string symbol_code(strSymbolCode.Trim());
-		const std::string account_no(strAccountNo.Trim());
-		const std::string account_name(strAccountName.Trim());
 
-		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
-		if (!symbol) continue;
-
-		nlohmann::json symbol_profit_loss;
-		symbol_profit_loss["account_no"] = account_no;
-		symbol_profit_loss["account_name"] = account_name;
-		symbol_profit_loss["currency"] = "KRW";
-		symbol_profit_loss["symbol_code"] = symbol_code;
-		symbol_profit_loss["trade_profit_loss"] = _ttof(strProfit.Trim());
-		symbol_profit_loss["pure_trade_profit_loss"] = 0;
-		symbol_profit_loss["trade_fee"] = _ttof(strFee.Trim());
-		symbol_profit_loss["open_profit_loss"] = _ttof(strOpenProfit.Trim());
-		symbol_profit_loss["unsettled_fee"] = 0;
-		symbol_profit_loss["pure_unsettled_profit_loss"] = 0;
-
-
-		if (auto wp = _Client.lock()) {
-			wp->on_dm_symbol_profit_loss(std::move(symbol_profit_loss));
-		}
-
-	}
-	*/
-
+	mainApp.total_position_manager()->update_account_profit_loss(account_no);
+	
 	on_task_complete(server_request_id);
 }
 

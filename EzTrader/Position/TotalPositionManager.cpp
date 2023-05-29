@@ -4,6 +4,8 @@
 #include "../Order/Order.h"
 #include "Position.h"
 #include "../Log/MyLogger.h"
+#include "../Global/SmTotalManager.h"
+#include "../Event/EventHub.h"
 namespace DarkHorse {
 account_position_manager_p TotalPositionManager::get_account_position_manager(const std::string& account_no)
 {
@@ -67,11 +69,12 @@ void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
 		auto position = get_position(account_no, symbol_code);
 		if (position) {
 			position->trade_profit_loss = arg["trade_profit_loss"];
-			//position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
+			position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
 			position->trade_fee = arg["trade_fee"];
 			position->open_profit_loss = arg["open_profit_loss"];
 			//position-> = arg["unsettled_fee"];
 			//position-> = arg["pure_unsettled_profit_loss"];
+			mainApp.event_hub()->process_position_event(position);
 		}
 	}
 	catch (const std::exception& e) {
@@ -91,6 +94,13 @@ double TotalPositionManager::calculate_symbol_open_profit_loss(
 	double open_profit_loss = 0.0;
 	open_profit_loss = position_open_quantity * (symbol_close - position_average_price) * symbol_seungsu;
 	return open_profit_loss / pow(10, symbol_decimal);
+}
+
+void TotalPositionManager::update_account_profit_loss(const std::string& account_no)
+{
+	account_position_manager_p position_manager = get_account_position_manager(account_no);
+	position_manager->update_account_profit_loss();
+	mainApp.event_hub()->process_account_profit_loss_event();
 }
 
 }

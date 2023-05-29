@@ -10,6 +10,7 @@
 #include "../Event/SmCallbackManager.h"
 #include "../Controller/SymbolTickControl.h"
 #include "../Util/SmUtil.h"
+#include "../Util/IdGenerator.h"
 #include <format>
 
 
@@ -27,6 +28,7 @@ BEGIN_MESSAGE_MAP(SymbolTickView, CBCGPStatic)
 END_MESSAGE_MAP()
 
 SymbolTickView::SymbolTickView()
+	: id_(IdGenerator::get_id())
 {
 	tick_control_ = std::make_shared<DarkHorse::SymbolTickControl>();
 	tick_control_->set_event_handler(std::bind(&SymbolTickView::on_update_tick, this));

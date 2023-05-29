@@ -20,6 +20,13 @@ namespace DarkHorse {
 	struct DmSymbolMasterReq {
 		std::string symbol_code;
 	};
+
+	struct AccountProfitLossReq {
+		std::string account_no;
+		std::string password;
+		std::string account_type;
+	};
+
 	struct DmRegisterReq {
 		std::string symbol_code;
 	};

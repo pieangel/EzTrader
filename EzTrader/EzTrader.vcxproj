@@ -351,6 +351,7 @@
     <ClInclude Include="Drawing\VtVLineTracker.h" />
     <ClInclude Include="Dump\CrashHandler.h" />
     <ClInclude Include="Event\EventHub.h" />
+    <ClInclude Include="Event\EventHubArg.h" />
     <ClInclude Include="Event\SmCallbackManager.h" />
     <ClInclude Include="Fund\SmAccountGrid.h" />
     <ClInclude Include="Fund\SmAccountItem.h" />
@@ -889,6 +890,7 @@
     <Image Include="res\background.png" />
     <Image Include="res\bitmap1.bmp" />
     <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\bmp00001.bmp" />
     <Image Include="res\DarkHorse.ico" />
     <Image Include="res\DarkHorseDoc.ico" />
     <Image Include="res\texture1.png" />

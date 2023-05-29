@@ -10,7 +10,9 @@
 #include "../Global/SmTotalManager.h"
 #include "../Account/SmAccountManager.h"
 #include "../MainFrm.h"
-
+#include "../Task/SmTaskArg.h"
+#include "../Global/SmTotalManager.h"
+#include "../Task/SmTaskRequestManager.h"
 
 // TotalAssetProfitLossDialog dialog
 
@@ -80,7 +82,17 @@ BOOL TotalAssetProfitLossDialog::OnInitDialog()
 
 void TotalAssetProfitLossDialog::OnBnClickedBtnGet()
 {
-	// TODO: Add your control notification handler code here
+	if (_CurrentAccountIndex < 0) return;
+	auto account = _ComboAccountMap[_CurrentAccountIndex];
+
+	DarkHorse::AccountProfitLossReq req;
+	req.account_no = account->No();
+	req.password = account->Pwd();
+	req.account_type = account->Type();
+	DarkHorse::SmTaskArg arg;
+	arg.TaskType = DarkHorse::SmTaskType::AccountProfitLoss;
+	arg.Param = req;
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
 

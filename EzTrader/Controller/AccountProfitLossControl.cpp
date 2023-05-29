@@ -26,12 +26,19 @@ AccountProfitLossControl::AccountProfitLossControl()
 		id_,
 		std::bind(&AccountProfitLossControl::update_profit_loss, this, std::placeholders::_1)
 	);
+
+	mainApp.event_hub()->subscribe_account_profit_loss_event_handler
+	(
+		id_,
+		std::bind(&AccountProfitLossControl::update_account_profit_loss, this)
+	);
 }
 
 AccountProfitLossControl::~AccountProfitLossControl()
 {
 	mainApp.event_hub()->unsubscribe_position_event_handler(id_);
 	mainApp.event_hub()->unsubscribe_quote_event_handler(id_);
+	mainApp.event_hub()->unsubscribe_account_profit_loss_event_handler(id_);
 }
 
 void AccountProfitLossControl::load_position_from_account(const std::string& account_no)

@@ -32,6 +32,7 @@ public:
 		const int& symbol_seungsu,
 		const int& symbol_decimal
 	);
+	void update_account_profit_loss(const std::string& account_no);
 private:
 	account_position_manager_p find_position_manager(const std::string& account_no);
 	account_position_manager_p create_position_manager(const std::string& account_no);

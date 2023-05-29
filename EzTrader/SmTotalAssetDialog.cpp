@@ -10,6 +10,7 @@
 #include "Global/SmTotalManager.h"
 #include "Account/SmAccountManager.h"
 #include "MainFrm.h"
+#include "Task/SmTaskArg.h"
 
 
 // SmTotalAssetDialog dialog
@@ -80,7 +81,7 @@ BOOL SmTotalAssetDialog::OnInitDialog()
 
 void SmTotalAssetDialog::OnBnClickedBtnGet()
 {
-	// TODO: Add your control notification handler code here
+	
 }
 
 

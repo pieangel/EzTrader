@@ -1902,6 +1902,9 @@
     <ClInclude Include="Dialog\TotalAssetProfitLossDialog.h">
       <Filter>Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="Event\EventHubArg.h">
+      <Filter>Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -1956,6 +1959,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\arrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00001.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

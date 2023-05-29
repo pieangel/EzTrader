@@ -84,6 +84,7 @@ namespace DarkHorse {
 		int index_row_{ 15 };
 		int _HeaderRow = 0;
 		int _HeaderCol = 0;
+		int cell_height_ = DefaultRowHeight;
 		SmHeaderMode _HeaderMode = SmHeaderMode::HeaderColOnly;
 		SmHeaderPriority _HeaderPriority = SmHeaderPriority::ColFirst;
 		int IsInMergedCells(const int& row, const int& col);

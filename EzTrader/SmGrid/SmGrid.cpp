@@ -62,8 +62,9 @@ void DarkHorse::SmGrid::DrawCheckHeader(CBCGPGraphicsManager* pGM, std::shared_p
 
 void DarkHorse::SmGrid::SetAllRowHeight(const int& height)
 {
+	cell_height_ = height;
 	for (auto it = _RowHeightMap.begin(); it != _RowHeightMap.end(); ++it) {
-		_RowHeightMap[it->first] = height;
+		_RowHeightMap[it->first] = cell_height_;
 	}
 }
 
@@ -143,41 +144,41 @@ void DarkHorse::SmGrid::RecalCells()
 void DarkHorse::SmGrid::RegisterOrderButtons(std::map<std::shared_ptr<DarkHorse::SmCell>, BUTTON_ID>& order_button_map)
 {
 	order_button_map.clear();
-	SetCellType(1, DarkHorse::OrderGridHeader::SELL_CNT, SmCellType::CT_BUTTON_SELL);
-	order_button_map[FindCell(1, DarkHorse::OrderGridHeader::SELL_CNT)] = BUTTON_ID::SELL;
-	SetCellType(1, DarkHorse::OrderGridHeader::BUY_QTY, SmCellType::CT_BUTTON_BUY);
-	order_button_map[FindCell(1, DarkHorse::OrderGridHeader::BUY_QTY)] = BUTTON_ID::BUY;
-	SetCellText(1, DarkHorse::OrderGridHeader::SELL_CNT, "시장가매도");
-	SetCellText(1, DarkHorse::OrderGridHeader::BUY_QTY, "시장가매수");
+	SetCellType(1, DarkHorse::OrderHeader::SELL_CNT, SmCellType::CT_BUTTON_SELL);
+	order_button_map[FindCell(1, DarkHorse::OrderHeader::SELL_CNT)] = BUTTON_ID::SELL;
+	SetCellType(1, DarkHorse::OrderHeader::BUY_QTY, SmCellType::CT_BUTTON_BUY);
+	order_button_map[FindCell(1, DarkHorse::OrderHeader::BUY_QTY)] = BUTTON_ID::BUY;
+	SetCellText(1, DarkHorse::OrderHeader::SELL_CNT, "시장가매도");
+	SetCellText(1, DarkHorse::OrderHeader::BUY_QTY, "시장가매수");
 
-	SetCellType(1, DarkHorse::OrderGridHeader::QUOTE, SmCellType::CT_BUTTON_NORMAL);
+	SetCellType(1, DarkHorse::OrderHeader::QUOTE, SmCellType::CT_BUTTON_NORMAL);
 	//_ButtonSet.insert(std::make_pair(1, DarkHorse::OrderGridHeader::QUOTE));
-	order_button_map[FindCell(1, DarkHorse::OrderGridHeader::QUOTE)] = BUTTON_ID::ARRANGE;
-	SetCellText(1, DarkHorse::OrderGridHeader::QUOTE, "호가정렬");
+	order_button_map[FindCell(1, DarkHorse::OrderHeader::QUOTE)] = BUTTON_ID::ARRANGE;
+	SetCellText(1, DarkHorse::OrderHeader::QUOTE, "호가정렬");
 
-	SetCellType(_RowCount - 1, DarkHorse::OrderGridHeader::SELL_STOP, SmCellType::CT_BUTTON_SELL);
-	SetCellType(_RowCount - 1, DarkHorse::OrderGridHeader::SELL_ORDER, SmCellType::CT_BUTTON_SELL);
-	SetCellType(_RowCount - 1, DarkHorse::OrderGridHeader::QUOTE, SmCellType::CT_BUTTON_NORMAL);
-	SetCellType(_RowCount - 1, DarkHorse::OrderGridHeader::BUY_ORDER, SmCellType::CT_BUTTON_BUY);
-	SetCellType(_RowCount - 1, DarkHorse::OrderGridHeader::BUY_STOP, SmCellType::CT_BUTTON_BUY);
+	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP, SmCellType::CT_BUTTON_SELL);
+	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER, SmCellType::CT_BUTTON_SELL);
+	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::QUOTE, SmCellType::CT_BUTTON_NORMAL);
+	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER, SmCellType::CT_BUTTON_BUY);
+	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP, SmCellType::CT_BUTTON_BUY);
 
-	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderGridHeader::SELL_STOP));
-	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderGridHeader::SELL_ORDER));
-	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderGridHeader::QUOTE));
-	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderGridHeader::BUY_ORDER));
-	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderGridHeader::BUY_STOP));
+	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP));
+	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER));
+	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderHeader::QUOTE));
+	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER));
+	_ButtonSet.insert(std::make_pair(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP));
 
-	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderGridHeader::SELL_STOP)] = BUTTON_ID::CANCEL_SELL_STOP;
-	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderGridHeader::SELL_ORDER)] = BUTTON_ID::CANCEL_SELL_ORDER;
-	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderGridHeader::QUOTE)] = BUTTON_ID::CANCEL_ALL;
-	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderGridHeader::BUY_ORDER)] = BUTTON_ID::CANCEL_BUY_ORDER;
-	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderGridHeader::BUY_STOP)] = BUTTON_ID::CANCEL_BUY_STOP;
+	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP)] = BUTTON_ID::CANCEL_SELL_STOP;
+	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER)] = BUTTON_ID::CANCEL_SELL_ORDER;
+	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::QUOTE)] = BUTTON_ID::CANCEL_ALL;
+	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER)] = BUTTON_ID::CANCEL_BUY_ORDER;
+	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP)] = BUTTON_ID::CANCEL_BUY_STOP;
 
-	SetCellText(_RowCount - 1, DarkHorse::OrderGridHeader::SELL_STOP, "취소");
-	SetCellText(_RowCount - 1, DarkHorse::OrderGridHeader::SELL_ORDER, "취소");
-	SetCellText(_RowCount - 1, DarkHorse::OrderGridHeader::QUOTE, "전체취소");
-	SetCellText(_RowCount - 1, DarkHorse::OrderGridHeader::BUY_STOP, "취소");
-	SetCellText(_RowCount - 1, DarkHorse::OrderGridHeader::BUY_ORDER, "취소");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP, "취소");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER, "취소");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::QUOTE, "전체취소");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP, "취소");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER, "취소");
 }
 
 void DarkHorse::SmGrid::DrawNormalCell(CBCGPGraphicsManager* pGM, std::shared_ptr<SmCell> cell)
@@ -490,15 +491,15 @@ std::pair<int, int> DarkHorse::SmGrid::FindRowCol(const int& x, const int& y)
 
 void DarkHorse::SmGrid::SetOrderHeaderTitles()
 {
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_STOP].title);
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_ORDER].title);
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_CNT].title);
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_QTY].title);
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::QUOTE].title);
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_QTY].title);
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_CNT].title);
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_ORDER].title);
-	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_STOP].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_STOP].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_ORDER].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_CNT].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_QTY].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::QUOTE].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_QTY].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_CNT].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_ORDER].title);
+	_RowHeaderTitles.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_STOP].title);
 }
 
 int DarkHorse::SmGrid::RecalRowCount(const int& height, bool change_close_row)

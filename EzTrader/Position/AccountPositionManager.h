@@ -26,6 +26,7 @@ public:
 	account_profit_loss_p get_account_profit_loss() {
 		return account_profit_loss_;
 	}
+	void update_account_profit_loss();
 private:
 	void set_symbol_id(position_p position, const std::string& symbol_code);
 	void set_account_id(position_p position, const std::string& account_no);
@@ -42,7 +43,6 @@ private:
 	account_profit_loss_p account_profit_loss_{ nullptr };
 	int id_{ 0 };
 	std::string account_no_;
-	void update_account_profit_loss();
 };
 }
 

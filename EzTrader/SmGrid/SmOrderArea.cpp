@@ -143,7 +143,7 @@ void SmOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 
 	const int close_row = FindRow(_Symbol->Qoute.close);
 	
-	std::shared_ptr<SmCell> cell = _Grid->FindCell(close_row, DarkHorse::OrderGridHeader::QUOTE);
+	std::shared_ptr<SmCell> cell = _Grid->FindCell(close_row, DarkHorse::OrderHeader::QUOTE);
 	std::string value_string;
 	if (close_row >= 2 && cell) {
 		cell->CellType(SmCellType::CT_QUOTE_CLOSE);
@@ -155,7 +155,7 @@ void SmOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	}
 
 	const int open_row = FindRow(_Symbol->Qoute.open);
-	cell = _Grid->FindCell(open_row, DarkHorse::OrderGridHeader::QUOTE);
+	cell = _Grid->FindCell(open_row, DarkHorse::OrderHeader::QUOTE);
 	if (open_row >= 2 && cell) {
 		cell->CellType(SmCellType::CT_QUOTE_OPEN);
 		value_string = std::format("{0}", symbol->Qoute.open);
@@ -166,7 +166,7 @@ void SmOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	}
 
 	const int high_row = FindRow(_Symbol->Qoute.high);
-	cell = _Grid->FindCell(high_row, DarkHorse::OrderGridHeader::QUOTE);
+	cell = _Grid->FindCell(high_row, DarkHorse::OrderHeader::QUOTE);
 	if (high_row >= 2 && cell) {
 		cell->CellType(SmCellType::CT_QUOTE_HIGH);
 		value_string = std::format("{0}", symbol->Qoute.high);
@@ -177,7 +177,7 @@ void SmOrderArea::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 	}
 
 	const int low_row = FindRow(_Symbol->Qoute.low);
-	cell = _Grid->FindCell(low_row, DarkHorse::OrderGridHeader::QUOTE);
+	cell = _Grid->FindCell(low_row, DarkHorse::OrderHeader::QUOTE);
 	if (low_row >= 2 && cell) {
 		cell->CellType(SmCellType::CT_QUOTE_LOW);
 		value_string = std::format("{0}", symbol->Qoute.low);
@@ -201,49 +201,49 @@ void SmOrderArea::SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 		
 		for (int i = 0; i < 5; i++) {
 			int row_index =  FindRow(symbol->Hoga.Ary[i].SellPrice);
-			pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_CNT);
+			pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_CNT);
 			if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
 				pCell->Text(std::to_string(symbol->Hoga.Ary[i].SellCnt));
 				pCell->CellType(SmCellType::CT_HOGA_SELL);
 				_OldHogaSellRowIndex.insert(row_index);
 			}
-			pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_QTY);
+			pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_QTY);
 			if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
 				pCell->CellType(SmCellType::CT_HOGA_SELL);
 				pCell->Text(std::to_string(symbol->Hoga.Ary[i].SellQty));
 			}
 			row_index = FindRow(symbol->Hoga.Ary[i].BuyPrice);
-			pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_QTY);
+			pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::BUY_QTY);
 			if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
 				pCell->CellType(SmCellType::CT_HOGA_BUY);
 				pCell->Text(std::to_string(symbol->Hoga.Ary[i].BuyQty));
 				_OldHogaBuyRowIndex.insert(row_index);
 			}
-			pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_CNT);
+			pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::BUY_CNT);
 			if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
 				pCell->CellType(SmCellType::CT_HOGA_BUY);
 				pCell->Text(std::to_string(symbol->Hoga.Ary[i].BuyCnt));
 			}
 		}
 
-		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::SELL_CNT);
+		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderHeader::SELL_CNT);
 		if (pCell) pCell->Text(std::to_string(symbol->Hoga.TotSellCnt));
-		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::SELL_QTY);
+		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderHeader::SELL_QTY);
 		if (pCell) pCell->Text(std::to_string(symbol->Hoga.TotSellQty));
-		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::BUY_CNT);
+		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderHeader::BUY_CNT);
 		if (pCell) pCell->Text(std::to_string(symbol->Hoga.TotBuyCnt));
-		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::BUY_QTY);
+		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderHeader::BUY_QTY);
 		if (pCell) pCell->Text(std::to_string(symbol->Hoga.TotBuyQty));
 
 		const int delta_hoga = symbol->Hoga.TotBuyQty = symbol->Hoga.TotSellQty;
-		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::QUOTE);
+		pCell = _Grid->FindCell(_Grid->RowCount() - 2, DarkHorse::OrderHeader::QUOTE);
 		if (pCell) pCell->Text(std::to_string(delta_hoga));
 
-		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::SELL_CNT));
-		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::SELL_QTY));
-		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::QUOTE));
-		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::BUY_CNT));
-		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderGridHeader::BUY_QTY));
+		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderHeader::SELL_CNT));
+		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderHeader::SELL_QTY));
+		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderHeader::QUOTE));
+		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderHeader::BUY_CNT));
+		_TotalHogaMap.insert(std::make_pair(_Grid->RowCount() - 2, DarkHorse::OrderHeader::BUY_QTY));
 
 	}
 	catch (const std::exception& e) {
@@ -268,7 +268,7 @@ void SmOrderArea::SetPosition()
 
 	const int close_row = FindRow(avg_price);
 
-	std::shared_ptr<SmCell> cell = _Grid->FindCell(close_row, DarkHorse::OrderGridHeader::QUOTE);
+	std::shared_ptr<SmCell> cell = _Grid->FindCell(close_row, DarkHorse::OrderHeader::QUOTE);
 	if (close_row >= 2 && cell) {
 		if (position->OpenQty > 0)
 			cell->CellType(SmCellType::CT_POSITION_BUY);
@@ -293,13 +293,13 @@ void SmOrderArea::SetStopOrder()
 	for (auto it = sell_order_req_map.begin(); it != sell_order_req_map.end(); ++it) {
 		int row_index = FindRow(it->second->OrderPrice);
 		sell_stop_count += it->second->OrderAmount;
-		std::shared_ptr<SmCell> pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_STOP);
+		std::shared_ptr<SmCell> pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_STOP);
 		if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
 			pCell->AddOrderReq(it->second);
 			pCell->Text(std::to_string(pCell->GetOrderReqCount()));
 			_OldStopSellRowIndex.insert(row_index);
 
-			std::shared_ptr<SmCell> pOrderCell = _Grid->FindCell(row_index + it->second->CutSlip, DarkHorse::OrderGridHeader::SELL_ORDER);
+			std::shared_ptr<SmCell> pOrderCell = _Grid->FindCell(row_index + it->second->CutSlip, DarkHorse::OrderHeader::SELL_ORDER);
 			if (pOrderCell && pOrderCell->Row() > 1 && pOrderCell->Row() < _Grid->RowCount() - 2) {
 				_StopRectVector.push_back(std::make_pair(pCell->GetCellRect(), pOrderCell->GetCellRect()));
 			}
@@ -307,7 +307,7 @@ void SmOrderArea::SetStopOrder()
 	}
 
 	
-	std::shared_ptr<SmCell> order_cell = _Grid->FindCell(1, DarkHorse::OrderGridHeader::SELL_STOP);
+	std::shared_ptr<SmCell> order_cell = _Grid->FindCell(1, DarkHorse::OrderHeader::SELL_STOP);
 	if (order_cell) order_cell->Text(std::to_string(sell_stop_count));
 
 
@@ -315,20 +315,20 @@ void SmOrderArea::SetStopOrder()
 	for (auto it = buy_order_req_map.begin(); it != buy_order_req_map.end(); ++it) {
 		int row_index = FindRow(it->second->OrderPrice);
 		buy_stop_count += it->second->OrderAmount;
-		std::shared_ptr<SmCell> pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_STOP);
+		std::shared_ptr<SmCell> pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::BUY_STOP);
 		if (pCell && row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
 			pCell->AddOrderReq(it->second);
 			pCell->Text(std::to_string(pCell->GetOrderReqCount()));
 			_OldStopBuyRowIndex.insert(row_index);
 
-			std::shared_ptr<SmCell> pOrderCell = _Grid->FindCell(row_index - it->second->CutSlip, DarkHorse::OrderGridHeader::BUY_ORDER);
+			std::shared_ptr<SmCell> pOrderCell = _Grid->FindCell(row_index - it->second->CutSlip, DarkHorse::OrderHeader::BUY_ORDER);
 			if (pOrderCell && pOrderCell->Row() > 1 && pOrderCell->Row() < _Grid->RowCount() - 2) {
 				_StopRectVector.push_back(std::make_pair(pCell->GetCellRect(), pOrderCell->GetCellRect()));
 			}
 		}
 	}
 
-	order_cell = _Grid->FindCell(1, DarkHorse::OrderGridHeader::BUY_STOP);
+	order_cell = _Grid->FindCell(1, DarkHorse::OrderHeader::BUY_STOP);
 	if (order_cell) order_cell->Text(std::to_string(buy_stop_count));
 }
 
@@ -350,7 +350,7 @@ void SmOrderArea::SetOrder()
 		int row_index = FindRow(order->OrderPrice);
 		if (row_index > 1 && row_index < (_Grid->RowCount() - 2)) {
 			if (order->PositionType == SmPositionType::Buy) {
-				cell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_ORDER);
+				cell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::BUY_ORDER);
 				if (cell) {
 					cell->AddOrder(order);
 					cell->Text(std::to_string(cell->GetOrderCount()));
@@ -359,7 +359,7 @@ void SmOrderArea::SetOrder()
 				//buy_count++;
 			}
 			else {
-				cell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_ORDER);
+				cell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_ORDER);
 				if (cell) {
 					cell->AddOrder(order);
 					cell->Text(std::to_string(cell->GetOrderCount()));
@@ -371,9 +371,9 @@ void SmOrderArea::SetOrder()
 		
 	}
 
-	cell = _Grid->FindCell(1, DarkHorse::OrderGridHeader::BUY_ORDER);
+	cell = _Grid->FindCell(1, DarkHorse::OrderHeader::BUY_ORDER);
 	if (cell) cell->Text(std::to_string(buy_count));
-	cell = _Grid->FindCell(1, DarkHorse::OrderGridHeader::SELL_ORDER);
+	cell = _Grid->FindCell(1, DarkHorse::OrderHeader::SELL_ORDER);
 	if (cell) cell->Text(std::to_string(sell_count));
 }
 
@@ -383,11 +383,11 @@ void SmOrderArea::ClearOldHoga(DarkHorse::Hoga_Type hoga_type) const noexcept
 	if (hoga_type == Hoga_Type::SELL) {
 		for (auto it = _OldHogaSellRowIndex.begin(); it != _OldHogaSellRowIndex.end(); ++it) {
 			const int& row_index = *it;
-			pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_CNT);
+			pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_CNT);
 			if (pCell) {
 				pCell->Text(""); pCell->CellType(SmCellType::CT_NORMAL);
 			}
-			pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_QTY);
+			pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_QTY);
 			if (pCell) {
 				pCell->Text(""); pCell->CellType(SmCellType::CT_NORMAL);
 			}
@@ -396,11 +396,11 @@ void SmOrderArea::ClearOldHoga(DarkHorse::Hoga_Type hoga_type) const noexcept
 	else {
 		for (auto it = _OldHogaBuyRowIndex.begin(); it != _OldHogaBuyRowIndex.end(); ++it) {
 			const int& row_index = *it;
-			pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_QTY);
+			pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::BUY_QTY);
 			if (pCell) {
 				pCell->Text(""); pCell->CellType(SmCellType::CT_NORMAL);
 			}
-			pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::BUY_CNT);
+			pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::BUY_CNT);
 			if (pCell) {
 				pCell->Text(""); pCell->CellType(SmCellType::CT_NORMAL);
 			}
@@ -441,7 +441,7 @@ void SmOrderArea::ClearStopOrders()
 {
 	std::shared_ptr<SmCell> pCell = nullptr;
 	for (auto it = _OldStopSellRowIndex.begin(); it != _OldStopSellRowIndex.end(); ++it) {
-		pCell = _Grid->FindCell(*it, DarkHorse::OrderGridHeader::SELL_STOP);
+		pCell = _Grid->FindCell(*it, DarkHorse::OrderHeader::SELL_STOP);
 		if (pCell) {
 			pCell->ClearOrderReq();
 			pCell->Text("");
@@ -450,7 +450,7 @@ void SmOrderArea::ClearStopOrders()
 	_OldStopSellRowIndex.clear();
 
 	for (auto it = _OldStopBuyRowIndex.begin(); it != _OldStopBuyRowIndex.end(); ++it) {
-		pCell = _Grid->FindCell(*it, DarkHorse::OrderGridHeader::BUY_STOP);
+		pCell = _Grid->FindCell(*it, DarkHorse::OrderHeader::BUY_STOP);
 		if (pCell) {
 			pCell->ClearOrderReq();
 			pCell->Text("");
@@ -465,7 +465,7 @@ void SmOrderArea::ClearOrders()
 
 	std::shared_ptr<SmCell> pCell = nullptr;
 	for (auto it = _OldOrderSellRowIndex.begin(); it != _OldOrderSellRowIndex.end(); ++it) {
-		pCell = _Grid->FindCell(*it, DarkHorse::OrderGridHeader::SELL_ORDER);
+		pCell = _Grid->FindCell(*it, DarkHorse::OrderHeader::SELL_ORDER);
 		if (pCell) {
 			pCell->ClearOrder();
 			pCell->Text("");
@@ -474,7 +474,7 @@ void SmOrderArea::ClearOrders()
 	_OldOrderSellRowIndex.clear();
 
 	for (auto it = _OldOrderBuyRowIndex.begin(); it != _OldOrderBuyRowIndex.end(); ++it) {
-		pCell = _Grid->FindCell(*it, DarkHorse::OrderGridHeader::BUY_ORDER);
+		pCell = _Grid->FindCell(*it, DarkHorse::OrderHeader::BUY_ORDER);
 		if (pCell) {
 			pCell->ClearOrder();
 			pCell->Text("");
@@ -530,31 +530,31 @@ void SmOrderArea::SetQuoteColor(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 			if (it->second < highRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) {	cell->ShowMark(true); cell->MarkType(0); }
 			}
 			else if (it->second < closeRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
 			}
 			else if (it->second <= openRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(252, 226, 228));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(1); }
 			}
 			else if (it->second < lowRow + 1) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
 			}
 			else {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
 			}
 		}
@@ -565,31 +565,31 @@ void SmOrderArea::SetQuoteColor(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 			if (it->second < highRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
 			}
 			else if (it->second < openRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
 			}
 			else if (it->second <= closeRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(218, 226, 245));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(2); }
 			}
 			else if (it->second  < lowRow + 1) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
 			}
 			else {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
 			}
 		}
@@ -599,31 +599,31 @@ void SmOrderArea::SetQuoteColor(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 			if (it->second < highRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
 			}
 			else if (it->second < closeRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
 			}
 			else if (it->second <= openRow) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(252, 226, 228));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
 			}
 			else if (it->second < lowRow + 1 ) {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(255, 255, 255));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(3); }
 			}
 			else {
 				//CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				//pCell->SetBackClr(RGB(242, 242, 242));
-				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderGridHeader::QUOTE);
+				auto cell = _Grid->FindCell(it->second, DarkHorse::OrderHeader::QUOTE);
 				if (cell) { cell->ShowMark(true); cell->MarkType(0); }
 			}
 		}
@@ -662,7 +662,7 @@ void SmOrderArea::DrawHogaLine(const CRect& rect)
 	if (!_Symbol) return;
 
 	int row_index = FindRow(_Symbol->Hoga.Ary[0].SellPrice);
-	auto pCell = _Grid->FindCell(row_index, DarkHorse::OrderGridHeader::SELL_CNT);
+	auto pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_CNT);
 	if (pCell && row_index > 1) {
 		m_pGM->DrawLine(0, pCell->Y() + pCell->Height() + 1, rect.Width(), pCell->Y() + pCell->Height() + 1, _Resource.SelectedBrush);
 	}
@@ -683,10 +683,10 @@ void SmOrderArea::DrawMovingOrder()
 		
 		auto start_cell = _Grid->FindCellByPos(_StartX, _StartY);
 		if (!start_cell) return;
-		if (start_cell->Col() == DarkHorse::OrderGridHeader::BUY_ORDER || 
-			start_cell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER || 
-			start_cell->Col() == DarkHorse::OrderGridHeader::SELL_STOP || 
-			start_cell->Col() == DarkHorse::OrderGridHeader::BUY_STOP) {
+		if (start_cell->Col() == DarkHorse::OrderHeader::BUY_ORDER || 
+			start_cell->Col() == DarkHorse::OrderHeader::SELL_ORDER || 
+			start_cell->Col() == DarkHorse::OrderHeader::SELL_STOP || 
+			start_cell->Col() == DarkHorse::OrderHeader::BUY_STOP) {
 
 			
 			const CBCGPRect rect_start(start_cell->X(), start_cell->Y(), start_cell->X() + start_cell->Width(), start_cell->Y() + start_cell->Height());
@@ -739,15 +739,15 @@ void SmOrderArea::SetUp()
 
 	{
 		
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_STOP].title);
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_ORDER].title);
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_CNT].title);
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_QTY].title);
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::QUOTE].title);
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_QTY].title);
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_CNT].title);
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_ORDER].title);
-		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_STOP].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_STOP].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_ORDER].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_CNT].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_QTY].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::QUOTE].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_QTY].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_CNT].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_ORDER].title);
+		_OrderTableHeader.push_back(OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_STOP].title);
 
 		_Grid->SetColHeaderTitles(_OrderTableHeader);
 	}
@@ -960,12 +960,12 @@ std::pair<int, int> SmOrderArea::GetOrderCount(const std::shared_ptr<SmCell>& ce
 {
 	auto found = _RowIndexToPriceMap.find(cell->Row());
 	if (found == _RowIndexToPriceMap.end()) return std::make_pair(0, 0);
-	if (cell->Col() == DarkHorse::OrderGridHeader::BUY_ORDER ||
-		cell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER) {
+	if (cell->Col() == DarkHorse::OrderHeader::BUY_ORDER ||
+		cell->Col() == DarkHorse::OrderHeader::SELL_ORDER) {
 		return std::make_pair(found->second, cell->GetOrderCount());
 	}
-	else if (cell->Col() == DarkHorse::OrderGridHeader::BUY_STOP ||
-		cell->Col() == DarkHorse::OrderGridHeader::SELL_STOP) {
+	else if (cell->Col() == DarkHorse::OrderHeader::BUY_STOP ||
+		cell->Col() == DarkHorse::OrderHeader::SELL_STOP) {
 		return std::make_pair(found->second, cell->GetOrderReqCount());
 	}
 	return std::make_pair(0, 0);
@@ -974,37 +974,37 @@ std::pair<int, int> SmOrderArea::GetOrderCount(const std::shared_ptr<SmCell>& ce
 void SmOrderArea::ResetHeaderWidth(const int& wnd_width)
 {
 	int width_sum = 0;
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::SELL_STOP, OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_STOP].width);
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::SELL_ORDER, OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_ORDER].width);
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::SELL_CNT, OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_CNT].width);
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::SELL_QTY, OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_QTY].width);
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::QUOTE, OrderGridHeaderVector[DarkHorse::OrderGridHeader::QUOTE].width);
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::BUY_QTY, OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_QTY].width);
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::BUY_CNT, OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_CNT].width);
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::BUY_ORDER, OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_ORDER].width);
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::BUY_STOP, OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_STOP].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_STOP, OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_STOP].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_ORDER, OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_ORDER].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_CNT, OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_CNT].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_QTY, OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_QTY].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::QUOTE, OrderGridHeaderVector[DarkHorse::OrderHeader::QUOTE].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_QTY, OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_QTY].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_CNT, OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_CNT].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_ORDER, OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_ORDER].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_STOP, OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_STOP].width);
 
 
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_STOP].width;
+	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_STOP].width;
 	width_sum += 1;
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_ORDER].width;
+	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_ORDER].width;
 	width_sum += 1;
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_CNT].width;
+	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_CNT].width;
 	width_sum += 1;
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderGridHeader::SELL_QTY].width;
+	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::SELL_QTY].width;
 	width_sum += 1;
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_QTY].width;
+	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_QTY].width;
 	width_sum += 1;
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_CNT].width;
+	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_CNT].width;
 	width_sum += 1;
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_ORDER].width;
+	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_ORDER].width;
 	width_sum += 1;
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderGridHeader::BUY_STOP].width;
+	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::BUY_STOP].width;
 	width_sum += 1;
 	width_sum += 1;
 	width_sum += 2;
 
-	_Grid->SetColWidth(DarkHorse::OrderGridHeader::QUOTE, wnd_width - width_sum);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::QUOTE, wnd_width - width_sum);
 }
 
 void SmOrderArea::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbol, const bool& make_row_map)
@@ -1029,7 +1029,7 @@ void SmOrderArea::SetCenterValues(std::shared_ptr<DarkHorse::SmSymbol> symbol, c
 			value_string = std::format("{0}", value);
 			if (symbol->decimal() > 0)
 				value_string.insert(value_string.length() - symbol->decimal(), 1, '.');
-			_Grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, value_string);
+			_Grid->SetCellText(i, DarkHorse::OrderHeader::QUOTE, value_string);
 			//_Grid->SetCellMark(i, DarkHorse::OrderGridHeader::QUOTE, true);
 			_QuoteToRowIndexMap[value] = i;
 			_RowIndexToPriceMap[i] = value;
@@ -1055,13 +1055,13 @@ void SmOrderArea::PutOrderBySpaceBar()
 
 	const int price = FindValue(_FixedSelectedCell->Row());
 
-	if (_FixedSelectedCell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER)
+	if (_FixedSelectedCell->Col() == DarkHorse::OrderHeader::SELL_ORDER)
 		PutOrder(SmPositionType::Sell, price);
-	else if (_FixedSelectedCell->Col() == DarkHorse::OrderGridHeader::BUY_ORDER)
+	else if (_FixedSelectedCell->Col() == DarkHorse::OrderHeader::BUY_ORDER)
 		PutOrder(SmPositionType::Buy, price);
-	else if (_FixedSelectedCell->Col() == DarkHorse::OrderGridHeader::BUY_STOP)
+	else if (_FixedSelectedCell->Col() == DarkHorse::OrderHeader::BUY_STOP)
 		PutStopOrder(SmPositionType::Buy, price);
-	else if (_FixedSelectedCell->Col() == DarkHorse::OrderGridHeader::SELL_STOP)
+	else if (_FixedSelectedCell->Col() == DarkHorse::OrderHeader::SELL_STOP)
 		PutStopOrder(SmPositionType::Sell, price);
 
 	_EnableOrderShow = true;
@@ -1325,61 +1325,61 @@ void SmOrderArea::DrawMovingRect()
 		if (!cell) return;
 		if (cell->Row() <= 0) return;
 
-		if (cell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER) {
+		if (cell->Col() == DarkHorse::OrderHeader::SELL_ORDER) {
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
 			
-			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::BUY_ORDER);
+			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderHeader::BUY_ORDER);
 			if (!cell) return;
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
 
-			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::QUOTE);
+			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderHeader::QUOTE);
 			if (!cell) return;
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
 		}
-		else if (cell->Col() == DarkHorse::OrderGridHeader::BUY_ORDER) {
+		else if (cell->Col() == DarkHorse::OrderHeader::BUY_ORDER) {
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
 
-			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::SELL_ORDER);
+			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderHeader::SELL_ORDER);
 			if (!cell) return;
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
 
-			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::QUOTE);
-			if (!cell) return;
-			_SelectedCells.push_back(cell);
-			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
-		}
-		else if (cell->Col() == DarkHorse::OrderGridHeader::QUOTE) {
-			_SelectedCells.push_back(cell);
-			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
-		}
-		else if (cell->Col() == DarkHorse::OrderGridHeader::BUY_STOP) {
-			_SelectedCells.push_back(cell);
-			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
-
-			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::SELL_STOP);
-			if (!cell) return;
-			_SelectedCells.push_back(cell);
-			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
-
-			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::QUOTE);
+			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderHeader::QUOTE);
 			if (!cell) return;
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
 		}
-		else if (cell->Col() == DarkHorse::OrderGridHeader::SELL_STOP) {
+		else if (cell->Col() == DarkHorse::OrderHeader::QUOTE) {
+			_SelectedCells.push_back(cell);
+			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
+		}
+		else if (cell->Col() == DarkHorse::OrderHeader::BUY_STOP) {
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
 
-			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::BUY_STOP);
+			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderHeader::SELL_STOP);
 			if (!cell) return;
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
-			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderGridHeader::QUOTE);
+
+			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderHeader::QUOTE);
+			if (!cell) return;
+			_SelectedCells.push_back(cell);
+			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
+		}
+		else if (cell->Col() == DarkHorse::OrderHeader::SELL_STOP) {
+			_SelectedCells.push_back(cell);
+			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
+
+			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderHeader::BUY_STOP);
+			if (!cell) return;
+			_SelectedCells.push_back(cell);
+			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
+			cell = _Grid->FindCell(cell->Row(), DarkHorse::OrderHeader::QUOTE);
 			if (!cell) return;
 			_SelectedCells.push_back(cell);
 			_Grid->DrawCell(cell, m_pGM, _Resource.SelectedBrush, _Resource.SelectedBrush, _Resource.TextBrush, _Resource.TextFormat, false, true, true);
@@ -1672,10 +1672,10 @@ void SmOrderArea::OnLButtonDown(UINT nFlags, CPoint point)
 	if (cell) { _FixedSelectedCell = cell; }
 
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
-	if (cell_pos.second == DarkHorse::OrderGridHeader::SELL_ORDER || 
-		cell_pos.second == DarkHorse::OrderGridHeader::BUY_ORDER || 
-		cell_pos.second == DarkHorse::OrderGridHeader::SELL_STOP || 
-		cell_pos.second == DarkHorse::OrderGridHeader::BUY_STOP) {
+	if (cell_pos.second == DarkHorse::OrderHeader::SELL_ORDER || 
+		cell_pos.second == DarkHorse::OrderHeader::BUY_ORDER || 
+		cell_pos.second == DarkHorse::OrderHeader::SELL_STOP || 
+		cell_pos.second == DarkHorse::OrderHeader::BUY_STOP) {
 		const int price = FindValue(cell_pos.first);
 		_SelectedValue.first = price;
 		_SelectedValue.second = cell_pos.second;
@@ -1711,13 +1711,13 @@ void SmOrderArea::OnRButtonDown(UINT nFlags, CPoint point)
 		const auto order_count = GetOrderCount(cell);
 
 		if (order_count.second > 0) {
-			if (cell->Col() == DarkHorse::OrderGridHeader::SELL_ORDER)
+			if (cell->Col() == DarkHorse::OrderHeader::SELL_ORDER)
 				CancelOrder(_FixedSelectedCell);
-			else if (cell->Col() == DarkHorse::OrderGridHeader::BUY_ORDER)
+			else if (cell->Col() == DarkHorse::OrderHeader::BUY_ORDER)
 				CancelOrder(_FixedSelectedCell);
-			else if (cell->Col() == DarkHorse::OrderGridHeader::BUY_STOP)
+			else if (cell->Col() == DarkHorse::OrderHeader::BUY_STOP)
 				CancelStop(_FixedSelectedCell);
-			else if (cell->Col() == DarkHorse::OrderGridHeader::SELL_STOP)
+			else if (cell->Col() == DarkHorse::OrderHeader::SELL_STOP)
 				CancelStop(_FixedSelectedCell);
 
 			_EnableOrderShow = true;
@@ -1738,13 +1738,13 @@ void SmOrderArea::OnLButtonUp(UINT nFlags, CPoint point)
 
 		auto cell = _Grid->FindCellByPos(_EndX, _EndY);
 		if (!cell) {
-			if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_ORDER)
+			if (_OrderStartCol == DarkHorse::OrderHeader::SELL_ORDER)
 				CancelOrder(_FixedSelectedCell);
-			else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_ORDER)
+			else if (_OrderStartCol == DarkHorse::OrderHeader::BUY_ORDER)
 				CancelOrder(_FixedSelectedCell);
-			else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_STOP)
+			else if (_OrderStartCol == DarkHorse::OrderHeader::BUY_STOP)
 				CancelStop(_FixedSelectedCell);
-			else if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_STOP)
+			else if (_OrderStartCol == DarkHorse::OrderHeader::SELL_STOP)
 				CancelStop(_FixedSelectedCell);
 		}
 		else {
@@ -1752,23 +1752,23 @@ void SmOrderArea::OnLButtonUp(UINT nFlags, CPoint point)
 				auto found = _RowIndexToPriceMap.find(cell->Row());
 				if (found == _RowIndexToPriceMap.end()) return;
 
-				if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_ORDER)
+				if (_OrderStartCol == DarkHorse::OrderHeader::SELL_ORDER)
 					ChangeOrder(_FixedSelectedCell, found->second);
-				else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_ORDER)
+				else if (_OrderStartCol == DarkHorse::OrderHeader::BUY_ORDER)
 					ChangeOrder(_FixedSelectedCell, found->second);
-				else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_STOP)
+				else if (_OrderStartCol == DarkHorse::OrderHeader::BUY_STOP)
 					ChangeStop(_FixedSelectedCell, cell, _OrderStartPrice, found->second);
-				else if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_STOP)
+				else if (_OrderStartCol == DarkHorse::OrderHeader::SELL_STOP)
 					ChangeStop(_FixedSelectedCell, cell, _OrderStartPrice, found->second);
 			}
 			else {
-				if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_ORDER)
+				if (_OrderStartCol == DarkHorse::OrderHeader::SELL_ORDER)
 					CancelOrder(_FixedSelectedCell);
-				else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_ORDER)
+				else if (_OrderStartCol == DarkHorse::OrderHeader::BUY_ORDER)
 					CancelOrder(_FixedSelectedCell);
-				else if (_OrderStartCol == DarkHorse::OrderGridHeader::BUY_STOP)
+				else if (_OrderStartCol == DarkHorse::OrderHeader::BUY_STOP)
 					CancelStop(_FixedSelectedCell);
-				else if (_OrderStartCol == DarkHorse::OrderGridHeader::SELL_STOP)
+				else if (_OrderStartCol == DarkHorse::OrderHeader::SELL_STOP)
 					CancelStop(_FixedSelectedCell);
 			}
 		}
@@ -1802,19 +1802,19 @@ void SmOrderArea::OnLButtonDblClk(UINT nFlags, CPoint point)
 	if (!_Grid) return;
 
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
-	if (cell_pos.second == DarkHorse::OrderGridHeader::SELL_STOP) {
+	if (cell_pos.second == DarkHorse::OrderHeader::SELL_STOP) {
 		const int price = FindValue(cell_pos.first);
 		PutStopOrder(SmPositionType::Sell, price);
 	}
-	else if (cell_pos.second == DarkHorse::OrderGridHeader::BUY_STOP) {
+	else if (cell_pos.second == DarkHorse::OrderHeader::BUY_STOP) {
 		const int price = FindValue(cell_pos.first);
 		PutStopOrder(SmPositionType::Buy, price);
 	}
-	else if (cell_pos.second == DarkHorse::OrderGridHeader::SELL_ORDER) {
+	else if (cell_pos.second == DarkHorse::OrderHeader::SELL_ORDER) {
 		const int price = FindValue(cell_pos.first);
 		PutOrder(SmPositionType::Sell, price);
 	}
-	else if (cell_pos.second == DarkHorse::OrderGridHeader::BUY_ORDER) {
+	else if (cell_pos.second == DarkHorse::OrderHeader::BUY_ORDER) {
 		const int price = FindValue(cell_pos.first);
 		PutOrder(SmPositionType::Buy, price);
 	}

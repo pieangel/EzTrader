@@ -8,7 +8,7 @@ namespace DarkHorse {
 		BUY
 	};
 
-	enum OrderGridHeader 
+	enum OrderHeader 
 	{
 		SELL_STOP = 0,
 		SELL_ORDER,
@@ -25,23 +25,23 @@ namespace DarkHorse {
 
 	typedef struct _OrderGridHeaderInfo 
 	{
-		OrderGridHeader index;
+		OrderHeader index;
 		std::string title;
 		int width;
 	} OrderGridHeaderInfo;
 
 	static std::vector<OrderGridHeaderInfo> OrderGridHeaderVector 
 	{
-		{OrderGridHeader::SELL_STOP, "STOP", 40},
-		{OrderGridHeader::SELL_ORDER, "주문", 55},
-		{OrderGridHeader::SELL_CNT, "건수", 0},
-		{OrderGridHeader::SELL_QTY, "잔량", 35},
+		{OrderHeader::SELL_STOP, "STOP", 40},
+		{OrderHeader::SELL_ORDER, "주문", 55},
+		{OrderHeader::SELL_CNT, "건수", 0},
+		{OrderHeader::SELL_QTY, "잔량", 35},
 		//{OrderGridHeader::SELL_FILLED, "체결", 35},
-		{OrderGridHeader::QUOTE, "시세", 80},
+		{OrderHeader::QUOTE, "시세", 80},
 		//{OrderGridHeader::BUY_FILLED, "체결", 35},
-		{OrderGridHeader::BUY_QTY, "잔량", 35},
-		{OrderGridHeader::BUY_CNT, "건수", 0},
-		{OrderGridHeader::BUY_ORDER, "주문", 55},
-		{OrderGridHeader::BUY_STOP, "STOP", 40}
+		{OrderHeader::BUY_QTY, "잔량", 35},
+		{OrderHeader::BUY_CNT, "건수", 0},
+		{OrderHeader::BUY_ORDER, "주문", 55},
+		{OrderHeader::BUY_STOP, "STOP", 40}
 	};
 }

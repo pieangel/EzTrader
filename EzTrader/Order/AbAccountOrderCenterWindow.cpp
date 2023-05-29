@@ -311,7 +311,7 @@ void AbAccountOrderCenterWindow::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> s
 		std::shared_ptr<SmGrid> grid = symbol_order_view_.Grid();
 		int value = start_value;
 		for (int i = 1; i < grid->RowCount(); i++) {
-			grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, std::to_string(value));
+			grid->SetCellText(i, DarkHorse::OrderHeader::QUOTE, std::to_string(value));
 			value += int_tick_size;
 		}
 	}

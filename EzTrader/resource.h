@@ -91,6 +91,7 @@
 #define IDD_DM_FUND_ORDER_LEFT          186
 #define IDD_DM_FUND_ORDER_CENTER        187
 #define IDD_PROGRESS                    219
+#define IDB_GRID_CONFIG                 221
 #define IDC_STATIC_ID                   1003
 #define IDC_STATIC_PWD                  1004
 #define IDC_STATIC_CERT                 1005
@@ -133,7 +134,7 @@
 #define IDC_COMBO_SYMBOL_COMP           1042
 #define IDC_BTN_V3                      1043
 #define IDC_CHECK2                      1044
-#define IDC_CHECK_STOP_COL              1044
+#define IDC_CHECK_SHOW_STOP_COL         1044
 #define IDC_CHECK_DATA_LABEL            1045
 #define IDC_BTN_ADD                     1046
 #define IDC_BUTTON4                     1047
@@ -155,6 +156,7 @@
 #define IDC_CHECK4                      1063
 #define IDC_CHECK_ALIGN_BY_ALT          1064
 #define IDC_BTN_MIN                     1065
+#define IDC_CHECK_STOP_TO_REAL          1065
 #define IDC_CHECK_                      1066
 #define IDC_CHECK_VIRTUAL               1067
 #define IDC_CHECK_VIR1                  1068
@@ -274,17 +276,22 @@
 #define IDC_EDIT_VK3_HS_AVG             1178
 #define IDC_EDIT_ID                     1179
 #define IDC_CHECK3                      1180
-#define IDC_CHECK_COUNT_COL             1180
+#define IDC_CHECK_SHOW_COUNT_COL        1180
 #define IDC_CHECK_LOSS                  1181
 #define IDC_STATIC_LINE20               1182
 #define IDC_CHECK_V1                    1183
 #define IDC_EDIT_PWD                    1184
 #define IDC_EDIT2                       1185
 #define IDC_EDIT_WIDTH                  1185
+#define IDC_EDIT_STOP_WIDTH             1185
 #define IDC_EDIT_SLIP                   1186
+#define IDC_EDIT_ORDER_WIDTH            1186
 #define IDC_STATIC_LINE21               1187
+#define IDC_EDIT_COUNT_WIDTH            1187
 #define IDC_EDIT_CHART_RATIO1           1188
+#define IDC_EDIT_QTY_WIDTH              1188
 #define IDC_EDIT3                       1189
+#define IDC_EDIT_QUOTE_WIDTH            1189
 #define IDC_EDIT_PROFIT                 1190
 #define IDC_STATIC_LINE22               1200
 #define IDC_EDIT_CHART_RATIO2           1201
@@ -518,7 +525,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        221
+#define _APS_NEXT_RESOURCE_VALUE        222
 #define _APS_NEXT_COMMAND_VALUE         32935
 #define _APS_NEXT_CONTROL_VALUE         1166
 #define _APS_NEXT_SYMED_VALUE           119

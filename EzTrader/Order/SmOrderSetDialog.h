@@ -10,6 +10,7 @@ class SmOrderSetDialog : public CBCGPDialog
 
 public:
 	SmOrderSetDialog(CWnd* pParent = nullptr);   // standard constructor
+	SmOrderSetDialog(CWnd* pParent, const int& window_id_from);   // standard constructor
 	virtual ~SmOrderSetDialog();
 
 // Dialog Data
@@ -25,17 +26,34 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedCheckSetWide();
+	int get_id() {
+		return id_;
+	}
 private:
+	int id_{0};
+	int window_id_from_{ 0 };
 	AbAccountOrderCenterWindow* _OrderWnd = nullptr;
 	SmFundOrderCenterWnd* _FundWnd = nullptr;
 public:
-	CBCGPButton _CheckAlignByAlt;
-	CBCGPButton _CheckBarColor;
-	CBCGPButton _CheckCancelByRightClick;
-	CBCGPButton _CheckOrderBySpace;
+	CBCGPButton check_align_by_alt_;
+	CBCGPButton check_show_bar_color_;
+	CBCGPButton check_cancel_by_right_click_;
+	CBCGPButton check_order_by_space_;
+	CBCGPButton check_stop_by_real_;
+	CBCGPButton check_show_order_column_;
+	CBCGPButton check_show_stop_column_;
+	CBCGPButton check_show_count_column_;
+	CBCGPEdit edit_row_height_;
+	CBCGPEdit edit_stop_width_;
+	CBCGPEdit edit_order_width_;
+	CBCGPEdit edit_count_width_;
+	CBCGPEdit edit_qty_width_;
+	CBCGPEdit edit_quote_width_;
+
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedCheckBarColor();
 	afx_msg void OnBnClickedCheckAlignByAlt();
 	afx_msg void OnBnClickedCheckOrderBySpace();
 	afx_msg void OnBnClickedCheckCancelByRightClick();
+	afx_msg void OnBnClickedButton1();
 };

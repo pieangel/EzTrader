@@ -100,6 +100,9 @@ namespace DarkHorse {
 		int ab_chart_data(task_arg&& arg) ;
 		int ab_chart_data(SmTaskArg&& arg);
 		int dm_symbol_master(SmTaskArg&& arg);
+		int account_profit_loss(SmTaskArg&& arg);
+		int ab_account_profit_loss(DarkHorse::AccountProfitLossReq arg);
+		int dm_account_profit_loss(DarkHorse::AccountProfitLossReq arg);
 		void register_symbol(SmTaskArg&& arg);
 		void ab_new_order(task_arg&& arg) ;
 		void ab_change_order(task_arg&& arg) ;

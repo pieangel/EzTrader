@@ -346,7 +346,7 @@ void DmFundOrderCenterWindow::SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symb
 		std::shared_ptr<SmGrid> grid = _OrderArea.Grid();
 		int value = start_value;
 		for (int i = 1; i < grid->RowCount(); i++) {
-			grid->SetCellText(i, DarkHorse::OrderGridHeader::QUOTE, std::to_string(value));
+			grid->SetCellText(i, DarkHorse::OrderHeader::QUOTE, std::to_string(value));
 			value += int_tick_size;
 		}
 	}

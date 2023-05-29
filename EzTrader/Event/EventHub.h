@@ -23,14 +23,15 @@ int main (int argc, const char * argv[])
 #include "eventpp/eventdispatcher.h"
 #include <functional>
 #include <map>
+#include <string>
 #include <vector>
 #include "../Order/OrderUi/ControlId.h"
 #include "../Json/json.hpp"
 #include "../Quote/SmQuote.h"
 #include "../Order/SmOrderConst.h"
+#include "EventHubArg.h"
 
 namespace DarkHorse {
-
 	class AccountOrderControl;
 	class AccountPositionControl;
 	class AccountProfitLossControl;
@@ -88,6 +89,10 @@ namespace DarkHorse {
 
 	using StopOrderCBL = eventpp::CallbackList<void(std::shared_ptr<Order> order)>;
 	using StopOrderCBH = eventpp::CallbackList<void(std::shared_ptr<Order> order)>::Handle;
+
+	using AccountProfitLossCBL = eventpp::CallbackList<void()>;
+	using AccountProfitLossCBH = eventpp::CallbackList<void()>::Handle;
+
 
 class EventHub
 {
@@ -245,8 +250,46 @@ public:
 	{
 		stop_order_cb_list_(order);
 	}
+	// add a window resize event to the event listener.
+	void add_window_resize_event(const int window_id, std::function<void()>&& handler)
+	{
+		window_resize_event_.appendListener(window_id, handler);
+	}
+	void trigger_window_resize_event(const int window_id) {
+		window_resize_event_.dispatch(window_id);
+	}
+	
+	void add_parameter_event(const int window_id, std::function<void(const DarkHorse::OrderSetEvent& event, const std::string&, const bool)>&& handler)
+	{
+		parameter_dispatcher.appendListener(window_id, handler);
+	}
+	void trigger_parameter_event(const int window_id, const DarkHorse::OrderSetEvent& event, const std::string& s, const bool b)
+	{
+		parameter_dispatcher.dispatch(window_id, event, s, b);
+	}
+	
+	void subscribe_account_profit_loss_event_handler(const int account_profit_loss_control_id, std::function<void()>&& handler)
+	{
+		AccountProfitLossCBH handle = account_profit_loss_cb_list_.append(handler);
+		account_profit_loss_cb_handle_map_[account_profit_loss_control_id] = handle;
+	}
+	void unsubscribe_account_profit_loss_event_handler(const int account_profit_loss_control_id)
+	{
+		auto found = account_profit_loss_cb_handle_map_.find(account_profit_loss_control_id);
+		if (found == account_profit_loss_cb_handle_map_.end()) return;
+		account_profit_loss_cb_list_.remove(found->second);
+	}
+	void process_account_profit_loss_event()
+	{
+		account_profit_loss_cb_list_();
+	}
 
 private:
+	eventpp::EventDispatcher<int, void(const DarkHorse::OrderSetEvent& event, const std::string&, const bool)> parameter_dispatcher;
+
+	// window id, event handler
+	eventpp::EventDispatcher<int, void()> window_resize_event_;
+
 	OrderCBL order_cb_list_;
 	std::map<int, OrderCBH> order_cb_handle_map_;
 
@@ -273,6 +316,9 @@ private:
 
 	StopOrderCBL stop_order_cb_list_;
 	std::map<int, StopOrderCBH> stop_order_cb_handle_map_;
+
+	AccountProfitLossCBL account_profit_loss_cb_list_;
+	std::map<int, AccountProfitLossCBH> account_profit_loss_cb_handle_map_;
 };
 }
 

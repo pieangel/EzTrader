@@ -17,6 +17,7 @@ class SymbolOrderView
 #include "../Order/SmOrderSettings.h"
 #include "../SmGrid/SmCellType.h"
 #include "../Order/OrderRequest/OrderRequest.h"
+#include "../Event/EventHubArg.h"
 
 
 namespace DarkHorse {
@@ -49,6 +50,9 @@ class DmFundOrderWindow;
 class SymbolOrderView : public CBCGPStatic
 {
 public:
+	int get_id() {
+		return id_;
+	}
 	void SetMainDialog(DmAccountOrderWindow* main_dialog) {
 		_MainDialog = main_dialog;
 	}
@@ -115,6 +119,8 @@ public:
 	void OnSymbolMasterEvent(const std::string& symbol_code);
 	void UpdateOrderSettings(DarkHorse::SmOrderSettings settings);
 	void SetAllRowHeight(const int& row_height);
+	// 원래 헤더 너비는 정해져 있지만 빈틈을 없애기 위하여 헤더 너비를 다시 설정한다.
+	void ResetHeaderWidth(const int& wnd_width);
 	bool FixedMode() const { return _FixedMode; }
 	void FixedMode(bool val);
 
@@ -132,7 +138,13 @@ public:
 	void set_price_type(DarkHorse::SmPriceType price_type) {
 		price_type_ = price_type;
 	}
+	void set_parent(CWnd* wnd) {
+		parent_ = wnd;
+	}
+	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
 private:
+	void on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag);
+	CWnd* parent_{ nullptr };
 	void update_position();
 	void update_buy_stop_order();
 	void update_sell_stop_order();
@@ -248,9 +260,6 @@ private:
 	std::pair<int, int> GetOrderCount(const std::shared_ptr<DarkHorse::SmCell>& cell);
 	std::pair<int, int> get_order_count(const std::shared_ptr<DarkHorse::SmCell>& cell);
 	bool _Editing = false;
-	// 원래 헤더 너비는 정해져 있지만 빈틈을 없애기 위하여 헤더 너비를 다시 설정한다.
-	void ResetHeaderWidth(const int& wnd_width);
-
 	SmOrderGridResource _Resource;
 	void CreateResource();
 
@@ -299,6 +308,8 @@ private:
 	std::shared_ptr<DarkHorse::SmStopOrderManager> _SellStopOrderMgr{ nullptr };
 	std::shared_ptr<DarkHorse::SmStopOrderManager> _BuyStopOrderMgr{ nullptr };
 	std::vector<std::string> _OrderTableHeader;
+
+	std::vector<DarkHorse::OrderGridHeaderInfo> grid_header_vector_;
 
 	int id_{ 0 };
 	int _OrderAmount{ 1 };

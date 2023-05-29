@@ -7,6 +7,7 @@ class DmAccountOrderCenterWindow
 #pragma once
 #include <map>
 #include <string>
+#include <vector>
 #include <set>
 #include <memory>
 //#include "../../SmGrid/SmOrderArea.h"
@@ -23,6 +24,7 @@ class DmAccountOrderCenterWindow
 #include "../../View/SymbolPositionView.h"
 #include "../../View/SymbolTickView.h"
 #include "../OrderRequest/OrderRequest.h"
+#include "../../Event/EventHubArg.h"
 
 // SmOrderWnd dialog
 namespace DarkHorse {
@@ -86,6 +88,8 @@ public:
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
 private:
+	void on_resize_event_from_order_view();
+	void on_resize_event_from_tick_view();
 	void set_symbol(std::shared_ptr<DarkHorse::SmSymbol>symbol);
 	void set_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	std::string make_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
@@ -134,6 +138,9 @@ private:
 	std::shared_ptr< SmOrderSetDialog> order_set_dialog_ = nullptr;
 
 public:
+	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
+	void on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag);
+	void set_symbol_order_view_height_and_width(std::vector<int> value_vector);
 	void SetRowWide();
 	void SetRowNarrow();
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
@@ -179,7 +186,7 @@ public:
 	afx_msg void OnEnChangeEditProfit();
 	afx_msg void OnEnChangeEditLoss();
 	afx_msg void OnEnChangeEditSlip();
-	CBCGPButton _BtnSearch;
+	CBCGPButton btn_grid_config_;
 	afx_msg void OnBnClickedBtnSearch();
 	afx_msg void OnBnClickedBtnSet();
 	CBCGPGroup _Group2;
