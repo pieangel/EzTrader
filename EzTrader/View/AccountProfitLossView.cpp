@@ -271,8 +271,9 @@ void AccountProfitLossView::OnTimer(UINT_PTR nIDEvent)
 		needDraw = true;
 	}
 
-
-	if (needDraw) Invalidate();
+	update_account_profit_loss();
+	Invalidate();
+	//if (needDraw) Invalidate();
 
 	CBCGPStatic::OnTimer(nIDEvent);
 }

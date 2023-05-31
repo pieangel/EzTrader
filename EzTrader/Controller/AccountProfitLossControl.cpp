@@ -48,6 +48,7 @@ void AccountProfitLossControl::load_position_from_account(const std::string& acc
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
 		position_map_[it->second->symbol_code] = it->second;
 	}
+	acnt_position_mgr->update_account_profit_loss();
 	auto account_profit_loss_p = acnt_position_mgr->get_account_profit_loss();
 	account_profit_loss_.trade_profit_loss = account_profit_loss_p->trade_profit_loss;
 	account_profit_loss_.open_profit_loss = account_profit_loss_p->open_profit_loss;

@@ -283,7 +283,9 @@ void AccountPositionView::on_timer()
 		needDraw = true;
 		enable_position_show_ = false;
 	}
-	if (needDraw) Invalidate();
+	update_account_position();
+	Invalidate();
+	//if (needDraw) Invalidate();
 }
 
 void AccountPositionView::ClearCheck()

@@ -332,11 +332,10 @@ void DmOptionView::register_symbols(const int option_market_index)
 
 void DmOptionView::register_symbol(const std::string symbol_code)
 {
-	DmRegisterReq req;
-	req.symbol_code = symbol_code;
-	SmTaskArg arg;
-	arg.TaskType = SmTaskType::RegisterSymbol;
-	arg.Param = req;
+	DhTaskArg arg;
+	arg.detail_task_description = symbol_code;
+	arg.task_type = DhTaskType::DmSymbolMaster;
+	arg.parameter_map["symbol_code"] = symbol_code;
 	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 

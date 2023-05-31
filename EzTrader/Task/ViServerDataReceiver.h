@@ -16,6 +16,7 @@ namespace DarkHorse {
 	private:
 		// 앱의 상태를 나타낸다.
 		//SmAppState _AppState = SmAppState::None;
+		bool server_data_receive_on_{true};
 		// Key : id, value : argument
 		//std::map<int, DhTaskArg> 	_RequestMap;
 		void execute_request(DhTaskArg& arg);

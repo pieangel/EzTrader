@@ -23,7 +23,7 @@ namespace DarkHorse {
 		int ConnectToServer() ;
 		int Login(task_arg&& login_info) ;
 		void ExecTask(const SmTaskType& task_type, task_arg&& task);
-		void ExecTask(SmTaskArg&&);
+		void ExecTask(DhTaskArg&&);
 
 		// 업무를 제거한다. 실패했을 경우 업무 요청이 누적되는 것을 막는다.
 		void RemoveTask(const int& task_id);

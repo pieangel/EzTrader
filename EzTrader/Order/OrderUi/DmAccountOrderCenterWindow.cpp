@@ -232,12 +232,15 @@ void DmAccountOrderCenterWindow::on_resize_event_from_order_view()
 {
 	CRect rc_order_view, rc_tick_view,rc_window;
 	symbol_order_view_.GetWindowRect(&rc_order_view);
+
+	int order_view_width = symbol_order_view_.get_entire_width();
+	symbol_order_view_.SetWindowPos(nullptr, 0, 0, order_view_width, rc_order_view.Height(), SWP_NOMOVE | SWP_NOZORDER);
+
 	symbol_tick_view_.GetWindowRect(&rc_tick_view);
 	ScreenToClient(rc_order_view);
 	ScreenToClient(rc_tick_view);
 	const int window_width = rc_order_view.Width() + rc_tick_view.Width();
 	symbol_tick_view_.SetWindowPos(nullptr, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOSIZE | SWP_NOZORDER);
-	SetWindowPos(nullptr, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOMOVE | SWP_NOZORDER);
 
 	CWnd* parent = GetParent();
 	GetWindowRect(rc_window);
@@ -513,11 +516,10 @@ void DmAccountOrderCenterWindow::set_symbol_info(std::shared_ptr<DarkHorse::SmSy
 
 void DmAccountOrderCenterWindow::request_dm_symbol_master(const std::string symbol_code)
 {
-	DmSymbolMasterReq req;
-	req.symbol_code = symbol_code;
-	SmTaskArg arg;
-	arg.TaskType = SmTaskType::DmSymbolMaster;
-	arg.Param = req;
+	DhTaskArg arg;
+	arg.detail_task_description = symbol_code;
+	arg.task_type = DhTaskType::DmSymbolMaster;
+	arg.parameter_map["symbol_code"] = symbol_code;
 	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
@@ -525,6 +527,24 @@ void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEven
 {
 	//symbol_order_view_.on_paramter_event(event, event_message, enable);
 	symbol_order_view_.SetAllRowHeight(event.grid_height);
+	symbol_order_view_.reset_col_widths(event);
+	{
+		CRect rc_order_view, rc_tick_view, rc_window;
+		symbol_order_view_.GetWindowRect(&rc_order_view);
+
+		symbol_tick_view_.GetWindowRect(&rc_tick_view);
+		ScreenToClient(rc_order_view);
+		ScreenToClient(rc_tick_view);
+		const int window_width = rc_order_view.Width() + rc_tick_view.Width();
+		symbol_tick_view_.SetWindowPos(this, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOSIZE | SWP_NOZORDER);
+
+		CWnd* parent = GetParent();
+		GetWindowRect(rc_window);
+		parent->ScreenToClient(rc_window);
+		rc_window.right = rc_order_view.Width() + rc_tick_view.Width();
+		SetWindowPos(parent, rc_window.right, rc_window.top, rc_window.Width(), rc_window.Height(), SWP_NOMOVE | SWP_NOZORDER);
+
+	}
 	RecalcOrderAreaHeight(this);
 	symbol_order_view_.Invalidate();
 }

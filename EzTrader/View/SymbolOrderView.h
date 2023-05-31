@@ -119,6 +119,8 @@ public:
 	void OnSymbolMasterEvent(const std::string& symbol_code);
 	void UpdateOrderSettings(DarkHorse::SmOrderSettings settings);
 	void SetAllRowHeight(const int& row_height);
+	void reset_col_widths(const DarkHorse::OrderSetEvent& order_set_event);
+	int get_entire_width();
 	// 원래 헤더 너비는 정해져 있지만 빈틈을 없애기 위하여 헤더 너비를 다시 설정한다.
 	void ResetHeaderWidth(const int& wnd_width);
 	bool FixedMode() const { return _FixedMode; }

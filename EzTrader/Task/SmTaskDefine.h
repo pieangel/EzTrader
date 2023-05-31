@@ -7,6 +7,11 @@ enum class DhTaskType
 {
 	// 초기 상태
 	None = 0,
+	// 계좌 손익
+	AccountProfitLoss,
+	// Chart Data
+	SymbolChartData,
+	RegisterSymbol,
 	// 지수 선물 심볼 
 	DmJisuFutureSymbol,
 	// 지수 옵션 심볼 

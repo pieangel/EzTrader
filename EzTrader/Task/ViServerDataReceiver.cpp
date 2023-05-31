@@ -99,6 +99,7 @@ namespace DarkHorse {
 	{
 		// 기존 요청 목록을 먼저 모두 없앤다.
 		task_info_.argument_map.clear();
+		if (!server_data_receive_on_) return;
 		switch (task_info_.task_type)
 		{
 		case DhTaskType::DmSymbolMasterFileDownload:
@@ -159,6 +160,7 @@ namespace DarkHorse {
 		break;
 		case DhTaskType::DmSymbolPosition:
 		{
+			server_data_receive_on_ = false;
 			end_all_task();
 		}
 		break;

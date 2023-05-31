@@ -409,47 +409,21 @@ void DarkHorse::ViStockClient::ExecTask(const SmTaskType& task_type, task_arg&& 
 	}
 }
 
-void DarkHorse::ViStockClient::ExecTask(DarkHorse::SmTaskArg&& task)
+void DarkHorse::ViStockClient::ExecTask(DhTaskArg&& task)
 {
-	switch (task.TaskType)
+	switch (task.task_type)
 	{
-	case SmTaskType::FileDownload:
-		break;
-	case SmTaskType::Market:
-		break;
-	case SmTaskType::SymbolCode:
-		break;
-	case SmTaskType::SymbolMaster:
-		break;
-	case SmTaskType::AccountAsset:
-		break;
-	case SmTaskType::AccountProfitLoss:
+	case DhTaskType::AccountProfitLoss:
 		_ViCtrol->account_profit_loss(std::move(task));
 		break;
-	case SmTaskType::SymbolProfitLoss:
-		break;
-	case SmTaskType::SymbolQuote:
-		break;
-	case SmTaskType::SymbolHoga:
-		break;
-	case SmTaskType::DmSymbolMaster:
+	case DhTaskType::DmSymbolMaster:
 		_ViCtrol->dm_symbol_master(std::move(task));
 		break;
-	case SmTaskType::ChartData:
-		_ViCtrol->ab_chart_data(std::move(task));
+	case DhTaskType::SymbolChartData:
+		_ViCtrol->chart_data(std::move(task));
 		break;
-	case SmTaskType::AcceptedOrderList:
-		break;
-	case SmTaskType::FilledOrderList:
-		break;
-	case SmTaskType::SymbolPosition:
-		break;
-	case SmTaskType::RegisterSymbol:
+	case DhTaskType::RegisterSymbol:
 		_ViCtrol->register_symbol(std::move(task));
-		break;
-	case SmTaskType::RegisterAccount:
-		break;
-	case SmTaskType::DomesticSymbolCode:
 		break;
 	}
 }

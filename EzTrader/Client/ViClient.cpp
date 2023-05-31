@@ -1451,18 +1451,21 @@ int DarkHorse::ViClient::ab_chart_data(task_arg&& arg)
 
 	return -1;
 }
-int ViClient::dm_symbol_master(SmTaskArg&& arg)
+int ViClient::dm_symbol_master(DhTaskArg&& arg)
 {
-	if (arg.TaskType != SmTaskType::DmSymbolMaster) return -1;
+	if (arg.task_type != DhTaskType::DmSymbolMaster) return -1;
 	try {
-		auto req = std::any_cast<DarkHorse::DmSymbolMasterReq>(arg.Param);
-
+		const std::string symbol_code = arg.parameter_map["symbol_code"];
 		CString sInput;
-		sInput = req.symbol_code.c_str();
+		sInput = symbol_code.c_str();
 		sInput.Append(_T("40001"));
 		CString sReqFidInput = _T("000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061062063064065066067068069070071072073074075076077078079080081082083084085086087088089090091092093094095096097098099100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190191192193194195196197198199200201202203204205206207208209210211212213214215216217218219220221222223224225226227228229230231232");
 		CString strNextKey = _T("");
 		int nRqID = m_CommAgent.CommFIDRqData(DefDmSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+		request_map_[nRqID] = arg;
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+		}
 		return nRqID;
 	}
 	catch (const std::exception& e) {
@@ -1472,6 +1475,7 @@ int ViClient::dm_symbol_master(SmTaskArg&& arg)
 	}
 	return 1;
 }
+
 int DarkHorse::ViClient::ab_chart_data(SmTaskArg&& arg)
 {
 	if (arg.TaskType != SmTaskType::ChartData) return -1;
@@ -1514,6 +1518,48 @@ int DarkHorse::ViClient::ab_chart_data(SmTaskArg&& arg)
 	return 1;
 }
 
+
+int DarkHorse::ViClient::chart_data(DhTaskArg&& arg)
+{
+	if (arg.task_type != DhTaskType::SymbolChartData) return -1;
+	/*
+	try {
+		auto req = std::any_cast<SmChartDataReq>(arg.Param);
+
+		if (std::isdigit(req.SymbolCode.at(2))) {
+			if (req.SymbolCode.length() < 8)
+				return -1;
+			return dm_chart_data(std::move(arg));
+		}
+		else {
+			if (req.SymbolCode.length() < 4)
+				return -1;
+			if (req.ChartType == SmChartType::TICK)
+				return ab_chart_data_short(std::move(arg));
+			else if (req.ChartType == SmChartType::MIN) {
+				if (req.Cycle <= 60)
+					return ab_chart_data_long(std::move(arg));
+				else
+					return ab_chart_data_short(std::move(arg));
+			}
+			else if (req.ChartType == SmChartType::DAY)
+				return ab_chart_data_short(std::move(arg));
+			else if (req.ChartType == SmChartType::WEEK)
+				return ab_chart_data_short(std::move(arg));
+			else if (req.ChartType == SmChartType::MON)
+				return ab_chart_data_short(std::move(arg));
+			else
+				return ab_chart_data_long(std::move(arg));
+		}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+		return -1;
+	}
+	*/
+	return 1;
+}
 
 
 void DarkHorse::ViClient::ab_new_order(task_arg&& arg)
@@ -2421,15 +2467,15 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 	_OrderReqMap[nRqID] = order_req;
 }
 
-int ViClient::account_profit_loss(SmTaskArg&& arg)
+int ViClient::account_profit_loss(DhTaskArg&& arg)
 {
-	if (arg.TaskType != SmTaskType::AccountProfitLoss) return -1;
+	if (arg.task_type != DhTaskType::AccountProfitLoss) return -1;
 	try {
-		auto req = std::any_cast<DarkHorse::AccountProfitLossReq>(arg.Param);
-		if (req.account_type == "1")
-			ab_account_profit_loss(req);
-		else if (req.account_type == "9")
-			dm_account_profit_loss(req);
+
+		if (arg.parameter_map["account_type"] == "1")
+			ab_account_profit_loss(arg);
+		else if (arg.parameter_map["account_type"] == "9")
+			dm_account_profit_loss(arg);
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
@@ -2467,6 +2513,8 @@ int ViClient::ab_account_profit_loss(DarkHorse::AccountProfitLossReq arg)
 		const CString strNextKey = _T("");
 		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", DefAbSymbolProfitLoss, sInput);
 		const int nRqID = m_CommAgent.CommRqData(DefAbSymbolProfitLoss, sInput, sInput.GetLength(), strNextKey);
+		DhTaskArg arg;
+		request_map_[nRqID] = arg;
 		return nRqID;
 	}
 	catch (const std::exception& e) {
@@ -2495,6 +2543,8 @@ int ViClient::dm_account_profit_loss(DarkHorse::AccountProfitLossReq arg)
 		CString strNextKey = _T("");
 		LOGINFO(CMyLogger::getInstance(), "Code[%s], Request : %s", sTrCode, sInput);
 		int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+		DhTaskArg arg;
+		request_map_[nRqID] = arg;
 		return nRqID;
 	}
 	catch (const std::exception& e) {
@@ -2609,15 +2659,12 @@ void DarkHorse::ViClient::unregister_account(const std::string& account_no)
 	int nResult = m_CommAgent.CommRemoveJumunChe(user_id.c_str(), account_no.c_str());
 }
 
-void ViClient::register_symbol(SmTaskArg&& arg)
+void ViClient::register_symbol(DhTaskArg&& arg)
 {
-	if (arg.TaskType != SmTaskType::RegisterSymbol) return;
+	if (arg.task_type != DhTaskType::RegisterSymbol) return;
 
-	auto req = std::any_cast<DarkHorse::DmRegisterReq>(arg.Param);
-
+	const std::string symbol_code = arg.parameter_map["symbol_code"];
 	CString sInput;
-	const std::string symbol_code = req.symbol_code;
-	_RegSymbolSet.insert(symbol_code);
 	CString strSymbolCode = symbol_code.c_str();
 	if (isdigit(strSymbolCode.GetAt(2))) {
 		int nRealType = 0;
@@ -3436,6 +3483,7 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "익일예탁총액");
 	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "청산후주문가능총액");
 
+
 	CString strMsg = strData9 + strData10 + strData8 + _T("\n");
 	//TRACE(strMsg);
 	auto it = request_map_.find(server_request_id);
@@ -3444,6 +3492,10 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 	const std::string& account_no = it->second.parameter_map["account_no"];
 	std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
 	if (!account) return on_task_complete(server_request_id);
+
+	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], 당일총손익[%s], 당일매매손익[%s], 당일평가손익[%s], 선물위탁수수료[%s], 옵션위탁수수료[%s], ", account_no.c_str(), strData8, strData9, strData10, strData11, strData12);
+
+
 	account->Asset.EntrustDeposit = _ttoi(strData1.TrimRight());
 	account->Asset.OpenTrustTotal = _ttoi(strData6.TrimRight());
 	account->Asset.OrderDeposit = _ttoi(strData3.TrimRight());
@@ -3474,6 +3526,8 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 		const std::string symbol_code(strCode);
 		auto symbol_position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
 		symbol_position->trade_profit_loss = atof(strProfit);
+
+		LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], symbolcode[%s], 매매손익[%s], 평가금액[%s], 수수료[%s], 총손익[%s], ", account_no.c_str(), strCode, strProfit, strOpenProfit, strFee, strTotalProfit);
 	}
 	account->Asset.TradeProfitLoss = tradePL;
 	account->Asset.Fee = fee;
@@ -3578,6 +3632,8 @@ void ViClient::on_ab_symbol_master(const CString& server_trade_code, const LONG&
 
 		msg.Format("SymbolMaster strSymbolCode = %s, strLocalStartTime = %s, %s\n", strSymbolCode, strLocalStartTime, strLocalEndTime);
 		TRACE(msg);
+
+
 
 
 		nlohmann::json symbol_master;
@@ -4084,6 +4140,9 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
+
+		LOGINFO(CMyLogger::getInstance(), "on_dm_symbol_profit_loss :: account_no[%s], symbolcode[%s], 매매손익[%s], 평가금액[%s], 수수료[%s], 총손익[%s], ", account_no.c_str(), strSymbolCode, strProfit, strOpenProfit, strFee, strTotalProfit);
+
 
 		nlohmann::json symbol_profit_loss;
 		symbol_profit_loss["account_no"] = account_no;

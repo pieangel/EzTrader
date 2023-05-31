@@ -85,13 +85,13 @@ void TotalAssetProfitLossDialog::OnBnClickedBtnGet()
 	if (_CurrentAccountIndex < 0) return;
 	auto account = _ComboAccountMap[_CurrentAccountIndex];
 
-	DarkHorse::AccountProfitLossReq req;
-	req.account_no = account->No();
-	req.password = account->Pwd();
-	req.account_type = account->Type();
-	DarkHorse::SmTaskArg arg;
-	arg.TaskType = DarkHorse::SmTaskType::AccountProfitLoss;
-	arg.Param = req;
+	DhTaskArg arg;
+	arg.detail_task_description = account->No();
+	arg.task_type = DhTaskType::AccountProfitLoss;
+	arg.parameter_map["account_no"] = account->No();
+	arg.parameter_map["password"] = account->Pwd();
+	arg.parameter_map["account_type"] = account->Type();
+
 	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
