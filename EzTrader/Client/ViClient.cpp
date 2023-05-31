@@ -2470,8 +2470,8 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 int ViClient::account_profit_loss(DhTaskArg&& arg)
 {
 	if (arg.task_type != DhTaskType::AccountProfitLoss) return -1;
+	if (!request_map_.empty()) return;
 	try {
-
 		if (arg.parameter_map["account_type"] == "1")
 			ab_account_profit_loss(arg);
 		else if (arg.parameter_map["account_type"] == "9")
@@ -3579,6 +3579,9 @@ void DarkHorse::ViClient::on_ab_account_profit_loss(const CString& server_trade_
 	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "옵션위탁수수료");
 	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "익일예탁총액");
 	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "청산후주문가능총액");
+
+	LOGINFO(CMyLogger::getInstance(), "on_ab_account_profit_loss :: account_no[%s], 당일총손익[%s], 청산손익[%s], 평가손익[%s], 거래수수료[%s], 옵션위탁수수료[%s], ", strAccount, strData8, strTradeProfitLoss, strOpenProfitLoss, strFee, strData12);
+
 
 	CString strMsg = strTradeProfitLoss + strOpenProfitLoss + strData8 + _T("\n");
 
