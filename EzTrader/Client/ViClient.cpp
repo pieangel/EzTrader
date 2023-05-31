@@ -767,6 +767,30 @@ int ViClient::ab_symbol_hoga(DhTaskArg arg)
 	return -1;
 }
 
+int ViClient::ab_symbol_hoga(DhTaskArg&& arg)
+{
+	try {
+		const std::string symbol_code = arg.parameter_map["symbol_code"];
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+		std::string temp;
+		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
+		const CString sInput = temp.c_str();
+		const CString sReqFidInput = _T("000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061");
+		const CString strNextKey = m_CommAgent.CommGetNextKey(0, "");
+		int nRqID = m_CommAgent.CommFIDRqData(DefAbSymbolHoga, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+
+		request_map_[nRqID] = arg;
+
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
 int DarkHorse::ViClient::ab_symbol_hoga(task_arg&& arg)
 {
 	try {
@@ -978,6 +1002,34 @@ int DarkHorse::ViClient::ab_accepted_order_list(task_arg arg)
 }
 
 int ViClient::ab_symbol_quote(DhTaskArg arg)
+{
+	try {
+		const std::string symbol_code = arg.parameter_map["symbol_code"];
+		//const int task_id = std::any_cast<int>(arg["task_id"]);
+		std::string temp;
+		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
+		const CString sInput = temp.c_str();
+		const CString sReqFidInput = "000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037";
+		const CString strNextKey = m_CommAgent.CommGetNextKey(0, "");
+		const int nRqID = m_CommAgent.CommFIDRqData(DefAbSymbolQuote, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+
+		CString msg;
+		msg.Format("symbol_code = %s\n", symbol_code.c_str());
+		//TRACE(msg);
+
+		request_map_[nRqID] = arg;
+
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+
+	return -1;
+}
+
+int ViClient::ab_symbol_quote(DhTaskArg&& arg)
 {
 	try {
 		const std::string symbol_code = arg.parameter_map["symbol_code"];
@@ -2470,7 +2522,7 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 int ViClient::account_profit_loss(DhTaskArg&& arg)
 {
 	if (arg.task_type != DhTaskType::AccountProfitLoss) return -1;
-	if (!request_map_.empty()) return;
+	if (!request_map_.empty()) return -1;
 	try {
 		if (arg.parameter_map["account_type"] == "1")
 			ab_account_profit_loss(arg);
@@ -3959,10 +4011,6 @@ void DarkHorse::ViClient::on_ab_symbol_hoga(const CString& sTrCode, const LONG& 
 	hoga["hoga_items"][4]["sell_cnt"] = _ttoi(strSellCnt5.Trim());
 	hoga["hoga_items"][4]["buy_cnt"] = _ttoi(strBuyCnt5.Trim());
 
-	if (strSymbolCode.Compare("HSIQ21") == 0) {
-		int i = 0;
-		i = i + 1;
-	}
 
 	if (auto wp = _Client.lock()) {
 		wp->OnSymbolHoga(std::move(hoga));
@@ -4075,6 +4123,7 @@ void DarkHorse::ViClient::on_dm_account_asset(const CString& sTrCode, const LONG
 
 void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const LONG& nRqID)
 {
+	std::string account_no;
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++) {
 		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
@@ -4098,6 +4147,7 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
 	
+		account_no = strAccountNo.Trim();
 		nlohmann::json symbol_profit_loss;
 		symbol_profit_loss["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 		symbol_profit_loss["account_name"] = static_cast<const char*>(strAccountName.Trim());
@@ -4114,6 +4164,7 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 		mainApp.total_position_manager()->on_symbol_profit_loss(std::move(symbol_profit_loss));
 	}
 
+	mainApp.total_position_manager()->update_account_profit_loss(account_no);
 	on_task_complete(nRqID);
 }
 
@@ -4236,6 +4287,7 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "매매구분");
 		CString strSymbolOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "미결제수량");
 		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가");
+		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "장부단가");
 		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
 
 		const std::string symbol_code(strSymbolCode.Trim());
@@ -4251,7 +4303,7 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 		symbol_position["account_no"] = static_cast<const char*>(strAccountNo.Trim());
 		symbol_position["account_name"] = static_cast<const char*>(strAccountName.Trim());
 		symbol_position["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
-		symbol_position["symbol_position"] = position == 1 ? 1 : -1;
+		symbol_position["symbol_position"] = position == 2 ? -1 : 1;
 		symbol_position["symbol_pre_open_qty"] = 0;
 		symbol_position["symbol_open_qty"] = _ttoi(strSymbolOpenQty.Trim());
 		symbol_position["symbol_avg_price"] = avg_price;

@@ -527,6 +527,7 @@ void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEven
 {
 	//symbol_order_view_.on_paramter_event(event, event_message, enable);
 	symbol_order_view_.SetAllRowHeight(event.grid_height);
+	/*
 	symbol_order_view_.reset_col_widths(event);
 	{
 		CRect rc_order_view, rc_tick_view, rc_window;
@@ -545,6 +546,7 @@ void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEven
 		SetWindowPos(parent, rc_window.right, rc_window.top, rc_window.Width(), rc_window.Height(), SWP_NOMOVE | SWP_NOZORDER);
 
 	}
+	*/
 	RecalcOrderAreaHeight(this);
 	symbol_order_view_.Invalidate();
 }

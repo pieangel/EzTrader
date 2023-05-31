@@ -425,6 +425,12 @@ void DarkHorse::ViStockClient::ExecTask(DhTaskArg&& task)
 	case DhTaskType::RegisterSymbol:
 		_ViCtrol->register_symbol(std::move(task));
 		break;
+	case DhTaskType::AbSymbolQuote:
+		_ViCtrol->register_symbol(std::move(task));
+		break;
+	case DhTaskType::AbSymbolHoga:
+		_ViCtrol->register_symbol(std::move(task));
+		break;
 	}
 }
 

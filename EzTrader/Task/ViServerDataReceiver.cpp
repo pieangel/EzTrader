@@ -140,9 +140,20 @@ namespace DarkHorse {
 			break;
 		case DhTaskType::DmSymbolProfitLoss:
 		{
-			start_ab_accepted_order();
+			start_ab_account_profit_loss();
 		}
 			break;
+
+		case DhTaskType::AbAccountProfitLoss:
+		{
+			start_dm_account_profit_loss();
+		}
+		break;
+		case DhTaskType::DmAccountProfitLoss:
+		{
+			start_ab_accepted_order();
+		}
+		break;
 		case DhTaskType::AbAcceptedOrderList:
 		{
 			start_dm_accepted_order();
@@ -261,7 +272,7 @@ namespace DarkHorse {
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
-			arg.task_type = DhTaskType::DmApiCustomerProfitLoss;
+			arg.task_type = DhTaskType::DmAccountProfitLoss;
 			arg.parameter_map["account_no"] = account->No();
 			arg.parameter_map["password"] = account->Pwd();
 
@@ -271,7 +282,7 @@ namespace DarkHorse {
 		task_info_.task_title = "국내 계좌별 손익을 가져오는 중입니다.";
 		task_info_.total_task_count = task_info_.argument_map.size();
 		task_info_.remain_task_count = task_info_.argument_map.size();
-		task_info_.task_type = DhTaskType::DmApiCustomerProfitLoss;
+		task_info_.task_type = DhTaskType::DmAccountProfitLoss;
 	}
 
 	
