@@ -3567,17 +3567,18 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부단가");
 		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "현재가");
 		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매손익");
-		tradePL += atof(strProfit);
 		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "수수료");
-		fee += _ttof(strFee);
 		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "총손익");
-		totalPL += _ttof(strTotalProfit);
 		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부금액");
 		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "평가금액");
 		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "청산가능수량");
 		const std::string symbol_code(strCode);
 		auto symbol_position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
+		tradePL += atof(strProfit);
+		fee += _ttof(strFee);
+		totalPL += _ttof(strTotalProfit);
 		symbol_position->trade_profit_loss = atof(strProfit);
+		symbol_position->trade_fee = fee;
 
 		LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], symbolcode[%s], 매매손익[%s], 평가금액[%s], 수수료[%s], 총손익[%s], ", account_no.c_str(), strCode, strProfit, strOpenProfit, strFee, strTotalProfit);
 	}

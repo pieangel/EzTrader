@@ -97,6 +97,8 @@ void AccountPositionManager::update_position(order_p order)
 	order->unsettled_count = unsettled_count;
 	if (order->unsettled_count == 0)
 		order->order_state = SmOrderState::Settled;
+	else
+		mainApp.event_hub()->process_stop_order_event(order);
 	update_account_profit_loss();
 	mainApp.event_hub()->process_position_event(position);
 }

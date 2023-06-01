@@ -1574,9 +1574,9 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	position_control_->set_symbol_id(val->Id());
 	set_position();
 	set_order();
-	sell_stop_order_control_->set_control_type(CT_SELL);
+	sell_stop_order_control_->set_control_type(SmPositionType::Sell);
 	sell_stop_order_control_->set_symbol_id(symbol_->Id());
-	buy_stop_order_control_->set_control_type(CT_BUY);
+	buy_stop_order_control_->set_control_type(SmPositionType::Buy);
 	buy_stop_order_control_->set_symbol_id(symbol_->Id());
 	ArrangeCenterValue();
 	on_update_quote();

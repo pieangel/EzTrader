@@ -81,6 +81,10 @@ order_request_p StopOrderControl::make_profit_cut_order_request(order_p order)
 			symbol->SymbolCode(), 
 			profit_cut_price);
 	}
+	if (account->Type() == "1")
+		profit_order_req->request_type = OrderRequestType::Abroad;
+	else
+		profit_order_req->request_type = OrderRequestType::Domestic;
 	profit_order_req->cut_mode = SmCutMode::None;
 	profit_order_req->cut_slip = old_req->cut_slip;
 	profit_order_req->profit_cut_tick = old_req->profit_cut_tick;
@@ -117,6 +121,10 @@ order_request_p StopOrderControl::make_loss_cut_order_request(order_p order)
 			symbol->SymbolCode(), 
 			loss_cut_price);
 	}
+	if (account->Type() == "1")
+		loss_order_req->request_type = OrderRequestType::Abroad;
+	else
+		loss_order_req->request_type = OrderRequestType::Domestic;
 	loss_order_req->cut_mode = SmCutMode::None;
 	loss_order_req->cut_slip = old_req->cut_slip;
 	loss_order_req->loss_cut_tick = old_req->loss_cut_tick;
@@ -199,7 +207,10 @@ void StopOrderControl::set_symbol_id(const int symbol_id)
 void StopOrderControl::on_cut_stop_order_request(order_p order)
 {
 	if (!order) return;
+	if (order->position == control_type_) return;
 	if (order->order_context.order_control_id != order_control_id_) return;
+
+	CString msg;
 
 	std::lock_guard<std::mutex> lock(mutex_);
 	auto old_order_req = mainApp.order_request_manager()->find_order_request(order->order_request_id);
@@ -207,10 +218,14 @@ void StopOrderControl::on_cut_stop_order_request(order_p order)
 	if (old_order_req->cut_mode == SmCutMode::ProfitCut) {
 		auto profit_order_req = make_profit_cut_order_request(order);
 		add_stop_order_request(profit_order_req->order_price, profit_order_req);
+		msg.Format("SmCutMode::ProfitCut\n");
+		TRACE(msg);
 	}
 	else if (old_order_req->cut_mode == SmCutMode::LossCut) {
 		auto loss_order_req = make_loss_cut_order_request(order);
 		add_stop_order_request(loss_order_req->order_price, loss_order_req);
+		msg.Format("SmCutMode::LossCut\n");
+		TRACE(msg);
 	}
 	else if (old_order_req->cut_mode == SmCutMode::BothCut) {
 		auto profit_order_req = make_profit_cut_order_request(order);
@@ -221,6 +236,9 @@ void StopOrderControl::on_cut_stop_order_request(order_p order)
 		loss_order_req->counter_request_price = profit_order_req->order_price;
 		add_stop_order_request(profit_order_req->order_price, profit_order_req);
 		add_stop_order_request(loss_order_req->order_price, loss_order_req);
+
+		msg.Format("SmCutMode::BothCut\n");
+		TRACE(msg);
 	}
 
 	if (event_handler_) event_handler_();

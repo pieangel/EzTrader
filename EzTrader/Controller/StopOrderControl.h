@@ -47,7 +47,7 @@ class StopOrderControl
 public:
 	StopOrderControl();
 	~StopOrderControl();
-	void set_control_type(const SubOrderControlType control_type) {
+	void set_control_type(const SmPositionType control_type) {
 		control_type_ = control_type;
 	}
 	int total_count() const { return total_count_; }
@@ -77,7 +77,7 @@ private:
 	int order_control_id_{ 0 };
 	int id_{ 0 };
 	std::mutex mutex_;
-	SubOrderControlType control_type_{ CT_NONE };
+	SmPositionType control_type_{ CT_NONE };
 	size_t total_count_{ 0 };
 	// key : price as integer, value : order request list on the price. 
 	std::map<int, price_order_request_map_p> order_req_map_;
