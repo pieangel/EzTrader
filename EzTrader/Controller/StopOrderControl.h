@@ -45,6 +45,9 @@ using order_p = std::shared_ptr<Order>;
 class StopOrderControl
 {
 public:
+	void set_stop_as_real_order(bool enable) {
+		stop_as_real_order_ = enable;
+	}
 	StopOrderControl();
 	~StopOrderControl();
 	void set_control_type(const SmPositionType control_type) {
@@ -72,6 +75,7 @@ public:
 	std::pair<int, int> get_order_count(const int order_price);
 	price_order_request_map_p get_price_order_req_map(const int price);
 private:
+	bool stop_as_real_order_{false};
 	int symbol_id_{ 0 };
 	int symbol_int_tick_size_{ 1 };
 	int order_control_id_{ 0 };

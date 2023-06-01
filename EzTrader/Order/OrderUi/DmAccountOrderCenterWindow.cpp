@@ -526,6 +526,7 @@ void DmAccountOrderCenterWindow::request_dm_symbol_master(const std::string symb
 void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)
 {
 	//symbol_order_view_.on_paramter_event(event, event_message, enable);
+	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
 	symbol_order_view_.SetAllRowHeight(event.grid_height);
 	/*
 	symbol_order_view_.reset_col_widths(event);

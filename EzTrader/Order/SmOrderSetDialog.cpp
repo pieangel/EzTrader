@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(SmOrderSetDialog, CBCGPDialog)
 	ON_BN_CLICKED(IDC_CHECK_ORDER_BY_SPACE, &SmOrderSetDialog::OnBnClickedCheckOrderBySpace)
 	ON_BN_CLICKED(IDC_CHECK_CANCEL_BY_RIGHT_CLICK, &SmOrderSetDialog::OnBnClickedCheckCancelByRightClick)
 	ON_BN_CLICKED(IDC_BUTTON1, &SmOrderSetDialog::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_CHECK_STOP_TO_REAL, &SmOrderSetDialog::OnBnClickedCheckStopToReal)
 END_MESSAGE_MAP()
 
 
@@ -158,9 +159,20 @@ void SmOrderSetDialog::OnBnClickedButton1()
 	order_set_event.count_width = height_and_width_vec[3];
 	order_set_event.qty_width = height_and_width_vec[4];
 	order_set_event.quote_width = height_and_width_vec[5];
+	order_set_event.stop_as_real_order = stop_as_real_order_;
 
 	//mainApp.event_hub()->trigger_order_set_event(window_id_from_, order_set_event, false);
 
 
 	mainApp.event_hub()->trigger_parameter_event( window_id_from_, order_set_event, "test", true);
+}
+
+
+void SmOrderSetDialog::OnBnClickedCheckStopToReal()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (check_stop_by_real_.GetCheck() == BST_CHECKED)
+		stop_as_real_order_ = true;
+	else
+		stop_as_real_order_ = false;
 }

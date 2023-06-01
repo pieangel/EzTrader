@@ -50,6 +50,7 @@ class DmFundOrderWindow;
 class SymbolOrderView : public CBCGPStatic
 {
 public:
+	void set_stop_as_real_order(bool enable);
 	int get_id() {
 		return id_;
 	}

@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by EzTrader.rc
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// EzTrader.rc에서 사용되고 있습니다.
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             101

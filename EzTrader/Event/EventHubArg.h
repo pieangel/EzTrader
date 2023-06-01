@@ -10,5 +10,6 @@ namespace DarkHorse {
 		int count_width;
 		int qty_width;
 		int quote_width;
+		bool stop_as_real_order;
 	};
 }

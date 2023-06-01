@@ -217,7 +217,10 @@ void StopOrderControl::on_cut_stop_order_request(order_p order)
 	if (!old_order_req || old_order_req->cut_mode == SmCutMode::None) return;
 	if (old_order_req->cut_mode == SmCutMode::ProfitCut) {
 		auto profit_order_req = make_profit_cut_order_request(order);
-		add_stop_order_request(profit_order_req->order_price, profit_order_req);
+		if (stop_as_real_order_)
+			mainApp.order_request_manager()->add_order_request(profit_order_req);
+		else
+			add_stop_order_request(profit_order_req->order_price, profit_order_req);
 		msg.Format("SmCutMode::ProfitCut\n");
 		TRACE(msg);
 	}

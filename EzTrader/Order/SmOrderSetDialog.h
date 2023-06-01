@@ -34,6 +34,7 @@ private:
 	int window_id_from_{ 0 };
 	AbAccountOrderCenterWindow* _OrderWnd = nullptr;
 	SmFundOrderCenterWnd* _FundWnd = nullptr;
+	bool stop_as_real_order_{ false };
 public:
 	CBCGPButton check_align_by_alt_;
 	CBCGPButton check_show_bar_color_;
@@ -56,4 +57,5 @@ public:
 	afx_msg void OnBnClickedCheckOrderBySpace();
 	afx_msg void OnBnClickedCheckCancelByRightClick();
 	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedCheckStopToReal();
 };

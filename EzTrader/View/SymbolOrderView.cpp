@@ -126,6 +126,15 @@ BOOL SymbolOrderView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	return CBCGPStatic::OnMouseWheel(nFlags, zDelta, pt);
 }
 
+void SymbolOrderView::set_stop_as_real_order(bool enable)
+{
+	if (!buy_stop_order_control_) return;
+	if (!sell_stop_order_control_) return;
+
+	buy_stop_order_control_->set_stop_as_real_order(enable);
+	sell_stop_order_control_->set_stop_as_real_order(enable);
+}
+
 void SymbolOrderView::Clear()
 {
 	ClearOldQuote();
