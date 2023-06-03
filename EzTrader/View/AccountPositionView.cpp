@@ -113,6 +113,9 @@ void AccountPositionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 
 	account_position_control_->load_position_from_account(account_->No());
 	enable_position_show_ = true;
+	// 계좌 유형에 따라 표시 내용과 표시 간격을 바꾼다.
+	//SetColumnName(3, "평균단가");
+	//SetColumnWidth(0, column_widths_vector_[0]);
 }
 
 void AccountPositionView::UpdateAcceptedOrder()
@@ -213,6 +216,8 @@ int AccountPositionView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	InsertColumn(1, _T("구분"), column_widths_vector_[1]);
 	InsertColumn(2, _T("평가손익"), column_widths_vector_[2]);
 	InsertColumn(3, _T("수량"), column_widths_vector_[3]);
+
+	
 
 	FreezeColumns(0);
 

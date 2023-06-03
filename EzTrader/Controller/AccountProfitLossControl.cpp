@@ -43,6 +43,7 @@ AccountProfitLossControl::~AccountProfitLossControl()
 
 void AccountProfitLossControl::load_position_from_account(const std::string& account_no)
 {
+	position_map_.clear();
 	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_no);
 	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {

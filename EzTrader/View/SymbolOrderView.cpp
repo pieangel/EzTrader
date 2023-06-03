@@ -923,9 +923,11 @@ void SymbolOrderView::Refresh()
 
 void SymbolOrderView::DrawHogaLine(const CRect& rect)
 {
-	if (!symbol_) return;
+	if (!hoga_control_ || price_to_row_.empty()) return;
 
-	int row_index = FindRow(symbol_->Hoga.Ary[0].SellPrice);
+	const VmHoga hoga = hoga_control_->get_hoga();
+
+	int row_index = FindRow(hoga.Ary[0].SellPrice);
 	auto pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_CNT);
 	if (pCell && row_index > 1) 
 		m_pGM->DrawLine(
@@ -2291,7 +2293,7 @@ void SymbolOrderView::OnPaint()
 
 		DrawMovingOrder();
 
-		DrawStopOrder();
+		//DrawStopOrder();
 
 		draw_buy_stop_order();
 		draw_sell_stop_order();
