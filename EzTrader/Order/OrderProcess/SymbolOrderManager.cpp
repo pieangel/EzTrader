@@ -29,6 +29,7 @@ void SymbolOrderManager::dispatch_order(const OrderEvent order_event, order_p or
 
 void SymbolOrderManager::on_order_accepted(order_p order, OrderEvent order_event)
 {
+	ordered_before_ = true;
 	order->order_state = SmOrderState::Accepted;
 	if (order->order_type != SmOrderType::Cancel) {
 		add_accepted_order(order);
@@ -37,6 +38,7 @@ void SymbolOrderManager::on_order_accepted(order_p order, OrderEvent order_event
 }
 void SymbolOrderManager::on_order_unfilled(order_p order, OrderEvent order_event)
 {
+	ordered_before_ = true;
 	if (order->remain_count == 0)
 		update_accepted_order(order);
 	else
@@ -45,6 +47,7 @@ void SymbolOrderManager::on_order_unfilled(order_p order, OrderEvent order_event
 }
 void SymbolOrderManager::on_order_filled(order_p order, OrderEvent order_event)
 {
+	ordered_before_ = true;
 	order->order_state = SmOrderState::Filled;
 	total_position_manager_p total_position_manager = mainApp.total_position_manager();
 	total_position_manager->update_position(order);

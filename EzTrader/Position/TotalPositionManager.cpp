@@ -6,6 +6,9 @@
 #include "../Log/MyLogger.h"
 #include "../Global/SmTotalManager.h"
 #include "../Event/EventHub.h"
+#include "../Order/OrderProcess/TotalOrderManager.h"
+#include "../Order/OrderProcess/AccountOrderManager.h"
+#include "../Order/OrderProcess/SymbolOrderManager.h"
 namespace DarkHorse {
 account_position_manager_p TotalPositionManager::get_account_position_manager(const std::string& account_no)
 {
@@ -53,7 +56,13 @@ void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 		position->symbol_code = symbol_code;
 		position->average_price = average_price;
 		position->open_quantity = open_quantity * order_position;
+		//position->ordered_before = true;
 		//position->open_profit_loss = open_profit_loss;
+		auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
+		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
+		// Set the flag to true to indicate that the order has been placed before.
+		symbol_order_manager->set_ordered_before(true);
+		
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();

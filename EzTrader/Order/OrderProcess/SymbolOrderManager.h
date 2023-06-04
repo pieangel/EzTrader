@@ -15,8 +15,15 @@ public:
 	const std::map<std::string, order_p>& get_accepted_order_map() {
 		return accepted_order_map_;
 	}
+	void set_ordered_before(bool ordered_before) {
+		ordered_before_ = ordered_before;
+	}
+	void set_symbol_code(const std::string& symbol_code) {
+		symbol_code_ = symbol_code;
+	}
 private:
-	
+	// 이전에 주문이 나갔는지 여부. 한번이라도 나갔다면 true, 아니면 false.
+	bool ordered_before_{ false };
 	void on_order_accepted(order_p order, OrderEvent order_event);
 	void on_order_unfilled(order_p order, OrderEvent order_event);
 	void on_order_filled(order_p order, OrderEvent order_event);
@@ -30,6 +37,7 @@ private:
 	void remove_accepted_order(order_p order);
 	// key : order_no, value : order object.
 	std::map<std::string, order_p> accepted_order_map_;
+	std::string symbol_code_;
 };
 }
 

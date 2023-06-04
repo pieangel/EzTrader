@@ -1595,7 +1595,7 @@ void SymbolOrderView::set_position() {
 void SymbolOrderView::set_order() {
 	if (!order_control_ || !account_ || !symbol_) return;
 	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_->No());
-	auto symbol_order_manager = account_order_manager->get_order_manager(symbol_->SymbolCode());
+	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
 	const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
 	for (auto it = accepted_order_map.begin(); it != accepted_order_map.end(); it++) {
 		symbol_order_manager->dispatch_order(OrderEvent::OE_Unfilled, it->second);

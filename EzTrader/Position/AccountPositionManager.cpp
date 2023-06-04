@@ -69,7 +69,7 @@ void AccountPositionManager::update_account_profit_loss()
 	account_profit_loss_->trade_fee = trade_fee;
 	account_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
 }
-
+// update the position with the order.
 void AccountPositionManager::update_position(order_p order)
 {
 	if (!order) return;
@@ -171,8 +171,8 @@ void AccountPositionManager::update_open_profit_loss(position_p position)
 	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->symbol_code);
 	if (!quote || !symbol) return;
 
-	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], quote->close = [%d], position->average_price = [%.2f], symbol->seung_su = [%d], open_profit_loss = [%.2f]", position->open_quantity, quote->close, position->average_price, symbol->seung_su(), open_profit_loss);
 	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
+	LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
 }
 
 }

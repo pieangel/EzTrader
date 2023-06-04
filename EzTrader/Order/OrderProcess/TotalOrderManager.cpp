@@ -50,6 +50,7 @@ account_order_manager_p TotalOrderManager::find_account_order_manager(const std:
 account_order_manager_p TotalOrderManager::create_account_order_manager(const std::string& account_no)
 {
 	account_order_manager_p order_manager = std::make_shared<AccountOrderManager>();
+	order_manager->set_account_no(account_no);
 	account_order_manager_map_[account_no] = order_manager;
 	return order_manager;
 }
