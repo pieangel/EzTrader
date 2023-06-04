@@ -146,6 +146,8 @@ public:
 	}
 	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
 private:
+	void set_fixed_selected_cell();
+	void clear_fixed_selected_cell();
 	void on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag);
 	CWnd* parent_{ nullptr };
 	void update_position();
@@ -271,7 +273,6 @@ private:
 	std::vector<std::shared_ptr<DarkHorse::SmCell>> _SelectedCells;
 
 	std::shared_ptr<DarkHorse::SmCell> selected_cell_{ nullptr };
-	std::shared_ptr<DarkHorse::SmCell> selected_center_cell_{ nullptr };
 	std::pair<int, int> _SelectedValue{ 0, 0 };
 
 	/// <summary>
@@ -303,7 +304,7 @@ private:
 	std::set<int> _OldStopSellRowIndex;
 	std::set<std::pair<int, int>> _TotalHogaMap;
 	// key : (row, column) value : price
-	std::set<std::pair<int, int>> cell_to_price;
+	std::set<std::pair<int, int>> quote_priece_set;
 	std::shared_ptr<DarkHorse::SmSymbol> symbol_{ nullptr };
 
 	std::shared_ptr<DarkHorse::SmAccount> account_{ nullptr };
@@ -343,7 +344,9 @@ private:
 	void set_close_row();
 	void ClearOldSelectedCells();
 	void DrawMovingRect();
-
+	void set_moving_rect();
+	void reset_moving_rect();
+	void add_moving_rect(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void CancelOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void cancel_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map);

@@ -22,6 +22,7 @@ namespace DarkHorse {
 		CT_TICK_BUY,
 		CT_TICK_SELL,
 		CT_REMAIN_BUY,
-		CT_REMAIN_SELL
+		CT_REMAIN_SELL,
+		CT_SELECTED
 	};
 }

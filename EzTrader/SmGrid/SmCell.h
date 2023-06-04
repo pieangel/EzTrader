@@ -2,8 +2,10 @@
 #include <string>
 #include <memory>
 #include <map>
-#include "SmCellType.h"
 #include <BCGCBProInc.h>
+#include "SmCellType.h"
+#include "SmGridResource.h"
+class CBCGPGraphicsManager;
 namespace DarkHorse {
 	class SmOrder;
 	struct SmOrderRequest;
@@ -41,6 +43,7 @@ namespace DarkHorse {
 		// 0 : Normal, 1 : buy, 2 : sell, 3 : high / low.
 		int _MarkType = 0;
 	public:
+		void draw(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
 		void clear() {
 			_Text.clear();
 		}
@@ -56,9 +59,6 @@ namespace DarkHorse {
 		void AddOrder(const std::shared_ptr<SmOrder>& order);
 		void ClearOrderReq();
 		void ClearOrder();
-// 		CRect GetCellRect() {
-// 			return CRect(_X, _Y, _X + _Width, _Y + _Height);
-// 		}
 
 		CBCGPRect GetCellRect();
 		int Height() const { return _Height; }
@@ -101,6 +101,39 @@ namespace DarkHorse {
 		void ShowMark(bool val) { _ShowMark = val; }
 		int MarkType() const { return _MarkType; }
 		void MarkType(int val) { _MarkType = val; }
+		void set_show_position(const bool show_position);
+		void set_show_quote_sign(const bool show_quote_sign);
+		void set_show_move_rect(const bool show_moving_rect) {
+			show_moving_rect_ = show_moving_rect;
+		}
+	private:
+		void draw_arrow
+		(
+			CBCGPGraphicsManager* pGM,
+			const SmOrderGridResource& res,
+			const CBCGPPoint& start_point,
+			const CBCGPPoint& end_point,
+			const double& stroke_width,
+			const int& head_width
+		);
+		// draw a circle by the position type.
+		bool show_position_{false};
+		// flag for displaying a text by the value type as following high, low, open, close, yesterday close.
+		bool show_quote_sign_{ false };
+		// display a rectangle over a cell when the mouse is hovering over the cell.
+		bool show_moving_rect_{ false };
+		void draw_option(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		// draw a circle by the position type.
+		void draw_position(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		// display the quote sign by the value type as following high, low, open, close, yesterday close.
+		void draw_quote_sign(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		// draw the selected rectangles.
+		void draw_moving_rect(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		void draw_header(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		void draw_check_header(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		void draw_cell_by_type(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		void draw_order_buy(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		void draw_order_sell(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
 	};
 }
 

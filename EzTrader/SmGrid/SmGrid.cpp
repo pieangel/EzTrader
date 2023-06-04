@@ -240,17 +240,7 @@ void DarkHorse::SmGrid::DrawQuoteClose(CBCGPGraphicsManager* pGM, std::shared_pt
 	CBCGPRect quote_rect(cell->X(), cell->Y(), cell->X() + cell->Height(), cell->Y() + cell->Height());
 	pGM->DrawText("C", quote_rect, _Res.QuoteTextFormat, _Res.CloseTextColor);
 
-	CBCGPRect left_pos_rect(cell->X() + cell->Height(), cell->Y(), cell->X() + cell->Height() * 2, cell->Y() + cell->Height());
-	left_pos_rect.DeflateRect(5, 5);
-
-	CBCGPBrush brFill2(CBCGPColor::Red, CBCGPColor::White, CBCGPBrush::BCGP_GRADIENT_RADIAL_CENTER);
-	//pGM->FillEllipse(left_pos_rect, brFill2);
-
-	CBCGPRect right_pos_rect(cell->X() + cell->Width() - cell->Height() * 2, cell->Y(), cell->X() + cell->Width() - cell->Height(), cell->Y() + cell->Height());
-	right_pos_rect.DeflateRect(5, 5);
-
-	CBCGPBrush brFill3(CBCGPColor::Blue, CBCGPColor::White, CBCGPBrush::BCGP_GRADIENT_RADIAL_CENTER);
-	//pGM->FillEllipse(right_pos_rect, brFill3);
+	
 }
 
 void DarkHorse::SmGrid::DrawQuotePreClose(CBCGPGraphicsManager* pGM, std::shared_ptr<SmCell> cell)
@@ -770,6 +760,20 @@ void DarkHorse::SmGrid::DrawCells(CBCGPGraphicsManager* pGM, CRect& wnd_area, co
 			case SmCellType::CT_REMAIN_SELL: DrawRemainSell(pGM, cell); break;
 			default: break;
 			}
+		}
+	}
+}
+
+void DarkHorse::SmGrid::draw_cells(CBCGPGraphicsManager* pGM, CRect& wnd_area, const bool& use_hor_header /*= false*/, const bool& use_ver_header /*= false*/)
+{
+	for (auto row = _RowMap.begin(); row != _RowMap.end(); row++) {
+		const auto& row_obj = row->second;
+		if (row_obj->RowIndex() >= _RowCount) continue;
+
+		const std::map<int, std::shared_ptr<SmCell>>& row_cell_list = row_obj->GetCellList();
+		for (auto col = row_cell_list.begin(); col != row_cell_list.end(); col++) {
+			const auto& cell = col->second;
+			cell->draw(pGM, _Res);
 		}
 	}
 }

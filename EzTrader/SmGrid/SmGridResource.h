@@ -112,17 +112,10 @@ struct SmOrderGridResource {
 	// 그리드 경계선 브러쉬
 	CBCGPBrush GridBorderBrush = CBCGPBrush(GridBorderColor);
 
-
-
-
-
 	CBCGPTextFormat	TextFormat;
 	CBCGPTextFormat	LeftTextFormat;
 	CBCGPTextFormat	RightTextFormat;
-
 	CBCGPTextFormat	QuoteTextFormat;
-
 	CBCGPTextFormat	QuoteNumberFormat;
-
 	CBCGPStrokeStyle OrderStroke;
 };

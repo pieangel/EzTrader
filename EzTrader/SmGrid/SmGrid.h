@@ -21,7 +21,7 @@ namespace DarkHorse {
 	{
 	public:
 		SmGrid(SmOrderGridResource& res, const int& row_count, const int& col_count)
-			: _Res(res), _RowCount(row_count), _ColCount(col_count)
+			: m_pEditWnd(nullptr), _Res(res), _RowCount(row_count), _ColCount(col_count)
 		{}
 		~SmGrid() {}
 
@@ -155,6 +155,7 @@ namespace DarkHorse {
 		//void DrawOrderCells(CBCGPGraphicsManager* pGM, CRect& wnd_area);
 		//void DrawCells(CBCGPGraphicsManager* pGM, CRect& wnd_area);
 		void DrawCells(CBCGPGraphicsManager* pGM, CRect& wnd_area, const bool& use_hor_header = false, const bool& use_ver_header = false);
+		void draw_cells(CBCGPGraphicsManager* pGM, CRect& wnd_area, const bool& use_hor_header = false, const bool& use_ver_header = false);
 		void DrawSelectedCell(CBCGPGraphicsManager* pGM, const CBCGPBrush& fill_brush, const CBCGPBrush& select_brush, bool selected);
 		void SetRowHeight(const int& row, const int& height);
 		void SetColWidth(const int& col, const int& width);
