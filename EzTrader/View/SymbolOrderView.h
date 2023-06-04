@@ -79,7 +79,7 @@ public:
 	void ClearOldHoga(DarkHorse::Hoga_Type hoga_type) const noexcept;
 	int FindRow(const int& value) const noexcept;
 	int FindRowFromCenterValue(const int& value);
-	void SetQuoteColor();
+	void set_quote_color();
 	int FindValue(const int& row) const noexcept;
 	void Refresh();
 	void DrawHogaLine(const CRect& rect);
@@ -217,7 +217,7 @@ private:
 	int find_value(const int target_row);
 	int get_center_row();
 	void set_quote_value(const int value, const DarkHorse::SmCellType cell_type);
-	void set_quote_cell(const int row, const bool show_mark, const int mark_type);
+	void set_quote_cell(const int row, const bool show_mark, const DarkHorse::SmMarkType mark_type);
 	
 	void init_quote_control(const std::string& symbol_code);
 	void init_hoga_control(const std::string& symbol_code);

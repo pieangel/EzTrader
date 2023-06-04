@@ -292,6 +292,18 @@ namespace DarkHorse {
 			pGM->FillRectangle(rect, res.BuyPositionBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
+		case SmCellType::CT_MARK_BUY:
+			pGM->DrawRectangle(rect, res.QMBuyBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
+			break;
+		case SmCellType::CT_MARK_SELL:
+			pGM->DrawRectangle(rect, res.QMSellBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
+			break;
+		case SmCellType::CT_MARK_HILO:
+			pGM->DrawRectangle(rect, res.QMHighLowBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
+			break;
 		}
 
 		draw_option(pGM, res);

@@ -1,5 +1,11 @@
 #pragma once
 namespace DarkHorse {
+	enum SmMarkType {
+		MT_NONE,
+		MT_BUY,
+		MT_SELL,
+		MT_HILO
+	};
 	enum SmCellType {
 		CT_NORMAL,
 		CT_HEADER,
@@ -23,6 +29,9 @@ namespace DarkHorse {
 		CT_TICK_SELL,
 		CT_REMAIN_BUY,
 		CT_REMAIN_SELL,
-		CT_SELECTED
+		CT_SELECTED,
+		CT_MARK_HILO,
+		CT_MARK_BUY,
+		CT_MARK_SELL
 	};
 }

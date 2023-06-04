@@ -511,6 +511,7 @@ void SymbolOrderView::update_quote()
 	const VmQuote quote = quote_control_->get_quote();
 	if (!center_valued_) SetCenterValues();
 	//SetCenterValues();
+	set_quote_color();
 	set_quote_value(quote.close, SmCellType::CT_QUOTE_CLOSE);
 	set_quote_value(quote.open, SmCellType::CT_QUOTE_OPEN);
 	set_quote_value(quote.high, SmCellType::CT_QUOTE_HIGH);
@@ -867,16 +868,31 @@ void SymbolOrderView::set_quote_value(const int value, const DarkHorse::SmCellTy
 	quote_priece_set.insert(std::make_pair(cell->Row(), cell->Col()));
 }
 
-void SymbolOrderView::set_quote_cell(const int row, const bool show_mark, const int mark_type)
+void SymbolOrderView::set_quote_cell(const int row, const bool show_mark, const DarkHorse::SmMarkType mark_type)
 {
 	auto cell = _Grid->FindCell(row, DarkHorse::OrderHeader::QUOTE);
 	if (cell) { 
-		cell->ShowMark(show_mark); 
-		cell->MarkType(mark_type); 
+		//cell->ShowMark(show_mark); 
+		//cell->MarkType(mark_type); 
+		switch (mark_type)
+		{
+		case MT_BUY: 
+			cell->CellType(CT_MARK_BUY);
+			break;
+		case MT_SELL: 
+			cell->CellType(CT_MARK_SELL);
+			break;
+		case MT_HILO: 
+			cell->CellType(CT_MARK_HILO);
+			break;
+		default: 
+			cell->CellType(CT_NORMAL);
+			break;
+		}
 	}
 }
 
-void SymbolOrderView::SetQuoteColor()
+void SymbolOrderView::set_quote_color()
 {
 	try {
 		if (!quote_control_) return;
@@ -889,30 +905,30 @@ void SymbolOrderView::SetQuoteColor()
 
 		if (quote.close > quote.open) { // ¾çºÀ
 			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
-				if (it->second < highRow) set_quote_cell(it->second, true, 0);
-				else if (it->second < closeRow) set_quote_cell(it->second, true, 3);
-				else if (it->second <= openRow) set_quote_cell(it->second, true, 1);
-				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
-				else set_quote_cell(it->second, true, 0);
+				if (it->second < highRow) set_quote_cell(it->second, true, SmMarkType::MT_NONE);
+				else if (it->second < closeRow) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
+				else if (it->second <= openRow) set_quote_cell(it->second, true, SmMarkType::MT_BUY);
+				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
+				else set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 			}
 
 		}
 		else if (quote.close < quote.open) { // À½ºÀ
 			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
-				if (it->second < highRow) set_quote_cell(it->second, true, 0);
-				else if (it->second < openRow) set_quote_cell(it->second, true, 3);
-				else if (it->second <= closeRow) set_quote_cell(it->second, true, 2);
-				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
-				else set_quote_cell(it->second, true, 0);
+				if (it->second < highRow) set_quote_cell(it->second, true, SmMarkType::MT_NONE);
+				else if (it->second < openRow) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
+				else if (it->second <= closeRow) set_quote_cell(it->second, true, SmMarkType::MT_BUY);
+				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
+				else set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 			}
 		}
 		else { // µµÁö
 			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
-				if (it->second < highRow) set_quote_cell(it->second, true, 0);
-				else if (it->second < closeRow) set_quote_cell(it->second, true, 3);
-				else if (it->second <= openRow) set_quote_cell(it->second, true, 3);
-				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, 3);
-				else set_quote_cell(it->second, true, 0);
+				if (it->second < highRow) set_quote_cell(it->second, true, SmMarkType::MT_NONE);
+				else if (it->second < closeRow) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
+				else if (it->second <= openRow) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
+				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
+				else set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 			}
 		}
 	}
@@ -1969,6 +1985,9 @@ void SymbolOrderView::put_order(const SmPositionType& type, const int& price, co
 
 void SymbolOrderView::CreateResource()
 {
+	_Resource.QMBuyBrush.SetOpacity(0.5);
+	_Resource.QMSellBrush.SetOpacity(0.5);
+	_Resource.QMHighLowBrush.SetOpacity(0.5);
 	_Resource.OrderStroke.SetStartCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_ROUND);
 	_Resource.OrderStroke.SetEndCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_TRIANGLE);
 	CBCGPTextFormat fmt3(_T("±¼¸²"), globalUtils.ScaleByDPI(30.0f));
@@ -2366,10 +2385,6 @@ void SymbolOrderView::OnPaint()
 		set_fixed_selected_cell();
 		_Grid->draw_cells(m_pGM, rect);
 		_Grid->DrawBorder(m_pGM, rect, _Selected);
-		//DrawFixedSelectedCell();
-
-		//if (_Hover) DrawMovingRect();
-
 		DrawMovingOrder();
 
 		draw_buy_stop_order();
