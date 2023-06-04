@@ -25,6 +25,7 @@
 #include "../Controller/AccountPositionControl.h"
 #include "../Position/Position.h"
 #include "../Util/VtStringUtil.h"
+#include "../Log/MyLogger.h"
 #include <format>
 
 #include <functional>
@@ -55,10 +56,15 @@ AccountPositionView::AccountPositionView()
 	m_bExtendedPadding = FALSE;
 	account_position_control_ = std::make_shared<DarkHorse::AccountPositionControl>();
 	account_position_control_->set_event_handler(std::bind(&AccountPositionView::on_update_account_position, this));
-	column_widths_vector_.push_back(75);
-	column_widths_vector_.push_back(40);
-	column_widths_vector_.push_back(68);
-	column_widths_vector_.push_back(40);
+	ab_column_widths_vector_.push_back(70);
+	ab_column_widths_vector_.push_back(35);
+	ab_column_widths_vector_.push_back(70);
+	ab_column_widths_vector_.push_back(40);
+
+	dm_column_widths_vector_.push_back(65);
+	dm_column_widths_vector_.push_back(35);
+	dm_column_widths_vector_.push_back(50);
+	dm_column_widths_vector_.push_back(65);
 }
 
 void AccountPositionView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
@@ -116,6 +122,9 @@ void AccountPositionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	// 계좌 유형에 따라 표시 내용과 표시 간격을 바꾼다.
 	//SetColumnName(3, "평균단가");
 	//SetColumnWidth(0, column_widths_vector_[0]);
+	set_column_widths(account_->Type());
+	set_column_names(account_->Type());
+	update_account_position();
 }
 
 void AccountPositionView::UpdateAcceptedOrder()
@@ -212,10 +221,10 @@ int AccountPositionView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetVisualManagerColorTheme(TRUE);
 
 	// Insert columns:
-	InsertColumn(0, _T("종목"), column_widths_vector_[0]);
-	InsertColumn(1, _T("구분"), column_widths_vector_[1]);
-	InsertColumn(2, _T("평가손익"), column_widths_vector_[2]);
-	InsertColumn(3, _T("수량"), column_widths_vector_[3]);
+	InsertColumn(0, _T("종목"), ab_column_widths_vector_[0]);
+	InsertColumn(1, _T("구분"), ab_column_widths_vector_[1]);
+	InsertColumn(2, _T("평가손익"), ab_column_widths_vector_[2]);
+	InsertColumn(3, _T("수량"), ab_column_widths_vector_[3]);
 
 	
 
@@ -284,7 +293,7 @@ void AccountPositionView::on_timer()
 {
 	bool needDraw = false;
 	if (enable_position_show_) {
-		update_account_position();
+		//update_account_position();
 		needDraw = true;
 		enable_position_show_ = false;
 	}
@@ -311,15 +320,50 @@ void AccountPositionView::OnQuoteEvent(const std::string& symbol_code)
 
 void AccountPositionView::set_column_widths(std::vector<int> column_width_vector)
 {
-	column_widths_vector_ = column_width_vector;
-	SetColumnWidth(0, column_widths_vector_[0]);
-	SetColumnWidth(1, column_widths_vector_[1]);
-	SetColumnWidth(2, column_widths_vector_[2]);
-	SetColumnWidth(3, column_widths_vector_[3]);
+	ab_column_widths_vector_ = column_width_vector;
+	SetColumnWidth(0, ab_column_widths_vector_[0]);
+	SetColumnWidth(1, ab_column_widths_vector_[1]);
+	SetColumnWidth(2, ab_column_widths_vector_[2]);
+	SetColumnWidth(3, ab_column_widths_vector_[3]);
 
 	EnableCheckBoxes(FALSE);
 
 	AdjustLayout();
+}
+
+void AccountPositionView::set_column_widths(const std::string& type)
+{
+	if (type == "1") {
+		SetColumnWidth(0, ab_column_widths_vector_[0]);
+		SetColumnWidth(1, ab_column_widths_vector_[1]);
+		SetColumnWidth(2, ab_column_widths_vector_[2]);
+		SetColumnWidth(3, ab_column_widths_vector_[3]);
+		EnableCheckBoxes(FALSE);
+	}
+	else {
+		SetColumnWidth(0, dm_column_widths_vector_[0]);
+		SetColumnWidth(1, dm_column_widths_vector_[1]);
+		SetColumnWidth(2, dm_column_widths_vector_[2]);
+		SetColumnWidth(3, dm_column_widths_vector_[3]);
+		EnableCheckBoxes(FALSE);
+	}
+	AdjustLayout();
+}
+
+void AccountPositionView::set_column_names(const std::string& type)
+{
+	if (type == "1") {
+		SetColumnName(0, _T("종목"));
+		SetColumnName(1, _T("구분"));
+		SetColumnName(2, _T("평가손익"));
+		SetColumnName(3, _T("수량"));
+	}
+	else {
+		SetColumnName(0, _T("종목"));
+		SetColumnName(1, _T("구분"));
+		SetColumnName(2, _T("평균가"));
+		SetColumnName(3, _T("평가손익"));
+	}
 }
 
 void AccountPositionView::LiqSelPositionsForAccount()
@@ -394,9 +438,11 @@ void AccountPositionView::LiqAllForFund()
 
 void AccountPositionView::update_account_position()
 {
-	if (!account_position_control_) return;
+	if (!account_ || !account_position_control_) return;
 
 	row_to_position_.clear();
+	
+	try {
 	
 	const std::map<std::string, position_p>& account_pos_map = account_position_control_->get_position_map();
 	int row = 0;
@@ -407,7 +453,7 @@ void AccountPositionView::update_account_position()
 		if (position->open_quantity == 0) {
 			continue;
 		}
-
+		/*
 		pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
 		//pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
 		if (position->open_quantity > 0) {
@@ -453,14 +499,126 @@ void AccountPositionView::update_account_position()
 			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
 		}
 		pRow->GetItem(2)->SetValue(open_pl.c_str(), TRUE);
-
-
+		*/
+		if (account_->Type() == "1")
+			update_ab_account_position(pRow, position);
+		else
+			update_dm_account_position(pRow, position);
+			
 		_OldContentRowSet.insert(row);
 		row_to_position_[row] = position;
 		row++;
 	}
 	ClearOldContents(row);
 	_OldMaxRow = row;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+}
+
+void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, position_p position)
+{
+	pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
+	//pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
+	if (position->open_quantity > 0) {
+		//pRow->GetItem(0)->SetBackgroundColor(RGB(255, 0, 0));
+		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 0, 0));
+		//pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
+		//pRow->GetItem(3)->SetBackgroundColor(RGB(255, 0, 0));
+
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+
+		pRow->GetItem(1)->SetValue("매수", TRUE);
+	}
+	else if (position->open_quantity < 0) {
+		pRow->GetItem(1)->SetValue("매도", TRUE);
+		//pRow->GetItem(0)->SetBackgroundColor(RGB(0, 0, 255));
+		pRow->GetItem(1)->SetBackgroundColor(RGB(0, 0, 255));
+		//pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
+		//pRow->GetItem(3)->SetBackgroundColor(RGB(0, 0, 255));
+
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+	}
+	std::string value_string = VtStringUtil::get_format_value(position->average_price / pow(10, 2), 2, true);
+	pRow->GetItem(2)->SetValue(value_string.c_str(), TRUE);
+	//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
+	const int decimal = account_->Type() == "1" ? 2 : 0;
+	std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);
+
+	CBCGPGridItem* pItem = pRow->GetItem(3);
+	if (pItem) {
+		pItem->SetValue(open_pl.c_str(), TRUE);
+		if (position->open_profit_loss > 0) {
+			pItem->SetBackgroundColor(RGB(255, 0, 0));
+			pItem->SetTextColor(RGB(255, 255, 255));
+		}
+		else if (position->open_profit_loss < 0) {
+			pItem->SetBackgroundColor(RGB(0, 0, 255));
+			pItem->SetTextColor(RGB(255, 255, 255));
+		}
+		else {
+			pItem->SetBackgroundColor(_DefaultBackColor);
+			pItem->SetTextColor(RGB(255, 255, 255));
+		}
+	}
+	
+}
+
+void AccountPositionView::update_ab_account_position(CBCGPGridRow* pRow, position_p position)
+{
+	pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
+	//pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
+	if (position->open_quantity > 0) {
+		//pRow->GetItem(0)->SetBackgroundColor(RGB(255, 0, 0));
+		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 0, 0));
+		//pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
+		//pRow->GetItem(3)->SetBackgroundColor(RGB(255, 0, 0));
+
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+
+		pRow->GetItem(1)->SetValue("매수", TRUE);
+	}
+	else if (position->open_quantity < 0) {
+		pRow->GetItem(1)->SetValue("매도", TRUE);
+		//pRow->GetItem(0)->SetBackgroundColor(RGB(0, 0, 255));
+		pRow->GetItem(1)->SetBackgroundColor(RGB(0, 0, 255));
+		//pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
+		//pRow->GetItem(3)->SetBackgroundColor(RGB(0, 0, 255));
+
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+	}
+	std::string open_quantity = VtStringUtil::get_format_value(position->open_quantity, 0, true);
+	pRow->GetItem(3)->SetValue(open_quantity.c_str(), TRUE);
+	//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
+	const int decimal = account_->Type() == "1" ? 2 : 0;
+	std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);
+	if (position->open_profit_loss > 0) {
+		pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
+		pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+	}
+	else if (position->open_profit_loss < 0) {
+		pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
+		pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+	}
+	else {
+		pRow->GetItem(2)->SetBackgroundColor(_DefaultBackColor);
+		pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+	}
+	pRow->GetItem(2)->SetValue(open_pl.c_str(), TRUE);
 }
 
 void AccountPositionView::UpdateAccountPositionInfo()

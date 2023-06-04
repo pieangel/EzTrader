@@ -31,6 +31,8 @@ class DmAccountOrderWindow;
 class DmFundOrderWindow;
 class SmOrderCompMainDialog;
 class SmFundCompMainDialog;
+using position_p = std::shared_ptr<DarkHorse::Position>;
+
 class AccountPositionView : public CBCGPGridCtrl
 {
 	DECLARE_DYNAMIC(AccountPositionView)
@@ -121,6 +123,8 @@ public:
 	void CompFundWnd(SmFundCompMainDialog* val) { _CompFundWnd = val; }
 	void set_column_widths(std::vector<int> column_width_vector);
 private:
+	void set_column_widths(const std::string& type);
+	void set_column_names(const std::string& type);
 	void LiqSelPositionsForAccount();
 	void LiqSelPositionsForFund();
 	void LiqAllForAccount();
@@ -132,6 +136,8 @@ private:
 	// 0 : account , 1 : fund
 	int _Mode = 0;
 	void update_account_position();
+	void update_dm_account_position(CBCGPGridRow* row, position_p position);
+	void update_ab_account_position(CBCGPGridRow* row, position_p position);
 	void UpdateAccountPositionInfo();
 	void UpdateFundPositionInfo();
 	bool _EnableQuoteShow = false;
@@ -150,7 +156,8 @@ private:
 	std::map<int, std::shared_ptr<DarkHorse::SmPosition>> _RowToPositionMap;
 	std::shared_ptr<DarkHorse::AccountPositionControl> account_position_control_;
 	std::map<int, std::shared_ptr<DarkHorse::Position>> row_to_position_;
-	std::vector<int> column_widths_vector_;
+	std::vector<int> ab_column_widths_vector_;
+	std::vector<int> dm_column_widths_vector_;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

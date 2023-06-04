@@ -30,5 +30,6 @@ private:
 	std::map<std::string, position_p> position_map_;
 	std::function<void()> event_handler_;
 	int id_{ 0 };
+	std::string account_no_;
 };
 }

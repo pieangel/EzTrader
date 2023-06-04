@@ -77,7 +77,7 @@ BOOL MiniJangoDialog::OnInitDialog()
 	column_width_vector.push_back(40);
 	column_width_vector.push_back(75);
 	column_width_vector.push_back(40);
-	account_position_view_.set_column_widths(column_width_vector);
+	//account_position_view_.set_column_widths(column_width_vector);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -108,8 +108,6 @@ void MiniJangoDialog::SetAccount()
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
 		account_profit_loss_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
 		account_position_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
-		//account_profit_loss_view_.UpdateAccountAssetInfo();
-		//account_position_view_.UpdateAccountPositionInfo();
 	}
 }
 

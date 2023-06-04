@@ -35,6 +35,7 @@ AccountPositionControl::~AccountPositionControl()
 
 void AccountPositionControl::load_position_from_account(const std::string& account_no)
 {
+	account_no_ = account_no;
 	position_map_.clear();
 	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_no);
 	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
@@ -46,6 +47,7 @@ void AccountPositionControl::load_position_from_account(const std::string& accou
 void AccountPositionControl::update_position(position_p position)
 {
 	if (!position) return;
+	if (account_no_ != position->account_no) return;
 
 	if (position->open_quantity == 0)
 		remove_position(position->symbol_code);
