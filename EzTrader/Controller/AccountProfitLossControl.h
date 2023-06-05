@@ -4,6 +4,7 @@
 #include <memory>
 #include <functional>
 #include "../ViewModel/VmAccountProfitLoss.h"
+#include "../Account/SmAccount.h"
 namespace DarkHorse {
 	struct Position;
 	struct SmQuote;
@@ -30,20 +31,19 @@ namespace DarkHorse {
 		void set_account_id(const int account_id) {
 			account_id_ = account_id;
 		}
-		void set_account(std::shared_ptr<SmAccount> account) {
+		void set_account(std::shared_ptr<DarkHorse::SmAccount> account) {
 			account_ = account;
+			account_id_ = account->id();
 		}
 	private:
+		void refresh_account_profit_loss();
 		void update_account_profit_loss();
-		position_p get_position(const std::string& symbol_code);
-		void add_position(position_p position);
-		void remove_position(const std::string& symbol_code);
 		// key : symbol code, value : position object.
 		std::map<std::string, position_p> position_map_;
 		std::function<void()> event_handler_;
 		int id_{ 0 };
 		int account_id_{ 0 };
-		std::shared_ptr<SmAccount> account_{nullptr};
+		std::shared_ptr<DarkHorse::SmAccount> account_{nullptr};
 		VmAccountProfitLoss account_profit_loss_;
 	};
 }

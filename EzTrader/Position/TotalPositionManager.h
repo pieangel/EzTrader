@@ -6,7 +6,9 @@
 namespace DarkHorse {
 class AccountPositionManager;
 struct Order;
+struct SmQuote;
 using order_p = std::shared_ptr<Order>;
+using quote_p = std::shared_ptr<SmQuote>;
 struct Position;
 using account_position_manager_p = std::shared_ptr<AccountPositionManager>;
 using position_p = std::shared_ptr<Position>;
@@ -22,6 +24,7 @@ public:
 	/// </summary>
 	/// <param name="order"></param>
 	void update_position(order_p order);
+	void update_position(quote_p quote);
 	void on_symbol_position(nlohmann::json&& arg);
 	void on_symbol_profit_loss(nlohmann::json&& arg);
 	static double calculate_symbol_open_profit_loss

@@ -99,6 +99,11 @@ BOOL SmOrderSetDialog::OnInitDialog()
 	edit_qty_width_.SetWindowText("35");
 	edit_quote_width_.SetWindowText("60");
 
+	if (check_stop_by_real_.GetCheck() == BST_CHECKED)
+		stop_as_real_order_ = true;
+	else
+		stop_as_real_order_ = false;
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

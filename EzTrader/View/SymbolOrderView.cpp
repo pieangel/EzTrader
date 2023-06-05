@@ -917,7 +917,7 @@ void SymbolOrderView::set_quote_color()
 			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
 				if (it->second < highRow) set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 				else if (it->second < openRow) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
-				else if (it->second <= closeRow) set_quote_cell(it->second, true, SmMarkType::MT_BUY);
+				else if (it->second <= closeRow) set_quote_cell(it->second, true, SmMarkType::MT_SELL);
 				else if (it->second < lowRow + 1) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
 				else set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 			}
@@ -1985,9 +1985,9 @@ void SymbolOrderView::put_order(const SmPositionType& type, const int& price, co
 
 void SymbolOrderView::CreateResource()
 {
-	_Resource.QMBuyBrush.SetOpacity(0.5);
-	_Resource.QMSellBrush.SetOpacity(0.5);
-	_Resource.QMHighLowBrush.SetOpacity(0.5);
+	//_Resource.QMBuyBrush.SetOpacity(0.5);
+	//_Resource.QMSellBrush.SetOpacity(0.5);
+	//_Resource.QMHighLowBrush.SetOpacity(0.5);
 	_Resource.OrderStroke.SetStartCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_ROUND);
 	_Resource.OrderStroke.SetEndCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_TRIANGLE);
 	CBCGPTextFormat fmt3(_T("±¼¸²"), globalUtils.ScaleByDPI(30.0f));

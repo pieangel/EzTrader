@@ -38,6 +38,14 @@ void TotalPositionManager::update_position(order_p order)
 	position_manager->update_position(order);
 }
 
+void TotalPositionManager::update_position(quote_p quote)
+{
+	for (auto& position_manager : position_manager_map_)
+	{
+		position_manager.second->update_position(quote);
+	}
+}
+
 void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 {
 	try {

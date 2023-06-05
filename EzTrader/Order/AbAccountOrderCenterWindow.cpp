@@ -32,6 +32,8 @@
 #include "../Client/ViStockClient.h"
 #include "../Order/SmOrderRequestManager.h"
 #include "SmOrderSetDialog.h"
+#include "../Event/EventHub.h"
+#include "../Event/EventHubArg.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -52,6 +54,8 @@ AbAccountOrderCenterWindow::AbAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	symbol_order_view_.set_fill_condition(SmFilledCondition::Day);
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
+
+	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&AbAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 AbAccountOrderCenterWindow::~AbAccountOrderCenterWindow()
@@ -109,6 +113,35 @@ void AbAccountOrderCenterWindow::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_REMAIN, _RemainButton);
 }
 
+
+void AbAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)
+{
+	//symbol_order_view_.on_paramter_event(event, event_message, enable);
+	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
+	symbol_order_view_.SetAllRowHeight(event.grid_height);
+	/*
+	symbol_order_view_.reset_col_widths(event);
+	{
+		CRect rc_order_view, rc_tick_view, rc_window;
+		symbol_order_view_.GetWindowRect(&rc_order_view);
+
+		symbol_tick_view_.GetWindowRect(&rc_tick_view);
+		ScreenToClient(rc_order_view);
+		ScreenToClient(rc_tick_view);
+		const int window_width = rc_order_view.Width() + rc_tick_view.Width();
+		symbol_tick_view_.SetWindowPos(this, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOSIZE | SWP_NOZORDER);
+
+		CWnd* parent = GetParent();
+		GetWindowRect(rc_window);
+		parent->ScreenToClient(rc_window);
+		rc_window.right = rc_order_view.Width() + rc_tick_view.Width();
+		SetWindowPos(parent, rc_window.right, rc_window.top, rc_window.Width(), rc_window.Height(), SWP_NOMOVE | SWP_NOZORDER);
+
+	}
+	*/
+	RecalcOrderAreaHeight(this);
+	symbol_order_view_.Invalidate();
+}
 
 BEGIN_MESSAGE_MAP(AbAccountOrderCenterWindow, CBCGPDialog)
 	ON_WM_TIMER()
@@ -757,10 +790,10 @@ void AbAccountOrderCenterWindow::OnBnClickedBtnSearch()
 
 void AbAccountOrderCenterWindow::OnBnClickedBtnSet()
 {
-	_OrderSetDlg = std::make_shared<SmOrderSetDialog>();
-	_OrderSetDlg->Create(IDD_ORDER_SET, this);
-	_OrderSetDlg->OrderWnd(this);
-	_OrderSetDlg->ShowWindow(SW_SHOW);
+	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id());
+	order_set_dialog_->Create(IDD_ORDER_SET, this);
+	//_OrderSetDlg->OrderWnd(this);
+	order_set_dialog_->ShowWindow(SW_SHOW);
 }
 
 

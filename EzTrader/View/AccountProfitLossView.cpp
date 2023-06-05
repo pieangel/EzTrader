@@ -69,7 +69,7 @@ void AccountProfitLossView::SetUp()
 		_HeaderTitles.push_back("평가손익");
 		_HeaderTitles.push_back("청산손익");
 		_HeaderTitles.push_back("수수료");
-		_HeaderTitles.push_back("총손익");
+		_HeaderTitles.push_back("순손익");
 
 		_Grid->SetRowHeaderTitles(_HeaderTitles);
 	}
@@ -123,7 +123,7 @@ void AccountProfitLossView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	if (!account_profit_loss_control_) return;
 
 	account_profit_loss_control_->load_position_from_account(account_->No());
-	account_profit_loss_control_->set_account_id(account_->id());
+	account_profit_loss_control_->set_account(account_);
 	enable_account_profit_loss_show_ = true;
 }
 

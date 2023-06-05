@@ -10,6 +10,7 @@
 #include "../Event/EventHub.h"
 #include "../Quote/SmQuote.h"
 #include "../Quote/SmQuoteManager.h"
+#include "../Position/TotalPositionManager.h"
 using namespace DarkHorse;
 
 SmQuoteProcessor::SmQuoteProcessor() 
@@ -79,6 +80,8 @@ void SmQuoteProcessor::ProcessQuote(nlohmann::json&& quote)
 		quote_p->low = quote["low"];
 		quote_p->close = quote["close"];
 		//quote_p->pre_day_close = quote["pre_day_close"];
+
+		mainApp.total_position_manager()->update_position(quote_p);
 
 		mainApp.event_hub()->process_quote_event(quote_p);
 

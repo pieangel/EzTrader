@@ -156,7 +156,7 @@ void TotalAssetProfitLossView::Account(std::shared_ptr<DarkHorse::SmAccount> val
 	if (!account_profit_loss_control_) return;
 
 	account_profit_loss_control_->load_position_from_account(account_->No());
-	account_profit_loss_control_->set_account_id(account_->id());
+	account_profit_loss_control_->set_account(account_);
 	asset_control_->load_position_from_account(account_->No());
 	enable_account_profit_loss_show_ = true;
 }
@@ -198,7 +198,7 @@ void TotalAssetProfitLossView::update_account_profit_loss()
 	if (!asset_control_ || !account_profit_loss_control_ || !account_) return;
 
 	const VmAsset& asset = asset_control_->get_asset();
-	const VmAccountProfitLoss account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
+	const VmAccountProfitLoss& account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
 	auto cell = _Grid->FindCell(0, 1);
 	const int decimal = account_->Type() == "1" ? 2 : 0;
 	std::string value;
@@ -230,7 +230,7 @@ void TotalAssetProfitLossView::update_account_profit_loss()
 	if (cell) cell->Text(value);
 
 	cell = _Grid->FindCell(2, 3);
-	double pure_profit = asset.open_profit_loss + asset.trade_profit_loss - abs(asset.fee);
+	double pure_profit = account_profit_loss.open_profit_loss + account_profit_loss.trade_profit_loss - abs(account_profit_loss.trade_fee);
 	value = VtStringUtil::get_format_value(pure_profit, decimal, true);
 	if (cell) cell->Text(value);
 

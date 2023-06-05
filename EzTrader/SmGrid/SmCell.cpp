@@ -213,6 +213,8 @@ namespace DarkHorse {
 	void SmCell::draw_cell_by_type(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res)
 	{
 		CBCGPRect rect(_X, _Y, _X + _Width, _Y + _Height);
+		const int mark_width = 5;
+		CBCGPRect right_pos_rect(_X + _Width - mark_width, _Y, _X + _Width, _Y + _Height);
 		switch (_CellType)
 		{
 		case SmCellType::CT_NORMAL: 
@@ -293,15 +295,15 @@ namespace DarkHorse {
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_BUY:
-			pGM->DrawRectangle(rect, res.QMBuyBrush);
+			pGM->FillRectangle(right_pos_rect, res.QMBuyBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_SELL:
-			pGM->DrawRectangle(rect, res.QMSellBrush);
+			pGM->FillRectangle(right_pos_rect, res.QMSellBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_HILO:
-			pGM->DrawRectangle(rect, res.QMHighLowBrush);
+			pGM->FillRectangle(right_pos_rect, res.QMHighLowBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		}

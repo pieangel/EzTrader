@@ -53,7 +53,7 @@ protected:
 private:
 	//CBCGPGridCtrl m_wndPositionGrid;
 	//CBCGPGridCtrl m_wndOrderGrid;
-
+	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
 	
 public:
 	void ArrangeCenterValue();
@@ -116,7 +116,7 @@ private:
 
 	SmFilledRemainButton _FilledRemainButton;
 	SmRemainButton _RemainButton;
-	std::shared_ptr< SmOrderSetDialog> _OrderSetDlg = nullptr;
+	std::shared_ptr< SmOrderSetDialog> order_set_dialog_ = nullptr;
 
 public:
 	void SetRowWide();

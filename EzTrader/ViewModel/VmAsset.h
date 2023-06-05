@@ -9,7 +9,7 @@ namespace DarkHorse {
 		double entrust_deposit; // 위탁증거금
 		double maintenance_margin; // 유지증거금
 		double trade_profit_loss; // 청산손익
-		double fee; // 선물옵션수수료
+		double trade_fee; // 선물옵션수수료
 		double open_profit_loss; // 평가손익
 		double open_trust_toal; // 평가예탁총액
 		double additional_margin; // 추가증거금
