@@ -208,6 +208,7 @@ namespace DarkHorse {
 
 	void ViServerDataReceiver::on_task_complete(const int& argument_id)
 	{
+		if (!server_data_receive_on_) return;
 		// 요청이 완료된 일은 찾아 내어 맵에서 없애 준다.
 		auto it = task_info_.argument_map.find(argument_id);
 		if (it != task_info_.argument_map.end()) {
@@ -225,6 +226,7 @@ namespace DarkHorse {
 
 	void ViServerDataReceiver::on_task_error(const int& argument_id)
 	{
+		if (!server_data_receive_on_) return;
 		// 오류가 나면 건너 뛴다. 
 		// 요청이 완료된 일은 찾아 내어 맵에서 없애 준다.
 		auto it = task_info_.argument_map.find(argument_id);

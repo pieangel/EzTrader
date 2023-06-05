@@ -81,6 +81,8 @@ void DmOptionView::on_update_quote()
 }
 void DmOptionView::update_quote()
 {
+	if (!quote_control_) return;
+
 	const VmQuote& quote = quote_control_->get_quote();
 	CString msg;
 	msg.Format("DmOptionView::update_quote :: %s ::  close : %d\n", quote.symbol_code.c_str(), quote.close);
@@ -334,7 +336,7 @@ void DmOptionView::register_symbol(const std::string symbol_code)
 {
 	DhTaskArg arg;
 	arg.detail_task_description = symbol_code;
-	arg.task_type = DhTaskType::DmSymbolMaster;
+	arg.task_type = DhTaskType::RegisterSymbol;
 	arg.parameter_map["symbol_code"] = symbol_code;
 	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }

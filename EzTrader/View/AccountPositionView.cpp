@@ -293,13 +293,11 @@ void AccountPositionView::on_timer()
 {
 	bool needDraw = false;
 	if (enable_position_show_) {
-		//update_account_position();
+		update_account_position();
 		needDraw = true;
 		enable_position_show_ = false;
 	}
-	update_account_position();
-	Invalidate();
-	//if (needDraw) Invalidate();
+	if (needDraw) Invalidate();
 }
 
 void AccountPositionView::ClearCheck()

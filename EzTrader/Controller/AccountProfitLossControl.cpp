@@ -9,6 +9,7 @@
 #include "../Event/EventHub.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Symbol/SmSymbolManager.h"
+#include "../Account/SmAccount.h"
 
 namespace DarkHorse {
 
@@ -79,17 +80,21 @@ void AccountProfitLossControl::update_profit_loss(quote_p quote)
 	if (!quote) return;
 	auto symbol = mainApp.SymMgr()->FindSymbol(quote->symbol_code);
 	if (!symbol) return;
-	position_p position = get_position(quote->symbol_code);
-	if (!position) return;
+	//position_p position = get_position(quote->symbol_code);
+	//if (!position) return;
+	if (!account_)return;
 
 	//double open_profit_loss = 0;
 	//open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
 	//open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
 	//position->open_profit_loss = open_profit_loss;
 
-	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
+	//position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
 
-	update_account_profit_loss();
+	//update_account_profit_loss();
+
+	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_->No());
+	acnt_position_mgr->update_account_profit_loss();
 
 	if (event_handler_) event_handler_();
 }
