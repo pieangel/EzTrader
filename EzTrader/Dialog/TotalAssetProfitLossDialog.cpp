@@ -102,10 +102,20 @@ void TotalAssetProfitLossDialog::OnCbnSelchangeComboAccount()
 	if (cur_sel < 0) return;
 
 	_CurrentAccountIndex = cur_sel;
-	total_asset_profit_loss_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
+	auto account = _ComboAccountMap[_CurrentAccountIndex];
+	total_asset_profit_loss_view_.Account(account);
 
 	total_asset_profit_loss_view_.SetAssetInfo();
 	total_asset_profit_loss_view_.Invalidate();
+
+	DhTaskArg arg;
+	arg.detail_task_description = account->No();
+	arg.task_type = DhTaskType::AccountProfitLoss;
+	arg.parameter_map["account_no"] = account->No();
+	arg.parameter_map["password"] = account->Pwd();
+	arg.parameter_map["account_type"] = account->Type();
+
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
 

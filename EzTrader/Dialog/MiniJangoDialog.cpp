@@ -13,6 +13,9 @@
 #include "../Fund/SmFundManager.h"
 #include "../Fund/SmFund.h"
 #include "../MainFrm.h"
+#include "../Task/SmTaskArg.h"
+#include "../Global/SmTotalManager.h"
+#include "../Task/SmTaskRequestManager.h"
 // MiniJangoDialog dialog
 using namespace DarkHorse;
 IMPLEMENT_DYNAMIC(MiniJangoDialog, CBCGPDialog)
@@ -142,12 +145,22 @@ void MiniJangoDialog::OnCbnSelchangeComboAccount()
 
 	_CurrentAccountIndex = cur_sel;
 	if (_Mode == 0) {
-		account_profit_loss_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
-		account_position_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
-		//account_profit_loss_view_.UpdateAccountAssetInfo();
-		//account_position_view_.UpdateAccountPositionInfo();
+		auto account = _ComboAccountMap[_CurrentAccountIndex];
+		account_profit_loss_view_.Account(account);
+		account_position_view_.Account(account);
 		account_profit_loss_view_.Invalidate();
 		account_position_view_.Invalidate();
+
+		DhTaskArg arg;
+		arg.detail_task_description = account->No();
+		arg.task_type = DhTaskType::AccountProfitLoss;
+		arg.parameter_map["account_no"] = account->No();
+		arg.parameter_map["password"] = account->Pwd();
+		arg.parameter_map["account_type"] = account->Type();
+
+		mainApp.TaskReqMgr()->AddTask(std::move(arg));
+
+
 	}
 	else {
 		account_profit_loss_view_.Fund(_ComboFundMap[_CurrentAccountIndex]);

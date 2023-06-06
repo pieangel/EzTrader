@@ -456,11 +456,10 @@ void OrderRequestManager::dm_make_filled_order_event(order_request_p order_reque
 
 	mainApp.order_processor()->add_order_event(std::move(order_info2));
 
-
 	nlohmann::json order_info3;
 	order_info3["order_event"] = OrderEvent::OE_Filled;
 	order_info3["account_no"] = order_request->account_no;
-	order_info3["order_no"] = order_request->original_order_no;
+	order_info3["order_no"] = order_no;
 	order_info3["symbol_code"] = order_request->symbol_code;
 	order_info3["order_price"] = order_request->order_price;
 	order_info3["order_amount"] = order_request->order_amount;

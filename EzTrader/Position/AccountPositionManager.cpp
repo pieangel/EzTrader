@@ -70,7 +70,7 @@ void AccountPositionManager::update_account_profit_loss()
 	account_profit_loss_->trade_fee = trade_fee;
 	account_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
 
-	LOGINFO(CMyLogger::getInstance(), "update_account_profit_loss :: account_no[%s], 당일매매손익[%.2f], 당일평가손익[%.2f], 수수료[%.2f], 당일총손익[%.2f]", account_no_.c_str(), trade_profit_loss, open_profit_loss, trade_fee, pure_trade_profit_loss);
+	//LOGINFO(CMyLogger::getInstance(), "update_account_profit_loss :: account_no[%s], 당일매매손익[%.2f], 당일평가손익[%.2f], 수수료[%.2f], 당일총손익[%.2f]", account_no_.c_str(), trade_profit_loss, open_profit_loss, trade_fee, pure_trade_profit_loss);
 
 }
 // update the position with the order.
@@ -84,7 +84,7 @@ void AccountPositionManager::update_position(order_p order)
 	set_account_id(position, order->account_no);
 	auto symbol = mainApp.SymMgr()->FindSymbol(order->symbol_code);
 	if (!symbol) return;
-	LOGINFO(CMyLogger::getInstance(), "position_count = [%d], filled_count = [%d], average_price = [%.2f], filled_price = [%d]", position->open_quantity, order->filled_count, position->average_price, order->filled_price);
+	//LOGINFO(CMyLogger::getInstance(), "position_count = [%d], filled_count = [%d], average_price = [%.2f], filled_price = [%d]", position->open_quantity, order->filled_count, position->average_price, order->filled_price);
 
 	const int new_position_count = calculate_position_count(order, position);
 	const int unsettled_count = calculate_unsettled_count(order, position);
@@ -116,7 +116,7 @@ void AccountPositionManager::update_position(quote_p quote)
 	if (!symbol) return;
 
 	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
-	LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
+	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
 
 	update_account_profit_loss();
 }
@@ -190,7 +190,7 @@ void AccountPositionManager::update_open_profit_loss(position_p position)
 	if (!quote || !symbol) return;
 
 	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
-	LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
+	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
 }
 
 }

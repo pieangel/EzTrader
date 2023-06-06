@@ -336,7 +336,7 @@ void AccountPositionView::set_column_widths(const std::string& type)
 		SetColumnWidth(1, ab_column_widths_vector_[1]);
 		SetColumnWidth(2, ab_column_widths_vector_[2]);
 		SetColumnWidth(3, ab_column_widths_vector_[3]);
-		EnableCheckBoxes(FALSE);
+		EnableCheckBoxes(TRUE);
 	}
 	else {
 		SetColumnWidth(0, dm_column_widths_vector_[0]);

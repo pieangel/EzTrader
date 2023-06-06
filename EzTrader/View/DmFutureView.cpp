@@ -120,6 +120,7 @@ void DmFutureView::update_order(order_p order, OrderEvent order_event)
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	show_value(found->second, 2, future_info);
+	enable_show_ = true;
 }
 
 void DmFutureView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -211,13 +212,11 @@ void DmFutureView::OnQuoteEvent(const std::string& symbol_code)
 
 void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
-	_EnableOrderShow = true;
+	
 }
 
 void DmFutureView::update_expected(std::shared_ptr<SmQuote> quote)
 {
-	update_position();
-
 	if (view_mode_ != ViewMode::VM_Expected) return;
 
 	auto found = symbol_row_index_map_.find(quote->symbol_code);
@@ -225,6 +224,7 @@ void DmFutureView::update_expected(std::shared_ptr<SmQuote> quote)
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.expected = quote->expected;
 	show_value(found->second, 2, future_info);
+	enable_show_ = true;
 }
 
 void DmFutureView::update_close(const DarkHorse::VmQuote& quote)
@@ -263,7 +263,6 @@ void DmFutureView::show_value(const int row, const int col, const DarkHorse::VmF
 	}
 	set_background_color(cell, future_info);
 	cell->Text(value);
-	Invalidate();
 }
 
 void DmFutureView::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmFuture& future_info)
@@ -271,7 +270,13 @@ void DmFutureView::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell,
 	if (!_Account || !future_info.symbol_p) return;
 
 	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(_Account->No());
-	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(future_info.symbol_p->SymbolCode());
+
+	auto symbol_order_manager = account_order_manager->find_symbol_order_manager(future_info.symbol_p->SymbolCode());
+	if (!symbol_order_manager) {
+		cell->CellType(CT_NORMAL);
+		return;
+	}
+
 	auto order_background = symbol_order_manager->get_order_background(future_info.position);
 	if (order_background == OrderBackGround::OB_HAS_BEEN)
 		cell->CellType(CT_ORDER_HAS_BEEN);

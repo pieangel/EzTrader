@@ -8,6 +8,7 @@
 #include "../Order/Order.h"
 #include "../Global/SmTotalManager.h"
 #include "../Event/EventHub.h"
+#include "../Account/SmAccount.h"
 
 namespace DarkHorse {
 AccountOrderControl::AccountOrderControl()
@@ -38,6 +39,8 @@ void AccountOrderControl::load_order_from_account(const std::string& account_no)
 void AccountOrderControl::update_order(order_p order, OrderEvent order_event)
 {
 	if (!order) return;
+	if (order->account_no != account_->No()) return;
+
 	if (order_event == OrderEvent::OE_Accepted)
 		on_order_accepted(order);
 	else if (order_event == OrderEvent::OE_Unfilled)

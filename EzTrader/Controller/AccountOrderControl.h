@@ -6,7 +6,9 @@
 #include "../Order/SmOrderConst.h"
 namespace DarkHorse {
 struct Order;
+class SmAccount;
 using order_p = std::shared_ptr<Order>;
+using account_p = std::shared_ptr<SmAccount>;
 class AccountOrderControl
 {
 public:
@@ -20,6 +22,9 @@ public:
 	const std::map<std::string, order_p>& get_order_map() {
 		return order_map_;
 	}
+	void set_account(account_p account) {
+		account_ = account;
+	}
 private:
 	void on_order_unfilled(std::shared_ptr<Order> order);
 	void on_order_accepted(std::shared_ptr<Order> order);
@@ -31,5 +36,6 @@ private:
 	std::map<std::string, order_p> order_map_;
 	std::function<void()> event_handler_;
 	int id_{ 0 };
+	account_p account_;
 };
 }

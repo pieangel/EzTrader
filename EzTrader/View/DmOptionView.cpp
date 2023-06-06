@@ -87,7 +87,7 @@ DmOptionView::~DmOptionView()
 }
 void DmOptionView::on_update_quote()
 {
-	_EnableQuoteShow = true;
+	enable_show_ = true;
 }
 void DmOptionView::update_quote()
 {
@@ -103,8 +103,6 @@ void DmOptionView::update_quote()
 
 void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 {
-	update_position();
-
 	if (view_mode_ != ViewMode::VM_Expected) return;
 	try {
 	const std::string option_code = quote->symbol_code.substr(1, quote->symbol_code.length() - 1);
@@ -120,7 +118,7 @@ void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 		option_info.expected = quote->expected;
 		update_value_cell(quote->symbol_id, option_info);
 	}
-	Invalidate();
+	enable_show_ = true;
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
@@ -291,6 +289,8 @@ void DmOptionView::update_order(order_p order, OrderEvent order_event)
 			DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
 			update_value_cell(symbol->Id(), option_info);
 		}
+
+		enable_show_ = true;
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
@@ -317,7 +317,7 @@ void DmOptionView::UpdateAssetInfo()
 
 void DmOptionView::OnQuoteEvent(const std::string& symbol_code)
 {
-	_EnableQuoteShow = true;
+	
 }
 
 void DmOptionView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)

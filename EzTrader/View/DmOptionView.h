@@ -90,8 +90,7 @@ private:
 	int option_market_index_ = 0;
 	std::string year_month_name_;
 	int strike_start_index_ = 1;
-	bool enable_show_ = false;
-	bool _EnableQuoteShow = false;
+	bool enable_show_{ true };
 	SmOrderGridResource _Resource;
 	void CreateResource();
 	void InitHeader();

@@ -71,8 +71,7 @@ private:
 	bool registered_{ false };
 	// 0 : account, 1 : fund
 	int _Mode = 0;
-	bool _EnableOrderShow = false;
-	bool enable_show_ = false;
+	bool enable_show_{ true };
 	SmOrderGridResource _Resource;
 	void CreateResource();
 	void InitHeader();

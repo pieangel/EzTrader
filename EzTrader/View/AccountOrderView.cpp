@@ -64,7 +64,6 @@ void AccountOrderView::on_update_order()
 AccountOrderView::~AccountOrderView()
 {
 	//KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
 }
 
 void AccountOrderView::OnHeaderCheckBoxClick(int nColumn)
@@ -102,7 +101,8 @@ void AccountOrderView::OnRowCheckBoxClick(CBCGPGridRow* pRow)
 void AccountOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	_Account = val;
-	UpdateAccountAcceptedOrders();
+	account_order_control_->set_account(_Account);
+	account_order_control_->load_order_from_account(_Account->No());
 }
 
 void AccountOrderView::UpdateAcceptedOrder()
@@ -201,13 +201,6 @@ int AccountOrderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	SetHighlightActiveItem(FALSE);
 	SetReadOnly(TRUE);
-
-	mainApp.CallbackMgr()->SubscribeOrderCallback((long)this, std::bind(&AccountOrderView::OnOrderEvent, this, _1, _2));
-
-
-
-
-
 	return 0;
 }
 

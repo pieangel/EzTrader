@@ -860,6 +860,8 @@ void CMainFrame::OnClose()
 
 	mainApp.SaveMgr()->WriteSettings();
 
+	Sleep(2000);
+
 	std::vector<int> date_time = SmUtil::GetLocalDateTime();
 
 	CString msg;
