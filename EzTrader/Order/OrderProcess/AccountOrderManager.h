@@ -16,6 +16,7 @@ class AccountOrderManager
 public:
 	void dispatch_order(const OrderEvent order_event, order_p order);
 	symbol_order_manager_p get_symbol_order_manager(const std::string& symbol_code);
+	symbol_order_manager_p find_symbol_order_manager(const std::string& symbol_code);
 	const std::map<std::string, symbol_order_manager_p>& get_symbol_order_manager_map() {
 		return symbol_order_manager_map_;
 	}
@@ -25,7 +26,6 @@ public:
 private:
 	std::string account_no_;
 	std::map<std::string, symbol_order_manager_p> symbol_order_manager_map_;
-	symbol_order_manager_p find_order_manager(const std::string& symbol_code);
 	symbol_order_manager_p create_order_manager(const std::string& symbol_code);
 };
 }

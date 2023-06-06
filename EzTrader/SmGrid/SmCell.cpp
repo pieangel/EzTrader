@@ -221,6 +221,14 @@ namespace DarkHorse {
 			pGM->FillRectangle(rect, res.GridNormalBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.TextBrush);
 			break;
+		case SmCellType::CT_ORDER_PRESENT:
+			pGM->FillRectangle(rect, res.OrderBuyPresentBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.TextBrush);
+			break;
+		case SmCellType::CT_ORDER_HAS_BEEN:
+			pGM->FillRectangle(rect, res.OrderHasBennBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.TextBrush);
+			break;
 		case SmCellType::CT_BUTTON_NORMAL: 
 			pGM->DrawBeveledRectangle(rect, res.HeaderBackColor, 1, FALSE);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.TextBrush);

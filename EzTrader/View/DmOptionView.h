@@ -10,7 +10,7 @@
 #include "../ViewModel/VmOption.h"
 #include "../Order/OrderUi/DmDefine.h"
 #include "../ViewModel/VmQuote.h"
-
+#include "../Order/SmOrderConst.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -20,7 +20,10 @@ namespace DarkHorse {
 	class QuoteControl;
 	struct SmQuote;
 	class SymbolPositionControl;
+	struct Order;
 }
+
+using order_p = std::shared_ptr<DarkHorse::Order>;
 
 class DmOptionView : public CBCGPStatic
 {
@@ -37,6 +40,7 @@ public:
 		const std::string& year_month_name
 	);
 public:
+	void update_order(order_p order, DarkHorse::OrderEvent order_event);
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
 	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
 	int Mode() const { return _Mode; }
@@ -61,6 +65,7 @@ private:
 	void register_symbols(const int option_market_index);
 	void register_symbol(const std::string symbol_code);
 	void show_value(const int row, const int col, const DarkHorse::VmOption& option_info);
+	void set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmOption& option_info);
 	void show_strike(const int row, const int col, const DarkHorse::VmOption& option_info);
 	void show_values();
 	ViewMode view_mode_{ ViewMode::VM_Close };

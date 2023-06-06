@@ -112,9 +112,8 @@ void AccountPositionManager::update_position(quote_p quote)
 	if (!quote) return;
 	position_p position = find_position(quote->symbol_code);
 	if (!position) return;
-	
 	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->symbol_code);
-	if (!quote || !symbol) return;
+	if (!symbol) return;
 
 	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
 	LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);

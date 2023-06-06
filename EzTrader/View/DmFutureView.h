@@ -11,6 +11,7 @@
 #include "../ViewModel/VmFuture.h"
 #include "../ViewModel/VmQuote.h"
 #include "../ViewModel/VmFuture.h"
+#include "../Order/SmOrderConst.h"
 
 namespace DarkHorse {
 	class SmGrid;
@@ -21,8 +22,9 @@ namespace DarkHorse {
 	class QuoteControl;
 	struct SmQuote;
 	class SymbolPositionControl;
+	struct Order;
 }
-
+using order_p = std::shared_ptr<DarkHorse::Order>;
 class DmFutureView : public CBCGPStatic
 {
 public:
@@ -42,6 +44,7 @@ public:
 	void update_quote();
 	void set_view_mode(ViewMode view_mode);
 public:
+	void update_order(order_p order, DarkHorse::OrderEvent order_event);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
@@ -57,6 +60,7 @@ private:
 	void update_close(const DarkHorse::VmQuote& quote);
 	void show_values();
 	void show_value(const int row, const int col, const DarkHorse::VmFuture& future_info);
+	void set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmFuture& future_info);
 	ViewMode view_mode_{ ViewMode::VM_Close };
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	std::shared_ptr<DarkHorse::SymbolPositionControl> position_control_;

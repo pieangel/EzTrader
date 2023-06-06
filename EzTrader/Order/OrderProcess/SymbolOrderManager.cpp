@@ -7,12 +7,15 @@
 #include "../../Event/EventHub.h"
 #include "../SmOrder.h"
 #include "../../Log/MyLogger.h"
+#include "../../Position/Position.h"
 
 
 namespace DarkHorse {
 	using total_position_manager_p = std::shared_ptr<TotalPositionManager>;
 void SymbolOrderManager::dispatch_order(const OrderEvent order_event, order_p order)
 {
+	// Set the flag to true to indicate that the order has been placed before.
+	set_ordered_before(true);
 	switch (order_event) {
 	case OrderEvent::OE_Accepted:
 		on_order_accepted(order, order_event);
@@ -26,6 +29,24 @@ void SymbolOrderManager::dispatch_order(const OrderEvent order_event, order_p or
 	}
 }
 
+
+DarkHorse::OrderBackGround SymbolOrderManager::get_order_background(const int position_open_qty)
+{
+	if (accepted_order_map_.size() > 0 || position_open_qty != 0) {
+		return OrderBackGround::OB_PRESENT;
+	}
+	else if (accepted_order_map_.empty() && position_open_qty == 0) {
+		if (ordered_before_) {
+			return OrderBackGround::OB_HAS_BEEN;
+		}
+		else {
+			return OrderBackGround::OB_NONE;
+		}
+	}
+	else {
+		return OrderBackGround::OB_NONE;
+	}
+}
 
 void SymbolOrderManager::on_order_accepted(order_p order, OrderEvent order_event)
 {

@@ -26,6 +26,10 @@
 #include "../Util/IdGenerator.h"
 #include "../Controller/SymbolPositionControl.h"
 #include "../Log/MyLogger.h"
+#include "../Order/OrderProcess/TotalOrderManager.h"
+#include "../Order/OrderProcess/AccountOrderManager.h"
+#include "../Order/OrderProcess/SymbolOrderManager.h"
+#include "../Order/Order.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -52,6 +56,12 @@ DmFutureView::DmFutureView()
 	(
 		id_,
 		std::bind(&DmFutureView::update_expected, this, std::placeholders::_1)
+	);
+
+	mainApp.event_hub()->subscribe_order_event_handler
+	(
+		id_,
+		std::bind(&DmFutureView::update_order, this, std::placeholders::_1, std::placeholders::_2)
 	);
 }
 
@@ -102,6 +112,14 @@ void DmFutureView::set_view_mode(ViewMode view_mode)
 	view_mode_ = view_mode;
 	show_values();
 	Invalidate();
+}
+
+void DmFutureView::update_order(order_p order, OrderEvent order_event)
+{
+	auto found = symbol_row_index_map_.find(order->symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	show_value(found->second, 2, future_info);
 }
 
 void DmFutureView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -162,7 +180,7 @@ void DmFutureView::OnPaint()
 	rect.bottom -= 1;
 
 	_Grid->DrawGrid(m_pGM, rect);
-	_Grid->DrawCells(m_pGM, rect, false, true);
+	_Grid->draw_cells(m_pGM, rect, false, true);
 	//_Grid->DrawVerticalHeader(m_pGM, _HeaderTitles, 0);
 	_Grid->DrawBorder(m_pGM, rect);
 
@@ -198,6 +216,8 @@ void DmFutureView::OnOrderEvent(const std::string& account_no, const std::string
 
 void DmFutureView::update_expected(std::shared_ptr<SmQuote> quote)
 {
+	update_position();
+
 	if (view_mode_ != ViewMode::VM_Expected) return;
 
 	auto found = symbol_row_index_map_.find(quote->symbol_code);
@@ -241,9 +261,24 @@ void DmFutureView::show_value(const int row, const int col, const DarkHorse::VmF
 	else {
 		value = std::to_string(future_info.position);
 	}
-	
+	set_background_color(cell, future_info);
 	cell->Text(value);
 	Invalidate();
+}
+
+void DmFutureView::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmFuture& future_info)
+{
+	if (!_Account || !future_info.symbol_p) return;
+
+	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(_Account->No());
+	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(future_info.symbol_p->SymbolCode());
+	auto order_background = symbol_order_manager->get_order_background(future_info.position);
+	if (order_background == OrderBackGround::OB_HAS_BEEN)
+		cell->CellType(CT_ORDER_HAS_BEEN);
+	else if (order_background == OrderBackGround::OB_PRESENT)
+		cell->CellType(CT_ORDER_PRESENT);
+	else
+		cell->CellType(CT_NORMAL);
 }
 
 void DmFutureView::register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol)
@@ -374,8 +409,10 @@ void DmFutureView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
 	if (enable_show_) {
-		if (view_mode_ == ViewMode::VM_Close)
+		if (view_mode_ == ViewMode::VM_Close) {
 			update_quote();
+			update_position();
+		}
 		else
 			update_position();
 		

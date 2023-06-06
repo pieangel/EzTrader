@@ -104,7 +104,7 @@ void AccountProfitLossView::OnPaint()
 	rect.bottom -= 1;
 
 	_Grid->DrawGrid(m_pGM, rect);
-	_Grid->DrawCells(m_pGM, rect, false, true);
+	_Grid->draw_cells(m_pGM, rect, false, true);
 	//_Grid->DrawVerticalHeader(m_pGM, _HeaderTitles, 0);
 	_Grid->DrawBorder(m_pGM, rect);
 

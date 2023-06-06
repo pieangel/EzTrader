@@ -10,7 +10,7 @@ void AccountOrderManager::dispatch_order(const OrderEvent order_event, order_p o
 	symbol_order_manager->dispatch_order(order_event, order);
 }
 
-symbol_order_manager_p AccountOrderManager::find_order_manager(const std::string& symbol_code)
+symbol_order_manager_p AccountOrderManager::find_symbol_order_manager(const std::string& symbol_code)
 {
 	auto it = symbol_order_manager_map_.find(symbol_code);
 	return it != symbol_order_manager_map_.end() ? it->second : nullptr;
@@ -24,7 +24,7 @@ symbol_order_manager_p AccountOrderManager::create_order_manager(const std::stri
 }
 symbol_order_manager_p AccountOrderManager::get_symbol_order_manager(const std::string& symbol_code)
 {
-	symbol_order_manager_p order_manager = find_order_manager(symbol_code);
+	symbol_order_manager_p order_manager = find_symbol_order_manager(symbol_code);
 	if (order_manager) return order_manager;
 	return create_order_manager(symbol_code);
 }

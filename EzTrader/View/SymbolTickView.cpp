@@ -107,7 +107,7 @@ void SymbolTickView::OnPaint()
 	rect.bottom -= 1;
 
 	_Grid->DrawGrid(m_pGM, rect);
-	_Grid->DrawCells(m_pGM, rect, true, false);
+	_Grid->draw_cells(m_pGM, rect, true, false);
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();

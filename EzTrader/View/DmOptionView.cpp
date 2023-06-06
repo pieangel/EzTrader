@@ -33,6 +33,10 @@
 #include "../Util/IdGenerator.h"
 #include "../Controller/SymbolPositionControl.h"
 #include "../Log/MyLogger.h"
+#include "../Order/OrderProcess/TotalOrderManager.h"
+#include "../Order/OrderProcess/AccountOrderManager.h"
+#include "../Order/OrderProcess/SymbolOrderManager.h"
+#include "../Order/Order.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -60,6 +64,12 @@ DmOptionView::DmOptionView()
 	(
 		id_,
 		std::bind(&DmOptionView::update_expected, this, std::placeholders::_1)
+	);
+
+	mainApp.event_hub()->subscribe_order_event_handler
+	(
+		id_,
+		std::bind(&DmOptionView::update_order, this, std::placeholders::_1, std::placeholders::_2)
 	);
 }
 
@@ -93,6 +103,8 @@ void DmOptionView::update_quote()
 
 void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 {
+	update_position();
+
 	if (view_mode_ != ViewMode::VM_Expected) return;
 	try {
 	const std::string option_code = quote->symbol_code.substr(1, quote->symbol_code.length() - 1);
@@ -234,7 +246,7 @@ void DmOptionView::OnPaint()
 	rect.bottom -= 1;
 
 	_Grid->DrawGrid(m_pGM, rect);
-	_Grid->DrawCells(m_pGM, rect, false, true);
+	_Grid->draw_cells(m_pGM, rect, false, true);
 	//_Grid->DrawVerticalHeader(m_pGM, _HeaderTitles, 0);
 	_Grid->DrawBorder(m_pGM, rect);
 
@@ -259,6 +271,31 @@ void DmOptionView::set_option_view()
 	show_values();
 	//register_symbols_to_server();
 	Invalidate();
+}
+
+void DmOptionView::update_order(order_p order, OrderEvent order_event)
+{
+	try {
+		const std::string symbol_code = order->symbol_code;
+		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		if (symbol == nullptr) return;
+
+		const std::string option_code = symbol_code.substr(1, symbol_code.length() - 1);
+		auto found = symbol_vector_index_map_.find(option_code);
+		if (found == symbol_vector_index_map_.end()) return;
+		if (symbol_code.at(0) == '2') {
+			DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+			update_value_cell(symbol->Id(), option_info);
+		}
+		else {
+			DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+			update_value_cell(symbol->Id(), option_info);
+		}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
 }
 
 void DmOptionView::UpdateSymbolInfo()
@@ -358,8 +395,28 @@ void DmOptionView::show_value(const int row, const int col, const DarkHorse::VmO
 	else {
 		value = std::to_string(option_info.position);
 	}
-	
+	set_background_color(cell, option_info);
 	cell->Text(value);
+}
+
+// set the background color of the cell according to the order status
+void DmOptionView::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmOption& option_info)
+{
+	if (!_Account || !option_info.symbol_p) return;
+
+	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(_Account->No());
+	auto symbol_order_manager = account_order_manager->find_symbol_order_manager(option_info.symbol_p->SymbolCode());
+	if (!symbol_order_manager) {
+		cell->CellType(CT_NORMAL);
+		return;
+	}
+	auto order_background = symbol_order_manager->get_order_background(option_info.position);
+	if (order_background == OrderBackGround::OB_HAS_BEEN)
+		cell->CellType(CT_ORDER_HAS_BEEN);
+	else if (order_background == OrderBackGround::OB_PRESENT)
+		cell->CellType(CT_ORDER_PRESENT);
+	else
+		cell->CellType(CT_NORMAL);
 }
 
 void DmOptionView::show_strike(const int row, const int col, const DarkHorse::VmOption& option_info)
@@ -430,6 +487,7 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		const std::string& symbol_code = symbol->SymbolCode();
 		const std::string option_code = symbol_code.substr(1, symbol_code.length() - 1);
 		symbol_vector_index_map_[option_code] = i;
+		option_info.call_put = call_side ? 1 : 2;
 		if (call_side) call_symbol_vector_.push_back(option_info);
 		else put_symbol_vector_.push_back(option_info);
 	}
@@ -557,8 +615,10 @@ void DmOptionView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
 	if (enable_show_) {
-		if (view_mode_ == VM_Close)
+		if (view_mode_ == VM_Close) {
 			update_quote();
+			update_position();
+		}
 		else
 			update_position();
 		enable_show_ = false;

@@ -37,6 +37,11 @@ struct SmOrderGridResource {
 	// 그리드 경계선 버튼 색상
 	CBCGPColor GridBorderColor = RGB(255, 255, 255);
 
+	CBCGPColor OrderBuyPresentColor = RGB(139, 0, 0);
+	CBCGPColor OrderSellPresentColor = RGB(0, 0, 128);
+	CBCGPColor OrderPresentColor = RGB(101, 67, 33);
+	CBCGPColor OrderHasBeenColor = RGB(0, 100, 0);
+
 	CBCGPColor SelectedValueColor = RGB(255, 0, 0);
 
 	CBCGPColor GridNormalColor = RGB(0x46, 0x46, 0x4b);
@@ -56,6 +61,11 @@ struct SmOrderGridResource {
 	//CBCGPColor BuyPositionBackColor = RGB(0xf0, 0x33, 0x3a);
 	CBCGPColor BuyPositionBackColor = RGB(255, 0, 0);
 
+
+	CBCGPBrush OrderBuyPresentBrush = CBCGPBrush(OrderBuyPresentColor);
+	CBCGPBrush OrderSellPresentBrush = CBCGPBrush(OrderSellPresentColor);
+	CBCGPBrush OrderPresentBrush = CBCGPBrush(OrderPresentColor);
+	CBCGPBrush OrderHasBennBrush = CBCGPBrush(OrderHasBeenColor);
 
 	CBCGPBrush BuyPositionBrush = CBCGPBrush(BuyPositionBackColor);
 	CBCGPBrush SellPositionBrush = CBCGPBrush(SellPositionBackColor);

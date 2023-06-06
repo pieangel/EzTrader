@@ -126,4 +126,10 @@ namespace DarkHorse {
 		CT_BUY, 
 		CT_SELL 
 	};
+
+	enum class OrderBackGround {
+		OB_NONE = 0,
+		OB_HAS_BEEN,
+		OB_PRESENT
+	};
 }

@@ -7,7 +7,9 @@
 namespace DarkHorse {
 using order_event = nlohmann::json;
 struct Order;
+struct Position;
 using order_p = std::shared_ptr<Order>;
+using position_p = std::shared_ptr<Position>;
 class SymbolOrderManager
 {
 public:
@@ -21,6 +23,7 @@ public:
 	void set_symbol_code(const std::string& symbol_code) {
 		symbol_code_ = symbol_code;
 	}
+	OrderBackGround get_order_background(const int position_open_qty);
 private:
 	// 이전에 주문이 나갔는지 여부. 한번이라도 나갔다면 true, 아니면 false.
 	bool ordered_before_{ false };

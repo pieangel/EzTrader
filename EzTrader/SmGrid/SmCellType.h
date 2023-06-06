@@ -32,6 +32,8 @@ namespace DarkHorse {
 		CT_SELECTED,
 		CT_MARK_HILO,
 		CT_MARK_BUY,
-		CT_MARK_SELL
+		CT_MARK_SELL,
+		CT_ORDER_PRESENT,
+		CT_ORDER_HAS_BEEN
 	};
 }
