@@ -46,7 +46,7 @@ public:
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
-	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }
+	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
 	void UpdateSymbolInfo();
@@ -66,6 +66,7 @@ private:
 	void register_symbol(const std::string symbol_code);
 	void show_value(const int row, const int col, const DarkHorse::VmOption& option_info);
 	void set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmOption& option_info);
+	void set_position(DarkHorse::VmOption& option_info);
 	void show_strike(const int row, const int col, const DarkHorse::VmOption& option_info);
 	void show_values();
 	ViewMode view_mode_{ ViewMode::VM_Close };

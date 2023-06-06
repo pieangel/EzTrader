@@ -28,6 +28,7 @@ public:
 		return account_profit_loss_;
 	}
 	void update_account_profit_loss();
+	position_p find_position(const std::string& symbol_code);
 private:
 	void set_symbol_id(position_p position, const std::string& symbol_code);
 	void set_account_id(position_p position, const std::string& account_no);
@@ -37,7 +38,6 @@ private:
 	double calculate_traded_profit_loss(order_p order, position_p position, const int& symbol_decimal, const int& symbol_seungsu);
 	double calculate_average_price(order_p order, position_p position, const int& position_count, const int& unsettled_count);
 	void update_open_profit_loss(position_p position);
-	position_p find_position(const std::string& symbol_code);
 	position_p create_position(const std::string& symbol_code);
 	// key : symbol coode, value : position object.
 	std::map<std::string, position_p> position_map_;

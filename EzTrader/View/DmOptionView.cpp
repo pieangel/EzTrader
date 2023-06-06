@@ -37,6 +37,9 @@
 #include "../Order/OrderProcess/AccountOrderManager.h"
 #include "../Order/OrderProcess/SymbolOrderManager.h"
 #include "../Order/Order.h"
+#include "../Position/TotalPositionManager.h"
+#include "../Position/AccountPositionManager.h"
+#include "../Position/Position.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -298,6 +301,20 @@ void DmOptionView::update_order(order_p order, OrderEvent order_event)
 	}
 }
 
+void DmOptionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	_Account = val;
+	for (auto& option_info : call_symbol_vector_) {
+		set_position(option_info);
+		update_value_cell(option_info.symbol_id, option_info);
+	}
+	for (auto& option_info : put_symbol_vector_) {
+		set_position(option_info);
+		update_value_cell(option_info.symbol_id, option_info);
+	}
+	enable_show_ = true;
+}
+
 void DmOptionView::UpdateSymbolInfo()
 {
 	if (!_Symbol) return;
@@ -419,6 +436,17 @@ void DmOptionView::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell,
 		cell->CellType(CT_NORMAL);
 }
 
+void DmOptionView::set_position(DarkHorse::VmOption& option_info)
+{
+	if (!_Account || !option_info.symbol_p) return;
+
+	auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(_Account->No());
+
+	auto position = account_position_manager->find_position(option_info.symbol_p->SymbolCode());
+	if (!position) return;
+	option_info.position = position->open_quantity;
+}
+
 void DmOptionView::show_strike(const int row, const int col, const DarkHorse::VmOption& option_info)
 {
 	auto cell = _Grid->FindCell(row, col);
@@ -488,6 +516,7 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		const std::string option_code = symbol_code.substr(1, symbol_code.length() - 1);
 		symbol_vector_index_map_[option_code] = i;
 		option_info.call_put = call_side ? 1 : 2;
+		set_position(option_info);
 		if (call_side) call_symbol_vector_.push_back(option_info);
 		else put_symbol_vector_.push_back(option_info);
 	}

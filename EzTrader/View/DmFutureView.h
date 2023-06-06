@@ -46,7 +46,7 @@ public:
 public:
 	void update_order(order_p order, DarkHorse::OrderEvent order_event);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
-	void Account(std::shared_ptr<DarkHorse::SmAccount> val) { _Account = val; }
+	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
 	void UpdateSymbolInfo();
@@ -54,6 +54,7 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 private:
+	void set_position(DarkHorse::VmFuture& future_info);
 	void update_position();
 	void on_update_position();
 	void on_update_quote();

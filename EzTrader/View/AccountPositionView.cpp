@@ -451,53 +451,6 @@ void AccountPositionView::update_account_position()
 		if (position->open_quantity == 0) {
 			continue;
 		}
-		/*
-		pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
-		//pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
-		if (position->open_quantity > 0) {
-			//pRow->GetItem(0)->SetBackgroundColor(RGB(255, 0, 0));
-			pRow->GetItem(1)->SetBackgroundColor(RGB(255, 0, 0));
-			//pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
-			//pRow->GetItem(3)->SetBackgroundColor(RGB(255, 0, 0));
-
-			//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
-			pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
-			//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-			//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
-
-			pRow->GetItem(1)->SetValue("매수", TRUE);
-		}
-		else if (position->open_quantity < 0){
-			pRow->GetItem(1)->SetValue("매도", TRUE);
-			//pRow->GetItem(0)->SetBackgroundColor(RGB(0, 0, 255));
-			pRow->GetItem(1)->SetBackgroundColor(RGB(0, 0, 255));
-			//pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
-			//pRow->GetItem(3)->SetBackgroundColor(RGB(0, 0, 255));
-
-			//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
-			pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
-			//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-			//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
-		}
-
-		pRow->GetItem(3)->SetValue(position->open_quantity, TRUE);
-		//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
-		const int decimal = account_->Type() == "1" ? 2 : 0;
-		const std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);
-		if (position->open_profit_loss > 0) {
-			pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
-			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-		}
-		else if (position->open_profit_loss < 0) {
-			pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
-			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-		}
-		else {
-			pRow->GetItem(2)->SetBackgroundColor(_DefaultBackColor);
-			pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-		}
-		pRow->GetItem(2)->SetValue(open_pl.c_str(), TRUE);
-		*/
 		if (account_->Type() == "1")
 			update_ab_account_position(pRow, position);
 		else
@@ -530,11 +483,12 @@ void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, positio
 		pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
 		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
 		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
-
-		pRow->GetItem(1)->SetValue("매수", TRUE);
+		std::string open_quantity = VtStringUtil::get_format_value(position->open_quantity, 0, true);
+		pRow->GetItem(1)->SetValue(open_quantity.c_str(), TRUE);
 	}
 	else if (position->open_quantity < 0) {
-		pRow->GetItem(1)->SetValue("매도", TRUE);
+		std::string open_quantity = VtStringUtil::get_format_value(position->open_quantity, 0, true);
+		pRow->GetItem(1)->SetValue(open_quantity.c_str(), TRUE);
 		//pRow->GetItem(0)->SetBackgroundColor(RGB(0, 0, 255));
 		pRow->GetItem(1)->SetBackgroundColor(RGB(0, 0, 255));
 		//pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));

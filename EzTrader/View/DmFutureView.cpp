@@ -31,6 +31,10 @@
 #include "../Order/OrderProcess/SymbolOrderManager.h"
 #include "../Order/Order.h"
 
+#include "../Position/TotalPositionManager.h"
+#include "../Position/AccountPositionManager.h"
+#include "../Position/Position.h"
+
 using namespace std;
 using namespace std::placeholders;
 
@@ -72,6 +76,17 @@ DmFutureView::~DmFutureView()
 
 	if (m_pGM != NULL)
 		delete m_pGM;
+}
+
+void DmFutureView::set_position(DarkHorse::VmFuture& future_info)
+{
+	if (!_Account || !future_info.symbol_p) return;
+
+	auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(_Account->No());
+
+	auto position = account_position_manager->find_position(future_info.symbol_p->SymbolCode());
+	if (!position) return;
+	future_info.position = position->open_quantity;
 }
 
 void DmFutureView::update_position()
@@ -120,6 +135,20 @@ void DmFutureView::update_order(order_p order, OrderEvent order_event)
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	show_value(found->second, 2, future_info);
+	enable_show_ = true;
+}
+
+void DmFutureView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	_Account = val;
+	for (auto& future_info : symbol_vec_) {
+		set_position(future_info);
+		if (!future_info.symbol_p) continue;
+		auto found = symbol_row_index_map_.find(future_info.symbol_p->SymbolCode());
+		if (found == symbol_row_index_map_.end()) continue;
+		show_value(found->second, 2, future_info);
+	}
+	
 	enable_show_ = true;
 }
 
@@ -321,7 +350,7 @@ void DmFutureView::init_dm_future()
 				future_info.position = 0;
 				future_info.symbol_id = symbol->Id();
 				future_info.symbol_p = symbol;
-
+				set_position(future_info);
 				symbol_vec_.push_back(future_info);
 				symbol_row_index_map_[symbol->SymbolCode()] = i;
 			}
