@@ -50,6 +50,13 @@ namespace DarkHorse {
 		// key : price as integer, value : order list on the price. 
 		std::map<int, std::shared_ptr<PriceOrderMap>> order_map_;
 	public:
+		void clear() {
+			for (auto& it : order_map_) {
+				it.second->clear();
+			}
+			order_map_.clear();
+			total_count_ = 0;
+		}
 		void set_control_type(const SubOrderControlType control_type) {
 			control_type_ = control_type;
 		}

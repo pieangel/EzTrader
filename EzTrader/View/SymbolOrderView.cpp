@@ -1182,18 +1182,48 @@ void SymbolOrderView::CancelSellStop()
 {
 	if (!account_ || !symbol_) return;
 
+	/*
 	std::shared_ptr<SmSymbolOrderManager> symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(account_->No(), symbol_->SymbolCode());
 
 	symbol_order_mgr->SellStopOrderMgr()->Clear();
 	//Invalidate();
 	_EnableOrderShow = true;
 	_EnableStopShow = true;
+	*/
+
+	sell_stop_order_control_->clear();
+	enable_sell_stop_order_show_ = true;
 }
 
 void SymbolOrderView::CancelSellOrder()
 {
 	if (!account_ || !symbol_) return;
+	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_->No());
+	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
+	const std::map<std::string, order_p>& order_map = symbol_order_manager->get_accepted_order_map();
+	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
+		const auto& order = it->second;
+		if (order->position == SmPositionType::Buy) continue;
+		auto order_req = OrderRequestManager::make_cancel_order_request(
+			order->account_no,
+			account_->Pwd(),
+			order->symbol_code,
+			order->order_no,
+			order->order_price,
+			order->position,
+			order->order_amount,
+			SmOrderType::Cancel,
+			order->price_type,
+			fill_condition_);
+		SetProfitLossCut(order_req);
+		order_req->request_type = order_request_type_;
+		order_req->price_type = price_type_;
+		mainApp.order_request_manager()->add_order_request(order_req);
+	}
 
+	DarkHorse::SubOrderControl& sell_order_control = order_control_->get_sell_order_control();
+	sell_order_control.clear();
+	/*
 	std::shared_ptr<SmSymbolOrderManager> symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(account_->No(), symbol_->SymbolCode());
 
 	const std::map<int, std::map<std::string, std::shared_ptr<SmOrder>>>& sell_order_map = symbol_order_mgr->SellOrderViewer()->GetOrderMap();
@@ -1211,6 +1241,7 @@ void SymbolOrderView::CancelSellOrder()
 	//Invalidate();
 	_EnableOrderShow = true;
 	_EnableStopShow = true;
+	*/
 }
 
 void SymbolOrderView::CancelAllOrder()
@@ -1225,35 +1256,46 @@ void SymbolOrderView::CancelBuyStop()
 {
 	if (!account_ || !symbol_) return;
 
+	/*
 	std::shared_ptr<SmSymbolOrderManager> symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(account_->No(), symbol_->SymbolCode());
 
 	symbol_order_mgr->BuyStopOrderMgr()->Clear();
 	//Invalidate();
 	_EnableOrderShow = true;
 	_EnableStopShow = true;
+	*/
+	buy_stop_order_control_->clear();
+	enable_buy_stop_order_show_ = true;
 }
 
 void SymbolOrderView::CancelBuyOrder()
 {
 	if (!account_ || !symbol_) return;
-
-	std::shared_ptr<SmSymbolOrderManager> symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(account_->No(), symbol_->SymbolCode());
-
-	const std::map<int, std::map<std::string, std::shared_ptr<SmOrder>>>& sell_order_map = symbol_order_mgr->BuyOrderViewer()->GetOrderMap();
-	for (auto it = sell_order_map.begin(); it != sell_order_map.end(); ++it) {
-		const auto& order_vec = it->second;
-		for (auto iv = order_vec.begin(); iv != order_vec.end(); iv++) {
-			auto order_req = SmOrderRequestManager::MakeCancelOrderRequest(
-				account_->No(),
-				account_->Pwd(), symbol_->SymbolCode(),
-				iv->second->OrderNo, iv->second->OrderPrice, iv->second->PositionType,
-				iv->second->OrderAmount);
-			mainApp.Client()->CancelOrder(order_req);
-		}
+	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_->No());
+	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
+	const std::map<std::string, order_p>& order_map = symbol_order_manager->get_accepted_order_map();
+	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
+		const auto& order = it->second;
+		if (order->position == SmPositionType::Sell) continue;
+		auto order_req = OrderRequestManager::make_cancel_order_request(
+			order->account_no,
+			account_->Pwd(),
+			order->symbol_code,
+			order->order_no,
+			order->order_price,
+			order->position,
+			order->order_amount,
+			SmOrderType::Cancel,
+			order->price_type,
+			fill_condition_);
+		SetProfitLossCut(order_req);
+		order_req->request_type = order_request_type_;
+		order_req->price_type = price_type_;
+		mainApp.order_request_manager()->add_order_request(order_req);
 	}
-	//Invalidate();
-	_EnableOrderShow = true;
-	_EnableStopShow = true;
+
+	DarkHorse::SubOrderControl& buy_order_control = order_control_->get_buy_order_control();
+	buy_order_control.clear();
 }
 
 void SymbolOrderView::ProcesButtonClick(const std::shared_ptr<SmCell>& cell)
@@ -1963,7 +2005,7 @@ void SymbolOrderView::put_stop_order(const DarkHorse::SmPositionType& type, cons
 void SymbolOrderView::put_order(const SmPositionType& type, const int& price, const SmPriceType& price_type)
 {
 	if (!account_ || !symbol_) return;
-	if (price <= 0) return;
+	if (price < 0) return;
 
 	std::shared_ptr<OrderRequest> order_req = nullptr;
 	order_req = OrderRequestManager::make_order_request(
@@ -1971,6 +2013,35 @@ void SymbolOrderView::put_order(const SmPositionType& type, const int& price, co
 		account_->Pwd(),
 		price,
 		_OrderAmount,
+		symbol_->SymbolCode(),
+		type,
+		SmOrderType::New,
+		price_type,
+		fill_condition_);
+	if (order_req) {
+		order_req->request_type = order_request_type_;
+		SetProfitLossCut(order_req);
+		mainApp.order_request_manager()->add_order_request(order_req);
+	}
+}
+
+void SymbolOrderView::put_order(
+	const std::string& symbol_code, 
+	const DarkHorse::SmPositionType& type, 
+	const int price, 
+	const int amount, 
+	const DarkHorse::SmPriceType price_type)
+{
+	if (!account_ || !symbol_) return;
+	if (symbol_->SymbolCode() != symbol_code) return;
+	if (price < 0) return;
+
+	std::shared_ptr<OrderRequest> order_req = nullptr;
+	order_req = OrderRequestManager::make_order_request(
+		account_->No(),
+		account_->Pwd(),
+		price,
+		amount,
 		symbol_->SymbolCode(),
 		type,
 		SmOrderType::New,

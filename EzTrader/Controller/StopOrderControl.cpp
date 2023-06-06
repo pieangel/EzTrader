@@ -32,6 +32,18 @@ void PriceOrderRequestMap::remove_order_request(const int request_id)
 	order_request_map_.erase(it);
 	count_ = order_request_map_.size();
 }
+
+void StopOrderControl::clear()
+{
+	for (auto& it : order_req_map_) {
+		it.second->clear();
+	}
+	order_req_map_.clear();
+	total_count_ = 0;
+
+	if (event_handler_) event_handler_();
+}
+
 StopOrderControl::StopOrderControl()
 	: id_(IdGenerator::get_id())
 {

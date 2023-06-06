@@ -40,6 +40,11 @@
 #include "../../Task/SmTaskRequestManager.h"
 #include "../../Util/IdGenerator.h"
 #include "../../Event/EventHub.h"
+#include "../../Position/TotalPositionManager.h"
+#include "../../Position/AccountPositionManager.h"
+#include "../../Position/Position.h"
+#include "../../Order/OrderRequest/OrderRequestManager.h"
+#include "../../Order/OrderRequest/OrderRequest.h"
 #include <functional>
 using namespace std::placeholders;
 // SmOrderWnd dialog
@@ -51,6 +56,8 @@ using namespace std::placeholders;
 using namespace DarkHorse;
 
 int DmAccountOrderCenterWindow::DeltaOrderArea = 0;
+
+using account_position_manager_p = std::shared_ptr<DarkHorse::AccountPositionManager>;
 
 IMPLEMENT_DYNAMIC(DmAccountOrderCenterWindow, CBCGPDialog)
 
@@ -793,7 +800,7 @@ void DmAccountOrderCenterWindow::OnEnChangeEditAmount()
 void DmAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 {
 	if (!account_ || !symbol_) return;
-
+	/*
 	auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(account_->No());
 	const std::map<std::string, std::shared_ptr<SmPosition>>& account_pos_map = account_pos_mgr->GetPositionMap();
 	auto found = account_pos_map.find(symbol_->SymbolCode());
@@ -805,6 +812,18 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 	else
 		order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account_->No(), account_->Pwd(), symbol_->SymbolCode(), 0, abs(found->second->OpenQty), DarkHorse::SmPriceType::Market);
 	mainApp.Client()->NewOrder(order_req);
+	*/
+
+	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_->No());
+	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
+	for (auto it = position_map.begin(); it != position_map.end(); it++) {
+		if (it->second->open_quantity > 0) {
+			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
+		}
+		else if (it->second->open_quantity < 0) {
+			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
+		}
+	}
 }
 
 

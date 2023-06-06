@@ -295,11 +295,11 @@ namespace DarkHorse {
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.SellHogaTextBrush);
 			break;
 		case SmCellType::CT_REMAIN_BUY: 
-			pGM->FillRectangle(rect, res.SellPositionBrush);
+			pGM->FillRectangle(rect, res.BuyPositionBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_REMAIN_SELL: 
-			pGM->FillRectangle(rect, res.BuyPositionBrush);
+			pGM->FillRectangle(rect, res.SellPositionBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_BUY:

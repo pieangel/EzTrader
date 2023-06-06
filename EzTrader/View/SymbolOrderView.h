@@ -145,6 +145,14 @@ public:
 		parent_ = wnd;
 	}
 	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
+	void put_order
+	(
+		const std::string& symbol_code,
+		const DarkHorse::SmPositionType& type,
+		const int price,
+		const int amount,
+		const DarkHorse::SmPriceType price_type
+	);
 private:
 	void set_fixed_selected_cell();
 	void clear_fixed_selected_cell();

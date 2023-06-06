@@ -42,7 +42,7 @@ public:
 	enum { IDD = IDD_ORDER_CENTER };
 #endif
 public:
-	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
+	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	bool Selected() const { return _Selected; }
 	void Selected(bool val);
@@ -106,8 +106,8 @@ private:
 	int _ValueStartRow{ 1 };
 	std::set<int> _OldHogaBuyRowIndex;
 	std::set<int> _OldHogaSellRowIndex;
-	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
-	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
+	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
+	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
 	//CExtStatusControlBar m_bar;
 	bool _Init = false;
 	bool _ShowQuoteArea = true;

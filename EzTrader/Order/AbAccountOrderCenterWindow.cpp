@@ -34,6 +34,11 @@
 #include "SmOrderSetDialog.h"
 #include "../Event/EventHub.h"
 #include "../Event/EventHubArg.h"
+#include "../Position/TotalPositionManager.h"
+#include "../Position/AccountPositionManager.h"
+#include "../Position/Position.h"
+#include "../Order/OrderRequest/OrderRequestManager.h"
+#include "../Order/OrderRequest/OrderRequest.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -44,6 +49,8 @@
 using namespace DarkHorse;
 
 int AbAccountOrderCenterWindow::DeltaOrderArea = 0;
+
+using account_position_manager_p = std::shared_ptr<DarkHorse::AccountPositionManager>;
 
 IMPLEMENT_DYNAMIC(AbAccountOrderCenterWindow, CBCGPDialog)
 
@@ -65,7 +72,7 @@ AbAccountOrderCenterWindow::~AbAccountOrderCenterWindow()
 
 void AbAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
-	_Account = val;
+	account_ = val;
 	symbol_order_view_.Account(val);
 	symbol_order_view_.Refresh();
 	symbol_position_view_.Account(val);
@@ -229,9 +236,9 @@ void AbAccountOrderCenterWindow::SetOrderAmount(const int& count)
 
 int AbAccountOrderCenterWindow::GetPositionCount()
 {
-	if (!_Account || !_Symbol) return 0;
+	if (!account_ || !symbol_) return 0;
 
-	std::shared_ptr<SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(_Account->No(), _Symbol->SymbolCode());
+	std::shared_ptr<SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(account_->No(), symbol_->SymbolCode());
 	
 	return position->OpenQty;
 }
@@ -375,8 +382,8 @@ void AbAccountOrderCenterWindow::OnTimer(UINT_PTR nIDEvent)
 	CTime t1;
 	t1 = CTime::GetCurrentTime();
 	//m_bar.SetPaneText(1, t1.Format("%H:%M:%S"));
-	if (_Account && _Symbol) {
-		auto symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(_Account->No(), _Symbol->SymbolCode());
+	if (account_ && symbol_) {
+		auto symbol_order_mgr = mainApp.TotalOrderMgr()->FindAddSymbolOrderManager(account_->No(), symbol_->SymbolCode());
 		int filled_count = symbol_order_mgr->GetUnsettledCount();
 		CString strCount;
 		strCount.Format("%d", filled_count);
@@ -390,7 +397,7 @@ void AbAccountOrderCenterWindow::SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymb
 {
 	if (!symbol) return;
 
-	_Symbol = symbol;
+	symbol_ = symbol;
 
 	std::string symbol_info(symbol->SymbolNameKr());
 	symbol_info.append(" [");
@@ -400,9 +407,9 @@ void AbAccountOrderCenterWindow::SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymb
 	int result = _ComboSymbol.SelectString(-1, symbol_info.c_str());
 	if (result == CB_ERR) {
 		_CurrentIndex = _ComboSymbol.AddString(symbol_info.c_str());
-		_IndexToSymbolMap[_CurrentIndex] = _Symbol;
+		_IndexToSymbolMap[_CurrentIndex] = symbol_;
 		_ComboSymbol.SetCurSel(_CurrentIndex);
-		mainApp.SymMgr()->RegisterSymbolToServer(_Symbol->SymbolCode(), true);
+		mainApp.SymMgr()->RegisterSymbolToServer(symbol_->SymbolCode(), true);
 	}
 	else {
 		_CurrentIndex = result;
@@ -411,12 +418,12 @@ void AbAccountOrderCenterWindow::SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymb
 
 		if (found == _IndexToSymbolMap.end()) return;
 
-		_Symbol = _IndexToSymbolMap[_CurrentIndex];
+		symbol_ = _IndexToSymbolMap[_CurrentIndex];
 	}
 
 	_StaticSymbolName.SetWindowText(symbol_info.c_str());
 
-	SetInfo(_Symbol);
+	SetInfo(symbol_);
 }
 
 void AbAccountOrderCenterWindow::UpdateOrderSettings()
@@ -558,17 +565,17 @@ void AbAccountOrderCenterWindow::OnCbnSelchangeComboSymbol()
 
 	_CurrentIndex = cur_sel;
 
-	_Symbol = _IndexToSymbolMap[_CurrentIndex];
+	symbol_ = _IndexToSymbolMap[_CurrentIndex];
 
 
-	std::string symbol_info(_Symbol->SymbolNameKr());
+	std::string symbol_info(symbol_->SymbolNameKr());
 	symbol_info.append(" [");
-	symbol_info.append(_Symbol->SymbolCode());
+	symbol_info.append(symbol_->SymbolCode());
 	symbol_info.append("]");
 
 	_StaticSymbolName.SetWindowText(symbol_info.c_str());
 
-	SetInfo(_Symbol);
+	SetInfo(symbol_);
 }
 
 
@@ -626,7 +633,7 @@ void AbAccountOrderCenterWindow::OnBnClickedBtnRefreshOrder()
 {
 	//_OrderArea.UpdateOrder(_Symbol->SymbolCode());
 	//_OrderArea.Invalidate(FALSE);
-	mainApp.Client()->GetFilledOrderList(_Account->No(), _Account->Pwd());
+	mainApp.Client()->GetFilledOrderList(account_->No(), account_->Pwd());
 }
 
 
@@ -721,8 +728,9 @@ void AbAccountOrderCenterWindow::OnEnChangeEditAmount()
 
 void AbAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 {
-	if (!_Account || !_Symbol) return;
+	if (!account_ || !symbol_) return;
 
+	/*
 	auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(_Account->No());
 	const std::map<std::string, std::shared_ptr<SmPosition>>& account_pos_map = account_pos_mgr->GetPositionMap();
 	auto found = account_pos_map.find(_Symbol->SymbolCode());
@@ -734,6 +742,18 @@ void AbAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 	else
 		order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(_Account->No(), _Account->Pwd(), _Symbol->SymbolCode(), 0, abs(found->second->OpenQty), DarkHorse::SmPriceType::Market);
 	mainApp.Client()->NewOrder(order_req);
+	*/
+
+	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_->No());
+	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
+	for (auto it = position_map.begin(); it != position_map.end(); it++) {
+		if (it->second->open_quantity > 0) {
+			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
+		}
+		else if (it->second->open_quantity < 0) {
+			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
+		}
+	}
 }
 
 

@@ -141,8 +141,8 @@ BOOL AbAccountOrderLeftWindow::OnInitDialog()
 	*/
 
 
-	account_order_view_.StartTimer();
-	account_position_view_.start_timer();
+	//account_order_view_.StartTimer();
+	//account_position_view_.start_timer();
 
 	//_AcceptedGrid.StartTimer();
 

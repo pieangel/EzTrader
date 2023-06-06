@@ -45,6 +45,7 @@ using order_p = std::shared_ptr<Order>;
 class StopOrderControl
 {
 public:
+	void clear();
 	void set_stop_as_real_order(bool enable) {
 		stop_as_real_order_ = enable;
 	}

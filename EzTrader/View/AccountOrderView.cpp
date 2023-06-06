@@ -214,6 +214,7 @@ void AccountOrderView::update_order()
 {
 	if (!account_order_control_ || !_Account ) return;
 	const std::map<std::string, order_p>& order_map = account_order_control_->get_order_map();
+	//if (order_map.empty()) return;
 
 	int row = 0;
 	for (auto it2 = order_map.begin(); it2 != order_map.end(); it2++) {
@@ -520,12 +521,13 @@ void AccountOrderView::ToggleExtendedPadding()
 
 void AccountOrderView::on_timer()
 {
+	bool needDraw = false;
 	if (enable_order_show_) {
 		update_order();
-		//needDraw = true;
+		needDraw = true;
 		enable_order_show_ = false;
 	}
-	//Invalidate();
+	if (needDraw) Invalidate();
 }
 
 void AccountOrderView::StartTimer()
