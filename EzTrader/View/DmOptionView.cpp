@@ -79,10 +79,8 @@ DmOptionView::DmOptionView()
 DmOptionView::~DmOptionView()
 {
 	//KillTimer(1);
-	mainApp.event_hub()->unsubscribe_expected_event_handler
-	(
-		id_
-	);
+	mainApp.event_hub()->unsubscribe_order_event_handler(id_);
+	mainApp.event_hub()->unsubscribe_expected_event_handler(id_);
 	if (m_pGM != NULL)
 	{
 		delete m_pGM;

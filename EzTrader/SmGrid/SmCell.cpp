@@ -213,7 +213,7 @@ namespace DarkHorse {
 	void SmCell::draw_cell_by_type(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res)
 	{
 		CBCGPRect rect(_X, _Y, _X + _Width, _Y + _Height);
-		const int mark_width = 2;
+		const int mark_width = 3;
 		CBCGPRect right_pos_rect(_X + _Width - mark_width, _Y, _X + _Width, _Y + _Height);
 		CBCGPRect left_pos_rect(_X, _Y, _X + mark_width, _Y + _Height);
 		switch (_CellType)
