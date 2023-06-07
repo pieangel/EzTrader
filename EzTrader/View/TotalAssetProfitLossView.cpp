@@ -39,14 +39,7 @@ TotalAssetProfitLossView::TotalAssetProfitLossView()
 
 TotalAssetProfitLossView::~TotalAssetProfitLossView()
 {
-	KillTimer(1);
-	mainApp.CallbackMgr()->UnsubscribeOrderCallback((long)this);
-	mainApp.CallbackMgr()->UnsubscribeQuoteCallback((long)this);
-
-	if (m_pGM != NULL)
-	{
-		delete m_pGM;
-	}
+	if (m_pGM != NULL) delete m_pGM;
 }
 
 void TotalAssetProfitLossView::SetUp()

@@ -4349,11 +4349,11 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 		symbol_position["account_name"] = static_cast<const char*>(strAccountName.Trim());
 		symbol_position["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
 		symbol_position["symbol_position"] = position == 2 ? -1 : 1;
-		symbol_position["symbol_pre_open_qty"] = 0;
-		symbol_position["symbol_open_qty"] = _ttoi(strSymbolTodayOpenQty.Trim()) + _ttoi(strSymbolPreOpenQty.Trim());
+		symbol_position["symbol_open_qty"] = _ttoi(strSymbolTodayOpenQty.Trim());
 		symbol_position["symbol_avg_price"] = avg_price;
 		symbol_position["symbol_unit_price"] = avg_price;
 		symbol_position["symbol_open_profit_loss"] = 0;
+		symbol_position["symbol_pre_open_qty"] = _ttoi(strSymbolPreOpenQty.Trim());
 
 		mainApp.total_position_manager()->on_symbol_position(std::move(symbol_position));
 	}

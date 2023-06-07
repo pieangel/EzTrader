@@ -213,8 +213,9 @@ namespace DarkHorse {
 	void SmCell::draw_cell_by_type(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res)
 	{
 		CBCGPRect rect(_X, _Y, _X + _Width, _Y + _Height);
-		const int mark_width = 5;
+		const int mark_width = 2;
 		CBCGPRect right_pos_rect(_X + _Width - mark_width, _Y, _X + _Width, _Y + _Height);
+		CBCGPRect left_pos_rect(_X, _Y, _X + mark_width, _Y + _Height);
 		switch (_CellType)
 		{
 		case SmCellType::CT_NORMAL: 
@@ -252,6 +253,8 @@ namespace DarkHorse {
 		case SmCellType::CT_QUOTE_OPEN: 
 			pGM->FillRectangle(rect, res.GridNormalBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.CloseTextBrush);
+
+			pGM->DrawRectangle(rect, res.QuoteTextBrush);
 			break;
 		case SmCellType::CT_QUOTE_HIGH: 
 			pGM->FillRectangle(rect, res.GridNormalBrush);
@@ -267,10 +270,12 @@ namespace DarkHorse {
 			break;
 		case SmCellType::CT_POSITION_BUY: 
 			pGM->FillRectangle(rect, res.GridNormalBrush);
+			pGM->DrawRectangle(rect, res.BuyPositionBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.TextBrush);
 			break;
 		case SmCellType::CT_POSITION_SELL: 
 			pGM->FillRectangle(rect, res.GridNormalBrush);
+			pGM->DrawRectangle(rect, res.SellPositionBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.TextBrush);
 			break;
 		case SmCellType::CT_HOGA_SELL: 
@@ -303,14 +308,17 @@ namespace DarkHorse {
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_BUY:
+			pGM->FillRectangle(left_pos_rect, res.QMBuyBrush);
 			pGM->FillRectangle(right_pos_rect, res.QMBuyBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_SELL:
+			pGM->FillRectangle(left_pos_rect, res.QMSellBrush);
 			pGM->FillRectangle(right_pos_rect, res.QMSellBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_HILO:
+			pGM->FillRectangle(left_pos_rect, res.QMHighLowBrush);
 			pGM->FillRectangle(right_pos_rect, res.QMHighLowBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;

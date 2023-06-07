@@ -55,7 +55,7 @@ void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 		const int order_position = arg["symbol_position"]; // buy : 1, sell : -1
 		const int pre_open_qty = arg["symbol_pre_open_qty"];
 		const int today_open_qty = arg["symbol_open_qty"];
-		const int open_quantity = pre_open_qty + today_open_qty;
+		const int open_quantity = today_open_qty;
 		const double open_profit_loss = arg["symbol_open_profit_loss"];
 
 
@@ -64,6 +64,7 @@ void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 		position->symbol_code = symbol_code;
 		position->average_price = average_price;
 		position->open_quantity = open_quantity * order_position;
+		position->pre_day_open_quantity = pre_open_qty;
 		//position->ordered_before = true;
 		//position->open_profit_loss = open_profit_loss;
 		auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
