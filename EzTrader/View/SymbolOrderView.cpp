@@ -1636,12 +1636,15 @@ void SymbolOrderView::set_position() {
 
 void SymbolOrderView::set_order() {
 	if (!order_control_ || !account_ || !symbol_) return;
+	//order_control_->;
+	/*
 	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_->No());
 	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
 	const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
 	for (auto it = accepted_order_map.begin(); it != accepted_order_map.end(); it++) {
 		symbol_order_manager->dispatch_order(OrderEvent::OE_Unfilled, it->second);
 	}
+	*/
 }
 
 void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
@@ -1649,14 +1652,16 @@ void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	if (!val || !position_control_ || !order_control_) return;
 	
 	account_ = val;
-	order_control_->add_account_id(val->id());
+	order_control_->set_account(val);
 	position_control_->set_account_id(val->id());
 	set_position();
-	set_order();
+	//set_order();
 }
 
 void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
+	if (!val || !position_control_ || !order_control_) return;
+
 	symbol_ = val;
 	auto quote = mainApp.QuoteMgr()->get_quote(symbol_->SymbolCode());
 	quote->symbol_id = val->Id();
@@ -1669,8 +1674,9 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	product_control_->update_product(symbol_);
 
 	position_control_->set_symbol_id(val->Id());
+	order_control_->set_symbol(val);
 	set_position();
-	set_order();
+	//set_order();
 	sell_stop_order_control_->set_control_type(SmPositionType::Sell);
 	sell_stop_order_control_->set_symbol_id(symbol_->Id());
 	buy_stop_order_control_->set_control_type(SmPositionType::Buy);

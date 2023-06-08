@@ -5,6 +5,11 @@
 #include "../Global/SmTotalManager.h"
 #include "../Util/IdGenerator.h"
 #include "../Event/EventHub.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Global/SmTotalManager.h"
+#include "../Order/OrderProcess/TotalOrderManager.h"
+#include "../Order/OrderProcess/AccountOrderManager.h"
+#include "../Order/OrderProcess/SymbolOrderManager.h"
 namespace DarkHorse {
 
 	OrderControl::OrderControl()
@@ -25,9 +30,50 @@ namespace DarkHorse {
 		mainApp.event_hub()->unsubscribe_order_event_handler(id_);
 	}
 
+	void OrderControl::clear()
+	{
+		buy_order_control_.clear();
+		sell_order_control_.clear();
+	}
+
+	void OrderControl::load_from_account(const std::string& account_no, const std::string& symbol_code)
+	{
+		clear();
+		auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
+		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
+		const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
+		for (auto it = accepted_order_map.begin(); it != accepted_order_map.end(); it++) {
+			symbol_order_manager->dispatch_order(OrderEvent::OE_Unfilled, it->second);
+			add_order(it->second);
+		}
+
+		if (event_handler_) event_handler_();
+	}
+
+	void OrderControl::set_symbol(std::shared_ptr<SmSymbol> symbol)
+	{
+		if (!symbol) return;
+		symbol_ = symbol;
+		for (auto account_no : account_no_set_)
+			load_from_account(account_no, symbol_->SymbolCode());
+	}
+
+	void OrderControl::set_account(std::shared_ptr<SmAccount> account)
+	{
+		if (!account) return;
+		account_no_set_.clear();
+		account_no_set_.insert(account->No());
+		if (!symbol_) return;
+		for(auto account_no : account_no_set_)
+			load_from_account(account_no, symbol_->SymbolCode());
+	}
+
 	void OrderControl::update_order(std::shared_ptr<Order> order, OrderEvent order_event)
 	{
 		if (!order) return;
+		auto found = account_no_set_.find(order->account_no);
+		if (found == account_no_set_.end()) return;
+
 		if (order_event == OrderEvent::OE_Accepted)
 			on_order_accepted(order);
 		else if (order_event == OrderEvent::OE_Unfilled)
@@ -50,7 +96,7 @@ namespace DarkHorse {
 
 	void OrderControl::add_account_id(const int account_id)
 	{
-		account_id_set_.insert(account_id);
+		//account_id_set_.insert(account_id);
 	}
 
 	std::pair<int, int> OrderControl::get_order_count(const SmPositionType& position, const int price)

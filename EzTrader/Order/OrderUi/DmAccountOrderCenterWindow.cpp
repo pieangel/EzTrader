@@ -128,8 +128,6 @@ void DmAccountOrderCenterWindow::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_GROUP2, _Group2);
 	DDX_Control(pDX, IDC_STATIC_GROUP3, _Group3);
 	DDX_Control(pDX, IDC_STATIC_GROUP4, _Group4);
-	DDX_Control(pDX, IDC_SPIN_BUY_AVAIL, _BuyAvail);
-	DDX_Control(pDX, IDC_SPIN_SELL_AVAIL, _SellAvail);
 	DDX_Control(pDX, IDC_STATIC_FILLED_REMAIN, filled_remain_button_);
 	DDX_Control(pDX, IDC_STATIC_REMAIN, remain_button_);
 }
@@ -329,9 +327,6 @@ void DmAccountOrderCenterWindow::init_control()
 	_SpinLossCut.SetRange32(0, 100);
 	_SpinProfitCut.SetRange32(0, 100);
 	_SpinSlip.SetRange32(0, 100);
-
-	_BuyAvail.SetRange32(0, 100);
-	_SellAvail.SetRange32(0, 100);
 
 	((CButton*)GetDlgItem(IDC_RADIO_PRICE))->SetCheck(BST_CHECKED);
 

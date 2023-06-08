@@ -9,6 +9,8 @@
 #include "../ViewModel/VmOrder.h"
 namespace DarkHorse {
 	struct Order;
+	class SmAccount;
+	class SmSymbol;
 	class OrderControl
 	{
 	public:
@@ -24,9 +26,13 @@ namespace DarkHorse {
 		SubOrderControl& get_sell_order_control() {
 			return sell_order_control_;
 		}
+		void clear();
 		void add_account_id(const int account_id);
+		void set_account(std::shared_ptr<SmAccount> account);
+		void set_symbol(std::shared_ptr<SmSymbol> symbol);
 		std::pair<int, int> get_order_count(const SmPositionType& position, const int price);
 		std::shared_ptr<PriceOrderMap> get_order_map(const SmPositionType& position, const int price);
+		void load_from_account(const std::string& account_no, const std::string& symbol_code);
 	private:
 		void on_order_unfilled(std::shared_ptr<Order> order);
 		void on_order_accepted(std::shared_ptr<Order> order);
@@ -36,10 +42,11 @@ namespace DarkHorse {
 		std::pair<int, int> get_order_count(DarkHorse::SubOrderControl& order_control, const int price);
 		SubOrderControl buy_order_control_;
 		SubOrderControl sell_order_control_;
-		int symbol_id_{ 0 };
+		//int symbol_id_{ 0 };
+		std::shared_ptr<SmSymbol> symbol_{nullptr};
 		int id_{ 0 };
-		// the set of account id of which belonged to the account.
-		std::set<int> account_id_set_;
+		// the set of account no of which belongs to the account.
+		std::set<std::string> account_no_set_;
 		std::function<void()> event_handler_;
 	};
 }

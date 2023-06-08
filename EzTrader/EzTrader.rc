@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Korean (Korea) resources
+// 한국어(대한민국) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -83,10 +83,8 @@ BEGIN
     CONTROL         "",IDC_SPIN_LCUT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,370,58,10,14
     EDITTEXT        IDC_EDIT_SLIP,271,68,30,14,ES_CENTER | ES_AUTOHSCROLL
     CONTROL         "",IDC_SPIN_SLIP,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,402,58,10,14
-    EDITTEXT        IDC_EDIT_BUY_CAP,51,85,25,14,ES_AUTOHSCROLL
-    CONTROL         "",IDC_SPIN_BUY_AVAIL,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,315,78,10,14
-    EDITTEXT        IDC_EDIT_SELL_CAP,131,85,28,14,ES_AUTOHSCROLL
-    CONTROL         "",IDC_SPIN_SELL_AVAIL,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,353,82,10,14
+    EDITTEXT        IDC_EDIT_BUY_CAP,51,85,25,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SELL_CAP,131,85,28,14,ES_RIGHT | ES_AUTOHSCROLL
     PUSHBUTTON      "설",IDC_BTN_SET,288,52,14,13
     CONTROL         "이익실현",IDC_CHECK_PROFIT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,3,71,44,10
     CONTROL         "손실제한",IDC_CHECK_LOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,83,71,43,10
@@ -1025,10 +1023,8 @@ BEGIN
     CONTROL         "",IDC_SPIN_LCUT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,370,58,10,14
     EDITTEXT        IDC_EDIT_SLIP,271,68,30,14,ES_CENTER | ES_AUTOHSCROLL
     CONTROL         "",IDC_SPIN_SLIP,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,402,58,10,14
-    EDITTEXT        IDC_EDIT_BUY_CAP,51,85,25,14,ES_AUTOHSCROLL
-    CONTROL         "",IDC_SPIN_BUY_AVAIL,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,315,78,10,14
-    EDITTEXT        IDC_EDIT_SELL_CAP,131,85,28,14,ES_AUTOHSCROLL
-    CONTROL         "",IDC_SPIN_SELL_AVAIL,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,353,82,10,14
+    EDITTEXT        IDC_EDIT_BUY_CAP,51,85,25,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SELL_CAP,131,85,28,14,ES_RIGHT | ES_AUTOHSCROLL
     PUSHBUTTON      "설",IDC_BTN_SET,288,52,14,13
     CONTROL         "이익실현",IDC_CHECK_PROFIT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,3,71,44,10
     CONTROL         "손실제한",IDC_CHECK_LOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,83,71,43,10
@@ -2235,12 +2231,12 @@ BEGIN
     ID_USER_TOOL10          "Activates user-defined tool\nUser Tool"
 END
 
-#endif    // Korean (Korea) resources
+#endif    // 한국어(대한민국) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// 영어(미국) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -2257,7 +2253,7 @@ IDR_MAINFRAME           ICON                    "RES\\DarkHorse.ico"
 
 IDR_DarkHorseTYPE       ICON                    "RES\\DarkHorseDoc.ico"
 
-#endif    // English (United States) resources
+#endif    // 영어(미국) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
