@@ -43,7 +43,6 @@ namespace DarkHorse {
 		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
 		const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
 		for (auto it = accepted_order_map.begin(); it != accepted_order_map.end(); it++) {
-			symbol_order_manager->dispatch_order(OrderEvent::OE_Unfilled, it->second);
 			add_order(it->second);
 		}
 

@@ -34,6 +34,7 @@ void AccountOrderControl::load_order_from_account(const std::string& account_no)
 		auto accepted_order_map = it->second->get_accepted_order_map();
 		add_accepted_order(accepted_order_map);
 	}
+	if (event_handler_) event_handler_();
 }
 
 void AccountOrderControl::update_order(order_p order, OrderEvent order_event)
