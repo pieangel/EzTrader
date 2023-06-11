@@ -64,6 +64,7 @@ private:
 	bool destroyed_{ false };
 	std::shared_ptr<DmAccountOrderLeftWindow> _LeftWnd = nullptr;
 	std::shared_ptr<DmAccountOrderRightWindow> _RightWnd = nullptr;
+	// key : window id, value : window object.
 	std::map<int, std::shared_ptr<DmAccountOrderCenterWindow>> center_window_map_;
 	bool _ShowLeft = true;
 	bool _ShowRight = true;

@@ -198,8 +198,14 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 	center_wnd->SetMainDialog(this);
 	center_wnd->Selected(true);
 	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
-
-	center_wnd->GetWindowRect(rcWnd);
+	
+	center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this);
+	center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
+	center_wnd->ShowWindow(SW_SHOW);
+	center_wnd->SetMainDialog(this);
+	center_wnd->Selected(false);
+	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
+	
 
 	_RightWnd = std::make_shared<DmAccountOrderRightWindow>(this);
 	_RightWnd->Create(IDD_DM_ACNT_ORDER_RIGHT, this);

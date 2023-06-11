@@ -28,6 +28,11 @@
 //#include "Format/format_string.h"
 #include "../Global/SmTotalManager.h"
 #include "../Xml/pugixml.hpp"
+#include "../Json/json.hpp"
+#include "../Dialog/TotalAssetProfitLossDialog.h"
+#include "../Dialog/MiniJangoDialog.h"
+#include "../resource.h"
+#include "../Order/OrderUi/DmAccountOrderWindow.h"
 
 #include <iostream>
 #include <filesystem>
@@ -44,6 +49,7 @@ using namespace std;
 using namespace DarkHorse;
 using namespace pugi;
 namespace fs = std::filesystem;
+using namespace nlohmann;
 
 
 template <typename TP>
@@ -818,4 +824,188 @@ void DarkHorse::SmSaveManager::ReadLoginInfo()
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
+}
+
+void SmSaveManager::restore_dm_mini_jango_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_restore)
+{
+	std::string full_file_name;
+	full_file_name = SmConfigManager::GetApplicationPath();
+	full_file_name.append(_T("\\user\\"));
+	full_file_name.append(filename);
+
+	if (!fs::exists(full_file_name))
+		return;
+
+	std::ifstream file(full_file_name);
+	json dialog_data;
+	file >> dialog_data;
+	file.close();
+
+	for (const auto& dialog_json : dialog_data) {
+		int x = dialog_json["x"].get<int>();
+		int y = dialog_json["y"].get<int>();
+		int width = dialog_json["width"].get<int>();
+		int height = dialog_json["height"].get<int>();
+
+		// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
+		std::shared_ptr<MiniJangoDialog>  totalAssetDialog = std::make_shared<MiniJangoDialog>();
+		totalAssetDialog->Create(IDD_JANGO, parent_window);
+		map_to_restore[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
+		totalAssetDialog->MoveWindow(x, y, width, height, TRUE);
+		totalAssetDialog->ShowWindow(SW_SHOW);
+	}
+}
+
+void SmSaveManager::restore_dm_account_order_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore)
+{
+
+	std::string full_file_name;
+	full_file_name = SmConfigManager::GetApplicationPath();
+	full_file_name.append(_T("\\user\\"));
+	full_file_name.append(filename);
+
+	if (!fs::exists(full_file_name))
+		return;
+
+	std::ifstream file(full_file_name);
+	json dialog_data;
+	file >> dialog_data;
+	file.close();
+
+	for (const auto& dialog_json : dialog_data) {
+		int x = dialog_json["x"].get<int>();
+		int y = dialog_json["y"].get<int>();
+		int width = dialog_json["width"].get<int>();
+		int height = dialog_json["height"].get<int>();
+
+		// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
+		DmAccountOrderWindow*  account_order_window = new DmAccountOrderWindow();
+		account_order_window->Create(IDD_DM_ACNT_ORDER_MAIN, parent_window);
+		map_to_restore[account_order_window->GetSafeHwnd()] = account_order_window;
+		account_order_window->MoveWindow(x, y, width, height, TRUE);
+		account_order_window->ShowWindow(SW_SHOW);
+	}
+}
+
+void SmSaveManager::restore_total_asset_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_restore)
+{
+
+	std::string full_file_name;
+	full_file_name = SmConfigManager::GetApplicationPath();
+	full_file_name.append(_T("\\user\\"));
+	full_file_name.append(filename);
+
+	if (!fs::exists(full_file_name))
+		return;
+
+	std::ifstream file(full_file_name);
+	json dialog_data;
+	file >> dialog_data;
+	file.close();
+
+	for (const auto& dialog_json : dialog_data) {
+		int x = dialog_json["x"].get<int>();
+		int y = dialog_json["y"].get<int>();
+		int width = dialog_json["width"].get<int>();
+		int height = dialog_json["height"].get<int>();
+
+		// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
+		std::shared_ptr< TotalAssetProfitLossDialog>  totalAssetDialog = std::make_shared<TotalAssetProfitLossDialog>();
+		totalAssetDialog->Create(IDD_TOTAL_ASSET, parent_window);
+		map_to_restore[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
+		totalAssetDialog->MoveWindow(x, y, width, height, TRUE);
+		totalAssetDialog->ShowWindow(SW_SHOW);
+	}
+}
+
+void SmSaveManager::save_total_asset_windows(const std::string& filename, const std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_save)
+{
+
+	std::string full_file_name;
+	full_file_name = SmConfigManager::GetApplicationPath();
+	full_file_name.append(_T("\\user\\"));
+	full_file_name.append(filename);
+
+	json dialog_data;
+
+	for (const auto& pair : map_to_save) {
+		HWND hwnd = pair.first;
+
+		RECT rect;
+		GetWindowRect(hwnd, &rect);
+
+		json dialog_json;
+		dialog_json["x"] = rect.left;
+		dialog_json["y"] = rect.top;
+		dialog_json["width"] = rect.right - rect.left;
+		dialog_json["height"] = rect.bottom - rect.top;
+
+		dialog_data.push_back(dialog_json);
+	}
+
+	std::ofstream file(full_file_name);
+	file << dialog_data.dump(4);
+	file.close();
+}
+
+void SmSaveManager::save_dm_mini_jango_windows(const std::string& filename, const std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_save)
+{
+	if (map_to_save.empty()) return;
+
+	std::string full_file_name;
+	full_file_name = SmConfigManager::GetApplicationPath();
+	full_file_name.append(_T("\\user\\"));
+	full_file_name.append(filename);
+
+	json dialog_data;
+
+	for (const auto& pair : map_to_save) {
+		HWND hwnd = pair.first;
+
+		RECT rect;
+		GetWindowRect(hwnd, &rect);
+
+		json dialog_json;
+		dialog_json["x"] = rect.left;
+		dialog_json["y"] = rect.top;
+		dialog_json["width"] = rect.right - rect.left;
+		dialog_json["height"] = rect.bottom - rect.top;
+
+		dialog_data.push_back(dialog_json);
+	}
+
+	std::ofstream file(full_file_name);
+	file << dialog_data.dump(4);
+	file.close();
+}
+
+void SmSaveManager::save_dm_account_order_windows(const std::string& filename, const std::map<HWND, DmAccountOrderWindow*>& map_to_save)
+{
+	if (map_to_save.empty()) return;
+
+	std::string full_file_name;
+	full_file_name = SmConfigManager::GetApplicationPath();
+	full_file_name.append(_T("\\user\\"));
+	full_file_name.append(filename);
+
+	json dialog_data;
+
+	for (const auto& pair : map_to_save) {
+		HWND hwnd = pair.first;
+
+		RECT rect;
+		GetWindowRect(hwnd, &rect);
+
+		json dialog_json;
+		dialog_json["x"] = rect.left;
+		dialog_json["y"] = rect.top;
+		dialog_json["width"] = rect.right - rect.left;
+		dialog_json["height"] = rect.bottom - rect.top;
+
+		dialog_data.push_back(dialog_json);
+	}
+
+	std::ofstream file(full_file_name);
+	file << dialog_data.dump(4);
+	file.close();
 }
