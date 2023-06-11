@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "DmAccountOrderWindow.h"
 #include "../../Util/IdGenerator.h"
+#include "../../Global/SmTotalManager.h"
+#include "../../Task/SmTaskRequestManager.h"
+
 /*
 DmAccountOrderWindow::DmAccountOrderWindow()
 {
@@ -666,6 +669,16 @@ void DmAccountOrderWindow::OnCbnSelchangeComboAccount()
 	SetAccountInfo(_ComboAccountMap[_CurrentAccountIndex]);
 
 	SetAccountForOrderWnd();
+	if (!_Account) return;
+
+	DhTaskArg arg;
+	arg.detail_task_description = _Account->No();
+	arg.task_type = DhTaskType::AccountProfitLoss;
+	arg.parameter_map["account_no"] = _Account->No();
+	arg.parameter_map["password"] = _Account->Pwd();
+	arg.parameter_map["account_type"] = _Account->Type();
+
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
 LRESULT DmAccountOrderWindow::OnUmOrderUpdate(WPARAM wParam, LPARAM lParam)
