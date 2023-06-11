@@ -97,6 +97,7 @@ private:
 	void init_control();
 	void init_views();
 	void init_dm_symbol();
+	void set_default_symbol();
 	void set_symbol_from_out(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	bool selected_ = false;
 	void UpdateOrderSettings();

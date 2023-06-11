@@ -63,7 +63,7 @@ public:
 	void SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnClickSymbol(const std::string& symbol_info);
 	//CComboBox _ComboAccount;
-	CBCGPComboBox _ComboSymbol;
+	CBCGPComboBox combo_symbol_;
 	SymbolOrderView symbol_order_view_;
 	SymbolTickView symbol_tick_view_;
 	SymbolPositionView  symbol_position_view_;
@@ -81,7 +81,17 @@ public:
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
 private:
-	void SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void request_symbol_quote(const std::string& symbol_code);
+	void request_symbol_hoga(const std::string& symbol_code);
+	void init_control();
+	void init_views();
+	void init_ab_symbol();
+	void set_default_symbol();
+	void set_symbol(std::shared_ptr<DarkHorse::SmSymbol>symbol);
+	void set_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	std::string make_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	int add_to_symbol_combo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void set_symbol_info(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	bool _Selected = false;
 	void UpdateOrderSettings();
 	//DarkHorse::SmOrderSettings _OrderSettings;
@@ -89,15 +99,11 @@ private:
 	int _ID{ 0 };
 	int _CutMode{ 0 };
 	bool _Resizing = false;
-	///void ClearOldHoga(Hoga_Type hoga_type) const noexcept;
-	//int FindValueRow(const int& value) const noexcept;
-	/// <summary>
-	/// key : combobox index, value : symbol info including symbol code
-	/// </summary>
-	//std::map<int, std::string> _ComboIndexToSymbolMap;
 	// key : combobox index, value : symbol object
-	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> _IndexToSymbolMap;
-	int _CurrentIndex{ -1 };
+	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> index_to_symbol_;
+	// key : symbol code, value : combobox index.
+	std::map<std::string, int> symbol_to_index_;
+	int current_combo_index_{ -1 };
 	/// <summary>
 	/// Key : row index, Value : Quote Value in integer.
 	/// </summary>
@@ -126,7 +132,7 @@ public:
 	afx_msg void OnCbnSelchangeComboSymbol();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	CBCGPStatic _StaticAccountName;
-	CBCGPStatic _StaticSymbolName;
+	CBCGPStatic static_symbol_name_;
 	afx_msg void OnBnClickedCheckShowRealQuote();
 	CBCGPButton _CheckShowRealTick;
 	afx_msg void OnBnClickedButton3();

@@ -92,6 +92,8 @@ void SmQuoteProcessor::ProcessQuote(nlohmann::json&& quote)
 		tick.qty = quote["volume"];
 		tick.updown = quote["up_down"];
 
+		symbol->quote_requested(true);
+
 		mainApp.event_hub()->process_tick_event(tick);
 		
 	}

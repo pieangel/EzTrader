@@ -128,9 +128,9 @@ namespace DarkHorse {
 
 		if (show_moving_rect_) {
 			draw_moving_rect(pGM, res);
-			CString msg;
-			msg.Format("show_moving_rect_ row[%d], col[%d]\n", _Row, _Col);
-			OutputDebugString(msg);
+			//CString msg;
+			//msg.Format("show_moving_rect_ row[%d], col[%d]\n", _Row, _Col);
+			//OutputDebugString(msg);
 		}
 	}
 

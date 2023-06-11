@@ -87,6 +87,8 @@ void SmHogaProcessor::ProcessHoga(nlohmann::json&& hoga)
 		hoga_p->TotBuyCnt = hoga["tot_buy_cnt"];
 		hoga_p->TotSellCnt = hoga["tot_sell_cnt"];
 
+		symbol->hoga_requested(true);
+
 		mainApp.event_hub()->process_hoga_event(hoga_p);
 
 	}

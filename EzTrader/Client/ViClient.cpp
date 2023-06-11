@@ -37,6 +37,7 @@
 #include "../Position/TotalPositionManager.h"
 #include "../Position/Position.h"
 #include "ClientConst.h"
+#include "../Quote/SmQuoteManager.h"
 #include <format>
 
 #define ROUNDING(x, dig)	( floor((x) * pow(float(10), dig) + 0.5f) / pow(float(10), dig) )
@@ -744,6 +745,7 @@ int DarkHorse::ViClient::ab_symbol_quote(task_arg&& arg)
 	return -1;
 }
 
+/*
 int ViClient::ab_symbol_hoga(DhTaskArg arg)
 {
 	try {
@@ -767,6 +769,8 @@ int ViClient::ab_symbol_hoga(DhTaskArg arg)
 
 	return -1;
 }
+
+*/
 
 int ViClient::ab_symbol_hoga(DhTaskArg&& arg)
 {
@@ -1001,7 +1005,7 @@ int DarkHorse::ViClient::ab_accepted_order_list(task_arg arg)
 
 	return -1;
 }
-
+/*
 int ViClient::ab_symbol_quote(DhTaskArg arg)
 {
 	try {
@@ -1029,6 +1033,7 @@ int ViClient::ab_symbol_quote(DhTaskArg arg)
 
 	return -1;
 }
+*/
 
 int ViClient::ab_symbol_quote(DhTaskArg&& arg)
 {
@@ -3931,6 +3936,7 @@ void DarkHorse::ViClient::on_ab_symbol_quote(const CString& sTrCode, const LONG&
 	if (auto wp = _Client.lock()) {
 		wp->OnSymbolQuote(std::move(quote));
 	}
+
 	on_task_complete(nRqID);
 }
 

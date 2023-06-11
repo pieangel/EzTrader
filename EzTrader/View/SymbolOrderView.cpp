@@ -1661,7 +1661,7 @@ void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
 	if (!val || !position_control_ || !order_control_) return;
-
+	center_valued_ = false;
 	symbol_ = val;
 	auto quote = mainApp.QuoteMgr()->get_quote(symbol_->SymbolCode());
 	quote->symbol_id = val->Id();

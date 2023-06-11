@@ -82,7 +82,13 @@ namespace DarkHorse {
 		void RecentMonth(int val) { _RecentMonth = val; }
 		bool Master_requested() const { return master_requested_; }
 		void Master_requested(bool val) { master_requested_ = val; }
+		bool quote_requested() const { return quote_requested_; }
+		void quote_requested(bool val) { quote_requested_ = val; }
+		bool hoga_requested() const { return hoga_requested_; }	
+		void hoga_requested(bool val) { hoga_requested_ = val; }
 	private:
+		bool hoga_requested_{ false };
+		bool quote_requested_{ false };
 		bool master_requested_{ false };
 		/// <summary>
 		/// 0 : future, 1 : atm , 2 : itm, 3 : otm

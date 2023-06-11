@@ -39,6 +39,7 @@
 #include "../Position/Position.h"
 #include "../Order/OrderRequest/OrderRequestManager.h"
 #include "../Order/OrderRequest/OrderRequest.h"
+#include "../Task/SmTaskRequestManager.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -88,11 +89,11 @@ void AbAccountOrderCenterWindow::Selected(bool val)
 void AbAccountOrderCenterWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO_SYMBOL, _ComboSymbol);
+	DDX_Control(pDX, IDC_COMBO_SYMBOL, combo_symbol_);
 	DDX_Control(pDX, IDC_STATIC_ORDER, symbol_order_view_);
 	DDX_Control(pDX, IDC_STATIC_POSITION, symbol_position_view_);
 	DDX_Control(pDX, IDC_STATIC_QUOTE, symbol_tick_view_);
-	DDX_Control(pDX, IDC_STATIC_SYMBOL_NAME_KR, _StaticSymbolName);
+	DDX_Control(pDX, IDC_STATIC_SYMBOL_NAME_KR, static_symbol_name_);
 	DDX_Control(pDX, IDC_CHECK_SHOW_REAL_QUOTE, _CheckShowRealTick);
 	DDX_Control(pDX, IDC_SPIN_ORDER_AMOUNT, _OrderAmountSpin);
 	DDX_Control(pDX, IDC_STATIC_FILLED, _StaticFilledCount);
@@ -222,7 +223,7 @@ void AbAccountOrderCenterWindow::SetSelected(const bool& selected)
 void AbAccountOrderCenterWindow::OnSymbolClicked(const std::string& symbol_code)
 {
 	auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
-	if (symbol) SetSymbolInfo(symbol);
+	if (symbol) set_symbol_info(symbol);
 }
 
 void AbAccountOrderCenterWindow::SetOrderAmount(const int& count)
@@ -255,79 +256,10 @@ BOOL AbAccountOrderCenterWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
-	
-
-	//SetTimer(1, 40, NULL);
-	_ComboSymbol.SetDroppedWidth(250);
-	//_ComboAccount.SetDroppedWidth(200);
-
-	
-	CRect rect;
-	//CWnd* pWnd = GetDlgItem(IDC_STATIC_SET);
-	//pWnd->GetWindowRect(&rect);
-	//ScreenToClient(&rect);
-
-	// Create the Windows control and attach it to the Grid object
-	//_OrderSetGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, IDC_STATIC_SET);
-	
-
-
-	symbol_order_view_.SetUp();
-	symbol_tick_view_.SetUp();
-	symbol_position_view_.SetUp();
-
-	_CheckShowRealTick.SetCheck(BST_CHECKED);
-	CBCGPStaticLayout* pLayout = (CBCGPStaticLayout*)GetLayout();
-	if (pLayout != NULL)
-	{
-		pLayout->AddAnchor(IDC_STATIC_POSITION, CBCGPStaticLayout::e_MoveTypeNone, CBCGPStaticLayout::e_SizeTypeNone);
-		pLayout->AddAnchor(IDC_STATIC_ORDER, CBCGPStaticLayout::e_MoveTypeNone, CBCGPStaticLayout::e_SizeTypeVert);
-		pLayout->AddAnchor(IDC_STATIC_QUOTE, CBCGPStaticLayout::e_MoveTypeNone, CBCGPStaticLayout::e_SizeTypeNone);
-	}
-
-	
-
-	_StaticAccountName.m_clrText = RGB(255, 255, 255);
-	_StaticSymbolName.m_clrText = RGB(255, 255, 255);
-
-	CRect rcWnd;
-	symbol_order_view_.GetWindowRect(&rcWnd);
-	ScreenToClient(rcWnd);
-
-	rcWnd.bottom = rcWnd.top + rcWnd.Height() + AbAccountOrderCenterWindow::DeltaOrderArea;
-
-	((CEdit*)GetDlgItem(IDC_EDIT_AMOUNT))->SetWindowText("1");
-
-	((CEdit*)GetDlgItem(IDC_EDIT_PROFIT))->SetWindowText("2");
-	((CEdit*)GetDlgItem(IDC_EDIT_LOSS))->SetWindowText("2");
-	((CEdit*)GetDlgItem(IDC_EDIT_SLIP))->SetWindowText("2");
-
+	init_views();
+	init_control();
+	init_ab_symbol();
 	_Init = true;
-
-	_ID = AbAccountOrderWindow::GetId();
-
-	_OrderAmountSpin.SetRange32(0, 100);
-	_SpinLossCut.SetRange32(0, 100);
-	_SpinProfitCut.SetRange32(0, 100);
-	_SpinSlip.SetRange32(0, 100);
-
-	((CButton*)GetDlgItem(IDC_RADIO_PRICE))->SetCheck(BST_CHECKED);
-
-	_BtnSearch.SetImage(IDB_BITMAP_SEARCH, IDB_BITMAP_SEARCH, 0, IDB_BITMAP_SEARCH);
-	_BtnSearch.m_bRighImage = FALSE;
-	_BtnSearch.m_bTopImage = FALSE;
-	//_BtnSearch.SizeToContent();
-	_BtnSearch.RedrawWindow();
-
-	//_ConfigGrid.AttachGrid(this, IDC_STATIC_CONFIG);
-
-	_FilledRemainButton.SetUp();
-	_FilledRemainButton.Text("√º∞·µ» ¿‹∞Ì");
-	_FilledRemainButton.ShowWindow(SW_HIDE);
-
-	_RemainButton.SetUp();
-	_RemainButton.Text("¿‹∞Ì");
-	_RemainButton.OrderCenterWnd(this);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
@@ -388,37 +320,172 @@ void AbAccountOrderCenterWindow::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-void AbAccountOrderCenterWindow::SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+void AbAccountOrderCenterWindow::request_symbol_quote(const std::string& symbol_code)
+{
+	DhTaskArg arg;
+	arg.detail_task_description = symbol_code;
+	arg.task_type = DhTaskType::AbSymbolQuote;
+	arg.parameter_map["symbol_code"] = symbol_code;
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
+}
+
+void AbAccountOrderCenterWindow::request_symbol_hoga(const std::string& symbol_code)
+{
+	DhTaskArg arg;
+	arg.detail_task_description = symbol_code;
+	arg.task_type = DhTaskType::AbSymbolHoga;
+	arg.parameter_map["symbol_code"] = symbol_code;
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
+}
+
+void AbAccountOrderCenterWindow::init_control()
+{
+	//SetTimer(1, 40, NULL);
+	combo_symbol_.SetDroppedWidth(250);
+	//_ComboAccount.SetDroppedWidth(200);
+
+
+	CRect rect;
+	//CWnd* pWnd = GetDlgItem(IDC_STATIC_SET);
+	//pWnd->GetWindowRect(&rect);
+	//ScreenToClient(&rect);
+
+	// Create the Windows control and attach it to the Grid object
+	//_OrderSetGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, IDC_STATIC_SET);
+
+
+
+
+
+	_CheckShowRealTick.SetCheck(BST_CHECKED);
+	CBCGPStaticLayout* pLayout = (CBCGPStaticLayout*)GetLayout();
+	if (pLayout != NULL)
+	{
+		pLayout->AddAnchor(IDC_STATIC_POSITION, CBCGPStaticLayout::e_MoveTypeNone, CBCGPStaticLayout::e_SizeTypeNone);
+		pLayout->AddAnchor(IDC_STATIC_ORDER, CBCGPStaticLayout::e_MoveTypeNone, CBCGPStaticLayout::e_SizeTypeVert);
+		pLayout->AddAnchor(IDC_STATIC_QUOTE, CBCGPStaticLayout::e_MoveTypeNone, CBCGPStaticLayout::e_SizeTypeNone);
+	}
+
+
+
+	_StaticAccountName.m_clrText = RGB(255, 255, 255);
+	static_symbol_name_.m_clrText = RGB(255, 255, 255);
+
+	CRect rcWnd;
+	symbol_order_view_.GetWindowRect(&rcWnd);
+	ScreenToClient(rcWnd);
+
+	rcWnd.bottom = rcWnd.top + rcWnd.Height() + AbAccountOrderCenterWindow::DeltaOrderArea;
+
+	((CEdit*)GetDlgItem(IDC_EDIT_AMOUNT))->SetWindowText("1");
+
+	((CEdit*)GetDlgItem(IDC_EDIT_PROFIT))->SetWindowText("2");
+	((CEdit*)GetDlgItem(IDC_EDIT_LOSS))->SetWindowText("2");
+	((CEdit*)GetDlgItem(IDC_EDIT_SLIP))->SetWindowText("2");
+
+	_ID = AbAccountOrderWindow::GetId();
+
+	_OrderAmountSpin.SetRange32(0, 100);
+	_SpinLossCut.SetRange32(0, 100);
+	_SpinProfitCut.SetRange32(0, 100);
+	_SpinSlip.SetRange32(0, 100);
+
+	((CButton*)GetDlgItem(IDC_RADIO_PRICE))->SetCheck(BST_CHECKED);
+
+	_BtnSearch.SetImage(IDB_BITMAP_SEARCH, IDB_BITMAP_SEARCH, 0, IDB_BITMAP_SEARCH);
+	_BtnSearch.m_bRighImage = FALSE;
+	_BtnSearch.m_bTopImage = FALSE;
+	//_BtnSearch.SizeToContent();
+	_BtnSearch.RedrawWindow();
+
+	//_ConfigGrid.AttachGrid(this, IDC_STATIC_CONFIG);
+
+	_FilledRemainButton.SetUp();
+	_FilledRemainButton.Text("√º∞·µ» ¿‹∞Ì");
+	_FilledRemainButton.ShowWindow(SW_HIDE);
+
+	_RemainButton.SetUp();
+	_RemainButton.Text("¿‹∞Ì");
+	_RemainButton.OrderCenterWnd(this);
+}
+
+void AbAccountOrderCenterWindow::init_views()
+{
+	symbol_order_view_.SetUp();
+	symbol_tick_view_.SetUp();
+	symbol_position_view_.SetUp();
+}
+
+void AbAccountOrderCenterWindow::init_ab_symbol()
+{
+	const std::map<int, std::shared_ptr<SmSymbol>>& favorite_map = mainApp.SymMgr()->GetFavoriteMap();
+	for (const auto& it : favorite_map) {
+		add_to_symbol_combo(it.second);
+	}
+	set_default_symbol();
+}
+
+void AbAccountOrderCenterWindow::set_default_symbol()
+{
+	if (index_to_symbol_.empty()) return;
+	current_combo_index_ = 2;
+	const auto symbol = index_to_symbol_[current_combo_index_];
+	set_symbol_name(symbol);
+	combo_symbol_.SetCurSel(current_combo_index_);
+	set_symbol_info(symbol);
+	set_symbol(symbol);
+}
+
+void AbAccountOrderCenterWindow::set_symbol(std::shared_ptr<DarkHorse::SmSymbol>symbol)
+{
+	symbol_ = symbol;
+}
+
+void AbAccountOrderCenterWindow::set_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol) return;
 
-	symbol_ = symbol;
+	static_symbol_name_.SetWindowText(make_symbol_name(symbol).c_str());
+}
 
+std::string AbAccountOrderCenterWindow::make_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!symbol) return "";
 	std::string symbol_info(symbol->SymbolNameKr());
 	symbol_info.append(" [");
 	symbol_info.append(symbol->SymbolCode());
 	symbol_info.append("]");
+	return symbol_info;
+}
 
-	int result = _ComboSymbol.SelectString(-1, symbol_info.c_str());
-	if (result == CB_ERR) {
-		_CurrentIndex = _ComboSymbol.AddString(symbol_info.c_str());
-		_IndexToSymbolMap[_CurrentIndex] = symbol_;
-		_ComboSymbol.SetCurSel(_CurrentIndex);
-		mainApp.SymMgr()->RegisterSymbolToServer(symbol_->SymbolCode(), true);
+int AbAccountOrderCenterWindow::add_to_symbol_combo(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!symbol) return -1;
+
+	auto found = symbol_to_index_.find(symbol->SymbolCode());
+	if (found != symbol_to_index_.end()) return -1;
+	const std::string symbol_name = make_symbol_name(symbol);
+	if (symbol_name.empty()) return -1;
+	const int index = combo_symbol_.AddString(symbol_name.c_str());
+	index_to_symbol_[index] = symbol;
+	symbol_to_index_[symbol->SymbolCode()] = index;
+	return index;
+}
+
+void AbAccountOrderCenterWindow::set_symbol_info(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!symbol) return;
+	symbol_position_view_.Clear();
+	symbol_tick_view_.Clear();
+	symbol_order_view_.Clear();
+	symbol_position_view_.Symbol(symbol);
+	symbol_order_view_.Symbol(symbol);
+	symbol_tick_view_.Symbol(symbol);
+	if (!symbol->quote_requested()) {
+		request_symbol_quote(symbol->SymbolCode());
+		request_symbol_hoga(symbol->SymbolCode());
 	}
-	else {
-		_CurrentIndex = result;
-
-		auto found = _IndexToSymbolMap.find(result);
-
-		if (found == _IndexToSymbolMap.end()) return;
-
-		symbol_ = _IndexToSymbolMap[_CurrentIndex];
-	}
-
-	_StaticSymbolName.SetWindowText(symbol_info.c_str());
-
-	SetInfo(symbol_);
+	mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
 }
 
 void AbAccountOrderCenterWindow::UpdateOrderSettings()
@@ -521,7 +588,7 @@ int AbAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 	wnd->GetWindowRect(rcTopMost);
 
 	CRect rcSymbol;
-	_StaticSymbolName.GetWindowRect(rcSymbol);
+	static_symbol_name_.GetWindowRect(rcSymbol);
 
 	int y_del = 0, delta_height = 0;
 	y_del = rcTopMost.bottom - rcOrderArea.top;
@@ -551,26 +618,19 @@ int AbAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 
 void AbAccountOrderCenterWindow::OnCbnSelchangeComboSymbol()
 {
-	const int cur_sel = _ComboSymbol.GetCurSel();
+	const int cur_sel = combo_symbol_.GetCurSel();
 	if (cur_sel < 0) return;
 
-	auto found = _IndexToSymbolMap.find(cur_sel);
+	auto found = index_to_symbol_.find(cur_sel);
 
-	if (found == _IndexToSymbolMap.end()) return;
+	if (found == index_to_symbol_.end()) return;
 
-	_CurrentIndex = cur_sel;
+	current_combo_index_ = cur_sel;
 
-	symbol_ = _IndexToSymbolMap[_CurrentIndex];
+	symbol_ = index_to_symbol_[current_combo_index_];
 
-
-	std::string symbol_info(symbol_->SymbolNameKr());
-	symbol_info.append(" [");
-	symbol_info.append(symbol_->SymbolCode());
-	symbol_info.append("]");
-
-	_StaticSymbolName.SetWindowText(symbol_info.c_str());
-
-	SetInfo(symbol_);
+	set_symbol_info(symbol_);
+	set_symbol_name(symbol_);
 }
 
 
@@ -649,7 +709,7 @@ LRESULT AbAccountOrderCenterWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lPa
 {
 	const int symbol_id = (int)wParam;
 	std::shared_ptr<DarkHorse::SmSymbol> symbol = mainApp.SymMgr()->FindSymbolById(symbol_id);
-	if (symbol) SetSymbolInfo(symbol);
+	if (symbol) set_symbol_info(symbol);
 	return 1;
 }
 

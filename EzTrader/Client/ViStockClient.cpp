@@ -426,10 +426,10 @@ void DarkHorse::ViStockClient::ExecTask(DhTaskArg&& task)
 		_ViCtrol->register_symbol(std::move(task));
 		break;
 	case DhTaskType::AbSymbolQuote:
-		_ViCtrol->register_symbol(std::move(task));
+		_ViCtrol->ab_symbol_quote(std::move(task));
 		break;
 	case DhTaskType::AbSymbolHoga:
-		_ViCtrol->register_symbol(std::move(task));
+		_ViCtrol->ab_symbol_hoga(std::move(task));
 		break;
 	}
 }
@@ -938,11 +938,11 @@ int DarkHorse::ViStockClient::dm_accepted_order(DhTaskArg arg)
 
 int ViStockClient::ab_symbol_quote(DhTaskArg arg)
 {
-	return _ViCtrol->ab_symbol_quote(arg);
+	return _ViCtrol->ab_symbol_quote(std::move(arg));
 }
 
 int ViStockClient::ab_symbol_hoga(DhTaskArg arg)
 {
-	return _ViCtrol->ab_symbol_hoga(arg);
+	return _ViCtrol->ab_symbol_hoga(std::move(arg));
 }
 

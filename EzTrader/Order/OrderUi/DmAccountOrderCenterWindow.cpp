@@ -366,6 +366,11 @@ void DmAccountOrderCenterWindow::init_dm_symbol()
 		if (!symbol) continue;
 		add_to_symbol_combo(symbol);
 	}
+	set_default_symbol();
+}
+
+void DmAccountOrderCenterWindow::set_default_symbol()
+{
 	if (index_to_symbol_.empty()) return;
 	current_combo_index_ = 0;
 	const auto symbol = index_to_symbol_[current_combo_index_];

@@ -92,8 +92,8 @@ namespace DarkHorse {
 		int ab_symbol_profit_loss(task_arg&& arg) ;
 		int ab_accepted_order_list(task_arg&& arg) ;
 
-		int ab_symbol_quote(DhTaskArg arg);
-		int ab_symbol_hoga(DhTaskArg arg);
+		//int ab_symbol_quote(DhTaskArg arg);
+		//int ab_symbol_hoga(DhTaskArg arg);
 		int ab_symbol_quote(DhTaskArg&& arg);
 		int ab_symbol_hoga(DhTaskArg&& arg);
 
