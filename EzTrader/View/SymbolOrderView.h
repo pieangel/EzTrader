@@ -153,7 +153,11 @@ public:
 		const int amount,
 		const DarkHorse::SmPriceType price_type
 	);
+	void set_center_window_id(const int center_window_id) {
+		center_window_id_ = center_window_id;
+	}
 private:
+	int center_window_id_{0};
 	void set_fixed_selected_cell();
 	void clear_fixed_selected_cell();
 	void on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag);

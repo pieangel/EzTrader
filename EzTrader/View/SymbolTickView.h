@@ -31,13 +31,17 @@ public:
 		return id_;
 	}
 	void Clear();
-	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
+	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return symbol_; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 	void OnQuoteEvent(const std::string& symbol_code);
 	void set_parent(CWnd* parent) {
 		parent_ = parent;
 	}
+	void set_center_window_id(const int center_window_id) {
+		center_window_id_ = center_window_id;
+	}
 private:
+	int center_window_id_{0};
 	int id_{0};
 	CWnd* parent_{ nullptr };
 	void draw_tick(const int row, const int col, const std::string& value, const int up_down);
@@ -53,9 +57,10 @@ private:
 
 	CBCGPGraphicsManager* m_pGM = nullptr;
 
-	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
+	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 

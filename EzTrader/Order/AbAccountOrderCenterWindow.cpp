@@ -40,6 +40,7 @@
 #include "../Order/OrderRequest/OrderRequestManager.h"
 #include "../Order/OrderRequest/OrderRequest.h"
 #include "../Task/SmTaskRequestManager.h"
+#include "../Util/IdGenerator.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -58,8 +59,11 @@ IMPLEMENT_DYNAMIC(AbAccountOrderCenterWindow, CBCGPDialog)
 AbAccountOrderCenterWindow::AbAccountOrderCenterWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
+	id_ = IdGenerator::get_id();
 	symbol_order_view_.set_order_request_type(OrderRequestType::Abroad);
 	symbol_order_view_.set_fill_condition(SmFilledCondition::Day);
+	symbol_order_view_.set_center_window_id(id_);
+	symbol_tick_view_.set_center_window_id(id_);
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 
@@ -397,7 +401,6 @@ void AbAccountOrderCenterWindow::init_control()
 	((CEdit*)GetDlgItem(IDC_EDIT_LOSS))->SetWindowText("2");
 	((CEdit*)GetDlgItem(IDC_EDIT_SLIP))->SetWindowText("2");
 
-	_ID = AbAccountOrderWindow::GetId();
 
 	_OrderAmountSpin.SetRange32(0, 100);
 	_SpinLossCut.SetRange32(0, 100);

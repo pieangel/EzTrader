@@ -71,6 +71,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 	symbol_order_view_.set_parent(this);
+	symbol_order_view_.set_center_window_id(id_);
 	symbol_tick_view_.set_parent(this);
 	mainApp.event_hub()->add_window_resize_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_resize_event_from_order_view, this));
 	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));

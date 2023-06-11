@@ -2560,13 +2560,7 @@ void SymbolOrderView::OnLButtonDown(UINT nFlags, CPoint point)
 	SetFocus();
 	if (ProcesButtonClickByPos(point)) return;
 
-	if (_MainDialog) {
-
-		if (symbol_) _MainDialog->ChangedSymbol(symbol_);
-
-		DmAccountOrderCenterWindow* wnd = (DmAccountOrderCenterWindow*)GetParent();
-		_MainDialog->ChangedCenterWindow(wnd->ID());
-	}
+	mainApp.event_hub()->trigger_symbol_order_view_event(1, center_window_id_, symbol_);
 
 	auto cell = _Grid->FindCellByPos(_X, _Y);
 	if (!cell) return;

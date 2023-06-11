@@ -74,8 +74,8 @@ public:
 
 	void SetMainDialog(AbAccountOrderWindow* main_dialog);
 	void SetFundDialog(SmFundOrderDialog* fund_dialog);
-	int ID() const { return _ID; }
-	void ID(int val) { _ID = val; }
+	int ID() const { return id_; }
+	void ID(int val) { id_ = val; }
 	void SetSelected(const bool& selected);
 	void OnSymbolClicked(const std::string& symbol_code);
 	void SetOrderAmount(const int& count);
@@ -96,7 +96,7 @@ private:
 	void UpdateOrderSettings();
 	//DarkHorse::SmOrderSettings _OrderSettings;
 	void SetCutMode();
-	int _ID{ 0 };
+	int id_{ 0 };
 	int _CutMode{ 0 };
 	bool _Resizing = false;
 	// key : combobox index, value : symbol object

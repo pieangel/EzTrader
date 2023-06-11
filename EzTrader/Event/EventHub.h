@@ -294,10 +294,22 @@ public:
 		ab_symbol_dispatcher.dispatch(window_id, symbol);
 	}
 
+	void add_symbol_order_view_event(const int event_id, std::function<void(const int window_id, std::shared_ptr<SmSymbol> symbol)>&& handler)
+	{
+		symbol_order_view_event_dispatcher.appendListener(event_id, handler);
+	}
+	void trigger_symbol_order_view_event(const int event_id, const int window_id, std::shared_ptr<SmSymbol> symbol)
+	{
+		symbol_order_view_event_dispatcher.dispatch(event_id, window_id, symbol);
+	}
+
 private:
 	eventpp::EventDispatcher<int, void(const DarkHorse::OrderSetEvent& event, const std::string&, const bool)> parameter_dispatcher;
 
 	eventpp::EventDispatcher<int, void(std::shared_ptr<SmSymbol> symbol)> ab_symbol_dispatcher;
+
+	// event id, window id, symbol object.
+	eventpp::EventDispatcher<int, void(const int center_window_id, std::shared_ptr<SmSymbol> symbol)> symbol_order_view_event_dispatcher;
 
 	// window id, event handler
 	eventpp::EventDispatcher<int, void()> window_resize_event_;

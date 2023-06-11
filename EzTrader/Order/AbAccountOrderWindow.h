@@ -43,7 +43,7 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	const std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>>& GetCenterWndMap() {
-		return _CenterWndMap;
+		return center_window_map_;
 	}
 	void OnQuoteAreaShowHide();
 	void RecalcChildren(CmdMode mode);
@@ -51,7 +51,7 @@ public:
 private:
 	std::shared_ptr<AbAccountOrderLeftWindow> _LeftWnd = nullptr;
 	std::shared_ptr<AbAccountOrderRightWindow> _RightWnd = nullptr;
-	std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>> _CenterWndMap;
+	std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>> center_window_map_;
 	bool _ShowLeft = true;
 	bool _ShowRight = true;
 	// key : combo index, value : account object.
@@ -67,6 +67,7 @@ private:
 	CRect _rcRight;
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 public:
+	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(const std::string& symbol_code);
 	// 주문창을 추가한다.

@@ -27,6 +27,10 @@
 
 #include "../Symbol/SmSymbol.h"
 
+#include "../Event/EventHub.h"
+#include <functional>
+using namespace std::placeholders;
+
 using namespace DarkHorse;
 
 const int CtrlHeight = 32;
@@ -58,7 +62,7 @@ void AbAccountOrderWindow::SetAccount()
 	if (_ComboAccountMap.size() > 0) {
 		const int cur_sel = _ComboAccount.GetCurSel();
 		if (cur_sel >= 0) {
-			for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+			for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 				it->second->Account(_ComboAccountMap[cur_sel]);
 			}
 		}
@@ -74,6 +78,8 @@ AbAccountOrderWindow::AbAccountOrderWindow(CWnd* pParent /*=nullptr*/)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
+
+	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&AbAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 AbAccountOrderWindow::~AbAccountOrderWindow()
@@ -178,7 +184,7 @@ BOOL AbAccountOrderWindow::OnInitDialog()
 	center_wnd->ShowWindow(SW_SHOW);
 	center_wnd->SetMainDialog(this);
 	center_wnd->Selected(true);
-	_CenterWndMap.insert(std::make_pair(center_wnd->ID(), center_wnd));
+	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 
 	center_wnd->GetWindowRect(rcWnd);
 	
@@ -275,7 +281,7 @@ void AbAccountOrderWindow::RecalcChildren(CmdMode mode)
 	}
 	
 
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 		std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 		center_wnd->GetWindowRect(rcWnd);
 		
@@ -283,7 +289,7 @@ void AbAccountOrderWindow::RecalcChildren(CmdMode mode)
 		//center_wnd->ShowWindow(SW_HIDE);
 		center_wnd->MoveWindow(start_x, CtrlHeight + top_gap, rcWnd.Width(), rcWnd.Height());
 		
-		_CenterWndMap.insert(std::make_pair(center_wnd->ID(), center_wnd));
+		center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 		start_x += rcWnd.Width();
 		width_total += rcWnd.Width();
 
@@ -355,7 +361,7 @@ void AbAccountOrderWindow::RecalcChildren(CmdMode mode)
 		rcVector.push_back(rcWnd);
 	}
 
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		it->second->GetWindowRect(rcWnd);
 		rcVector.push_back(rcWnd);
 	}
@@ -410,7 +416,7 @@ void AbAccountOrderWindow::RecalcChildren2(CmdMode mode)
 		rcVector.push_back(rcWnd);
 	}
 
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		it->second->GetWindowRect(rcWnd);
 		rcVector.push_back(rcWnd);
 	}
@@ -437,7 +443,7 @@ void AbAccountOrderWindow::SetAccountForOrderWnd()
 	if (_ComboAccountMap.size() > 0) {
 		const int cur_sel = _ComboAccount.GetCurSel();
 		if (cur_sel >= 0) {
-			for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+			for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 				it->second->Account(_ComboAccountMap[cur_sel]);
 			}
 		}
@@ -461,9 +467,18 @@ void AbAccountOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> 
 	_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
 }
 
+void AbAccountOrderWindow::on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!symbol) return;
+	auto found = center_window_map_.find(center_window_id);
+	if (found == center_window_map_.end()) return;
+	ChangedSymbol(symbol);
+	ChangedCenterWindow(center_window_id);
+}
+
 void AbAccountOrderWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		if (it->second->Selected()) {
 			it->second->OnSymbolClicked(symbol->SymbolCode());
 			break;
@@ -474,7 +489,7 @@ void AbAccountOrderWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> 
 
 void AbAccountOrderWindow::OnSymbolClicked(const std::string& symbol_code)
 {
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		if (it->second->Selected()) {
 			it->second->OnSymbolClicked(symbol_code);
 			break;
@@ -494,7 +509,7 @@ void AbAccountOrderWindow::OnBnClickedBtnAdd()
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetMainDialog(this);
 	center_wnd->Account(_ComboAccountMap[_CurrentAccountIndex]);
-	_CenterWndMap.insert(std::make_pair(center_wnd->ID(), center_wnd));
+	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 	center_wnd->GetWindowRect(rcCenter);
 	ScreenToClient(rcCenter);
 	if (_ShowRight) {
@@ -547,11 +562,11 @@ void AbAccountOrderWindow::OnBnClickedBtnAdd()
 
 void AbAccountOrderWindow::OnBnClickedBtnRemove()
 {
-	if (_CenterWndMap.size() == 1) return;
+	if (center_window_map_.size() == 1) return;
 
 	//LockWindowUpdate();
-	auto it = std::prev(_CenterWndMap.end());
-	_CenterWndMap.erase(it);
+	auto it = std::prev(center_window_map_.end());
+	center_window_map_.erase(it);
 	RecalcChildren(CM_DEL_CENTER);
 	//UnlockWindowUpdate();
 	Invalidate(FALSE);
@@ -587,7 +602,7 @@ void AbAccountOrderWindow::OnStnClickedStaticAccountName()
 void AbAccountOrderWindow::OnBnClickedButton6()
 {
 	int max_delta_height = 0;
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 		std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 		int delta_height = center_wnd->RecalcOrderAreaHeight(this);
 		if (delta_height > max_delta_height) max_delta_height = delta_height;
@@ -642,7 +657,7 @@ LRESULT AbAccountOrderWindow::OnUmOrderUpdate(WPARAM wParam, LPARAM lParam)
 	_LeftWnd->OnOrderChanged(account_id, symbol_id);
 	_RightWnd->OnOrderChanged(account_id, symbol_id);
 
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		it->second->OnOrderChanged(account_id, symbol_id);
 	}
 
@@ -656,7 +671,7 @@ void AbAccountOrderWindow::ChangedSymbol(std::shared_ptr<DarkHorse::SmSymbol> sy
 
 void AbAccountOrderWindow::ChangedCenterWindow(const int& center_wnd_id)
 {
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 		it->second->ID() == center_wnd_id ? it->second->SetSelected(true) : it->second->SetSelected(false);
 	}
 }
@@ -712,7 +727,7 @@ void AbAccountOrderWindow::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 
 	if ((nID & 0x0000FFF0) == SC_KEYMENU) {
-		for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+		for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 			std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 			center_wnd->ArrangeCenterValue();
 		}

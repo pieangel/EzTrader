@@ -11,6 +11,7 @@
 #include "../Controller/SymbolTickControl.h"
 #include "../Util/SmUtil.h"
 #include "../Util/IdGenerator.h"
+#include "../Event/EventHub.h"
 #include <format>
 
 
@@ -25,6 +26,7 @@ BEGIN_MESSAGE_MAP(SymbolTickView, CBCGPStatic)
 	//{{AFX_MSG_MAP(CBCGPTextPreviewCtrl)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 SymbolTickView::SymbolTickView()
@@ -42,6 +44,7 @@ SymbolTickView::~SymbolTickView()
 
 void SymbolTickView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 {
+	symbol_ = val;
 	tick_control_->set_symbol_id(val->Id());
 	tick_control_->set_symbol_decimal(val->decimal());
 	on_update_tick();
@@ -209,4 +212,9 @@ void SymbolTickView::OnTimer(UINT_PTR nIDEvent)
 	if (needDraw) Invalidate();
 
 	CBCGPStatic::OnTimer(nIDEvent);
+}
+
+void SymbolTickView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	mainApp.event_hub()->trigger_symbol_order_view_event(1, center_window_id_, symbol_);
 }
