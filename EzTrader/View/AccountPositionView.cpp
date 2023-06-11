@@ -26,6 +26,10 @@
 #include "../Position/Position.h"
 #include "../Util/VtStringUtil.h"
 #include "../Log/MyLogger.h"
+#include "../Event/EventHub.h"
+#include "../Util/IdGenerator.h"
+#include "../Symbol/SmSymbolManager.h"
+
 #include <format>
 
 #include <functional>
@@ -52,6 +56,7 @@ void AccountPositionView::start_timer()
 IMPLEMENT_DYNAMIC(AccountPositionView, CBCGPGridCtrl)
 
 AccountPositionView::AccountPositionView()
+	: id_(IdGenerator::get_id())
 {
 	m_bExtendedPadding = FALSE;
 	account_position_control_ = std::make_shared<DarkHorse::AccountPositionControl>();
@@ -773,34 +778,6 @@ void AccountPositionView::OnLButtonDown(UINT nFlags, CPoint point)
 	CString msg;
 	//msg.Format("%d", nColumn);
 	//AfxMessageBox(msg);
-	/*
-	if (id.m_nColumn == -1) {
-		if (id.m_nRow == -1) {
-			if (_HeaderCheck) {  _HeaderCheck = false; CheckAll(FALSE); }
-			else { _HeaderCheck = true; CheckAll(TRUE); }
-			UpdateHeaderCheckbox();
-		}
-		else {
-			CBCGPGridRow* pRow = GetRow(id.m_nRow);
-			if (pRow->GetCheck())
-				pRow->SetCheck(FALSE);
-			else
-				pRow->SetCheck(TRUE);
-		}
-	}
-	else {
-		auto found = _RowToPositionMap.find(id.m_nRow);
-		if (found == _RowToPositionMap.end()) return;
-
-		if (_OrderWnd) _OrderWnd->OnSymbolClicked(found->second->SymbolCode);
-		if (_FundOrderWnd) _FundOrderWnd->OnSymbolClicked(found->second->SymbolCode);
-	}
-	Invalidate();
-	*/
-
-
-
-
 
 	if (id.m_nColumn == -1) {
 		if (id.m_nRow == -1) {
@@ -818,13 +795,12 @@ void AccountPositionView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	else {
 
-		auto found = _RowToPositionMap.find(id.m_nRow);
-		if (found == _RowToPositionMap.end()) return;
+		auto found = row_to_position_.find(id.m_nRow);
+		if (found == row_to_position_.end()) return;
 
-		if (_OrderWnd) _OrderWnd->OnSymbolClicked(found->second->SymbolCode);
-		//if (_FundOrderWnd) _FundOrderWnd->OnSymbolClicked(found->second->SymbolCode);
-		//if (_CompOrderWnd) _CompOrderWnd->OnSymbolClicked(found->second->SymbolCode);
-		//if (_CompFundWnd) _CompFundWnd->OnSymbolClicked(found->second->SymbolCode);
+		auto symbol = mainApp.SymMgr()->FindSymbol(found->second->symbol_code);
+		if (!symbol) return;
+		mainApp.event_hub()->trigger_ab_symbol_event(1, symbol);
 	}
 	Invalidate();
 

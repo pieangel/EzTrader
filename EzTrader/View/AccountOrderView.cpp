@@ -26,7 +26,9 @@
 #include "../Controller/AccountOrderControl.h"
 #include "../Order/Order.h"
 #include "../Util/VtStringUtil.h"
-
+#include "../Util/IdGenerator.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Event/EventHub.h"
 using namespace std;
 using namespace std::placeholders;
 
@@ -44,6 +46,7 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(AccountOrderView, CBCGPGridCtrl)
 
 AccountOrderView::AccountOrderView()
+	: id_(IdGenerator::get_id())
 {
 	m_bExtendedPadding = FALSE;
 	account_order_control_ = std::make_shared<DarkHorse::AccountOrderControl>();
@@ -573,13 +576,12 @@ void AccountOrderView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 	}
 	else {
-		auto found = _RowToOrderMap.find(id.m_nRow);
-		if (found == _RowToOrderMap.end()) return;
+		auto found = row_to_order_.find(id.m_nRow);
+		if (found == row_to_order_.end()) return;
 
-		if (_OrderWnd) _OrderWnd->OnSymbolClicked(found->second->SymbolCode);
-		if (_FundOrderWnd) _FundOrderWnd->OnSymbolClicked(found->second->SymbolCode);
-		if (_CompOrderWnd) _CompOrderWnd->OnSymbolClicked(found->second->SymbolCode);
-		if (_CompFundWnd) _CompFundWnd->OnSymbolClicked(found->second->SymbolCode);
+		auto symbol = mainApp.SymMgr()->FindSymbol(found->second->symbol_code);
+		if (!symbol) return;
+		mainApp.event_hub()->trigger_ab_symbol_event(1, symbol);
 	}
 	Invalidate();
 

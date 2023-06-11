@@ -158,6 +158,7 @@ private:
 	std::map<int, std::shared_ptr<DarkHorse::Position>> row_to_position_;
 	std::vector<int> ab_column_widths_vector_;
 	std::vector<int> dm_column_widths_vector_;
+	int id_{ 0 };
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

@@ -54,7 +54,7 @@ private:
 	//CBCGPGridCtrl m_wndPositionGrid;
 	//CBCGPGridCtrl m_wndOrderGrid;
 	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
-	
+	void on_symbol_event(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 public:
 	void ArrangeCenterValue();
 	void CreateResource();
@@ -86,7 +86,7 @@ private:
 	void init_control();
 	void init_views();
 	void init_ab_symbol();
-	void set_default_symbol();
+	void set_current_symbol(const int index);
 	void set_symbol(std::shared_ptr<DarkHorse::SmSymbol>symbol);
 	void set_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	std::string make_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);

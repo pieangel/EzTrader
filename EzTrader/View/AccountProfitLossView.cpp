@@ -27,6 +27,7 @@ BEGIN_MESSAGE_MAP(AccountProfitLossView, CBCGPStatic)
 	//{{AFX_MSG_MAP(CBCGPTextPreviewCtrl)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 AccountProfitLossView::AccountProfitLossView()
@@ -273,4 +274,9 @@ void AccountProfitLossView::OnTimer(UINT_PTR nIDEvent)
 	if (needDraw) Invalidate();
 
 	CBCGPStatic::OnTimer(nIDEvent);
+}
+
+void AccountProfitLossView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+
 }

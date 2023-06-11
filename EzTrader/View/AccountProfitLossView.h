@@ -68,6 +68,7 @@ private:
 	std::shared_ptr<DarkHorse::AccountProfitLossControl> account_profit_loss_control_;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 

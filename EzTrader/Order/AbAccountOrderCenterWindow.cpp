@@ -64,6 +64,7 @@ AbAccountOrderCenterWindow::AbAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	EnableLayout();
 
 	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&AbAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	mainApp.event_hub()->add_ab_symbol_event(1, std::bind(&AbAccountOrderCenterWindow::on_symbol_event, this, std::placeholders::_1));
 }
 
 AbAccountOrderCenterWindow::~AbAccountOrderCenterWindow()
@@ -147,6 +148,19 @@ void AbAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEven
 	*/
 	RecalcOrderAreaHeight(this);
 	symbol_order_view_.Invalidate();
+}
+
+void AbAccountOrderCenterWindow::on_symbol_event(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!symbol) return;
+	const int index = add_to_symbol_combo(symbol);
+	if (index >= 0) {
+		current_combo_index_ = index;
+		combo_symbol_.SetCurSel(current_combo_index_);
+	}
+	set_symbol_name(symbol);
+	set_symbol_info(symbol);
+	set_symbol(symbol);
 }
 
 BEGIN_MESSAGE_MAP(AbAccountOrderCenterWindow, CBCGPDialog)
@@ -422,16 +436,17 @@ void AbAccountOrderCenterWindow::init_ab_symbol()
 	for (const auto& it : favorite_map) {
 		add_to_symbol_combo(it.second);
 	}
-	set_default_symbol();
+	set_current_symbol(2);
 }
 
-void AbAccountOrderCenterWindow::set_default_symbol()
+void AbAccountOrderCenterWindow::set_current_symbol(const int index)
 {
 	if (index_to_symbol_.empty()) return;
-	current_combo_index_ = 2;
+	current_combo_index_ = index;
+	combo_symbol_.SetCurSel(current_combo_index_);
+
 	const auto symbol = index_to_symbol_[current_combo_index_];
 	set_symbol_name(symbol);
-	combo_symbol_.SetCurSel(current_combo_index_);
 	set_symbol_info(symbol);
 	set_symbol(symbol);
 }

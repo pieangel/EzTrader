@@ -138,6 +138,7 @@ private:
 	void CancelSelFundOrders();
 	void CancelAllAccountOrders();
 	void CancelAllFundOrders();
+	int id_{ 0 };
 public:
 	void on_timer();
 	void StartTimer();
