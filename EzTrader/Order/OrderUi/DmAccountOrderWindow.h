@@ -61,6 +61,7 @@ public:
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
 private:
+	int id_{0};
 	bool destroyed_{ false };
 	std::shared_ptr<DmAccountOrderLeftWindow> _LeftWnd = nullptr;
 	std::shared_ptr<DmAccountOrderRightWindow> _RightWnd = nullptr;
@@ -81,6 +82,7 @@ private:
 	CRect _rcRight;
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 public:
+	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(const std::string& symbol_code);

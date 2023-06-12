@@ -94,6 +94,13 @@ namespace DarkHorse {
 	using AccountProfitLossCBH = eventpp::CallbackList<void()>::Handle;
 
 
+	using AbSymbolCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>;
+	using AbSymbolCBH = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>::Handle;
+
+	using SymbolOrderViewCBL = eventpp::CallbackList<void(const std::string& account_type, const int center_window_id, std::shared_ptr<SmSymbol> symbol)>;
+	using SymbolOrderViewCBH = eventpp::CallbackList<void(const std::string& account_type, const int center_window_id, std::shared_ptr<SmSymbol> symbol)>::Handle;
+
+
 class EventHub
 {
 public:
@@ -179,6 +186,25 @@ public:
 	void process_symbol_event(std::shared_ptr<SmSymbol> symbol)
 	{
 		symbol_cb_list_(symbol);
+	}
+
+
+	void add_ab_symbol_event_handler(const int symbol_control_id, std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
+	{
+		AbSymbolCBH handle = ab_symbol_cb_list_.append(handler);
+		ab_symbol_cb_handle_map_[symbol_control_id] = handle;
+	}
+
+	void unsubscribe_ab_symbol_event_handler(const int symbol_control_id)
+	{
+		auto found = ab_symbol_cb_handle_map_.find(symbol_control_id);
+		if (found == ab_symbol_cb_handle_map_.end()) return;
+		ab_symbol_cb_list_.remove(found->second);
+	}
+
+	void process_ab_symbol_event(std::shared_ptr<SmSymbol> symbol)
+	{
+		ab_symbol_cb_list_(symbol);
 	}
 
 
@@ -294,13 +320,30 @@ public:
 		ab_symbol_dispatcher.dispatch(window_id, symbol);
 	}
 
-	void add_symbol_order_view_event(const int event_id, std::function<void(const int window_id, std::shared_ptr<SmSymbol> symbol)>&& handler)
+	void add_symbol_order_view_event(const int event_id, std::function<void(const int center_window_id, std::shared_ptr<SmSymbol> symbol)>&& handler)
 	{
 		symbol_order_view_event_dispatcher.appendListener(event_id, handler);
 	}
-	void trigger_symbol_order_view_event(const int event_id, const int window_id, std::shared_ptr<SmSymbol> symbol)
+	void trigger_symbol_order_view_event(const int event_id, const int center_window_id, std::shared_ptr<SmSymbol> symbol)
 	{
-		symbol_order_view_event_dispatcher.dispatch(event_id, window_id, symbol);
+		symbol_order_view_event_dispatcher.dispatch(event_id, center_window_id, symbol);
+	}
+
+
+	void subscribe_symbol_order_view_event_handler(const int control_id, std::function<void(const std::string& account_type, const int center_window_id, std::shared_ptr<SmSymbol> symbol)>&& handler)
+	{
+		SymbolOrderViewCBH handle = symbol_order_view_cb_list_.append(handler);
+		symbol_order_view_cb_handle_map_[control_id] = handle;
+	}
+	void unsubscribe_symbol_order_view_event_handler(const int control_id)
+	{
+		auto found = symbol_order_view_cb_handle_map_.find(control_id);
+		if (found == symbol_order_view_cb_handle_map_.end()) return;
+		symbol_order_view_cb_list_.remove(found->second);
+	}
+	void process_symbol_order_view_event(const std::string& account_type, const int center_window_id, std::shared_ptr<SmSymbol> symbol)
+	{
+		symbol_order_view_cb_list_(account_type, center_window_id, symbol);
 	}
 
 private:
@@ -343,6 +386,12 @@ private:
 
 	AccountProfitLossCBL account_profit_loss_cb_list_;
 	std::map<int, AccountProfitLossCBH> account_profit_loss_cb_handle_map_;
+
+	AbSymbolCBL ab_symbol_cb_list_;
+	std::map<int, AbSymbolCBH> ab_symbol_cb_handle_map_;
+
+	SymbolOrderViewCBL symbol_order_view_cb_list_;
+	std::map<int, SymbolOrderViewCBH> symbol_order_view_cb_handle_map_;
 };
 }
 

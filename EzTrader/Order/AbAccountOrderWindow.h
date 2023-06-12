@@ -66,7 +66,9 @@ private:
 	CRect _rcLeft;
 	CRect _rcRight;
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
+	int id_{ 0 };
 public:
+	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(const std::string& symbol_code);

@@ -28,6 +28,7 @@
 #include "../Symbol/SmSymbol.h"
 
 #include "../Event/EventHub.h"
+#include "../Util/IdGenerator.h"
 #include <functional>
 using namespace std::placeholders;
 
@@ -78,12 +79,15 @@ AbAccountOrderWindow::AbAccountOrderWindow(CWnd* pParent /*=nullptr*/)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
+	id_ = IdGenerator::get_id();
 
 	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&AbAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&AbAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 AbAccountOrderWindow::~AbAccountOrderWindow()
 {
+	mainApp.event_hub()->unsubscribe_symbol_order_view_event_handler(id_);
 }
 
 void AbAccountOrderWindow::DoDataExchange(CDataExchange* pDX)
@@ -465,6 +469,16 @@ void AbAccountOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> 
 
 	_LeftWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
 	_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
+}
+
+void AbAccountOrderWindow::on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!_Account || _Account->Type() != account_type) return;
+	if (!symbol) return;
+	auto found = center_window_map_.find(center_window_id);
+	if (found == center_window_map_.end()) return;
+	ChangedSymbol(symbol);
+	ChangedCenterWindow(center_window_id);
 }
 
 void AbAccountOrderWindow::on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)

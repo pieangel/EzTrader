@@ -93,13 +93,18 @@ void DmOptionView::on_update_quote()
 void DmOptionView::update_quote()
 {
 	if (!quote_control_) return;
-
+	try {
 	const VmQuote& quote = quote_control_->get_quote();
 	CString msg;
 	msg.Format("DmOptionView::update_quote :: %s ::  close : %d\n", quote.symbol_code.c_str(), quote.close);
 	//TRACE(msg);
 	if (view_mode_ != ViewMode::VM_Close) return;
 	update_close(quote);
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
 }
 
 void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
