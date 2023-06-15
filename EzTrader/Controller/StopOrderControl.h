@@ -75,6 +75,9 @@ public:
 	void remove_stop_order_request(const int order_price);
 	std::pair<int, int> get_order_count(const int order_price);
 	price_order_request_map_p get_price_order_req_map(const int price);
+	void set_order_control_id(const int id) {
+		order_control_id_ = id;
+	}
 private:
 	bool stop_as_real_order_{false};
 	int symbol_id_{ 0 };

@@ -1195,10 +1195,11 @@ void ViClient::on_task_error(const int& server_request_id, const int request_id)
 
 		auto it = request_map_.find(server_request_id);
 		if (it == request_map_.end()) {
+			if (request_map_.empty()) return;
 			auto first = request_map_.begin();
 			const int argument_id = first->second.argument_id;
-			request_map_.clear();
 			mainApp.vi_server_data_receiver()->on_task_error(first->second.argument_id);
+			request_map_.clear();
 		}
 		else {
 			const int argument_id = it->second.argument_id;

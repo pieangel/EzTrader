@@ -69,9 +69,10 @@ namespace DarkHorse {
 
 	void OrderControl::update_order(std::shared_ptr<Order> order, OrderEvent order_event)
 	{
-		if (!order) return;
+		if (!order || !symbol_) return;
 		auto found = account_no_set_.find(order->account_no);
 		if (found == account_no_set_.end()) return;
+		if (symbol_->SymbolCode() != order->symbol_code) return;
 
 		if (order_event == OrderEvent::OE_Accepted)
 			on_order_accepted(order);

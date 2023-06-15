@@ -93,10 +93,15 @@ order_request_p StopOrderControl::make_profit_cut_order_request(order_p order)
 			symbol->SymbolCode(), 
 			profit_cut_price);
 	}
-	if (account->Type() == "1")
+	if (account->Type() == "1") {
 		profit_order_req->request_type = OrderRequestType::Abroad;
-	else
+		profit_order_req->fill_condition = SmFilledCondition::Day;
+	}
+	else {
 		profit_order_req->request_type = OrderRequestType::Domestic;
+		profit_order_req->fill_condition = SmFilledCondition::Fas;
+	}
+	profit_order_req->price_type = SmPriceType::Price;
 	profit_order_req->cut_mode = SmCutMode::None;
 	profit_order_req->cut_slip = old_req->cut_slip;
 	profit_order_req->profit_cut_tick = old_req->profit_cut_tick;

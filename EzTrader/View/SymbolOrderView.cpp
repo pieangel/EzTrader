@@ -174,10 +174,10 @@ SymbolOrderView::SymbolOrderView()
 
 	buy_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>();
 	buy_stop_order_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_buy_stop_order, this));
-
+	buy_stop_order_control_->set_order_control_id(id_);
 	sell_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>();
 	sell_stop_order_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_sell_stop_order, this));
-
+	sell_stop_order_control_->set_order_control_id(id_);
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 	mainApp.event_hub()->subscribe_symbol_master_event_handler
 	(
@@ -2026,6 +2026,7 @@ void SymbolOrderView::put_order(const SmPositionType& type, const int& price, co
 		fill_condition_);
 	if (order_req) {
 		order_req->request_type = order_request_type_;
+		order_req->order_context.order_control_id = id_;
 		SetProfitLossCut(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
@@ -2055,6 +2056,7 @@ void SymbolOrderView::put_order(
 		fill_condition_);
 	if (order_req) {
 		order_req->request_type = order_request_type_;
+		order_req->order_context.order_control_id = id_;
 		SetProfitLossCut(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
@@ -2304,6 +2306,7 @@ void SymbolOrderView::cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 		SetProfitLossCut(order_req);
 		order_req->request_type = order_request_type_;
 		order_req->price_type = price_type_;
+		order_req->order_context.order_control_id = id_;
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
 	price_order_map->clear();
@@ -2367,6 +2370,7 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 		order_req->request_type = order_request_type_;
 		order_req->price_type = price_type_;
 		order_req->order_context.virtual_filled_price = target_price;
+		order_req->order_context.order_control_id = id_;
 		//set_virtual_filled_value(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
