@@ -395,6 +395,12 @@ void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 		LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
 		TRACE(strLog);
 		const int result_code = _ttoi(strCode);
+
+		if (_ttoi(strCode) == -2713) {
+			int i = 0;
+			i = i + 0;
+			i = result_code;
+		}
 		if (result_code == 332) {
 			on_task_complete(0);
 		}
@@ -785,6 +791,10 @@ int ViClient::ab_symbol_hoga(DhTaskArg&& arg)
 		int nRqID = m_CommAgent.CommFIDRqData(DefAbSymbolHoga, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
 
 		request_map_[nRqID] = arg;
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+			return nRqID;
+		}
 
 		return nRqID;
 	}
@@ -1049,9 +1059,13 @@ int ViClient::ab_symbol_quote(DhTaskArg&& arg)
 
 		CString msg;
 		msg.Format("symbol_code = %s\n", symbol_code.c_str());
-		//TRACE(msg);
+		TRACE(msg);
 
 		request_map_[nRqID] = arg;
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+			return nRqID;
+		}
 
 		return nRqID;
 	}

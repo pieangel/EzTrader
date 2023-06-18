@@ -138,31 +138,21 @@ namespace DarkHorse {
 		break;
 		case DhTaskType::DmAccountAsset:
 		{
+			start_ab_symbol_quote();
+		}
+		break;
+		case DhTaskType::AbSymbolQuote:
+		{
+			start_ab_symbol_hoga();
+		}
+		break;
+		case DhTaskType::AbSymbolHoga:
+		{
 			start_ab_account_asset();
 		}
 			break;
+		
 		case DhTaskType::AbAccountAsset:
-		{
-			start_ab_symbol_profit_loss();
-		}
-			break;
-		case DhTaskType::AbSymbolProfitLoss:
-		{
-			start_dm_symbol_profit_loss();
-		}
-			break;
-		case DhTaskType::DmSymbolProfitLoss:
-		{
-			start_ab_account_profit_loss();
-		}
-			break;
-
-		case DhTaskType::AbAccountProfitLoss:
-		{
-			start_dm_account_profit_loss();
-		}
-		break;
-		case DhTaskType::DmAccountProfitLoss:
 		{
 			start_ab_accepted_order();
 		}
@@ -183,6 +173,28 @@ namespace DarkHorse {
 		}
 		break;
 		case DhTaskType::DmSymbolPosition:
+		{
+			start_dm_account_profit_loss();
+		}
+		break;
+
+		case DhTaskType::DmAccountProfitLoss:
+		{
+			start_ab_symbol_profit_loss();
+		}
+		break;
+		case DhTaskType::AbSymbolProfitLoss:
+		{
+			start_dm_symbol_profit_loss();
+		}
+		break;
+		case DhTaskType::DmSymbolProfitLoss:
+		{
+			start_ab_account_profit_loss();
+		}
+		break;
+
+		case DhTaskType::AbAccountProfitLoss:
 		{
 			server_data_receive_on_ = false;
 			end_all_task();
@@ -563,6 +575,44 @@ namespace DarkHorse {
 	}
 
 
+	void ViServerDataReceiver::make_ab_symbol_quote()
+	{
+		const std::map<int, std::shared_ptr<SmSymbol>>& ab_symbol_favorite = mainApp.SymMgr()->get_ab_favorite_map();
+		for (auto it = ab_symbol_favorite.begin(); it != ab_symbol_favorite.end(); it++) {
+			DhTaskArg arg;
+			arg.detail_task_description = it->second->SymbolCode();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::AbSymbolQuote;
+			arg.parameter_map["symbol_code"] = it->second->SymbolCode();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "해외 시세 다운로드 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbSymbolQuote;
+	}
+
+	void ViServerDataReceiver::make_ab_symbol_hoga()
+	{
+		const std::map<int, std::shared_ptr<SmSymbol>>& ab_symbol_favorite = mainApp.SymMgr()->get_ab_favorite_map();
+		for (auto it = ab_symbol_favorite.begin(); it != ab_symbol_favorite.end(); it++) {
+			DhTaskArg arg;
+			arg.detail_task_description = it->second->SymbolCode();
+			arg.argument_id = ViServerDataReceiver::get_argument_id();
+			arg.task_type = DhTaskType::AbSymbolHoga;
+			arg.parameter_map["symbol_code"] = it->second->SymbolCode();
+
+			task_info_.argument_map[arg.argument_id] = arg;
+		}
+
+		task_info_.task_title = "해외 호가 다운로드 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::AbSymbolHoga;
+	}
+
 	void ViServerDataReceiver::make_ab_symbol_profit_loss()
 	{
 		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
@@ -692,4 +742,17 @@ namespace DarkHorse {
 		make_dm_symbol_profit_loss();
 		((CMainFrame*)AfxGetMainWnd())->start_timer(700);
 	}
+
+	void ViServerDataReceiver::start_ab_symbol_hoga()
+	{
+		make_ab_symbol_hoga();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_ab_symbol_quote()
+	{
+		make_ab_symbol_quote();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
 }

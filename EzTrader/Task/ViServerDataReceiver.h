@@ -62,7 +62,11 @@ namespace DarkHorse {
 		void start_dm_symbol_position();
 		void start_ab_symbol_profit_loss();
 		void start_dm_symbol_profit_loss();
+		void start_ab_symbol_hoga();
+		void start_ab_symbol_quote();
 	private:
+		void make_ab_symbol_quote();
+		void make_ab_symbol_hoga();	
 		void make_ab_symbol_profit_loss();
 		void make_dm_symbol_profit_loss();
 		void make_ab_symbol_position();

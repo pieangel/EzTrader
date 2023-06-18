@@ -147,9 +147,8 @@ void TotalAssetProfitLossView::Account(std::shared_ptr<DarkHorse::SmAccount> val
 	account_ = val;
 
 	if (!account_profit_loss_control_) return;
-
-	account_profit_loss_control_->load_position_from_account(account_->No());
 	account_profit_loss_control_->set_account(account_);
+	account_profit_loss_control_->load_position_from_account(account_->No());
 	asset_control_->load_position_from_account(account_->No());
 	enable_account_profit_loss_show_ = true;
 }
