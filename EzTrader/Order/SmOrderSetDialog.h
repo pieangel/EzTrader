@@ -1,6 +1,6 @@
 #pragma once
 #include <BCGPDialog.h>
-
+#include "../Event/EventHubArg.h"
 // SmOrderSetDialog dialog
 class AbAccountOrderCenterWindow;
 class SmFundOrderCenterWnd;
@@ -10,7 +10,7 @@ class SmOrderSetDialog : public CBCGPDialog
 
 public:
 	SmOrderSetDialog(CWnd* pParent = nullptr);   // standard constructor
-	SmOrderSetDialog(CWnd* pParent, const int& window_id_from);   // standard constructor
+	SmOrderSetDialog(CWnd* pParent, const int& window_id_from, const DarkHorse::OrderSetEvent& setttings);   // standard constructor
 	virtual ~SmOrderSetDialog();
 
 // Dialog Data
@@ -30,6 +30,7 @@ public:
 		return id_;
 	}
 private:
+	DarkHorse::OrderSetEvent order_set_event_;
 	int id_{0};
 	int window_id_from_{ 0 };
 	AbAccountOrderCenterWindow* _OrderWnd = nullptr;

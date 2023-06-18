@@ -128,6 +128,7 @@ void AbAccountOrderCenterWindow::DoDataExchange(CDataExchange* pDX)
 void AbAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)
 {
 	//symbol_order_view_.on_paramter_event(event, event_message, enable);
+	order_set_ = event;
 	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
 	symbol_order_view_.SetAllRowHeight(event.grid_height);
 	/*
@@ -883,7 +884,7 @@ void AbAccountOrderCenterWindow::OnBnClickedBtnSearch()
 
 void AbAccountOrderCenterWindow::OnBnClickedBtnSet()
 {
-	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id());
+	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
 	//_OrderSetDlg->OrderWnd(this);
 	order_set_dialog_->ShowWindow(SW_SHOW);

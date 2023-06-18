@@ -99,6 +99,16 @@ DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent /*=nullptr*/)
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
+DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent), center_window_count_(center_window_count), account_no_(account_no)
+{
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+	id_ = IdGenerator::get_id();
+	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
 DmAccountOrderWindow::~DmAccountOrderWindow()
 {
 	mainApp.event_hub()->unsubscribe_symbol_order_view_event_handler(id_);
@@ -491,6 +501,12 @@ void DmAccountOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> 
 	_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
 }
 
+std::string DmAccountOrderWindow::get_account_no()
+{
+	if (_Account) return _Account->No();
+	return "";	
+}
+
 void DmAccountOrderWindow::on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!_Account || _Account->Type() != account_type) return;
@@ -797,5 +813,40 @@ void DmAccountOrderWindow::PostNcDestroy()
 	CBCGPDialog::PostNcDestroy();
 	destroyed_ = true;
 	delete this;
+}
+
+
+void DmAccountOrderWindow::saveToJson(json& j) const {
+
+	CRect rect;
+	GetWindowRect(&rect);
+
+	j = {
+		{"x", rect.left},
+		{"y", rect.top },
+		{"width", rect.right - rect.left},
+		{"height", rect.bottom - rect.top},
+		{"center_window_count", center_window_map_.size()},
+		{"account_no", _Account ? _Account->No() : ""}	
+	};
+
+	for (const auto& pair : center_window_map_) {
+		json center_window_json;
+		pair.second->saveToJson(center_window_json);
+		j["center_window_map"][std::to_string(pair.first)] = center_window_json;
+	}
+}
+
+void DmAccountOrderWindow::loadFromJson(const json& j) {
+	const json& center_window_map_json = j["center_window_map"];
+	for (const auto& pair : center_window_map_json.items()) {
+		int window_id = std::stoi(pair.key());
+		const json& center_window_json = pair.value();
+
+		std::shared_ptr<DmAccountOrderCenterWindow> center_window = std::make_shared<DmAccountOrderCenterWindow>();
+		center_window->loadFromJson(center_window_json);
+
+		center_window_map_[window_id] = center_window;
+	}
 }
 

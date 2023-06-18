@@ -224,6 +224,12 @@ int DmAccountOrderCenterWindow::GetPositionCount()
 	return position->OpenQty;
 }
 
+std::string DmAccountOrderCenterWindow::get_symbol_code()
+{
+	if (!symbol_) return "";
+	return symbol_->SymbolCode();
+}
+
 void DmAccountOrderCenterWindow::ArrangeCenterValue()
 {
 	symbol_order_view_.ArrangeCenterValue();
@@ -533,6 +539,7 @@ void DmAccountOrderCenterWindow::request_dm_symbol_master(const std::string symb
 
 void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)
 {
+	order_set_ = event;
 	//symbol_order_view_.on_paramter_event(event, event_message, enable);
 	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
 	symbol_order_view_.SetAllRowHeight(event.grid_height);
@@ -877,7 +884,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSearch()
 	//_SymbolTableDlg->OrderWnd = this;
 	//symbol_table_dialog_->ShowWindow(SW_SHOW);
 
-	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id());
+	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
 	//_OrderSetDlg->OrderWnd(this);
 	order_set_dialog_->ShowWindow(SW_SHOW);
@@ -886,7 +893,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSearch()
 
 void DmAccountOrderCenterWindow::OnBnClickedBtnSet()
 {
-	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id());
+	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
 	//_OrderSetDlg->OrderWnd(this);
 	order_set_dialog_->ShowWindow(SW_SHOW);
@@ -905,4 +912,31 @@ void DmAccountOrderCenterWindow::OnBnClickedCheckFixHoga()
 		symbol_order_view_.FixedMode(true);
 	else
 		symbol_order_view_.FixedMode(false);
+}
+
+void DmAccountOrderCenterWindow::saveToJson(json& j) const {
+	if (!symbol_) return;
+	j = {
+		{"symbol_code", symbol_->SymbolCode()},
+		{"message", order_set_.message},
+		{"grid_height", order_set_.grid_height},
+		{"stop_width", order_set_.stop_width},
+		{"order_width", order_set_.order_width},
+		{"count_width", order_set_.count_width},
+		{"qty_width", order_set_.qty_width},
+		{"quote_width", order_set_.quote_width},
+		{"stop_as_real_order", order_set_.stop_as_real_order}
+	};
+}
+
+void DmAccountOrderCenterWindow::loadFromJson(const json& j) {
+	symbol_code_ = j["symbol_code"].get<std::string>();
+	order_set_.message = j["message"].get<std::string>();
+	order_set_.grid_height = j["grid_height"].get<int>();
+	order_set_.stop_width = j["stop_width"].get<int>();
+	order_set_.order_width = j["order_width"].get<int>();
+	order_set_.count_width = j["count_width"].get<int>();
+	order_set_.qty_width = j["qty_width"].get<int>();
+	order_set_.quote_width = j["quote_width"].get<int>();
+	order_set_.stop_as_real_order = j["stop_as_real_order"].get<bool>();
 }

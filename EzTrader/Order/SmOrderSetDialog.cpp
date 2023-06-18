@@ -24,8 +24,8 @@ SmOrderSetDialog::SmOrderSetDialog(CWnd* pParent /*=nullptr*/)
 	id_ = DarkHorse::IdGenerator::get_id();
 }
 
-SmOrderSetDialog::SmOrderSetDialog(CWnd* pParent, const int& window_id_from)
-	: CBCGPDialog(IDD_ORDER_SET, pParent)
+SmOrderSetDialog::SmOrderSetDialog(CWnd* pParent, const int& window_id_from, const DarkHorse::OrderSetEvent& order_set_event)
+	: CBCGPDialog(IDD_ORDER_SET, pParent), order_set_event_(order_set_event)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	id_ = DarkHorse::IdGenerator::get_id();
@@ -90,19 +90,17 @@ BOOL SmOrderSetDialog::OnInitDialog()
 	check_show_order_column_.SetCheck(BST_CHECKED);
 	check_show_stop_column_.SetCheck(BST_CHECKED);
 	check_show_count_column_.SetCheck(BST_CHECKED);
-	//check_stop_by_real_.SetCheck(BST_CHECKED);
-
-	edit_row_height_.SetWindowText("18");
-	edit_stop_width_.SetWindowText("40");
-	edit_order_width_.SetWindowText("55");
-	edit_count_width_.SetWindowText("35");
-	edit_qty_width_.SetWindowText("35");
-	edit_quote_width_.SetWindowText("60");
-
-	if (check_stop_by_real_.GetCheck() == BST_CHECKED)
-		stop_as_real_order_ = true;
+	if (order_set_event_.stop_as_real_order)
+		check_stop_by_real_.SetCheck(BST_CHECKED);
 	else
-		stop_as_real_order_ = false;
+		check_stop_by_real_.SetCheck(BST_UNCHECKED);
+
+	edit_row_height_.SetWindowText(std::to_string(order_set_event_.grid_height).c_str());
+	edit_stop_width_.SetWindowText(std::to_string(order_set_event_.stop_width).c_str());
+	edit_order_width_.SetWindowText(std::to_string(order_set_event_.order_width).c_str());
+	edit_count_width_.SetWindowText(std::to_string(order_set_event_.count_width).c_str());
+	edit_qty_width_.SetWindowText(std::to_string(order_set_event_.qty_width).c_str());
+	edit_quote_width_.SetWindowText(std::to_string(order_set_event_.quote_width).c_str());
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE

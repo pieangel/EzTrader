@@ -18,6 +18,10 @@ private:
 #include <vector>
 #include "../OrderWndConst.h"
 #include "../../Util/SmButton.h"
+#include "../../Json/json.hpp"
+
+using json = nlohmann::json;
+
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
@@ -41,6 +45,7 @@ public:
 
 	void SetAccount();
 	DmAccountOrderWindow(CWnd* pParent = nullptr);   // standard constructor
+	DmAccountOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no);
 	virtual ~DmAccountOrderWindow();
 
 	// Dialog Data
@@ -54,13 +59,15 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	const std::map<int, std::shared_ptr<DmAccountOrderCenterWindow>>& GetCenterWndMap() {
+	const std::map<int, std::shared_ptr<DmAccountOrderCenterWindow>>& get_center_window_map() {
 		return center_window_map_;
 	}
 	void OnQuoteAreaShowHide();
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
 private:
+	size_t center_window_count_{ 0 };
+	std::string account_no_;
 	int id_{0};
 	bool destroyed_{ false };
 	std::shared_ptr<DmAccountOrderLeftWindow> _LeftWnd = nullptr;
@@ -82,6 +89,9 @@ private:
 	CRect _rcRight;
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 public:
+	std::shared_ptr<DarkHorse::SmAccount> get_account() { return _Account; }
+	std::string get_account_no();
+	size_t get_center_window_count() { return center_window_map_.size(); }
 	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol);
@@ -121,6 +131,8 @@ public:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnDestroy();
 	virtual void PostNcDestroy();
+	void saveToJson(json& j) const;
+	void loadFromJson(const json& j);
 };
 
 

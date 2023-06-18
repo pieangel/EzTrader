@@ -1,0 +1,22 @@
+{
+    "00162001": {
+        "account_no": "00162001",
+        "center_window_count": 2,
+        "center_window_map": {
+            "101T9000": {
+                "order_set_event": {
+                    "count_width": -842150451,
+                    "grid_height": -842150451,
+                    "message": "",
+                    "order_width": -842150451,
+                    "qty_width": -842150451,
+                    "quote_width": -842150451,
+                    "stop_as_real_order": true,
+                    "stop_width": -842150451,
+                    "window_id": -842150451
+                },
+                "symbol_code": "101T9000"
+            }
+        }
+    }
+}

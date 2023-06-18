@@ -25,7 +25,9 @@ class DmAccountOrderCenterWindow
 #include "../../View/SymbolTickView.h"
 #include "../OrderRequest/OrderRequest.h"
 #include "../../Event/EventHubArg.h"
+#include "../../Json/json.hpp"
 
+using json = nlohmann::json;
 // SmOrderWnd dialog
 namespace DarkHorse {
 	class SmSymbol;
@@ -87,6 +89,7 @@ public:
 	void OnSymbolClicked(const std::string& symbol_code);
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
+	std::string get_symbol_code();
 private:
 	void on_resize_event_from_order_view();
 	void on_resize_event_from_tick_view();
@@ -137,8 +140,10 @@ private:
 	SmFilledRemainButton filled_remain_button_;
 	SmRemainButton remain_button_;
 	std::shared_ptr< SmOrderSetDialog> order_set_dialog_ = nullptr;
-
+	DarkHorse::OrderSetEvent order_set_;
+	std::string symbol_code_;
 public:
+	const DarkHorse::OrderSetEvent& get_order_set() const { return order_set_; }
 	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
 	void on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag);
 	void set_symbol_order_view_height_and_width(std::vector<int> value_vector);
@@ -198,6 +203,8 @@ public:
 	CBCGPComboBox combo_symbol_;
 	afx_msg void OnStnClickedStaticFilledRemain();
 	afx_msg void OnBnClickedCheckFixHoga();
+	void saveToJson(json& j) const;
+	void loadFromJson(const json& j);
 };
 
 

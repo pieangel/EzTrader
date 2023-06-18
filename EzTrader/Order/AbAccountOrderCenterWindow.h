@@ -16,6 +16,7 @@
 #include "../View/SymbolOrderView.h"
 #include "../View/SymbolTickView.h"
 #include "../View/SymbolPositionView.h"
+#include "../Event/EventHubArg.h"
 
 // SmOrderWnd dialog
 namespace DarkHorse {
@@ -123,6 +124,8 @@ private:
 	SmFilledRemainButton _FilledRemainButton;
 	SmRemainButton _RemainButton;
 	std::shared_ptr< SmOrderSetDialog> order_set_dialog_ = nullptr;
+
+	DarkHorse::OrderSetEvent order_set_;
 
 public:
 	void SetRowWide();
