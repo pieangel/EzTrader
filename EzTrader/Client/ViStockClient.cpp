@@ -908,6 +908,11 @@ void DarkHorse::ViStockClient::OnOrderFilled(nlohmann::json&& arg)
 	SendOrderEvent(order);
 }
 
+int ViStockClient::dm_symbol_master(DhTaskArg arg)
+{
+	return _ViCtrol->dm_symbol_master(arg);	
+}
+
 int DarkHorse::ViStockClient::ab_account_asset(DhTaskArg arg)
 {
 	return _ViCtrol->ab_account_asset(arg);

@@ -4,6 +4,7 @@
 //#include "../EBCtrl/EbGlobal.h"
 #include <map>
 #include <memory>
+#include <vector>
 #include "../Task/SmTaskDefine.h"
 // 서버에서 데이터를 가져오는 작업은 그룹별로 진행된다.
 // 하나의 작업 그룹을 큐에 넣고 그 작업 그룹이 완성이 되면 다음 작업 그룹을 진행한다.
@@ -11,6 +12,8 @@
 class VtProgressDlg;
 
 namespace DarkHorse {
+	class SmProductYearMonth;
+	class SmSymbol;
 	class ViServerDataReceiver 
 	{
 	private:
@@ -48,6 +51,7 @@ namespace DarkHorse {
 		void start_dm_symbol_master_file_download();
 		void start_ab_symbol_master_file_download();
 		void start_ab_symbol_master();
+		void start_dm_symbol_master();
 		void start_dm_account_asset();
 		void start_ab_account_asset();
 		void start_ab_account_profit_loss();
@@ -67,11 +71,15 @@ namespace DarkHorse {
 		void make_ab_accepted_order();
 		void make_dm_account_asset();
 		void make_ab_account_asset();
+		void make_dm_symbol_master();
 		void make_ab_symbol_master();
 		void make_dm_file_download();
 		void make_ab_file_download();
 		// 일별 손익을 가져옵니다.
 		void make_ab_account_profit_loss();
 		void make_dm_account_profit_loss();
+		void make_dm_symbol_master(const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map);
+		void make_dm_symbol_master(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec);
+		void make_dm_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	};
 }

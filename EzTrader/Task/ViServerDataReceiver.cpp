@@ -12,6 +12,11 @@
 #include "../Symbol/SmSymbolManager.h"
 #include "../Symbol/SmSymbolReader.h"
 #include "../Symbol/SmSymbol.h"
+
+#include "../Symbol/SmSymbolManager.h"
+#include "../Symbol/SmProduct.h"
+#include "../Symbol/SmProductYearMonth.h"
+
 #include <set>
 
 #ifdef _DEBUG
@@ -30,6 +35,9 @@ namespace DarkHorse {
 			break;
 		case DhTaskType::AbSymbolMasterFileDownload:
 			mainApp.Client()->ab_symbol_master_file_download(arg);
+			break;
+		case DhTaskType::DmSymbolMaster:
+			mainApp.Client()->dm_symbol_master(arg);
 			break;
 		case DhTaskType::AbSymbolMaster:
 			mainApp.Client()->ab_symbol_master(arg);
@@ -120,9 +128,14 @@ namespace DarkHorse {
 			break;
 		case DhTaskType::AbSymbolMaster:
 		{
-			start_dm_account_asset();
+			start_dm_symbol_master();
 		}
 			break;
+		case DhTaskType::DmSymbolMaster:
+		{
+			start_dm_account_asset();
+		}
+		break;
 		case DhTaskType::DmAccountAsset:
 		{
 			start_ab_account_asset();
@@ -409,6 +422,59 @@ namespace DarkHorse {
 		task_info_.task_type = DhTaskType::AbAccountAsset;
 	}
 
+	void ViServerDataReceiver::make_dm_symbol_master()
+	{
+		const std::vector<DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
+		for (size_t i = 0; i < future_vec.size(); i++) {
+			const auto& year_month_map = future_vec[i].product->get_yearmonth_map();
+			const auto& year_month = year_month_map.begin()->second;
+			const auto& symbol = year_month->get_first_symbol();
+			make_dm_symbol_master(symbol);
+		}
+
+		std::vector<DarkHorse::DmOption>& option_vec = mainApp.SymMgr()->get_dm_option_vec();
+		for (size_t i = 0; i < option_vec.size(); i++) {
+			auto& year_month_map = option_vec[i].call_product->get_yearmonth_map();
+			make_dm_symbol_master(year_month_map);	
+			year_month_map = option_vec[i].put_product->get_yearmonth_map();
+			make_dm_symbol_master(year_month_map);
+		}
+
+		task_info_.task_title = "국내 심볼 마스터 다운로드 중입니다.";
+		task_info_.total_task_count = task_info_.argument_map.size();
+		task_info_.remain_task_count = task_info_.argument_map.size();
+		task_info_.task_type = DhTaskType::DmSymbolMaster;
+	}
+
+	void ViServerDataReceiver::make_dm_symbol_master(const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map)
+	{
+		if (year_month_map.empty()) return;
+
+		auto& symbol_vec = year_month_map.begin()->second->get_symbol_vector();
+		make_dm_symbol_master(symbol_vec);
+	}
+
+	void ViServerDataReceiver::make_dm_symbol_master(const std::vector<std::shared_ptr<DarkHorse::SmSymbol>>& symbol_vec)
+	{
+		if (symbol_vec.empty()) return;
+
+		for (auto const& symbol : symbol_vec) {
+			make_dm_symbol_master(symbol);	
+		}
+	}
+
+	void ViServerDataReceiver::make_dm_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+	{
+		if (!symbol) return;	
+		DhTaskArg arg;
+		arg.detail_task_description = symbol->SymbolCode();
+		arg.argument_id = ViServerDataReceiver::get_argument_id();
+		arg.task_type = DhTaskType::DmSymbolMaster;
+		arg.parameter_map["symbol_code"] = symbol->SymbolCode();
+
+		task_info_.argument_map[arg.argument_id] = arg;
+	}
+
 	void ViServerDataReceiver::make_dm_accepted_order()
 	{
 		const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
@@ -561,6 +627,12 @@ namespace DarkHorse {
 	void ViServerDataReceiver::start_ab_symbol_master()
 	{
 		make_ab_symbol_master();
+		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
+	}
+
+	void ViServerDataReceiver::start_dm_symbol_master()
+	{
+		make_dm_symbol_master();
 		((CMainFrame*)AfxGetMainWnd())->start_timer(10);
 	}
 

@@ -517,8 +517,8 @@ void DmAccountOrderCenterWindow::set_symbol_info(std::shared_ptr<DarkHorse::SmSy
 	symbol_position_view_.Symbol(symbol);
 	symbol_order_view_.Symbol(symbol);
 	symbol_tick_view_.Symbol(symbol);
-	if (!symbol->Master_requested())
-		request_dm_symbol_master(symbol->SymbolCode());
+	//if (!symbol->Master_requested())
+	//	request_dm_symbol_master(symbol->SymbolCode());
 	mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
 }
 

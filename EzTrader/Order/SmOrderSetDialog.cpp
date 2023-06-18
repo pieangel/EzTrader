@@ -90,7 +90,7 @@ BOOL SmOrderSetDialog::OnInitDialog()
 	check_show_order_column_.SetCheck(BST_CHECKED);
 	check_show_stop_column_.SetCheck(BST_CHECKED);
 	check_show_count_column_.SetCheck(BST_CHECKED);
-	check_stop_by_real_.SetCheck(BST_CHECKED);
+	//check_stop_by_real_.SetCheck(BST_CHECKED);
 
 	edit_row_height_.SetWindowText("18");
 	edit_stop_width_.SetWindowText("40");

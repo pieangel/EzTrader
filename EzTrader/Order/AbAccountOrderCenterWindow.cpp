@@ -499,10 +499,10 @@ void AbAccountOrderCenterWindow::set_symbol_info(std::shared_ptr<DarkHorse::SmSy
 	symbol_position_view_.Symbol(symbol);
 	symbol_order_view_.Symbol(symbol);
 	symbol_tick_view_.Symbol(symbol);
-	if (!symbol->quote_requested()) {
-		request_symbol_quote(symbol->SymbolCode());
-		request_symbol_hoga(symbol->SymbolCode());
-	}
+	//if (!symbol->quote_requested()) {
+	//	request_symbol_quote(symbol->SymbolCode());
+	//	request_symbol_hoga(symbol->SymbolCode());
+	//}
 	mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
 }
 

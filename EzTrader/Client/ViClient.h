@@ -102,7 +102,8 @@ namespace DarkHorse {
 		int ab_chart_data(task_arg&& arg) ;
 		int ab_chart_data(SmTaskArg&& arg);
 		int chart_data(DhTaskArg&& arg);
-		int dm_symbol_master(DhTaskArg&& arg);
+		//int dm_symbol_master(DhTaskArg&& arg);
+		int dm_symbol_master(DhTaskArg arg);
 		int account_profit_loss(DhTaskArg&& arg);
 		int ab_account_profit_loss(DarkHorse::AccountProfitLossReq arg);
 		int dm_account_profit_loss(DarkHorse::AccountProfitLossReq arg);

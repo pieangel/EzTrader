@@ -1512,6 +1512,8 @@ int DarkHorse::ViClient::ab_chart_data(task_arg&& arg)
 
 	return -1;
 }
+
+/*
 int ViClient::dm_symbol_master(DhTaskArg&& arg)
 {
 	if (arg.task_type != DhTaskType::DmSymbolMaster) return -1;
@@ -1536,6 +1538,7 @@ int ViClient::dm_symbol_master(DhTaskArg&& arg)
 	}
 	return 1;
 }
+*/
 
 int DarkHorse::ViClient::ab_chart_data(SmTaskArg&& arg)
 {
@@ -1619,6 +1622,32 @@ int DarkHorse::ViClient::chart_data(DhTaskArg&& arg)
 		return -1;
 	}
 	*/
+	return 1;
+}
+
+
+int ViClient::dm_symbol_master(DhTaskArg arg)
+{
+	if (arg.task_type != DhTaskType::DmSymbolMaster) return -1;
+	try {
+		const std::string symbol_code = arg.parameter_map["symbol_code"];
+		CString sInput;
+		sInput = symbol_code.c_str();
+		sInput.Append(_T("40001"));
+		CString sReqFidInput = _T("000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061062063064065066067068069070071072073074075076077078079080081082083084085086087088089090091092093094095096097098099100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190191192193194195196197198199200201202203204205206207208209210211212213214215216217218219220221222223224225226227228229230231232");
+		CString strNextKey = _T("");
+		int nRqID = m_CommAgent.CommFIDRqData(DefDmSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+		request_map_[nRqID] = arg;
+		if (nRqID < 0) {
+			on_task_error(nRqID, arg.argument_id);
+		}
+		return nRqID;
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+		return -1;
+	}
 	return 1;
 }
 

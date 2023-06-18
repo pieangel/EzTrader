@@ -98,7 +98,7 @@ namespace DarkHorse {
 		int dm_symbol_master_file_download(DhTaskArg arg);
 		int ab_symbol_master_file_download(DhTaskArg arg);
 		int ab_symbol_master(DhTaskArg arg);
-
+		int dm_symbol_master(DhTaskArg arg);
 		int ab_account_asset(DhTaskArg arg);
 		int dm_account_asset(DhTaskArg arg);
 		int ab_account_profit_loss(DhTaskArg arg);
