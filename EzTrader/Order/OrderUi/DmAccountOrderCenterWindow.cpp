@@ -367,7 +367,7 @@ void DmAccountOrderCenterWindow::init_dm_symbol()
 	index_to_symbol_.clear();
 	const std::vector<DarkHorse::DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
 	for (size_t i = 0; i < future_vec.size(); i++) {
-		std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
+		const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
 		if (year_month_map.size() == 0) continue;
 		std::shared_ptr<DarkHorse::SmSymbol> symbol = year_month_map.begin()->second->get_first_symbol();
 		if (!symbol) continue;
