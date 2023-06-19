@@ -2,6 +2,7 @@
 #include "SmSymbol.h"
 #include "../Chart/SmChartData.h"
 #include "../Util/IdGenerator.h"
+#include "../Log/MyLogger.h"
 namespace DarkHorse {
 
 
@@ -18,7 +19,7 @@ namespace DarkHorse {
 		: _SymbolCode(symbol_code)
 	{
 		_Id = IdGenerator::get_id();
-		TickVec.resize(26); 
+		TickVec.resize(26);
 	}
 
 	SmSymbol::~SmSymbol()
@@ -30,7 +31,11 @@ namespace DarkHorse {
 		msg.Format("SymbolCode = %s\n", SymbolCode().c_str());
 		//TRACE(msg);
 	}
+	void SmSymbol::SymbolCode(std::string val){
+		_SymbolCode = val;
 
+		LOGINFO(CMyLogger::getInstance(), "set SymbolCode [%s]", _SymbolCode.c_str());
+	}
 	void SmSymbol::AddChartData(std::shared_ptr<DarkHorse::SmChartData> chart_data)
 	{
 		if (!chart_data) return;

@@ -18,7 +18,7 @@ namespace DarkHorse {
 		SmSymbol(std::string&& symbol_code);
 		~SmSymbol();
 		std::string SymbolCode() const { return _SymbolCode; }
-		void SymbolCode(std::string val) { _SymbolCode = val; }
+		void SymbolCode(std::string val);
 		std::string MarketName() const { return _MarketName; }
 		void MarketName(std::string val) { _MarketName = val; }
 		std::string ProductCode() const { return _ProductCode; }
