@@ -45,7 +45,9 @@ private:
 	AccountOrderView account_order_view_;
 	AccountPositionView account_position_view_;
 	FavoriteSymbolView favorite_symbol_view_;
+	int main_window_id_ = 0;
 public:
+	void set_main_window_id(int id) { main_window_id_ = id; };
 	void SetMainWnd(AbAccountOrderWindow* main_wnd);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedBtnAddFav();

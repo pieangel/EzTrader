@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++에서 생성한 포함 파일입니다.
-// EzTrader.rc에서 사용되고 있습니다.
+// Microsoft Visual C++ generated include file.
+// Used by EzTrader.rc
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             101
@@ -154,6 +154,7 @@
 #define IDC_BTN_AMOUNT5                 1061
 #define IDC_BTN_UP                      1062
 #define IDC_CHECK4                      1063
+#define IDC_CHECK_SHOW_SYMBOL_TICK      1063
 #define IDC_CHECK_ALIGN_BY_ALT          1064
 #define IDC_BTN_MIN                     1065
 #define IDC_CHECK_STOP_TO_REAL          1065

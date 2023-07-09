@@ -84,9 +84,9 @@ struct SmOrderGridResource {
 	CBCGPBrush GridNormalAlterBrush = CBCGPBrush(GridNormalAlterColor);
 
 	CBCGPBrush QMNormalBrush = CBCGPBrush(GridNormalColor);
-	CBCGPBrush QMBuyBrush = CBCGPBrush(BuyPositionBackColor);
-	CBCGPBrush QMSellBrush = CBCGPBrush(SellPositionBackColor);
-	CBCGPBrush QMHighLowBrush = CBCGPBrush(GridBorderColor);
+	CBCGPBrush QMBuyBrush = CBCGPBrush(BuyPositionBackColor, 0.2);
+	CBCGPBrush QMSellBrush = CBCGPBrush(SellPositionBackColor, 0.2);
+	CBCGPBrush QMHighLowBrush = CBCGPBrush(GridBorderColor, 0.1);
 
 
 	// 헤더 버튼 색상

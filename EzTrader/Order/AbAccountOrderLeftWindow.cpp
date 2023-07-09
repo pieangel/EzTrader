@@ -6,6 +6,7 @@
 #include "AbAccountOrderLeftWindow.h"
 #include "afxdialogex.h"
 #include "../Symbol/SmSymbolTableDialog.h"
+#include "AbAccountOrderWindow.h"
 
 #define WND_ID1 0x00000001
 #define WND_ID2 0x00000002
@@ -59,8 +60,11 @@ END_MESSAGE_MAP()
 
 void AbAccountOrderLeftWindow::SetMainWnd(AbAccountOrderWindow* main_wnd)
 {
-	//_AcceptedGrid.SetMainWnd(main_wnd);
-	//_PositionGrid.SetMainWnd(main_wnd);
+	if (!main_wnd) return;
+	main_window_id_ = main_wnd->get_id();
+	account_order_view_.set_main_window_id(main_window_id_);
+	account_position_view_.set_main_window_id(main_window_id_);
+	favorite_symbol_view_.set_main_window_id(main_window_id_);
 	favorite_symbol_view_.SetMainWnd(main_wnd);
 }
 

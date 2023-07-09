@@ -109,6 +109,16 @@ DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent, const size_t center_wi
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
+DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no, const nlohmann::json center_wnd_prop)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent), center_window_count_(center_window_count), account_no_(account_no), center_wnd_prop_(center_wnd_prop)
+{
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+	id_ = IdGenerator::get_id();
+	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
 DmAccountOrderWindow::~DmAccountOrderWindow()
 {
 	mainApp.event_hub()->unsubscribe_symbol_order_view_event_handler(id_);

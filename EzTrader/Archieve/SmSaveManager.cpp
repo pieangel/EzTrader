@@ -1015,6 +1015,14 @@ namespace DarkHorse {
 				centerWindowJson["qty_width"] = order_set.qty_width;
 				centerWindowJson["quote_width"] = order_set.quote_width;
 				centerWindowJson["stop_as_real_order"] = order_set.stop_as_real_order;
+				centerWindowJson["show_symbol_tick"] = order_set.show_symbol_tick;
+				centerWindowJson["show_bar_color"] = order_set.show_bar_color;
+				centerWindowJson["align_by_alt"] = order_set.align_by_alt;
+				centerWindowJson["cancel_by_right_click"] = order_set.cancel_by_right_click;
+				centerWindowJson["order_by_space"] = order_set.order_by_space;
+				centerWindowJson["show_order_column"] = order_set.show_order_column;
+				centerWindowJson["show_stop_column"] = order_set.show_stop_column;
+				centerWindowJson["show_count_column"] = order_set.show_count_column;
 
 				centerWindowMapJson.push_back(centerWindowJson);
 			}
@@ -1066,5 +1074,82 @@ namespace DarkHorse {
 			account_order_window->ShowWindow(SW_SHOW);
 		}
 	}
+
+
+	void SmSaveManager::restore_dm_account_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore)
+	{
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\"));
+		std::string full_file_name = filename;
+		full_file_name.append(".json");
+		appPath.append(full_file_name);
+
+		std::ifstream file(appPath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file for restore: " << appPath << std::endl;
+			return;
+		}
+
+		nlohmann::json jsonData;
+		try {
+			file >> jsonData;
+		}
+		catch (const nlohmann::json::parse_error& e) {
+			std::cerr << "Failed to parse JSON file: " << e.what() << std::endl;
+			file.close();
+			return;
+		}
+		file.close();
+
+		// Clear existing data in map_to_restore
+		map_to_restore.clear();
+
+		// Restore data from jsonData
+		for (const auto& accountJson : jsonData) {
+			std::string accountNo = accountJson["account_no"].get<std::string>();
+			size_t centerWindowCount = accountJson["center_window_count"].get<int>();
+
+			
+
+			const nlohmann::json& centerWindowMapJson = accountJson["center_window_map"];
+			for (const auto& centerWindowJson : centerWindowMapJson) {
+				std::string symbolCode = centerWindowJson["symbol_code"].get<std::string>();
+				int windowId = centerWindowJson["window_id"].get<int>();
+				std::string message = centerWindowJson["message"].get<std::string>();
+
+				int grid_height = centerWindowJson["grid_height"].get<int>();
+				int stop_width = centerWindowJson["stop_width"].get<int>();
+				int order_width = centerWindowJson["order_width"].get<int>();
+				int count_width = centerWindowJson["count_width"].get<int>();
+				int qty_width = centerWindowJson["qty_width"].get<int>();
+				int quote_width = centerWindowJson["quote_width"].get<int>();
+				bool stop_as_real_order = centerWindowJson["stop_as_real_order"].get<bool>();
+
+				bool show_symbol_tick = centerWindowJson["show_symbol_tick"].get<bool>();
+				bool show_bar_color = centerWindowJson["show_bar_color"].get<bool>();
+				bool align_by_alt = centerWindowJson["align_by_alt"].get<bool>();
+				bool cancel_by_right_click = centerWindowJson["cancel_by_right_click"].get<bool>();
+				bool order_by_space = centerWindowJson["order_by_space"].get<bool>();
+				bool show_order_column = centerWindowJson["show_order_column"].get<bool>();
+				bool show_stop_column = centerWindowJson["show_stop_column"].get<bool>();
+				bool show_count_column = centerWindowJson["show_count_column"].get<bool>();
+				// ... Retrieve other properties
+
+				// Create and populate DmAccountOrderCenterWindow object
+				//std::shared_ptr<DmAccountOrderCenterWindow> centerWindow = std::make_shared<DmAccountOrderCenterWindow>(symbolCode, windowId, message);
+				// ... Set other properties of centerWindow
+
+				// Add centerWindow to the orderWindow
+				//orderWindow->add_center_window(centerWindow);
+			}
+
+			DmAccountOrderWindow* orderWindow = new DmAccountOrderWindow(parent_window, centerWindowCount, accountNo, centerWindowMapJson);
+			// Add orderWindow to the map_to_restore
+			HWND wndHandle = orderWindow->GetSafeHwnd();
+			map_to_restore[wndHandle] = orderWindow;
+		}
+	}
+
 
 }

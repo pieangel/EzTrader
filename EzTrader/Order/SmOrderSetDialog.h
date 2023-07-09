@@ -37,6 +37,7 @@ private:
 	SmFundOrderCenterWnd* _FundWnd = nullptr;
 	bool stop_as_real_order_{ false };
 public:
+	CBCGPButton check_show_symbol_tick_;
 	CBCGPButton check_align_by_alt_;
 	CBCGPButton check_show_bar_color_;
 	CBCGPButton check_cancel_by_right_click_;

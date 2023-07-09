@@ -159,7 +159,9 @@ private:
 	std::vector<int> ab_column_widths_vector_;
 	std::vector<int> dm_column_widths_vector_;
 	int id_{ 0 };
+	int main_window_id_ = 0;
 public:
+	void set_main_window_id(int id) { main_window_id_ = id; };
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

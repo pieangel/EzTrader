@@ -23,10 +23,6 @@ class AbAccountOrderWindow : public CBCGPDialog
 	DECLARE_DYNAMIC(AbAccountOrderWindow)
 
 public:
-	// Static Members
-	static int _Id;
-	static int GetId() { return _Id++; }
-
 	void SetAccount();
 	AbAccountOrderWindow(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~AbAccountOrderWindow();
@@ -68,6 +64,7 @@ private:
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 	int id_{ 0 };
 public:
+	int get_id() const { return id_; }
 	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol);

@@ -127,7 +127,9 @@ private:
 
 	DarkHorse::OrderSetEvent order_set_;
 
+	int main_window_id_ = 0;
 public:
+	void set_main_window_id(int id) { main_window_id_ = id; };
 	void SetRowWide();
 	void SetRowNarrow();
 	void OnOrderChanged(const int& account_id, const int& symbol_id);

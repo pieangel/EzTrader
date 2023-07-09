@@ -117,7 +117,9 @@ private:
 	// key : symbol id, value : row
 	std::map<int, int> symbol_to_row_;
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
+	int main_window_id_ = 0;
 public:
+	void set_main_window_id(int id) { main_window_id_ = id; };
 	void Clear();
 	void SetFavorite();
 	void Update();

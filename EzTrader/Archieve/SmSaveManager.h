@@ -83,6 +83,7 @@ namespace DarkHorse {
 		bool ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively);
 		
 		void GetSymbolMasters();
+		void restore_dm_account_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore);
 	};
 }
 

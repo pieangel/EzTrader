@@ -308,18 +308,21 @@ namespace DarkHorse {
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_BUY:
-			pGM->FillRectangle(left_pos_rect, res.QMBuyBrush);
-			pGM->FillRectangle(right_pos_rect, res.QMBuyBrush);
+			//pGM->FillRectangle(left_pos_rect, res.QMBuyBrush);
+			//pGM->FillRectangle(right_pos_rect, res.QMBuyBrush);
+			pGM->FillRectangle(rect, res.QMBuyBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_SELL:
-			pGM->FillRectangle(left_pos_rect, res.QMSellBrush);
-			pGM->FillRectangle(right_pos_rect, res.QMSellBrush);
+			//pGM->FillRectangle(left_pos_rect, res.QMSellBrush);
+			//pGM->FillRectangle(right_pos_rect, res.QMSellBrush);
+			pGM->FillRectangle(rect, res.QMSellBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		case SmCellType::CT_MARK_HILO:
-			pGM->FillRectangle(left_pos_rect, res.QMHighLowBrush);
-			pGM->FillRectangle(right_pos_rect, res.QMHighLowBrush);
+			//pGM->FillRectangle(left_pos_rect, res.QMHighLowBrush);
+			//pGM->FillRectangle(right_pos_rect, res.QMHighLowBrush);
+			pGM->FillRectangle(rect, res.QMHighLowBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		}

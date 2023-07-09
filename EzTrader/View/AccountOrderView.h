@@ -139,7 +139,9 @@ private:
 	void CancelAllAccountOrders();
 	void CancelAllFundOrders();
 	int id_{ 0 };
+	int main_window_id_ = 0;
 public:
+	void set_main_window_id(int id) { main_window_id_ = id; };
 	void on_timer();
 	void StartTimer();
 	void Update();

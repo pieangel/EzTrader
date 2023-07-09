@@ -36,7 +36,7 @@ using namespace DarkHorse;
 
 const int CtrlHeight = 32;
 
-int AbAccountOrderWindow::_Id = 0;
+//int AbAccountOrderWindow::_Id = 0;
 
 void AbAccountOrderWindow::SetAccount()
 {

@@ -46,6 +46,7 @@ public:
 	void SetAccount();
 	DmAccountOrderWindow(CWnd* pParent = nullptr);   // standard constructor
 	DmAccountOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no);
+	DmAccountOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no, const nlohmann::json center_wnd_prop);
 	virtual ~DmAccountOrderWindow();
 
 	// Dialog Data
@@ -66,6 +67,7 @@ public:
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
 private:
+	nlohmann::json center_wnd_prop_;
 	size_t center_window_count_{ 0 };
 	std::string account_no_;
 	int id_{0};
