@@ -446,10 +446,10 @@ namespace DarkHorse {
 
 		std::vector<DarkHorse::DmOption>& option_vec = mainApp.SymMgr()->get_dm_option_vec();
 		for (size_t i = 0; i < option_vec.size(); i++) {
-			auto& year_month_map = option_vec[i].call_product->get_yearmonth_map();
-			make_dm_symbol_master(year_month_map);	
-			year_month_map = option_vec[i].put_product->get_yearmonth_map();
-			make_dm_symbol_master(year_month_map);
+			const auto& call_year_month_map = option_vec[i].call_product->get_yearmonth_map();
+			make_dm_symbol_master(call_year_month_map);
+			const auto& put_year_month_map = option_vec[i].put_product->get_yearmonth_map();
+			make_dm_symbol_master(put_year_month_map);
 		}
 
 		task_info_.task_title = "국내 심볼 마스터 다운로드 중입니다.";
