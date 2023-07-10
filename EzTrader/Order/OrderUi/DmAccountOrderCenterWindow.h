@@ -46,6 +46,7 @@ class DmAccountOrderCenterWindow : public CBCGPDialog
 public:
 	static int DeltaOrderArea;
 	DmAccountOrderCenterWindow(CWnd* pParent = nullptr);   // standard constructor
+	DmAccountOrderCenterWindow(CWnd* pParent, std::string symbol_code, DarkHorse::OrderSetEvent order_set);
 	virtual ~DmAccountOrderCenterWindow();
 
 	// Dialog Data

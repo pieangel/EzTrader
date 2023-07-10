@@ -84,6 +84,7 @@ namespace DarkHorse {
 		bool ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively);
 		
 		void GetSymbolMasters();
+		std::string find_latestfile_with_prefix(const std::string& directory, const std::string& prefix);
 	};
 }
 

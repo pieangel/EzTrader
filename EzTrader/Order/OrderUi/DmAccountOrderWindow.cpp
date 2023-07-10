@@ -65,22 +65,29 @@ void DmAccountOrderWindow::SetAccount()
 		account_info.append(account->No());
 		const int index = _ComboAccount.AddString(account_info.c_str());
 		_ComboAccountMap[index] = account;
-
+		_AccountComboMap[account->No()] = index;
 	}
 
 	if (!_ComboAccountMap.empty()) {
-		_CurrentAccountIndex = 0;
+		// if account_no_ is empty, set the first account as default
+		if (account_no_.empty())
+			_CurrentAccountIndex = 0;
+		else {
+			// if account_no_ is not empty, set the account_no_ as default
+			auto it = _AccountComboMap.find(account_no_);
+			if (it != _AccountComboMap.end()) {
+				_CurrentAccountIndex = it->second;
+			}
+			else {
+				_CurrentAccountIndex = 0;
+			}	
+		}
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
 		SetAccountInfo(_ComboAccountMap[_CurrentAccountIndex]);
 		_LeftWnd->OnOrderChanged(0, 0);
-	}
 
-	if (!_ComboAccountMap.empty()) {
-		const int cur_sel = _ComboAccount.GetCurSel();
-		if (cur_sel >= 0) {
-			for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-				it->second->Account(_ComboAccountMap[cur_sel]);
-			}
+		for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
+			it->second->Account(_ComboAccountMap[_CurrentAccountIndex]);
 		}
 	}
 }
@@ -216,20 +223,69 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 	_LeftWnd->ShowWindow(SW_SHOW);
 	_LeftWnd->SetMainWnd(this);
 
+	if (center_window_count_ == 0) {
+		std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this);
+		center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
+		center_wnd->ShowWindow(SW_SHOW);
+		center_wnd->SetMainDialog(this);
+		center_wnd->Selected(true);
+		center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
+	}
+	else {
+		int index = 0;
+		for (const auto& centerWindowJson : center_wnd_prop_) {
+			std::string symbolCode = centerWindowJson["symbol_code"].get<std::string>();
+			int windowId = centerWindowJson["window_id"].get<int>();
+			std::string message = centerWindowJson["message"].get<std::string>();
 
-	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this);
-	center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
-	center_wnd->ShowWindow(SW_SHOW);
-	center_wnd->SetMainDialog(this);
-	center_wnd->Selected(true);
-	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
-	
-	center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this);
-	center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
-	center_wnd->ShowWindow(SW_SHOW);
-	center_wnd->SetMainDialog(this);
-	center_wnd->Selected(false);
-	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
+			int grid_height = centerWindowJson["grid_height"].get<int>();
+			int stop_width = centerWindowJson["stop_width"].get<int>();
+			int order_width = centerWindowJson["order_width"].get<int>();
+			int count_width = centerWindowJson["count_width"].get<int>();
+			int qty_width = centerWindowJson["qty_width"].get<int>();
+			int quote_width = centerWindowJson["quote_width"].get<int>();
+			bool stop_as_real_order = centerWindowJson["stop_as_real_order"].get<bool>();
+
+			bool show_symbol_tick = centerWindowJson["show_symbol_tick"].get<bool>();
+			bool show_bar_color = centerWindowJson["show_bar_color"].get<bool>();
+			bool align_by_alt = centerWindowJson["align_by_alt"].get<bool>();
+			bool cancel_by_right_click = centerWindowJson["cancel_by_right_click"].get<bool>();
+			bool order_by_space = centerWindowJson["order_by_space"].get<bool>();
+			bool show_order_column = centerWindowJson["show_order_column"].get<bool>();
+			bool show_stop_column = centerWindowJson["show_stop_column"].get<bool>();
+			bool show_count_column = centerWindowJson["show_count_column"].get<bool>();
+
+			DarkHorse::OrderSetEvent order_set_event;
+			order_set_event.grid_height = grid_height;
+			order_set_event.stop_width = stop_width;
+			order_set_event.order_width = order_width;
+			order_set_event.count_width = count_width;
+			order_set_event.qty_width = qty_width;
+			order_set_event.quote_width = quote_width;
+			order_set_event.stop_as_real_order = stop_as_real_order;
+			order_set_event.show_symbol_tick = show_symbol_tick;
+			order_set_event.show_bar_color = show_bar_color;
+			order_set_event.align_by_alt = align_by_alt;
+			order_set_event.cancel_by_right_click = cancel_by_right_click;
+			order_set_event.order_by_space = order_by_space;
+			order_set_event.show_order_column = show_order_column;
+			order_set_event.show_stop_column = show_stop_column;
+			order_set_event.show_count_column = show_count_column;
+
+			// ... Retrieve other properties
+
+			// Create and populate DmAccountOrderCenterWindow object
+			std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, symbolCode, order_set_event);
+			center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
+			center_wnd->ShowWindow(SW_SHOW);
+			center_wnd->SetMainDialog(this);
+			if (index == 0) {
+				center_wnd->Selected(true);
+			}
+			index++;
+			center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
+		}
+	}
 	
 
 	_RightWnd = std::make_shared<DmAccountOrderRightWindow>(this);

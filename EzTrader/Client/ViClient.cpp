@@ -92,6 +92,8 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 	strLog.Format("RQID[%d], Code[%s]\n", nRqID, sTrRcvCode);
 	LOGINFO(CMyLogger::getInstance(), (LPCTSTR)strLog);
 
+	if (!_Enable) return;
+
 	if (code == DefAccountList) {
 		on_account_list(code, req_id);
 	}

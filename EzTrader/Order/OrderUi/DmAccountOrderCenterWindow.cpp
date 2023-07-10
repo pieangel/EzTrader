@@ -77,6 +77,22 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
+DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::string symbol_code, DarkHorse::OrderSetEvent order_set)
+	: CBCGPDialog(IDD_ORDER_CENTER, pParent), symbol_code_(symbol_code), order_set_(order_set)
+{
+		id_ = IdGenerator::get_id();
+		symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
+		symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
+		mainApp.event_hub()->add_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
+		EnableVisualManagerStyle(TRUE, TRUE);
+		EnableLayout();
+		symbol_order_view_.set_parent(this);
+		symbol_order_view_.set_center_window_id(id_);
+		symbol_tick_view_.set_parent(this);
+		mainApp.event_hub()->add_window_resize_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_resize_event_from_order_view, this));
+		mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
 DmAccountOrderCenterWindow::~DmAccountOrderCenterWindow()
 {
 	//KillTimer(1);
@@ -373,13 +389,26 @@ void DmAccountOrderCenterWindow::init_dm_symbol()
 		if (!symbol) continue;
 		add_to_symbol_combo(symbol);
 	}
+
+	auto restored_symbol = mainApp.SymMgr()->FindSymbol(symbol_code_);
+	if (restored_symbol) {
+		add_to_symbol_combo(restored_symbol);
+	}
 	set_default_symbol();
 }
 
 void DmAccountOrderCenterWindow::set_default_symbol()
 {
 	if (index_to_symbol_.empty()) return;
-	current_combo_index_ = 0;
+	if (symbol_code_.empty())
+		current_combo_index_ = 0;
+	else {
+		auto it = symbol_to_index_.find(symbol_code_);
+		if (it != symbol_to_index_.end())
+			current_combo_index_ = it->second;
+		else
+			current_combo_index_ = 0;	
+	}
 	const auto symbol = index_to_symbol_[current_combo_index_];
 	set_symbol_name(symbol);
 	combo_symbol_.SetCurSel(current_combo_index_);

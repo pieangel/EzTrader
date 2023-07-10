@@ -68,6 +68,7 @@
 #include "Task/ViServerDataReceiver.h"
 #include "Dialog/MiniJangoDialog.h"
 #include "Dialog/TotalAssetProfitLossDialog.h"
+#include "Task/SmTaskRequestManager.h"
 // -----------------------------------------------------------------------------
 
 // DataFrame library is entirely under hmdf name-space
@@ -842,31 +843,37 @@ void CMainFrame::SetChartData(std::shared_ptr<DarkHorse::SmChartData> chart_data
 
 void CMainFrame::OnClose()
 {
-	
-	mainApp.Client()->Enable(false);
-	mainApp.Client()->UnRegAll();
+	try {
+		mainApp.Client()->Enable(false);
+		mainApp.Client()->UnRegAll();
 
-	mainApp.HogaMgr()->StopAllHogaProcess();
-	mainApp.HogaMgr()->StopProcess();
-	mainApp.QuoteMgr()->StopAllQuoteProcess();
-	mainApp.QuoteMgr()->StopProcess();
+		mainApp.HogaMgr()->StopAllHogaProcess();
+		mainApp.HogaMgr()->StopProcess();
+		mainApp.QuoteMgr()->StopAllQuoteProcess();
+		mainApp.QuoteMgr()->StopProcess();
 
-	mainApp.SaveMgr()->WriteSettings();
-	mainApp.SaveMgr()->save_dm_account_order_windows("dm_account_order_windows", dm_account_order_wnd_map_);
-	mainApp.SaveMgr()->save_dm_mini_jango_windows("dm_mini_jango_windows.json", mini_jango_wnd_map_);
-	mainApp.SaveMgr()->save_total_asset_windows("dm_total_asset_windows.json", total_asset_profit_loss_map_);
+		mainApp.SaveMgr()->WriteSettings();
+		mainApp.SaveMgr()->save_dm_account_order_windows("dm_account_order_windows", dm_account_order_wnd_map_);
+		mainApp.SaveMgr()->save_dm_mini_jango_windows("dm_mini_jango_windows.json", mini_jango_wnd_map_);
+		mainApp.SaveMgr()->save_total_asset_windows("dm_total_asset_windows.json", total_asset_profit_loss_map_);
 
-	//Sleep(1000);
+		mainApp.TaskReqMgr()->StopProcess();
 
-	std::vector<int> date_time = SmUtil::GetLocalDateTime();
 
-	CString msg;
-	msg.Format(_T("%d년 %d월 %d일 %d시 %d분 %d초에 종료합니다."), date_time[0], date_time[1], date_time[2], date_time[3], date_time[4], date_time[5]);
-	AfxMessageBox(msg, MB_ICONEXCLAMATION);
-	
-	//SaveMDIState(theApp.GetRegSectionPath());
+		std::vector<int> date_time = SmUtil::GetLocalDateTime();
 
-	CBCGPMDIFrameWnd::OnClose();
+		CString msg;
+		msg.Format(_T("%d년 %d월 %d일 %d시 %d분 %d초에 종료합니다."), date_time[0], date_time[1], date_time[2], date_time[3], date_time[4], date_time[5]);
+		AfxMessageBox(msg, MB_ICONEXCLAMATION);
+
+		//SaveMDIState(theApp.GetRegSectionPath());
+		//Sleep(1000);
+		CBCGPMDIFrameWnd::OnClose();
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
 }
 
 
@@ -874,7 +881,7 @@ void CMainFrame::StartLoad()
 {
 	//mainApp.AcntMgr()->AddTestAccounts();
 	//mainApp.SaveMgr()->ReadSettings();
-	mainApp.SaveMgr()->restore_dm_account_order_windows(this, "dm_account_order_windows.json", dm_account_order_wnd_map_);
+	mainApp.SaveMgr()->restore_dm_account_order_windows(this, "dm_account_order_windows", dm_account_order_wnd_map_);
 	mainApp.SaveMgr()->restore_dm_mini_jango_windows_from_json(this, "dm_mini_jango_windows.json", mini_jango_wnd_map_);
 	mainApp.SaveMgr()->restore_total_asset_windows_from_json(this, "dm_total_asset_windows.json", total_asset_profit_loss_map_);
 	//mainApp.SystemMgr()->AddSystem("KillNasdaq");

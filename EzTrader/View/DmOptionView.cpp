@@ -101,16 +101,31 @@ void DmOptionView::update_quote()
 	if (view_mode_ != ViewMode::VM_Close) return;
 	update_close(quote);
 	}
-	catch (const std::exception& e) {
+	catch (const std::out_of_range& e) {
+		// Handling the exception
 		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+		LOGINFO(CMyLogger::getInstance(), "Caught std::out_of_range exception: %s", error.c_str());
 	}
+	catch (const std::exception& e) {
+		// Handling other exceptions derived from std::exception
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "Caught exception: %s", error.c_str());
+	}
+	catch (...) {
+		// Catch-all block for any other exceptions
+		LOGINFO(CMyLogger::getInstance(), "Caught unknown exception");
+	}
+
 }
 
 void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 {
-	if (view_mode_ != ViewMode::VM_Expected) return;
+	if (!quote || view_mode_ != ViewMode::VM_Expected) return;
 	try {
+	if (quote->symbol_code.empty()) {
+		LOGINFO(CMyLogger::getInstance(), "update_expected symbol code is empty");
+		return;
+	}
 	const std::string option_code = quote->symbol_code.substr(1, quote->symbol_code.length() - 1);
 	auto found = symbol_vector_index_map_.find(option_code);
 	if (found == symbol_vector_index_map_.end()) return;
@@ -135,6 +150,11 @@ void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 {
 	try {
+	//LOGINFO(CMyLogger::getInstance(), "update_close symbol code: %s", quote.symbol_code.c_str());
+	if (quote.symbol_code.empty()) {
+		LOGINFO(CMyLogger::getInstance(), "update_close symbol code is empty");
+		return;
+	}
 	const std::string option_code = quote.symbol_code.substr(1, quote.symbol_code.length() - 1);
 	auto found = symbol_vector_index_map_.find(option_code);
 	if (found == symbol_vector_index_map_.end()) return;
@@ -149,9 +169,19 @@ void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 		update_value_cell(quote.symbol_id, option_info);
 	}
 	}
-	catch (const std::exception& e) {
+	catch (const std::out_of_range& e) {
+		// Handling the exception
 		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+		LOGINFO(CMyLogger::getInstance(), "Caught std::out_of_range exception: %s", error.c_str());
+	}
+	catch (const std::exception& e) {
+		// Handling other exceptions derived from std::exception
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "Caught exception: %s", error.c_str());
+	}
+	catch (...) {
+		// Catch-all block for any other exceptions
+		LOGINFO(CMyLogger::getInstance(), "Caught unknown exception");
 	}
 }
 

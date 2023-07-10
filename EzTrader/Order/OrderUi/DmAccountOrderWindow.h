@@ -80,6 +80,8 @@ private:
 	bool _ShowRight = true;
 	// key : combo index, value : account object.
 	std::map<int, std::shared_ptr<DarkHorse::SmAccount>> _ComboAccountMap;
+	// key : account no, value : combo index.
+	std::map<std::string, int> _AccountComboMap;
 	int _LineGap = 4;
 	bool _Init = false;
 	void SetAccountForOrderWnd();
