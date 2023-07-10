@@ -95,6 +95,7 @@ protected:
 	virtual CBCGPMDIChildWnd* CreateDocumentWindow(LPCTSTR lpcszDocName, CObject* /*pObj*/);
 
 public:
+	void add_dm_order_wnd(DmAccountOrderWindow* wnd);
 	void start_login();
 	void start_timer(int milisecond);
 	void stop_timer();

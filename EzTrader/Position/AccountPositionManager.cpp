@@ -157,7 +157,7 @@ int AccountPositionManager::calculate_unsettled_count(order_p order, position_p 
 }
 int AccountPositionManager::calculate_traded_count(order_p order, position_p position)
 {
-	const int order_filled_sign = order->position == SmPositionType::Buy ? 1 : -1;
+	const int order_filled_sign = position->open_quantity > 0 ? 1 : -1;
 	const int signed_filled_count = order->filled_count * order_filled_sign;
 	if (position->open_quantity * signed_filled_count >= 0) return 0;
 	return min(abs(position->open_quantity), abs(signed_filled_count));
@@ -166,9 +166,9 @@ double AccountPositionManager::calculate_traded_profit_loss(order_p order, posit
 {
 	const int traded_count = calculate_traded_count(order, position);
 	const double price_gap = (order->filled_price - position->average_price) / pow(10, symbol_decimal);
-	double trade_profit_loss = price_gap * traded_count * symbol_seungsu; // * symbol->SeungSu() 반드시 Symbol 승수를 곱해줘야 함. 
+	double trade_profit_loss = price_gap * traded_count * symbol_seungsu; 
 	// 매도는 계산이 반대로 이루어짐. 
-	if (order->position == SmPositionType::Sell) trade_profit_loss *= -1;
+	if (position->open_quantity < 0) trade_profit_loss *= -1;
 	return trade_profit_loss;
 }
 double AccountPositionManager::calculate_average_price(order_p order, position_p position, const int& new_open_quantity, const int& unsettled_count)

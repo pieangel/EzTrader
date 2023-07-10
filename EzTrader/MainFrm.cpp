@@ -110,6 +110,12 @@ struct  MyData {
 #define new DEBUG_NEW
 #endif
 
+void CMainFrame::add_dm_order_wnd(DmAccountOrderWindow* wnd)
+{
+	if (!wnd) return;
+	dm_account_order_wnd_map_[wnd->GetSafeHwnd()] = wnd;
+}
+
 void CMainFrame::start_login()
 {
 	SmLoginDlg loginDlg;
@@ -868,7 +874,7 @@ void CMainFrame::StartLoad()
 {
 	//mainApp.AcntMgr()->AddTestAccounts();
 	//mainApp.SaveMgr()->ReadSettings();
-	//mainApp.SaveMgr()->restore_dm_account_order_windows_from_json(this, "dm_account_order_windows.json", dm_account_order_wnd_map_);
+	mainApp.SaveMgr()->restore_dm_account_order_windows(this, "dm_account_order_windows.json", dm_account_order_wnd_map_);
 	mainApp.SaveMgr()->restore_dm_mini_jango_windows_from_json(this, "dm_mini_jango_windows.json", mini_jango_wnd_map_);
 	mainApp.SaveMgr()->restore_total_asset_windows_from_json(this, "dm_total_asset_windows.json", total_asset_profit_loss_map_);
 	//mainApp.SystemMgr()->AddSystem("KillNasdaq");

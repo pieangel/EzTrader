@@ -1146,8 +1146,13 @@ namespace DarkHorse {
 
 			DmAccountOrderWindow* orderWindow = new DmAccountOrderWindow(parent_window, centerWindowCount, accountNo, centerWindowMapJson);
 			// Add orderWindow to the map_to_restore
-			HWND wndHandle = orderWindow->GetSafeHwnd();
-			map_to_restore[wndHandle] = orderWindow;
+			//HWND wndHandle = orderWindow->GetSafeHwnd();
+			//map_to_restore[wndHandle] = orderWindow;
+
+
+			orderWindow->Create(IDD_DM_ACNT_ORDER_MAIN, parent_window);
+			map_to_restore[orderWindow->GetSafeHwnd()] = orderWindow;
+			orderWindow->ShowWindow(SW_SHOW);
 		}
 	}
 

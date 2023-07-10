@@ -78,12 +78,12 @@ namespace DarkHorse {
 		void restore_total_asset_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_restore);
 		void restore_dm_account_order_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore);
 		void restore_dm_mini_jango_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_restore);
+		void restore_dm_account_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore);
 
 	private:
 		bool ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively);
 		
 		void GetSymbolMasters();
-		void restore_dm_account_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore);
 	};
 }
 
