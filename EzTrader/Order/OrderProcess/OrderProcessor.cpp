@@ -68,7 +68,7 @@ bool OrderProcessor::handle_order_event(order_event&& order_info_item)
 {
 	try {
 		total_order_manager_p total_order_manager = mainApp.total_order_manager();
-		total_order_manager->on_order_event(order_info_item);
+		total_order_manager->on_order_event(std::move(order_info_item));
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
@@ -78,11 +78,11 @@ bool OrderProcessor::handle_order_event(order_event&& order_info_item)
 	return true;
 }
 
-bool OrderProcessor::handle_order_event(const order_event& order_info_item)
+bool OrderProcessor::handle_order_event(order_event& order_info_item)
 {
 	try {
 		total_order_manager_p total_order_manager = mainApp.total_order_manager();
-		total_order_manager->on_order_event(order_info_item);
+		total_order_manager->on_order_event(std::move(order_info_item));
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();

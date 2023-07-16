@@ -54,6 +54,8 @@
 #include "../Order/OrderProcess/AccountOrderManager.h"
 #include "../Order/OrderProcess/SymbolOrderManager.h"
 #include "../Event/EventHub.h"
+#include "../Account/SmAccountManager.h"
+#include "../Fund/SmFund.h"
 
 #include <sstream>
 #include <format>
@@ -1124,6 +1126,16 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	return extra_height;
 }
 
+void SymbolOrderView::fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	if (!val || !position_control_ || !order_control_) return;
+
+	fund_ = val;
+	//order_control_->set_account(val);
+	//position_control_->set_account_id(val->id());
+	set_position();
+}
+
 void SymbolOrderView::UpdateOrder(const std::string& symbol_code)
 {
 	if (!account_ || !symbol_) return;
@@ -2013,23 +2025,7 @@ void SymbolOrderView::put_order(const SmPositionType& type, const int& price, co
 	if (!account_ || !symbol_) return;
 	if (price < 0) return;
 
-	std::shared_ptr<OrderRequest> order_req = nullptr;
-	order_req = OrderRequestManager::make_order_request(
-		account_->No(),
-		account_->Pwd(),
-		price,
-		_OrderAmount,
-		symbol_->SymbolCode(),
-		type,
-		SmOrderType::New,
-		price_type,
-		fill_condition_);
-	if (order_req) {
-		order_req->request_type = order_request_type_;
-		order_req->order_context.order_control_id = id_;
-		SetProfitLossCut(order_req);
-		mainApp.order_request_manager()->add_order_request(order_req);
-	}
+	put_order(symbol_->SymbolCode(), type, price, _OrderAmount, price_type);
 }
 
 void SymbolOrderView::put_order(
@@ -2043,10 +2039,12 @@ void SymbolOrderView::put_order(
 	if (symbol_->SymbolCode() != symbol_code) return;
 	if (price < 0) return;
 
+	auto parent_account = mainApp.AcntMgr()->FindAccountById(account_->parent_id());
+
 	std::shared_ptr<OrderRequest> order_req = nullptr;
 	order_req = OrderRequestManager::make_order_request(
-		account_->No(),
-		account_->Pwd(),
+		parent_account ? parent_account->No() : account_->No(),
+		parent_account ? parent_account->Pwd() : account_->Pwd(),
 		price,
 		amount,
 		symbol_->SymbolCode(),
@@ -2057,6 +2055,18 @@ void SymbolOrderView::put_order(
 	if (order_req) {
 		order_req->request_type = order_request_type_;
 		order_req->order_context.order_control_id = id_;
+		order_req->order_context.order_type = OrderType::MainAccount;
+		if (parent_account) {
+			order_req->order_context.parent_account_id = parent_account->id();
+			order_req->order_context.parent_account_no = parent_account->No();
+			order_req->order_context.sub_account_no = account_->No();
+			order_req->order_context.order_type = OrderType::SubAccount;
+		}
+		if (fund_) {
+			order_req->order_context.order_type = OrderType::Fund;
+			order_req->order_context.fund_id = fund_->Id();
+			order_req->order_context.fund_name = fund_->Name();
+		}
 		SetProfitLossCut(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}

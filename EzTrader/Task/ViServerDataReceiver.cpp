@@ -274,6 +274,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "1") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -296,6 +297,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "9") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -397,6 +399,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "9") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -418,6 +421,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "1") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -493,6 +497,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "9") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -514,6 +519,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "1") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -536,6 +542,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "1") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -558,6 +565,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "9") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -619,6 +627,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "1") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();
@@ -640,6 +649,7 @@ namespace DarkHorse {
 		for (auto it = account_map.begin(); it != account_map.end(); it++) {
 			std::shared_ptr<SmAccount> account = it->second;
 			if (account->Type() != "9") continue;
+			if (account->is_subaccount()) continue;
 			DhTaskArg arg;
 			arg.detail_task_description = account->No();
 			arg.argument_id = ViServerDataReceiver::get_argument_id();

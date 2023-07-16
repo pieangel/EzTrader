@@ -295,9 +295,7 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 
 	SetAccount();
 
-	//SetAccountForOrderWnd();
-
-
+	_ComboAccount.SetDroppedWidth(150);
 
 	GetWindowRect(rcWnd);
 
@@ -560,8 +558,19 @@ void DmAccountOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> 
 	account_info.append(" : ");
 	account_info.append(account->No());
 	//_StaticAccountName.SetWindowText(account_info.c_str());
-	mainApp.Client()->RegisterAccount(account->No());
+	if (!account->is_subaccount())
+		mainApp.Client()->RegisterAccount(account->No());
 	_Account = account;
+	std::shared_ptr<SmAccount> parent_account = nullptr;
+	if (_Account->is_subaccount()) {
+		parent_account = mainApp.AcntMgr()->FindAccountById(_Account->parent_id());
+		_LeftWnd->SetAccount(parent_account);
+		_RightWnd->SetAccount(parent_account);
+	}
+	else {
+		_LeftWnd->SetAccount(_Account);
+		_RightWnd->SetAccount(_Account);
+	}
 
 	_LeftWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
 	_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
@@ -764,6 +773,7 @@ void DmAccountOrderWindow::OnCbnSelchangeComboAccount()
 
 	SetAccountForOrderWnd();
 	if (!_Account) return;
+	if (_Account->is_subaccount()) return;
 
 	DhTaskArg arg;
 	arg.detail_task_description = _Account->No();

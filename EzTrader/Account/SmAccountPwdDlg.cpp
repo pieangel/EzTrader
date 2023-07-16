@@ -126,6 +126,7 @@ BOOL SmAccountPwdDlg::OnInitDialog()
 	int row = 0;
 	for (auto it = account_map.begin(); it != account_map.end(); it++) {
 		auto account = it->second;
+		if (account->is_subaccount()) continue;
 		// Create new row:
 		CBCGPGridRow* pRow = m_wndGrid.CreateRow(nColumns);
 		// Set each column data:

@@ -51,6 +51,7 @@ void TotalAssetProfitLossDialog::SetAccount()
 	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
 	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
 		auto account = it->second;
+		if (account->is_subaccount()) continue;
 		std::string account_info;
 		account_info.append(account->Name());
 		account_info.append(" : ");

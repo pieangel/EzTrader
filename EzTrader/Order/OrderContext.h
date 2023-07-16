@@ -4,9 +4,10 @@
 namespace DarkHorse {
 struct OrderContext {
 	std::string parent_account_no;
+	std::string sub_account_no;
 	std::string fund_name;
-	// Account Type. 1 : Sub Account, 2 : Main Account, 3 : Fund.
-	AccountType account_type = AccountType::None;
+	// Order Type. 1 : Sub Account, 2 : Main Account, 3 : Fund.
+	OrderType order_type = OrderType::None;
 	/// <summary>
 		/// Order Source ID
 		/// 주문이 시작된 곳의 ID. 보통은 주문창의 아이디를 가리키며, 시스템일 경우 시스템의 아이디,
@@ -16,6 +17,8 @@ struct OrderContext {
 		/// 시작될 때 다시 생성되어 각 소스에 매칭이 된다. 
 		/// </summary>
 	int order_control_id{ 0 };
+	int fund_id{ -1 };
+	int parent_account_id{ -1 };
 	int close;
 	int virtual_filled_price;
 };

@@ -29,7 +29,7 @@ private:
 	BlockingCollection<order_event> order_event_q;
 	bool handle_order_event(const std::array<order_event, BulkOrderProcessSize>& arr, int taken);
 	bool handle_order_event(order_event&& order_info_item);
-	bool handle_order_event(const order_event& order_info_item);
+	bool handle_order_event(order_event& order_info_item);
 	void clear_order_event() noexcept;
 	int get_order_request_id(const std::string& custom_info);
 	order_event make_dummy_order_event();

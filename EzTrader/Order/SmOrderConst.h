@@ -114,10 +114,10 @@ namespace DarkHorse {
 		Settled
 	};
 
-	enum class AccountType {
+	enum class OrderType {
 		None = 0,
-		SubAccount,
 		MainAccount,
+		SubAccount,
 		Fund
 	};
 

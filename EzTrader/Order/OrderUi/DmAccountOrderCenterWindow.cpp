@@ -837,20 +837,6 @@ void DmAccountOrderCenterWindow::OnEnChangeEditAmount()
 void DmAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 {
 	if (!account_ || !symbol_) return;
-	/*
-	auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(account_->No());
-	const std::map<std::string, std::shared_ptr<SmPosition>>& account_pos_map = account_pos_mgr->GetPositionMap();
-	auto found = account_pos_map.find(symbol_->SymbolCode());
-	if (found == account_pos_map.end()) return;
-
-	std::shared_ptr<SmOrderRequest> order_req = nullptr;
-	if (found->second->Position == SmPositionType::Buy)
-		order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account_->No(), account_->Pwd(), symbol_->SymbolCode(), 0, abs(found->second->OpenQty), DarkHorse::SmPriceType::Market);
-	else
-		order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account_->No(), account_->Pwd(), symbol_->SymbolCode(), 0, abs(found->second->OpenQty), DarkHorse::SmPriceType::Market);
-	mainApp.Client()->NewOrder(order_req);
-	*/
-
 	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_->No());
 	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {

@@ -40,6 +40,7 @@ namespace DarkHorse {
 	class PriceOrderMap;
 	class StopOrderControl;
 	class PriceOrderRequestMap;
+	class SmFund;
 }
 
 using order_request_p = std::shared_ptr<DarkHorse::OrderRequest>;
@@ -90,6 +91,8 @@ public:
 	int RecalRowCount(const int& height);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
+	std::shared_ptr<DarkHorse::SmFund> fund() const { return fund_; }
+	void fund(std::shared_ptr<DarkHorse::SmFund> val);
 	void UpdateOrder(const std::string& symbol_code);
 	void ConnectOrderUpdateSignal();
 	void ArrangeCenterValue();
@@ -152,6 +155,13 @@ public:
 		const int price,
 		const int amount,
 		const DarkHorse::SmPriceType price_type
+	);
+
+	void put_order
+	(
+		const DarkHorse::SmPositionType& type,
+		const int& price,
+		const DarkHorse::SmPriceType& price_type = DarkHorse::SmPriceType::Price
 	);
 	void set_center_window_id(const int center_window_id) {
 		center_window_id_ = center_window_id;
@@ -264,12 +274,7 @@ private:
 	int _CutMode = 0;
 	bool _MovingOrder = false;
 	void put_stop_order(const DarkHorse::SmPositionType& type, const int& price);
-	void put_order
-	(
-		const DarkHorse::SmPositionType& type, 
-		const int& price, 
-		const DarkHorse::SmPriceType& price_type = DarkHorse::SmPriceType::Price
-	);
+	
 	DmAccountOrderWindow* _MainDialog = nullptr;
 	DmFundOrderWindow* _FundDialog = nullptr;
 	void ProcesButtonClick(const std::shared_ptr<DarkHorse::SmCell>& cell);
@@ -320,6 +325,7 @@ private:
 	std::shared_ptr<DarkHorse::SmSymbol> symbol_{ nullptr };
 
 	std::shared_ptr<DarkHorse::SmAccount> account_{ nullptr };
+	std::shared_ptr<DarkHorse::SmFund> fund_{ nullptr };
 
 	std::shared_ptr<DarkHorse::SmStopOrderManager> _SellStopOrderMgr{ nullptr };
 	std::shared_ptr<DarkHorse::SmStopOrderManager> _BuyStopOrderMgr{ nullptr };

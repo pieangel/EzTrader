@@ -17,7 +17,7 @@ class TotalOrderManager
 {
 	using account_order_manager_p = std::shared_ptr<AccountOrderManager>;
 public:
-	void on_order_event(const order_event& order_info);
+	//void on_order_event(const order_event& order_info);
 	void on_order_event(order_event&& order_info);
 	account_order_manager_p get_account_order_manager(const std::string& account_no);
 	const std::map<std::string, account_order_manager_p>& get_account_order_manager_map() {
