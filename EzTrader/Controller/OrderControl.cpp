@@ -53,26 +53,29 @@ namespace DarkHorse {
 	{
 		if (!symbol) return;
 		symbol_ = symbol;
-		for (auto account_no : account_no_set_)
-			load_from_account(account_no, symbol_->SymbolCode());
+		if (!account_) return;
+		load_from_account(account_->No(), symbol_->SymbolCode());
 	}
 
 	void OrderControl::set_account(std::shared_ptr<SmAccount> account)
 	{
 		if (!account) return;
-		account_no_set_.clear();
-		account_no_set_.insert(account->No());
+		account_ = account;
 		if (!symbol_) return;
-		for(auto account_no : account_no_set_)
-			load_from_account(account_no, symbol_->SymbolCode());
+		load_from_account(account_->No(), symbol_->SymbolCode());
 	}
 
 	void OrderControl::update_order(std::shared_ptr<Order> order, OrderEvent order_event)
 	{
-		if (!order || !symbol_) return;
-		auto found = account_no_set_.find(order->account_no);
-		if (found == account_no_set_.end()) return;
+		if (!order || !symbol_ || !account_) return;
 		if (symbol_->SymbolCode() != order->symbol_code) return;
+		if (account_->is_subaccount()) {
+			if (account_->No() != order->account_no) return;
+		}
+		else {
+			if (!(account_->No() == order->account_no || account_->No() == order->order_context.parent_account_no))
+				return;
+		}
 
 		if (order_event == OrderEvent::OE_Accepted)
 			on_order_accepted(order);

@@ -44,9 +44,10 @@ namespace DarkHorse {
 		SubOrderControl sell_order_control_;
 		//int symbol_id_{ 0 };
 		std::shared_ptr<SmSymbol> symbol_{nullptr};
+		std::shared_ptr<SmAccount> account_{ nullptr };
 		int id_{ 0 };
 		// the set of account no of which belongs to the account.
-		std::set<std::string> account_no_set_;
+		//std::set<std::string> account_no_set_;
 		std::function<void()> event_handler_;
 	};
 }
