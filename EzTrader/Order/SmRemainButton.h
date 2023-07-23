@@ -7,7 +7,7 @@ namespace DarkHorse {
 	class SmSymbol;
 }
 
-class SmFundOrderCenterWnd;
+class AbFundOrderCenterWindow;
 class AbAccountOrderCenterWindow;
 class SmRemainButton : public CBCGPStatic
 {
@@ -20,8 +20,8 @@ public:
 	void Selected(bool val) { _Selected = val; }
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
-	SmFundOrderCenterWnd* FundOrderCenterWnd() const { return _FundOrderCenterWnd; }
-	void FundOrderCenterWnd(SmFundOrderCenterWnd* val) { _FundOrderCenterWnd = val; }
+	AbFundOrderCenterWindow* FundOrderCenterWnd() const { return _FundOrderCenterWnd; }
+	void FundOrderCenterWnd(AbFundOrderCenterWindow* val) { _FundOrderCenterWnd = val; }
 	AbAccountOrderCenterWindow* OrderCenterWnd() const { return _OrderCenterWnd; }
 	void OrderCenterWnd(AbAccountOrderCenterWindow* val) { _OrderCenterWnd = val; }
 public:
@@ -42,7 +42,7 @@ public:
 	DECLARE_MESSAGE_MAP()
 private:
 	AbAccountOrderCenterWindow* _OrderCenterWnd = nullptr;
-	SmFundOrderCenterWnd* _FundOrderCenterWnd = nullptr;
+	AbFundOrderCenterWindow* _FundOrderCenterWnd = nullptr;
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
 	bool _EnableOrderShow = false;
 	bool _EnableQuoteShow = false;

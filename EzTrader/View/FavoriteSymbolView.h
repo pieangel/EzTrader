@@ -17,7 +17,7 @@ namespace DarkHorse {
 }
 class SmSymbolTableDialog;
 class AbAccountOrderWindow;
-class SmFundOrderDialog;
+class AbFundOrderWindow;
 class SmOrderCompMainDialog;
 class SmFundCompMainDialog;
 class FavoriteSymbolView : public CBCGPGridCtrl
@@ -39,7 +39,7 @@ public:
 	void SetMainWnd(AbAccountOrderWindow* main_wnd) {
 		_OrderWnd = main_wnd;
 	}
-	void SetFundOrderWnd(SmFundOrderDialog* fund_order_wnd) {
+	void SetFundOrderWnd(AbFundOrderWindow* fund_order_wnd) {
 		_FundOrderWnd = fund_order_wnd;
 	}
 	void ToggleExtendedPadding();
@@ -102,7 +102,7 @@ private:
 	bool _EnableQuoteShow = false;
 	SmFundCompMainDialog* _CompFundWnd = nullptr;
 	SmOrderCompMainDialog* _CompOrderWnd = nullptr;
-	SmFundOrderDialog* _FundOrderWnd = nullptr;
+	AbFundOrderWindow* _FundOrderWnd = nullptr;
 	AbAccountOrderWindow* _OrderWnd = nullptr;
 	bool _HeaderCheck = false;
 	int _OldMaxRow = -1;

@@ -884,7 +884,7 @@ void DmFundOrderWindow::OnDestroy()
 void DmFundOrderWindow::PostNcDestroy()
 {
 	//CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	//pFrame->remove_dm_account_order_window(GetSafeHwnd());
+	//pFrame->remove_dm_fund_order_window(GetSafeHwnd());
 
 	CBCGPDialog::PostNcDestroy();
 	destroyed_ = true;

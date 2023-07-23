@@ -15,17 +15,17 @@ namespace DarkHorse {
 
 
 // SmMainOrderDialog dialog
-class AbAccountOrderCenterWindow;
-class AbAccountOrderLeftWindow;
-class AbAccountOrderRightWindow;
-class AbAccountOrderWindow : public CBCGPDialog
+class AbFundOrderCenterWindow;
+class AbFundOrderLeftWindow;
+class AbFundOrderRightWindow;
+class AbFundOrderWindow : public CBCGPDialog
 {
-	DECLARE_DYNAMIC(AbAccountOrderWindow)
+	DECLARE_DYNAMIC(AbFundOrderWindow)
 
 public:
 	void SetAccount();
-	AbAccountOrderWindow(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~AbAccountOrderWindow();
+	AbFundOrderWindow(CWnd* pParent = nullptr);   // standard constructor
+	virtual ~AbFundOrderWindow();
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -38,16 +38,16 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	const std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>>& GetCenterWndMap() {
+	const std::map<int, std::shared_ptr<AbFundOrderCenterWindow>>& GetCenterWndMap() {
 		return center_window_map_;
 	}
 	void OnQuoteAreaShowHide();
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
 private:
-	std::shared_ptr<AbAccountOrderLeftWindow> _LeftWnd = nullptr;
-	std::shared_ptr<AbAccountOrderRightWindow> _RightWnd = nullptr;
-	std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>> center_window_map_;
+	std::shared_ptr<AbFundOrderLeftWindow> _LeftWnd = nullptr;
+	std::shared_ptr<AbFundOrderRightWindow> _RightWnd = nullptr;
+	std::map<int, std::shared_ptr<AbFundOrderCenterWindow>> center_window_map_;
 	bool _ShowLeft = true;
 	bool _ShowRight = true;
 	// key : combo index, value : account object.

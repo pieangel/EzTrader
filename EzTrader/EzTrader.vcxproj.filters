@@ -835,6 +835,18 @@
     <ClCompile Include="Order\OrderUi\DmFundOrderWindow.cpp">
       <Filter>Order\OrderUi</Filter>
     </ClCompile>
+    <ClCompile Include="Order\AbFundOrderCenterWindow.cpp">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\AbFundOrderLeftWindow.cpp">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\AbFundOrderRightWindow.cpp">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClCompile>
+    <ClCompile Include="Order\AbFundOrderWindow.cpp">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1904,6 +1916,18 @@
     </ClInclude>
     <ClInclude Include="Order\OrderUi\DmFundOrderWindow.h">
       <Filter>Order\OrderUi</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\AbFundOrderCenterWindow.h">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\AbFundOrderLeftWindow.h">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\AbFundOrderRightWindow.h">
+      <Filter>Order\OrderUI_AB</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\AbFundOrderWindow.h">
+      <Filter>Order\OrderUI_AB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

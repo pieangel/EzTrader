@@ -24,6 +24,7 @@
 #include "Order/CTestDialog.h"
 #include "Log/MyLogger.h"
 #include "Fund/SmFundDialog.h"
+#include "Order/AbFundOrderWindow.h"
 #include "Symbol/SmSymbolManager.h"
 #include "Symbol/SmSymbol.h"
 #include "Client/ViStockClient.h"
@@ -1140,7 +1141,7 @@ void CMainFrame::OnEditFund()
 
 void CMainFrame::OnFundOrder()
 {
-	std::shared_ptr<SmFundOrderDialog> fundOrderWnd = std::make_shared<SmFundOrderDialog>();
+	std::shared_ptr<AbFundOrderWindow> fundOrderWnd = std::make_shared<AbFundOrderWindow>();
 	fundOrderWnd->Create(IDD_ORDER_FUND, this);
 	_FundOrderWndMap[fundOrderWnd->GetSafeHwnd()] = fundOrderWnd;
 	fundOrderWnd->ShowWindow(SW_SHOW);
@@ -1343,6 +1344,16 @@ void CMainFrame::remove_dm_account_order_window(HWND handle)
 	found->second->DestroyWindow();
 	dm_account_order_wnd_map_.erase(found);
 }
+
+void CMainFrame::remove_dm_fund_order_window(HWND handle)
+{
+	if (!handle) return;
+	auto found = dm_fund_order_wnd_map_.find(handle);
+	if (found == dm_fund_order_wnd_map_.end()) return;
+	found->second->DestroyWindow();
+	dm_fund_order_wnd_map_.erase(found);
+}
+
 void CMainFrame::OnDmAcntOrder()
 {
 	DmAccountOrderWindow* acnt_order_wnd = new DmAccountOrderWindow();

@@ -326,7 +326,7 @@ BOOL SmFundOrderCenterWnd::OnInitDialog()
 
 	_RemainButton.SetUp();
 	_RemainButton.Text("¿‹∞Ì");
-	_RemainButton.FundOrderCenterWnd(this);
+	//_RemainButton.FundOrderCenterWnd(this);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE

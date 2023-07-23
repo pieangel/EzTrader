@@ -12,7 +12,7 @@
 #include "../Symbol/SmSymbolTableDialog.h"
 #include "../Symbol/SmSymbolManager.h"
 #include "../Order/AbAccountOrderWindow.h"
-#include "../Fund/SmFundOrderDialog.h"
+#include "../Order/AbFundOrderWindow.h"
 #include "../Global/SmTotalManager.h"
 #include "../Event/SmCallbackManager.h"
 #include "../CompOrder/SmOrderCompMainDialog.h"
@@ -22,6 +22,7 @@
 #include "../Quote/SmQuote.h"
 #include "../Quote/SmQuoteManager.h"
 #include "../Util/SmUtil.h"
+#include "../Event/EventHub.h"
 #include <format>
 
 #include <functional>
@@ -360,10 +361,11 @@ void FavoriteSymbolView::OnLButtonDown(UINT nFlags, CPoint point)
 		auto found = _RowToSymbolMap.find(id.m_nRow);
 		if (found == _RowToSymbolMap.end()) return;
 
-		if (_OrderWnd) _OrderWnd->OnSymbolClicked(found->second);
-		if (_FundOrderWnd) _FundOrderWnd->OnSymbolClicked(found->second);
-		if (_CompOrderWnd) _CompOrderWnd->OnSymbolClicked(found->second);
-		if (_CompFundWnd) _CompFundWnd->OnSymbolClicked(found->second);
+		//if (_OrderWnd) _OrderWnd->OnSymbolClicked(found->second);
+		//if (_FundOrderWnd) _FundOrderWnd->OnSymbolClicked(found->second);
+		//if (_CompOrderWnd) _CompOrderWnd->OnSymbolClicked(found->second);
+		//if (_CompFundWnd) _CompFundWnd->OnSymbolClicked(found->second);
+		mainApp.event_hub()->process_symbol_event(found->second);
 	}
 	Invalidate();
 

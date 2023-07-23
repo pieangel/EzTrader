@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SmRemainButton.h"
-#include "../Fund/SmFundOrderCenterWnd.h"
+#include "AbFundOrderCenterWindow.h"
 #include "AbAccountOrderCenterWindow.h"
 #include "../Global/SmTotalManager.h"
 #include <format>
@@ -175,12 +175,14 @@ void SmRemainButton::OnLButtonDown(UINT nFlags, CPoint point)
 	//wnd->SendMessage(UM_CHANGE_SYMBOL, _Index, 0);
 	//_Selected ? _Selected = false : _Selected = true;
 	int position_count = 0;
+	/*
 	if (_FundOrderCenterWnd) {
 		position_count = _FundOrderCenterWnd->GetFundPositionCount();
 		if (position_count > 0) {
 			_FundOrderCenterWnd->SetOrderAmount(position_count);
 		}
 	}
+	*/
 	if (_OrderCenterWnd) {
 		position_count = _OrderCenterWnd->GetPositionCount();
 		if (position_count > 0) {
@@ -198,9 +200,9 @@ void SmRemainButton::OnLButtonUp(UINT nFlags, CPoint point)
 void SmRemainButton::OnTimer(UINT_PTR nIDEvent)
 {
 	int position_count = 0;
-	if (_FundOrderCenterWnd) {
-		position_count = _FundOrderCenterWnd->GetFundPositionCount();
-	}
+// 	if (_FundOrderCenterWnd) {
+// 		position_count = _FundOrderCenterWnd->GetFundPositionCount();
+// 	}
 
 	if (_OrderCenterWnd) {
 		position_count = _OrderCenterWnd->GetPositionCount();

@@ -170,7 +170,7 @@ public:
 		expected_cb_list_(quote);
 	}
 
-	void add_symbol_event_handler(const int symbol_control_id, std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
+	void subscribe_symbol_event_handler(const int symbol_control_id, std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
 	{
 		SymbolCBH handle = symbol_cb_list_.append(handler);
 		symbol_cb_handle_map_[symbol_control_id] = handle;

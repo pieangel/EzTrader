@@ -41,6 +41,7 @@ class VtProgressDlg;
 class SmLoginDlg;
 class MiniJangoDialog;
 class TotalAssetProfitLossDialog;
+class AbFundOrderWindow;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -151,7 +152,7 @@ public:
 	std::map<HWND, std::shared_ptr<MiniJangoDialog>> mini_jango_wnd_map_;
 	std::map<HWND, std::shared_ptr<SmFilledListDialog>> _FilledWndMap;
 
-	std::map<HWND, std::shared_ptr<SmFundOrderDialog>> _FundOrderWndMap;
+	std::map<HWND, std::shared_ptr<AbFundOrderWindow>> _FundOrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmFundCompMainDialog>> _FundCompOrderWndMap;
 
@@ -172,6 +173,7 @@ public:
 
 
 	void remove_dm_account_order_window(HWND handle);
+	void remove_dm_fund_order_window(HWND handle);
 	void RemoveOrderWnd(HWND wnd);
 	void RemoveFundOrderWnd(HWND wnd);
 	void RemoveJangoWnd(HWND wnd);

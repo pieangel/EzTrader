@@ -392,6 +392,10 @@
     <ClInclude Include="MfcMdiAppGlue.h" />
     <ClInclude Include="OrderState\SmFilledGrid.h" />
     <ClInclude Include="OrderState\SmFilledListDialog.h" />
+    <ClInclude Include="Order\AbFundOrderCenterWindow.h" />
+    <ClInclude Include="Order\AbFundOrderLeftWindow.h" />
+    <ClInclude Include="Order\AbFundOrderRightWindow.h" />
+    <ClInclude Include="Order\AbFundOrderWindow.h" />
     <ClInclude Include="Order\CTestDialog.h" />
     <ClInclude Include="Order\Order.h" />
     <ClInclude Include="Order\OrderContext.h" />
@@ -731,6 +735,10 @@
     <ClCompile Include="MfcMdiAppGlue.cpp" />
     <ClCompile Include="OrderState\SmFilledGrid.cpp" />
     <ClCompile Include="OrderState\SmFilledListDialog.cpp" />
+    <ClCompile Include="Order\AbFundOrderCenterWindow.cpp" />
+    <ClCompile Include="Order\AbFundOrderLeftWindow.cpp" />
+    <ClCompile Include="Order\AbFundOrderRightWindow.cpp" />
+    <ClCompile Include="Order\AbFundOrderWindow.cpp" />
     <ClCompile Include="Order\CTestDialog.cpp" />
     <ClCompile Include="Order\AbAccountOrderLeftWindow.cpp" />
     <ClCompile Include="Order\OrderProcess\AccountOrderManager.cpp" />
