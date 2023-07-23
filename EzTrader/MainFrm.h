@@ -143,7 +143,7 @@ public:
 	DmAccountOrderWindow* dm_account_order_wnd_p_ = nullptr;
 	std::shared_ptr<DmFundOrderWindow> dm_fund_order_wnd_p = nullptr;
 	std::map<HWND, DmAccountOrderWindow*> dm_account_order_wnd_map_;
-	std::map<HWND, std::shared_ptr<DmFundOrderWindow>> dm_fund_order_wnd_map_;
+	std::map<HWND, DmFundOrderWindow*> dm_fund_order_wnd_map_;
 
 	std::map<HWND, AbAccountOrderWindow*> _OrderWndMap;
 
@@ -219,4 +219,5 @@ public:
 	afx_msg void OnSetSimulationMode();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnEnableSimulationFilledOrder();
+	afx_msg void OnDmFundOrder();
 };

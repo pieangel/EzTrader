@@ -32,6 +32,7 @@ using json = nlohmann::json;
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
+	class SmFund;
 }
 
 
@@ -53,6 +54,8 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DM_ACNT_ORDER_CENTER};
 #endif
+	std::shared_ptr<DarkHorse::SmFund> Fund() const { return fund_; }
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { fund_ = val; }
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
@@ -132,6 +135,7 @@ private:
 	std::set<int> old_hoga_sell_row;
 	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
+	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
 	//CExtStatusControlBar m_bar;
 	bool init_dialog_ = false;
 	bool show_symbol_tick_view_ = true;

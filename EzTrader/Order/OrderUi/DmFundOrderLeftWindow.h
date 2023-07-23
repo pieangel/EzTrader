@@ -29,6 +29,7 @@ class DmFundOrderLeftWindow
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
+	class SmFund;
 }
 class SmSymbolTableDialog;
 class DmAccountOrderWindow;
@@ -68,6 +69,7 @@ public:
 	afx_msg void OnBnClickedBtnAddFav();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void SetAccount(std::shared_ptr<DarkHorse::SmAccount> account);
+	void SetFund(std::shared_ptr<DarkHorse::SmFund> fund);
 	afx_msg LRESULT OnUmSymbolSelected(WPARAM wParam, LPARAM lParam);
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
 	afx_msg void OnBnClickedBtnCancelSel();

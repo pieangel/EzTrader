@@ -1846,7 +1846,7 @@ BEGIN
         MENUITEM "펀드미니잔고",                      ID_FUND_REMAIN
         MENUITEM "펀드손익",                        ID_FUND_PL
         MENUITEM "펀드복수주문일괄주문창",                 ID_FUND_COMPLEX_ORDER
-        MENUITEM "DomesticFundOrder",           ID_32929
+        MENUITEM "국내 펀드주문",                     ID_DM_FUND_ORDER
         MENUITEM "DomesticFundPosition",        ID_32930
     END
     POPUP "차트"
@@ -1895,7 +1895,7 @@ BEGIN
         MENUITEM "펀드미니잔고",                      ID_FUND_REMAIN
         MENUITEM "펀드손익",                        ID_FUND_PL
         MENUITEM "펀드복수주문일괄주문창",                 ID_FUND_COMPLEX_ORDER
-        MENUITEM "DomesticFundOrder",           ID_32929
+        MENUITEM "국내 펀드주문",                     ID_DM_FUND_ORDER
         MENUITEM "DomesticFundPosition",        ID_32930
     END
     POPUP "차트"

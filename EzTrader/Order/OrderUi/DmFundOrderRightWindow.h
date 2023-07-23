@@ -17,6 +17,7 @@ class DmFundOrderRightWindow
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
+	class SmFund;
 }
 
 
@@ -42,6 +43,7 @@ private:
 	AccountAssetView asset_view_;
 	SymbolInfoView symbol_info_view_;
 public:
+	void SetFund(const std::shared_ptr<DarkHorse::SmFund>& fund);
 	void SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account);
 	void SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol);
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
