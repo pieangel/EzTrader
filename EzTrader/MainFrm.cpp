@@ -1331,10 +1331,7 @@ void CMainFrame::OnDomesticAccountOrder()
 
 void CMainFrame::OnDomesticFundOrder()
 {
-	DmFundOrderWindow* fund_order_wnd = new DmFundOrderWindow();
-	fund_order_wnd->Create(IDD_DM_FUND_ORDER_MAIN, this);
-	dm_fund_order_wnd_map_[fund_order_wnd->GetSafeHwnd()] = fund_order_wnd;
-	fund_order_wnd->ShowWindow(SW_SHOW);
+
 }
 
 void CMainFrame::remove_dm_account_order_window(HWND handle)

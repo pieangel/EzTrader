@@ -46,7 +46,7 @@ public:
 	void SetFund(const std::shared_ptr<DarkHorse::SmFund>& fund);
 	void SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account);
 	void SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol);
-	void OnOrderChanged(const int& account_id, const int& symbol_id);
+	//void OnOrderChanged(const int& account_id, const int& symbol_id);
 	void OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 public:
 	virtual BOOL OnInitDialog();

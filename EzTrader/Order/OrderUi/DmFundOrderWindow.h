@@ -91,15 +91,15 @@ private:
 	CRect moveRect;
 	int _CurrentFundIndex{ 0 };
 	void SetFundInfo(std::shared_ptr<DarkHorse::SmFund> fund);
-	void SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account);
+	//void SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account);
 	CRect _rcMain;
 	CRect _rcLeft;
 	CRect _rcRight;
-	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
+	//std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
 public:
-	std::shared_ptr<DarkHorse::SmAccount> get_account() { return _Account; }
-	std::string get_account_no();
+	//std::shared_ptr<DarkHorse::SmAccount> get_account() { return _Account; }
+	//std::string get_account_no();
 	size_t get_center_window_count() { return center_window_map_.size(); }
 	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
@@ -129,7 +129,7 @@ public:
 	afx_msg void OnBnClickedButton6();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	afx_msg void OnCbnSelchangeComboAccount();
+	afx_msg void OnCbnSelchangeComboFund();
 	afx_msg LRESULT OnUmOrderUpdate(WPARAM wParam, LPARAM lParam);
 	void ChangedSymbol(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void ChangedCenterWindow(const int& center_wnd_id);

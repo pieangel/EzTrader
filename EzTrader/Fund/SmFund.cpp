@@ -155,3 +155,10 @@ void DarkHorse::SmFund::LoadFromXml(pugi::xml_node& node_fund)
 		}
 	}
 }
+
+bool SmFund::is_account_exist(const int& account_id)
+{
+	auto it = account_id_set_.find(account_id);
+	if (it == account_id_set_.end()) return false;
+	return true;
+}

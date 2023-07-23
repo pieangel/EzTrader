@@ -157,11 +157,11 @@ LRESULT DmFundOrderLeftWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
 	return 1;
 }
 
-void DmFundOrderLeftWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
-{
-	//_AcceptedGrid.UpdateAcceptedOrder();
-	//_PositionGrid.UpdatePositionInfo();
-}
+// void DmFundOrderLeftWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
+// {
+// 	//_AcceptedGrid.UpdateAcceptedOrder();
+// 	//_PositionGrid.UpdatePositionInfo();
+// }
 
 
 void DmFundOrderLeftWindow::OnBnClickedBtnCancelSel()

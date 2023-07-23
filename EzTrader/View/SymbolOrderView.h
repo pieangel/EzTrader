@@ -111,6 +111,7 @@ public:
 	bool Selected() const { return _Selected; }
 	void Selected(bool val) { _Selected = val; }
 	void PutOrderBySpaceBar();
+	void PutOrderBySpaceBar(std::shared_ptr<DarkHorse::SmAccount> account);
 	void ChangeOrderByKey(const int up_down);
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }
@@ -148,8 +149,20 @@ public:
 		parent_ = wnd;
 	}
 	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
+	/*
 	void put_order
 	(
+		const std::string& symbol_code,
+		const DarkHorse::SmPositionType& type,
+		const int price,
+		const int amount,
+		const DarkHorse::SmPriceType price_type
+	);
+	*/
+
+	void put_order
+	(
+		std::shared_ptr<DarkHorse::SmAccount> account,
 		const std::string& symbol_code,
 		const DarkHorse::SmPositionType& type,
 		const int price,
@@ -167,6 +180,8 @@ public:
 		center_window_id_ = center_window_id;
 	}
 private:
+	void CancelSellOrder(std::shared_ptr<DarkHorse::SmAccount> account);
+	void CancelBuyOrder(std::shared_ptr<DarkHorse::SmAccount> account);
 	int center_window_id_{0};
 	void set_fixed_selected_cell();
 	void clear_fixed_selected_cell();

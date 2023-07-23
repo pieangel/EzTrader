@@ -53,10 +53,10 @@ void DmFundOrderRightWindow::SetSymbol(const std::shared_ptr < DarkHorse::SmSymb
 	symbol_info_view_.Symbol(symbol);
 }
 
-void DmFundOrderRightWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
-{
-
-}
+// void DmFundOrderRightWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
+// {
+// 
+// }
 
 void DmFundOrderRightWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {

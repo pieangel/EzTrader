@@ -22,6 +22,7 @@
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
+	class SmFund;
 }
 
 
@@ -42,6 +43,8 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ORDER_CENTER };
 #endif
+	std::shared_ptr<DarkHorse::SmFund> Fund() const { return fund_; }
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { fund_ = val; }
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
@@ -115,6 +118,7 @@ private:
 	std::set<int> _OldHogaSellRowIndex;
 	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
+	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
 	//CExtStatusControlBar m_bar;
 	bool _Init = false;
 	bool _ShowQuoteArea = true;
@@ -156,6 +160,7 @@ public:
 	afx_msg void OnEnChangeEditAmount();
 	CBCGPStatic _StaticFilledCount;
 	afx_msg void OnBnClickedBtnLiqSymbolPosition();
+	void OnBnClickedBtnLiqSymbolPosition(std::shared_ptr<DarkHorse::SmAccount> account);
 	//CBCGPGroup _GroupFillSet;
 	CBCGPButton _RadioMarket;
 	CBCGPButton _RadioPrice;

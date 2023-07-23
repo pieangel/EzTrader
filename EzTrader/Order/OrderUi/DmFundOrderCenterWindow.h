@@ -155,7 +155,7 @@ public:
 	void set_symbol_order_view_height_and_width(std::vector<int> value_vector);
 	void SetRowWide();
 	void SetRowNarrow();
-	void OnOrderChanged(const int& account_id, const int& symbol_id);
+	//void OnOrderChanged(const int& account_id, const int& symbol_id);
 	int RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up = true);
 	afx_msg void OnCbnSelchangeComboSymbol();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -179,6 +179,7 @@ public:
 	afx_msg void OnEnChangeEditAmount();
 	CBCGPStatic _StaticFilledCount;
 	afx_msg void OnBnClickedBtnLiqSymbolPosition();
+	void OnBnClickedBtnLiqSymbolPosition(std::shared_ptr<DarkHorse::SmAccount> account);
 	//CBCGPGroup _GroupFillSet;
 	CBCGPButton _RadioMarket;
 	CBCGPButton _RadioPrice;

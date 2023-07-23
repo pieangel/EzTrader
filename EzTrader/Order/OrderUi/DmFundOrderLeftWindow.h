@@ -71,7 +71,7 @@ public:
 	void SetAccount(std::shared_ptr<DarkHorse::SmAccount> account);
 	void SetFund(std::shared_ptr<DarkHorse::SmFund> fund);
 	afx_msg LRESULT OnUmSymbolSelected(WPARAM wParam, LPARAM lParam);
-	void OnOrderChanged(const int& account_id, const int& symbol_id);
+	//void OnOrderChanged(const int& account_id, const int& symbol_id);
 	afx_msg void OnBnClickedBtnCancelSel();
 	afx_msg void OnBnClickedBtnCancelAll();
 	afx_msg void OnBnClickedBtnLiqSel();

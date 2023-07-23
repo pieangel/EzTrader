@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <set>
 #include "../Xml/pugixml.hpp"
 namespace DarkHorse {
 	class SmAccount;
@@ -35,11 +36,16 @@ namespace DarkHorse {
 		int GetFilledOrderCount(const std::string& symbol_code);
 		void SaveToXml(pugi::xml_node& node);
 		void LoadFromXml(pugi::xml_node& node);
+		std::string fund_type() const { return fund_type_; }
+		void fund_type(std::string val) { fund_type_ = val; }
+		bool is_account_exist(const int& account_id);
 	private:
 		// key : account no, value : account object
 		std::vector<std::shared_ptr<SmAccount>> _AccountVector;
 		std::string _Name;
 		int _id{ -1 };
+		std::string fund_type_;
+		std::set<int> account_id_set_;
 	};
 }
 

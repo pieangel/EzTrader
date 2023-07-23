@@ -841,14 +841,13 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
 		if (it->second->open_quantity > 0) {
-			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
+			symbol_order_view_.put_order(account_, it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
 		}
 		else if (it->second->open_quantity < 0) {
-			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
+			symbol_order_view_.put_order(account_, it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
 		}
 	}
 }
-
 
 void DmAccountOrderCenterWindow::OnBnClickedCheckProfit()
 {

@@ -42,6 +42,7 @@
 #include "../Order/OrderRequest/OrderRequest.h"
 #include "../Task/SmTaskRequestManager.h"
 #include "../Util/IdGenerator.h"
+#include "../Fund/SmFund.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -806,19 +807,40 @@ void AbFundOrderCenterWindow::OnEnChangeEditAmount()
 
 void AbFundOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 {
-	if (!account_ || !symbol_) return;
-	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_->No());
-	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
-	for (auto it = position_map.begin(); it != position_map.end(); it++) {
-		if (it->second->open_quantity > 0) {
-			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
-		}
-		else if (it->second->open_quantity < 0) {
-			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
+// 	if (!account_ || !symbol_) return;
+// 	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_->No());
+// 	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
+// 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
+// 		if (it->second->open_quantity > 0) {
+// 			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
+// 		}
+// 		else if (it->second->open_quantity < 0) {
+// 			symbol_order_view_.put_order(it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
+// 		}
+// 	}
+	if (account_) OnBnClickedBtnLiqSymbolPosition(account_);
+	if (fund_) {
+		for (auto& account : fund_->GetAccountVector()) {
+			OnBnClickedBtnLiqSymbolPosition(account);
 		}
 	}
 }
 
+
+void AbFundOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition(std::shared_ptr<DarkHorse::SmAccount> account)
+{
+	if (!account || !symbol_) return;
+	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account->No());
+	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
+	for (auto it = position_map.begin(); it != position_map.end(); it++) {
+		if (it->second->open_quantity > 0) {
+			symbol_order_view_.put_order(account, it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
+		}
+		else if (it->second->open_quantity < 0) {
+			symbol_order_view_.put_order(account, it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
+		}
+	}
+}
 
 void AbFundOrderCenterWindow::OnBnClickedCheckProfit()
 {
