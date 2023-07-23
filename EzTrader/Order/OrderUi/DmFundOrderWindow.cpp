@@ -1,9 +1,10 @@
-/*
 #include "stdafx.h"
 #include "DmFundOrderWindow.h"
 #include "../../Util/IdGenerator.h"
-namespace DarkHorse {
+#include "../../Global/SmTotalManager.h"
+#include "../../Task/SmTaskRequestManager.h"
 
+/*
 DmFundOrderWindow::DmFundOrderWindow()
 {
 	_id = DarkHorse::IdGenerator::get_id();
@@ -13,12 +14,8 @@ DmFundOrderWindow::~DmFundOrderWindow()
 {
 
 }
-
-}
 */
 
-// DmFundOrderWindow.cpp : implementation file
-//
 
 #include "stdafx.h"
 #include "../../DarkHorse.h"
@@ -43,11 +40,12 @@ DmFundOrderWindow::~DmFundOrderWindow()
 #include "../../Client/ViStockClient.h"
 #include "../../Order/SmOrderRequestManager.h"
 #include "../../Order/SmTotalOrderManager.h"
-#include "../../Fund/SmFundManager.h"
-#include "../../Fund/SmFund.h"
-#include "../../Fund/SmFundDialog.h"
-#include "../../MainFrm.h"
+
 #include "../../Symbol/SmSymbol.h"
+#include "../../Event/EventHub.h"
+#include "../../Util/IdGenerator.h"
+#include <functional>
+using namespace std::placeholders;
 
 using namespace DarkHorse;
 
@@ -57,50 +55,40 @@ int DmFundOrderWindow::_Id = 0;
 
 void DmFundOrderWindow::SetAccount()
 {
-	/*
 	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
 	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
 		auto account = it->second;
+		if (account->Type() != "9") continue;
 		std::string account_info;
 		account_info.append(account->Name());
 		account_info.append(" : ");
 		account_info.append(account->No());
 		const int index = _ComboAccount.AddString(account_info.c_str());
 		_ComboAccountMap[index] = account;
-
+		_AccountComboMap[account->No()] = index;
 	}
 
 	if (!_ComboAccountMap.empty()) {
-		_CurrentAccountIndex = 0;
+		// if account_no_ is empty, set the first account as default
+		if (account_no_.empty())
+			_CurrentAccountIndex = 0;
+		else {
+			// if account_no_ is not empty, set the account_no_ as default
+			auto it = _AccountComboMap.find(account_no_);
+			if (it != _AccountComboMap.end()) {
+				_CurrentAccountIndex = it->second;
+			}
+			else {
+				_CurrentAccountIndex = 0;
+			}	
+		}
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
 		SetAccountInfo(_ComboAccountMap[_CurrentAccountIndex]);
 		_LeftWnd->OnOrderChanged(0, 0);
-	}
-	*/
-}
 
-void DmFundOrderWindow::SetFund()
-{
-
-
-	const std::map<std::string, std::shared_ptr<SmFund>>& fund_map = mainApp.FundMgr()->GetFundMap();
-
-	for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
-		auto fund = it->second;
-		std::string account_info;
-		account_info.append(fund->Name());
-		//account_info.append(" : ");
-		//account_info.append(fund->No());
-		const int index = _ComboFund.AddString(account_info.c_str());
-		_ComboFundMap[index] = fund;
-
-	}
-
-	if (!_ComboFundMap.empty()) {
-		_CurrentFundIndex = 0;
-		_ComboFund.SetCurSel(_CurrentFundIndex);
-		SetFundInfo(_ComboFundMap[_CurrentFundIndex]);
-		_LeftWnd->OnOrderChanged(0, 0);
+		for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
+			it->second->Account(_ComboAccountMap[_CurrentAccountIndex]);
+		}
 	}
 }
 
@@ -109,20 +97,44 @@ void DmFundOrderWindow::SetFund()
 IMPLEMENT_DYNAMIC(DmFundOrderWindow, CBCGPDialog)
 
 DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent /*=nullptr*/)
-	: CBCGPDialog(IDD_DM_FUND_ORDER_MAIN, pParent)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
+	id_ = IdGenerator::get_id();
+	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmFundOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmFundOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
+DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent), center_window_count_(center_window_count), account_no_(account_no)
+{
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+	id_ = IdGenerator::get_id();
+	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmFundOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmFundOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
+DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no, const nlohmann::json center_wnd_prop)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent), center_window_count_(center_window_count), account_no_(account_no), center_wnd_prop_(center_wnd_prop)
+{
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+	id_ = IdGenerator::get_id();
+	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmFundOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmFundOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 DmFundOrderWindow::~DmFundOrderWindow()
 {
+	mainApp.event_hub()->unsubscribe_symbol_order_view_event_handler(id_);
 }
 
 void DmFundOrderWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO_ACCOUNT, _ComboFund);
+	DDX_Control(pDX, IDC_COMBO_ACCOUNT, _ComboAccount);
 	//DDX_Control(pDX, IDC_STATIC_ACCOUNT_NAME, _StaticAccountName);
 	DDX_Control(pDX, IDC_STATIC_LINE1, _Line1);
 	DDX_Control(pDX, IDC_STATIC_LINE2, _Line2);
@@ -149,14 +161,13 @@ BEGIN_MESSAGE_MAP(DmFundOrderWindow, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BUTTON6, &DmFundOrderWindow::OnBnClickedButton6)
 	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
-	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &DmFundOrderWindow::OnCbnSelchangeComboFund)
+	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &DmFundOrderWindow::OnCbnSelchangeComboAccount)
 	ON_MESSAGE(WM_ORDER_UPDATE, &DmFundOrderWindow::OnUmOrderUpdate)
 	ON_MESSAGE(WM_SERVER_MSG, &DmFundOrderWindow::OnUmServerMsg)
 	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_BTN_LIQ_ALL, &DmFundOrderWindow::OnBnClickedBtnLiqAll)
-	ON_BN_CLICKED(IDC_BTN_FUND_SET, &DmFundOrderWindow::OnBnClickedBtnFundSet)
-	ON_MESSAGE(WM_FUND_CHANGED, &DmFundOrderWindow::OnUmFundChanged)
 	ON_WM_SYSCOMMAND()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -187,27 +198,6 @@ LRESULT DmFundOrderWindow::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
 }
 
 
-void DmFundOrderWindow::OnSymbolClicked(const std::string& symbol_code)
-{
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
-		if (it->second->Selected()) {
-			it->second->OnSymbolClicked(symbol_code);
-			break;
-		}
-	}
-}
-
-void DmFundOrderWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol)
-{
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
-		if (it->second->Selected()) {
-			it->second->OnSymbolClicked(symbol->SymbolCode());
-			break;
-		}
-	}
-	_RightWnd->OnSymbolClicked(symbol);
-}
-
 BOOL DmFundOrderWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
@@ -229,30 +219,83 @@ BOOL DmFundOrderWindow::OnInitDialog()
 
 
 	_LeftWnd = std::make_shared<DmFundOrderLeftWindow>(this);
-	_LeftWnd->Create(IDD_DM_FUND_ORDER_LEFT, this);
+	_LeftWnd->Create(IDD_DM_ACNT_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
-	//_LeftWnd->SetFundOrderWnd(this);
+	_LeftWnd->SetMainWnd(this);
 
+	if (center_window_count_ == 0) {
+		std::shared_ptr<DmFundOrderCenterWindow> center_wnd = std::make_shared<DmFundOrderCenterWindow>(this);
+		center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
+		center_wnd->ShowWindow(SW_SHOW);
+		//center_wnd->SetMainDialog(this);
+		center_wnd->Selected(true);
+		center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
+	}
+	else {
+		int index = 0;
+		for (const auto& centerWindowJson : center_wnd_prop_) {
+			std::string symbolCode = centerWindowJson["symbol_code"].get<std::string>();
+			int windowId = centerWindowJson["window_id"].get<int>();
+			std::string message = centerWindowJson["message"].get<std::string>();
 
-	std::shared_ptr<DmFundOrderCenterWindow> center_wnd = std::make_shared<DmFundOrderCenterWindow>(this);
-	center_wnd->Create(IDD_DM_FUND_ORDER_CENTER, this);
-	center_wnd->ShowWindow(SW_SHOW);
-	//center_wnd->SetFundDialog(this);
-	center_wnd->Selected(true);
-	_CenterWndMap.insert(std::make_pair(center_wnd->ID(), center_wnd));
+			int grid_height = centerWindowJson["grid_height"].get<int>();
+			int stop_width = centerWindowJson["stop_width"].get<int>();
+			int order_width = centerWindowJson["order_width"].get<int>();
+			int count_width = centerWindowJson["count_width"].get<int>();
+			int qty_width = centerWindowJson["qty_width"].get<int>();
+			int quote_width = centerWindowJson["quote_width"].get<int>();
+			bool stop_as_real_order = centerWindowJson["stop_as_real_order"].get<bool>();
 
-	center_wnd->GetWindowRect(rcWnd);
+			bool show_symbol_tick = centerWindowJson["show_symbol_tick"].get<bool>();
+			bool show_bar_color = centerWindowJson["show_bar_color"].get<bool>();
+			bool align_by_alt = centerWindowJson["align_by_alt"].get<bool>();
+			bool cancel_by_right_click = centerWindowJson["cancel_by_right_click"].get<bool>();
+			bool order_by_space = centerWindowJson["order_by_space"].get<bool>();
+			bool show_order_column = centerWindowJson["show_order_column"].get<bool>();
+			bool show_stop_column = centerWindowJson["show_stop_column"].get<bool>();
+			bool show_count_column = centerWindowJson["show_count_column"].get<bool>();
+
+			DarkHorse::OrderSetEvent order_set_event;
+			order_set_event.grid_height = grid_height;
+			order_set_event.stop_width = stop_width;
+			order_set_event.order_width = order_width;
+			order_set_event.count_width = count_width;
+			order_set_event.qty_width = qty_width;
+			order_set_event.quote_width = quote_width;
+			order_set_event.stop_as_real_order = stop_as_real_order;
+			order_set_event.show_symbol_tick = show_symbol_tick;
+			order_set_event.show_bar_color = show_bar_color;
+			order_set_event.align_by_alt = align_by_alt;
+			order_set_event.cancel_by_right_click = cancel_by_right_click;
+			order_set_event.order_by_space = order_by_space;
+			order_set_event.show_order_column = show_order_column;
+			order_set_event.show_stop_column = show_stop_column;
+			order_set_event.show_count_column = show_count_column;
+
+			// ... Retrieve other properties
+
+			// Create and populate DmAccountOrderCenterWindow object
+			std::shared_ptr<DmFundOrderCenterWindow> center_wnd = std::make_shared<DmFundOrderCenterWindow>(this, symbolCode, order_set_event);
+			center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
+			center_wnd->ShowWindow(SW_SHOW);
+			center_wnd->SetFundDialog(this);
+			if (index == 0) {
+				center_wnd->Selected(true);
+			}
+			index++;
+			center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
+		}
+	}
+	
 
 	_RightWnd = std::make_shared<DmFundOrderRightWindow>(this);
-	_RightWnd->Create(IDD_DM_FUND_ORDER_RIGHT, this);
+	_RightWnd->Create(IDD_DM_ACNT_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
 
 
-	SetFund();
+	SetAccount();
 
-	SetFundForOrderWnd();
-
-
+	_ComboAccount.SetDroppedWidth(150);
 
 	GetWindowRect(rcWnd);
 
@@ -278,7 +321,6 @@ BOOL DmFundOrderWindow::OnInitDialog()
 
 	mainApp.CallbackMgr()->SubscribeOrderUpdateCallback(GetSafeHwnd());
 	mainApp.CallbackMgr()->SubscribeServerMsgCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->SubscribeFundMsgCallback(GetSafeHwnd());
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -337,7 +379,7 @@ void DmFundOrderWindow::RecalcChildren(CmdMode mode)
 	}
 
 
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 		std::shared_ptr<DmFundOrderCenterWindow> center_wnd = it->second;
 		center_wnd->GetWindowRect(rcWnd);
 
@@ -345,7 +387,7 @@ void DmFundOrderWindow::RecalcChildren(CmdMode mode)
 		//center_wnd->ShowWindow(SW_HIDE);
 		center_wnd->MoveWindow(start_x, CtrlHeight + top_gap, rcWnd.Width(), rcWnd.Height());
 
-		_CenterWndMap.insert(std::make_pair(center_wnd->ID(), center_wnd));
+		center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 		start_x += rcWnd.Width();
 		width_total += rcWnd.Width();
 
@@ -417,7 +459,7 @@ void DmFundOrderWindow::RecalcChildren(CmdMode mode)
 		rcVector.push_back(rcWnd);
 	}
 
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		it->second->GetWindowRect(rcWnd);
 		rcVector.push_back(rcWnd);
 	}
@@ -472,7 +514,7 @@ void DmFundOrderWindow::RecalcChildren2(CmdMode mode)
 		rcVector.push_back(rcWnd);
 	}
 
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		it->second->GetWindowRect(rcWnd);
 		rcVector.push_back(rcWnd);
 	}
@@ -494,18 +536,14 @@ void DmFundOrderWindow::RecalcChildren2(CmdMode mode)
 	SetWindowPos(nullptr, rcWnd.left, rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_NOZORDER | SWP_NOREDRAW);
 }
 
-void DmFundOrderWindow::SetFundForOrderWnd()
+void DmFundOrderWindow::SetAccountForOrderWnd()
 {
-	if (_ComboFundMap.size() > 0) {
-		const int cur_sel = _ComboFund.GetCurSel();
+	if (_ComboAccountMap.size() > 0) {
+		const int cur_sel = _ComboAccount.GetCurSel();
 		if (cur_sel >= 0) {
-			for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
-				it->second->Fund(_ComboFundMap[cur_sel]);
+			for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
+				it->second->Account(_ComboAccountMap[cur_sel]);
 			}
-
-			_LeftWnd->SetFund(_ComboFundMap[cur_sel]);
-			_RightWnd->SetFund(_ComboFundMap[cur_sel]);
-
 		}
 	}
 }
@@ -513,78 +551,75 @@ void DmFundOrderWindow::SetFundForOrderWnd()
 
 void DmFundOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account)
 {
-	// 	if (!account || _CurrentFundIndex < 0) return;
-	// 
-	// 	std::string account_info;
-	// 	account_info.append(account->Name());
-	// 	account_info.append(" : ");
-	// 	account_info.append(account->No());
-	// 	//_StaticAccountName.SetWindowText(account_info.c_str());
-	// 	mainApp.Client()->RegisterAccount(account->No());
-	// 	_Account = account;
-
-		//_LeftWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
-		//_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
-}
-
-void DmFundOrderWindow::SetFundInfo(std::shared_ptr<DarkHorse::SmFund> fund)
-{
-	if (!fund || _CurrentFundIndex < 0) return;
+	if (!account || _CurrentAccountIndex < 0) return;
 
 	std::string account_info;
-	account_info.append(fund->Name());
-	//account_info.append(" : ");
-	//account_info.append(account->No());
+	account_info.append(account->Name());
+	account_info.append(" : ");
+	account_info.append(account->No());
 	//_StaticAccountName.SetWindowText(account_info.c_str());
-	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund->GetAccountVector();
-	for (auto it = account_vec.begin(); it != account_vec.end(); ++it) {
-		auto account = (*it);
+	if (!account->is_subaccount())
 		mainApp.Client()->RegisterAccount(account->No());
+	_Account = account;
+	std::shared_ptr<SmAccount> parent_account = nullptr;
+	if (_Account->is_subaccount()) {
+		parent_account = mainApp.AcntMgr()->FindAccountById(_Account->parent_id());
+		_LeftWnd->SetAccount(parent_account);
+		_RightWnd->SetAccount(parent_account);
+	}
+	else {
+		_LeftWnd->SetAccount(_Account);
+		_RightWnd->SetAccount(_Account);
 	}
 
-	_Fund = fund;
-
+	_LeftWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
+	_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
 }
 
-void DmFundOrderWindow::ResetFund()
+std::string DmFundOrderWindow::get_account_no()
 {
-	std::shared_ptr<DarkHorse::SmFund> old_fund = _CurrentFundIndex >= 0 ? _ComboFundMap[_CurrentFundIndex] : nullptr;
-	_ComboFund.ResetContent();
-	_ComboFundMap.clear();
+	if (_Account) return _Account->No();
+	return "";	
+}
 
-	const std::map<std::string, std::shared_ptr<SmFund>>& fund_map = mainApp.FundMgr()->GetFundMap();
+void DmFundOrderWindow::on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!_Account || _Account->Type() != account_type) return;
+	if (!symbol) return;
+	auto found = center_window_map_.find(center_window_id);
+	if (found == center_window_map_.end()) return;
+	ChangedSymbol(symbol);
+	ChangedCenterWindow(center_window_id);
+}
 
-	for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
-		auto fund = it->second;
-		std::string account_info;
-		account_info.append(fund->Name());
-		//account_info.append(" : ");
-		//account_info.append(fund->No());
-		const int index = _ComboFund.AddString(account_info.c_str());
-		_ComboFundMap[index] = fund;
+void DmFundOrderWindow::on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!symbol) return;
+	auto found = center_window_map_.find(center_window_id);
+	if (found == center_window_map_.end()) return;
+	ChangedSymbol(symbol);
+	ChangedCenterWindow(center_window_id);
+}
 
-	}
-
-	int combo_index = -1;
-	for (auto it = _ComboFundMap.begin(); it != _ComboFundMap.end(); it++) {
-		if (it->second->Id() == old_fund->Id()) {
-			combo_index = it->first;
+void DmFundOrderWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
+		if (it->second->Selected()) {
+			it->second->OnSymbolClicked(symbol->SymbolCode());
 			break;
 		}
 	}
-
-	if (!_ComboFundMap.empty() && combo_index >= 0) {
-		_CurrentFundIndex = combo_index;
-		_ComboFund.SetCurSel(_CurrentFundIndex);
-		SetFundInfo(_ComboFundMap[_CurrentFundIndex]);
-		_LeftWnd->OnOrderChanged(0, 0);
-	}
+	_RightWnd->OnSymbolClicked(symbol);
 }
 
-LRESULT DmFundOrderWindow::OnUmFundChanged(WPARAM wParam, LPARAM lParam)
+void DmFundOrderWindow::OnSymbolClicked(const std::string& symbol_code)
 {
-	ResetFund();
-	return 1;
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
+		if (it->second->Selected()) {
+			it->second->OnSymbolClicked(symbol_code);
+			break;
+		}
+	}
 }
 
 void DmFundOrderWindow::OnBnClickedBtnAdd()
@@ -597,9 +632,9 @@ void DmFundOrderWindow::OnBnClickedBtnAdd()
 	std::shared_ptr<DmFundOrderCenterWindow> center_wnd = std::make_shared<DmFundOrderCenterWindow>();
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
-	//center_wnd->SetFundDialog(this);
-	center_wnd->Fund(_ComboFundMap[_CurrentFundIndex]);
-	_CenterWndMap.insert(std::make_pair(center_wnd->ID(), center_wnd));
+	center_wnd->SetFundDialog(this);
+	center_wnd->Account(_ComboAccountMap[_CurrentAccountIndex]);
+	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 	center_wnd->GetWindowRect(rcCenter);
 	ScreenToClient(rcCenter);
 	if (_ShowRight) {
@@ -652,11 +687,11 @@ void DmFundOrderWindow::OnBnClickedBtnAdd()
 
 void DmFundOrderWindow::OnBnClickedBtnRemove()
 {
-	if (_CenterWndMap.size() == 1) return;
+	if (center_window_map_.size() == 1) return;
 
 	//LockWindowUpdate();
-	auto it = std::prev(_CenterWndMap.end());
-	_CenterWndMap.erase(it);
+	auto it = std::prev(center_window_map_.end());
+	center_window_map_.erase(it);
 	RecalcChildren(CM_DEL_CENTER);
 	//UnlockWindowUpdate();
 	Invalidate(FALSE);
@@ -692,7 +727,7 @@ void DmFundOrderWindow::OnStnClickedStaticAccountName()
 void DmFundOrderWindow::OnBnClickedButton6()
 {
 	int max_delta_height = 0;
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 		std::shared_ptr<DmFundOrderCenterWindow> center_wnd = it->second;
 		int delta_height = center_wnd->RecalcOrderAreaHeight(this);
 		if (delta_height > max_delta_height) max_delta_height = delta_height;
@@ -729,14 +764,25 @@ BOOL DmFundOrderWindow::OnEraseBkgnd(CDC* pDC)
 }
 
 
-void DmFundOrderWindow::OnCbnSelchangeComboFund()
+void DmFundOrderWindow::OnCbnSelchangeComboAccount()
 {
-	_CurrentFundIndex = _ComboFund.GetCurSel();
-	if (_CurrentFundIndex < 0) return;
+	_CurrentAccountIndex = _ComboAccount.GetCurSel();
+	if (_CurrentAccountIndex < 0) return;
 
-	SetFundInfo(_ComboFundMap[_CurrentFundIndex]);
+	SetAccountInfo(_ComboAccountMap[_CurrentAccountIndex]);
 
-	SetFundForOrderWnd();
+	SetAccountForOrderWnd();
+	if (!_Account) return;
+	if (_Account->is_subaccount()) return;
+
+	DhTaskArg arg;
+	arg.detail_task_description = _Account->No();
+	arg.task_type = DhTaskType::AccountProfitLoss;
+	arg.parameter_map["account_no"] = _Account->No();
+	arg.parameter_map["password"] = _Account->Pwd();
+	arg.parameter_map["account_type"] = _Account->Type();
+
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
 LRESULT DmFundOrderWindow::OnUmOrderUpdate(WPARAM wParam, LPARAM lParam)
@@ -747,7 +793,7 @@ LRESULT DmFundOrderWindow::OnUmOrderUpdate(WPARAM wParam, LPARAM lParam)
 	_LeftWnd->OnOrderChanged(account_id, symbol_id);
 	_RightWnd->OnOrderChanged(account_id, symbol_id);
 
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); it++) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		it->second->OnOrderChanged(account_id, symbol_id);
 	}
 
@@ -761,7 +807,7 @@ void DmFundOrderWindow::ChangedSymbol(std::shared_ptr<DarkHorse::SmSymbol> symbo
 
 void DmFundOrderWindow::ChangedCenterWindow(const int& center_wnd_id)
 {
-	for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 		it->second->ID() == center_wnd_id ? it->second->SetSelected(true) : it->second->SetSelected(false);
 	}
 }
@@ -769,31 +815,28 @@ void DmFundOrderWindow::ChangedCenterWindow(const int& center_wnd_id)
 
 void DmFundOrderWindow::OnClose()
 {
-	mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->UnsubscribeFundMsgCallback(GetSafeHwnd());
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->remove_dm_account_order_window(GetSafeHwnd());
+	//mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
 
-	CBCGPDialog::OnClose();
+	if (!destroyed_) CBCGPDialog::OnClose();
 }
 
 
 void DmFundOrderWindow::OnBnClickedBtnLiqAll()
 {
-	if (!_Fund) return;
+	if (!_Account) return;
 
-	const std::vector<std::shared_ptr<SmAccount>>& account_vec = _Fund->GetAccountVector();
-	for (auto it = account_vec.begin(); it != account_vec.end(); ++it) {
-		auto account = (*it);
-		auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(account->No());
-		const std::map<std::string, std::shared_ptr<SmPosition>>& account_pos_map = account_pos_mgr->GetPositionMap();
-		for (auto it = account_pos_map.begin(); it != account_pos_map.end(); ++it) {
-			std::shared_ptr<SmOrderRequest> order_req = nullptr;
-			if (it->second->Position == SmPositionType::Buy)
-				order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account->No(), account->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
-			else
-				order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account->No(), account->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
-			mainApp.Client()->NewOrder(order_req);
-		}
+	auto account_pos_mgr = mainApp.TotalPosiMgr()->FindAddAccountPositionManager(_Account->No());
+	const std::map<std::string, std::shared_ptr<SmPosition>>& account_pos_map = account_pos_mgr->GetPositionMap();
+	for (auto it = account_pos_map.begin(); it != account_pos_map.end(); ++it) {
+		std::shared_ptr<SmOrderRequest> order_req = nullptr;
+		if (it->second->Position == SmPositionType::Buy)
+			order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(_Account->No(), _Account->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
+		else
+			order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(_Account->No(), _Account->Pwd(), it->second->SymbolCode, 0, abs(it->second->OpenQty), DarkHorse::SmPriceType::Market);
+		mainApp.Client()->NewOrder(order_req);
 	}
 }
 
@@ -802,13 +845,6 @@ LRESULT DmFundOrderWindow::OnUmServerMsg(WPARAM wParam, LPARAM lParam)
 	_StaticMsg.Text(mainApp.TotalOrderMgr()->ServerMsg.c_str());
 	_StaticMsg.Invalidate();
 	return 1;
-}
-
-
-void DmFundOrderWindow::OnBnClickedBtnFundSet()
-{
-	SmFundDialog dlg;
-	dlg.DoModal();
 }
 
 
@@ -827,23 +863,66 @@ void DmFundOrderWindow::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 
 	if ((nID & 0x0000FFF0) == SC_KEYMENU) {
-		for (auto it = _CenterWndMap.begin(); it != _CenterWndMap.end(); ++it) {
+		for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 			std::shared_ptr<DmFundOrderCenterWindow> center_wnd = it->second;
 			center_wnd->ArrangeCenterValue();
 		}
 		return;
 	}
 
-
-
 	CBCGPDialog::OnSysCommand(nID, lParam);
+}
+
+
+void DmFundOrderWindow::OnDestroy()
+{
+	
+	if (!destroyed_) CBCGPDialog::OnDestroy();
 }
 
 
 void DmFundOrderWindow::PostNcDestroy()
 {
-	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->RemoveFundOrderWnd(GetSafeHwnd());
+	//CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	//pFrame->remove_dm_account_order_window(GetSafeHwnd());
 
 	CBCGPDialog::PostNcDestroy();
+	destroyed_ = true;
+	delete this;
 }
+
+
+void DmFundOrderWindow::saveToJson(json& j) const {
+
+	CRect rect;
+	GetWindowRect(&rect);
+
+	j = {
+		{"x", rect.left},
+		{"y", rect.top },
+		{"width", rect.right - rect.left},
+		{"height", rect.bottom - rect.top},
+		{"center_window_count", center_window_map_.size()},
+		{"account_no", _Account ? _Account->No() : ""}	
+	};
+
+	for (const auto& pair : center_window_map_) {
+		json center_window_json;
+		pair.second->saveToJson(center_window_json);
+		j["center_window_map"][std::to_string(pair.first)] = center_window_json;
+	}
+}
+
+void DmFundOrderWindow::loadFromJson(const json& j) {
+	const json& center_window_map_json = j["center_window_map"];
+	for (const auto& pair : center_window_map_json.items()) {
+		int window_id = std::stoi(pair.key());
+		const json& center_window_json = pair.value();
+
+		std::shared_ptr<DmFundOrderCenterWindow> center_window = std::make_shared<DmFundOrderCenterWindow>();
+		center_window->loadFromJson(center_window_json);
+
+		center_window_map_[window_id] = center_window;
+	}
+}
+

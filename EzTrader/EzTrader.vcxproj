@@ -412,8 +412,8 @@
     <ClInclude Include="Order\OrderUi\DmFundOrderCenterWindow.h" />
     <ClInclude Include="Order\OrderUi\DmFundOrderLeftWindow.h" />
     <ClInclude Include="Order\OrderUi\DmFundOrderRightWindow.h" />
-    <ClInclude Include="Order\OrderUi\OrderWindowControl.h" />
     <ClInclude Include="Order\OrderUi\DmFundOrderWindow.h" />
+    <ClInclude Include="Order\OrderUi\OrderWindowControl.h" />
     <ClInclude Include="Order\OrderWndConst.h" />
     <ClInclude Include="Order\SmAcceptedGrid.h" />
     <ClInclude Include="Order\SmAccountOrderManager.h" />
@@ -746,8 +746,8 @@
     <ClCompile Include="Order\OrderUi\DmFundOrderCenterWindow.cpp" />
     <ClCompile Include="Order\OrderUi\DmFundOrderLeftWindow.cpp" />
     <ClCompile Include="Order\OrderUi\DmFundOrderRightWindow.cpp" />
-    <ClCompile Include="Order\OrderUi\OrderWindowControl.cpp" />
     <ClCompile Include="Order\OrderUi\DmFundOrderWindow.cpp" />
+    <ClCompile Include="Order\OrderUi\OrderWindowControl.cpp" />
     <ClCompile Include="Order\SmAcceptedGrid.cpp" />
     <ClCompile Include="Order\SmAccountOrderManager.cpp" />
     <ClCompile Include="Order\SmCheckGrid.cpp" />

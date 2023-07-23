@@ -1,11 +1,9 @@
+//#pragma once
 /*
-#pragma once
 class DmFundOrderLeftWindow
 {
 };
 */
-
-
 
 #pragma once
 #include "BCGCBPro.h"
@@ -13,27 +11,27 @@ class DmFundOrderLeftWindow
 #include "../../SmGrid/SmFilledArea.h"
 #include "../../SmGrid/SmFavoriteArea.h"
 #include "../../SmGrid/SmAccountArea.h"
-#include "../../Order/SmCheckGrid.h"
-#include "../../Order/SmAcceptedGrid.h"
-#include "../../Order/SmPositionGrid.h"
-#include "../../Order/SmFavoriteGrid.h"
-
+#include "../SmCheckGrid.h"
+#include "../SmAcceptedGrid.h"
+#include "../SmPositionGrid.h"
+#include "../SmFavoriteGrid.h"
 #include "../../View/AccountOrderView.h"
 #include "../../View/AccountPositionView.h"
 #include "../../View/AccountProfitLossView.h"
 #include "../../View/DmOptionView.h"
 #include "../../View/DmFutureView.h"
 #include "../../View/AccountAssetView.h"
+#include <map>
+#include <string>
 
-// OrderLeftDialog dialog
+// DmFundOrderLeftWindow dialog
 
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
-	class SmFund;
 }
 class SmSymbolTableDialog;
-class SmFundOrderDialog;
+class DmAccountOrderWindow;
 class DmFundOrderLeftWindow : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(DmFundOrderLeftWindow)
@@ -44,7 +42,7 @@ public:
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_DM_FUND_ORDER_LEFT};
+	enum { IDD = IDD_DM_ACNT_ORDER_LEFT};
 #endif
 
 protected:
@@ -53,32 +51,42 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	void set_option_view();
+	// key : option year-month combo index, value : year-month name
+	std::map<int, std::string> option_yearmonth_index_map;
+	int year_month_index{ 0 };
+	int option_market_index{ 0 };
+	void init_option_market();
 	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
-	
 	AccountProfitLossView account_profit_loss_view_;
 	AccountAssetView asset_view_;
-	//AccountOrderView _AcceptedGrid;
-	//AccountPositionView _PositionGrid;
-	//SmFavoriteGrid _FavoriteGrid;
 	DmOptionView option_view_;
 	DmFutureView future_view_;
-
-
 public:
-	CBCGPButton _BtnAddFav;
-	CBCGPStatic _StaticFav;
-	void SetFundOrderWnd(SmFundOrderDialog* fund_order_wnd);
+	void SetMainWnd(DmFundOrderWindow* main_wnd);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedBtnAddFav();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void SetAccount(std::shared_ptr<DarkHorse::SmAccount> account);
-	void SetFund(std::shared_ptr < DarkHorse::SmFund> fund);
 	afx_msg LRESULT OnUmSymbolSelected(WPARAM wParam, LPARAM lParam);
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
 	afx_msg void OnBnClickedBtnCancelSel();
 	afx_msg void OnBnClickedBtnCancelAll();
 	afx_msg void OnBnClickedBtnLiqSel();
 	afx_msg void OnBnClickedBtnLiqAll();
+	CBCGPButton _BtnAddFav;
+	CBCGPStatic _StaticFav;
+	CBCGPComboBox combo_option_market_;
+	CBCGPComboBox combo_option_month_;
+	afx_msg void OnCbnSelchangeComboOptionMarket();
+	afx_msg void OnCbnSelchangeComboOptionMonth();
+	afx_msg void OnBnClickedRadioClose();
+	afx_msg void OnBnClickedRadioPosition();
+	afx_msg void OnBnClickedRadioExpected();
+
+	CBCGPButton radio_close_;
+	CBCGPButton radio_position_;
+	CBCGPButton ratio_expected_;
 };
 
 

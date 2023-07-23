@@ -1,12 +1,6 @@
-//#include "stdafx.h"
-//#include "DmFundOrderRightWindow.h"
-
-// SmFundOrderRight.cpp : implementation file
-//
-
 #include "stdafx.h"
-#include "../../DarkHorse.h"
 #include "DmFundOrderRightWindow.h"
+#include "../../DarkHorse.h"
 #include "afxdialogex.h"
 
 
@@ -48,12 +42,6 @@ void DmFundOrderRightWindow::SetAccount(const std::shared_ptr<DarkHorse::SmAccou
 	asset_view_.SetAssetInfo();
 }
 
-void DmFundOrderRightWindow::SetFund(const std::shared_ptr<DarkHorse::SmFund>& fund)
-{
-	asset_view_.Fund(fund);
-	asset_view_.SetAssetInfo();
-}
-
 void DmFundOrderRightWindow::SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol)
 {
 	symbol_info_view_.Symbol(symbol);
@@ -77,7 +65,7 @@ BOOL DmFundOrderRightWindow::OnInitDialog()
 
 	asset_view_.SetUp();
 	symbol_info_view_.SetUp();
-	asset_view_.Mode(1);
+
 
 	//SetTimer(1, 100, NULL);
 
@@ -90,4 +78,3 @@ void DmFundOrderRightWindow::OnTimer(UINT_PTR nIDEvent)
 {
 	CBCGPDialog::OnTimer(nIDEvent);
 }
-

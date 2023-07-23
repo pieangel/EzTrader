@@ -4,35 +4,40 @@ class DmFundOrderCenterWindow
 {
 };
 */
-
-
-
 #pragma once
 #include <map>
 #include <string>
+#include <vector>
 #include <set>
 #include <memory>
-#include "../../Fund/SmFundOrderArea.h"
+//#include "../../SmGrid/SmOrderArea.h"
 #include "../../resource.h"
 #include "../../StatusBar/extstatuscontrolbar.h"
-#include "../../Fund/SmFundPositionArea.h"
-#include "../../SmGrid/SmQuoteArea.h"
-#include "../../Order/OrderSetView.h"
-#include "../../Order/SmOrderSettings.h"
-#include "../../Order/OrderWndConst.h"
-#include "../../Order/SmFilledRemainButton.h"
-#include "../../Order/SmRemainButton.h"
+//#include "../../SmGrid/SmPositionArea.h"
+//#include "../../SmGrid/SmQuoteArea.h"
+#include "../OrderSetView.h"
+#include "../SmOrderSettings.h"
+#include "../OrderWndConst.h"
+#include "../SmFilledRemainButton.h"
+#include "../SmRemainButton.h"
+#include "../../View/SymbolOrderView.h"
+#include "../../View/SymbolPositionView.h"
+#include "../../View/SymbolTickView.h"
+#include "../OrderRequest/OrderRequest.h"
+#include "../../Event/EventHubArg.h"
+#include "../../Json/json.hpp"
+
+using json = nlohmann::json;
 // SmOrderWnd dialog
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
-	class SmFund;
 }
 
 
-
-class SmSymbolTableDialog;
 class SmOrderSetDialog;
+class SmSymbolTableDialog;
+class DmAccountOrderWindow;
 class DmFundOrderWindow;
 class DmFundOrderCenterWindow : public CBCGPDialog
 {
@@ -41,19 +46,18 @@ class DmFundOrderCenterWindow : public CBCGPDialog
 public:
 	static int DeltaOrderArea;
 	DmFundOrderCenterWindow(CWnd* pParent = nullptr);   // standard constructor
+	DmFundOrderCenterWindow(CWnd* pParent, std::string symbol_code, DarkHorse::OrderSetEvent order_set);
 	virtual ~DmFundOrderCenterWindow();
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_DM_FUND_ORDER_CENTER};
+	enum { IDD = IDD_DM_ACNT_ORDER_CENTER};
 #endif
 public:
-	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
-	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
-	bool Selected() const { return _Selected; }
+	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
+	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
+	bool Selected() const { return selected_; }
 	void Selected(bool val);
-	//std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
-	//void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -61,45 +65,52 @@ protected:
 private:
 	//CBCGPGridCtrl m_wndPositionGrid;
 	//CBCGPGridCtrl m_wndOrderGrid;
-	SmFilledRemainButton _FilledRemainButton;
-	SmRemainButton _RemainButton;
+
+
 public:
-	void SetRowWide();
-	void SetRowNarrow();
+	void ArrangeCenterValue();
 	void CreateResource();
 	virtual BOOL OnInitDialog();
 	void SetQuote(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void SetHoga(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnClickSymbol(const std::string& symbol_info);
 	//CComboBox _ComboAccount;
-	CBCGPComboBox _ComboSymbol;
-	SmFundOrderArea _OrderArea;
-	SmQuoteArea _QuoteArea;
-	SmFundPositionArea  _PositionArea;
-	OrderSetView _OrderSetGrid;
+	SymbolOrderView symbol_order_view_;
+	SymbolTickView symbol_tick_view_;
+	SymbolPositionView  symbol_position_view_;
+	OrderSetView order_set_view_;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnEnterSizeMove(WPARAM, LPARAM);
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);
 
-
-	void SetFundDialog(SmFundOrderDialog* fund_dialog);
-	int ID() const { return _ID; }
-	void ID(int val) { _ID = val; }
+	void SetMainDialog(DmFundOrderWindow* main_dialog);
+	void SetFundDialog(DmFundOrderWindow* main_dialog);
+	int ID() const { return id_; }
+	void ID(int val) { id_ = val; }
 	void SetSelected(const bool& selected);
 	void OnSymbolClicked(const std::string& symbol_code);
-	int GetFundPositionCount();
-	int GetFilledOrderCount();
 	void SetOrderAmount(const int& count);
+	int GetPositionCount();
+	std::string get_symbol_code();
 private:
-	std::shared_ptr< SmOrderSetDialog> _OrderSetDlg = nullptr;
-	void SetSymbolInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
-	bool _Selected = false;
+	void on_resize_event_from_order_view();
+	void on_resize_event_from_tick_view();
+	void set_symbol(std::shared_ptr<DarkHorse::SmSymbol>symbol);
+	void set_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	std::string make_symbol_name(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	int add_to_symbol_combo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void init_control();
+	void init_views();
+	void init_dm_symbol();
+	void set_default_symbol();
+	void set_symbol_from_out(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	bool selected_ = false;
 	void UpdateOrderSettings();
 	//DarkHorse::SmOrderSettings _OrderSettings;
 	void SetCutMode();
-	int _ID{ 0 };
-	int _CutMode{ 0 };
-	bool _Resizing = false;
+	int id_{ 0 };
+	int profit_loss_cut_mode_{ 0 };
+	bool resizing_ = false;
 	///void ClearOldHoga(Hoga_Type hoga_type) const noexcept;
 	//int FindValueRow(const int& value) const noexcept;
 	/// <summary>
@@ -107,32 +118,45 @@ private:
 	/// </summary>
 	//std::map<int, std::string> _ComboIndexToSymbolMap;
 	// key : combobox index, value : symbol object
-	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> _IndexToSymbolMap;
-	int _CurrentIndex{ -1 };
+	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> index_to_symbol_;
+	// key : symbol code, value : combobox index.
+	std::map<std::string, int> symbol_to_index_;
+	int current_combo_index_{ -1 };
 	/// <summary>
 	/// Key : row index, Value : Quote Value in integer.
 	/// </summary>
-	std::map<int, int> _QuoteToRowIndexMap;
-	int _CloseRow{ 15 };
-	int _ValueStartRow{ 1 };
-	std::set<int> _OldHogaBuyRowIndex;
-	std::set<int> _OldHogaSellRowIndex;
-	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
-	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
+	std::map<int, int> quote_to_row_map;
+	int close_row_{ 15 };
+	int value_start_row_{ 1 };
+	std::set<int> old_hoga_buy_row;
+	std::set<int> old_hoga_sell_row;
+	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
+	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
+	//CExtStatusControlBar m_bar;
+	bool init_dialog_ = false;
+	bool show_symbol_tick_view_ = true;
+	std::shared_ptr< SmSymbolTableDialog> symbol_table_dialog_ = nullptr;
+	void set_symbol_info(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void request_dm_symbol_master(const std::string symbol_code);
 
-	bool _Init = false;
-	bool _ShowQuoteArea = true;
-	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
-	void SetInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
-
+	SmFilledRemainButton filled_remain_button_;
+	SmRemainButton remain_button_;
+	std::shared_ptr< SmOrderSetDialog> order_set_dialog_ = nullptr;
+	DarkHorse::OrderSetEvent order_set_;
+	std::string symbol_code_;
 public:
-	void ArrangeCenterValue();
+	const DarkHorse::OrderSetEvent& get_order_set() const { return order_set_; }
+	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
+	void on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag);
+	void set_symbol_order_view_height_and_width(std::vector<int> value_vector);
+	void SetRowWide();
+	void SetRowNarrow();
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
 	int RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up = true);
 	afx_msg void OnCbnSelchangeComboSymbol();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	CBCGPStatic _StaticAccountName;
-	CBCGPStatic _StaticSymbolName;
+	CBCGPStatic static_symbol_name_;
 	afx_msg void OnBnClickedCheckShowRealQuote();
 	CBCGPButton _CheckShowRealTick;
 	afx_msg void OnBnClickedButton3();
@@ -170,15 +194,19 @@ public:
 	afx_msg void OnEnChangeEditProfit();
 	afx_msg void OnEnChangeEditLoss();
 	afx_msg void OnEnChangeEditSlip();
-	CBCGPButton _BtnSearch;
+	CBCGPButton btn_grid_config_;
+	afx_msg void OnBnClickedBtnSearch();
+	afx_msg void OnBnClickedBtnSet();
 	CBCGPGroup _Group2;
 	CBCGPGroup _Group3;
 	CBCGPGroup _Group4;
 	CBCGPSpinButtonCtrl _BuyAvail;
 	CBCGPSpinButtonCtrl _SellAvail;
-	afx_msg void OnBnClickedBtnSearch();
-	afx_msg void OnBnClickedBtnSet();
+	CBCGPComboBox combo_symbol_;
+	afx_msg void OnStnClickedStaticFilledRemain();
 	afx_msg void OnBnClickedCheckFixHoga();
+	void saveToJson(json& j) const;
+	void loadFromJson(const json& j);
 };
 
 

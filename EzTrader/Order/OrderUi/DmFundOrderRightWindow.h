@@ -4,20 +4,19 @@ class DmFundOrderRightWindow
 {
 };
 */
-
-
 #pragma once
 
+//#include "../../SmGrid/SmAssetArea.h"
+//#include "../../SmGrid/SmSymbolArea.h"
 #include "../../View/AccountAssetView.h"
 #include "../../View/SymbolInfoView.h"
 #include <memory>
 
-// OrderRightDialog dialog
+// DmFundOrderRightWindow dialog
 
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
-	class SmFund;
 }
 
 
@@ -31,7 +30,7 @@ public:
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_DM_FUND_ORDER_RIGHT};
+	enum { IDD = IDD_DM_ACNT_ORDER_RIGHT};
 #endif
 
 protected:
@@ -44,7 +43,6 @@ private:
 	SymbolInfoView symbol_info_view_;
 public:
 	void SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account);
-	void SetFund(const std::shared_ptr<DarkHorse::SmFund>& fund);
 	void SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol);
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
 	void OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol);
