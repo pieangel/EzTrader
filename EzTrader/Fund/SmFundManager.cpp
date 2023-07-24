@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SmFundManager.h"
 #include "SmFund.h"
+#include "../Util/IdGenerator.h"
 
 using namespace DarkHorse;
 
@@ -17,7 +18,7 @@ std::shared_ptr<SmFund> DarkHorse::SmFundManager::FindAddFund(const std::string&
 	if (found != _FundMap.end())
 		return found->second;
 	else {
-		std::shared_ptr<SmFund> fund = std::make_shared<SmFund>(GetId(), fund_name);
+		std::shared_ptr<SmFund> fund = std::make_shared<SmFund>(IdGenerator::get_id(), fund_name);
 		_FundMap[fund_name] = fund;
 		_FundIdMap[fund->Id()] = fund;
 		return fund;

@@ -3,6 +3,7 @@
 #include "../Util/IdGenerator.h"
 #include "../Global/SmTotalManager.h"
 #include "SmAccountManager.h"
+#include "../Position/Position.h"
 namespace DarkHorse {
 
 	void SmAccount::AddSubAccount(const std::shared_ptr<SmAccount>& subAccount)
@@ -22,6 +23,7 @@ namespace DarkHorse {
 	SmAccount::SmAccount()
 		: _id(IdGenerator::get_id())
 	{
+		position_ = std::make_shared<Position>();
 	}
 	SmAccount::~SmAccount()
 	{

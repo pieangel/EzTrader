@@ -115,13 +115,13 @@ public:
 	void ChangeOrderByKey(const int up_down);
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }
-	void OnOrderChanged(const int& account_id, const int& symbol_id);
+	//void OnOrderChanged(const int& account_id, const int& symbol_id);
 	int CutMode() const { return _CutMode; }
 	void CutMode(int val) { _CutMode = val; }
-	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
-	void OnQuoteEvent(const std::string& symbol_code);
-	void OnHogaEvent(const std::string& symbol_code);
-	void OnSymbolMasterEvent(const std::string& symbol_code);
+	//void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
+	//void OnQuoteEvent(const std::string& symbol_code);
+	//void OnHogaEvent(const std::string& symbol_code);
+	//void OnSymbolMasterEvent(const std::string& symbol_code);
 	void UpdateOrderSettings(DarkHorse::SmOrderSettings settings);
 	void SetAllRowHeight(const int& row_height);
 	void reset_col_widths(const DarkHorse::OrderSetEvent& order_set_event);

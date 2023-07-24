@@ -9,6 +9,11 @@
 #include "../Order/OrderProcess/TotalOrderManager.h"
 #include "../Order/OrderProcess/AccountOrderManager.h"
 #include "../Order/OrderProcess/SymbolOrderManager.h"
+#include "../Fund/SmFundManager.h"
+#include "../Fund/SmFund.h"
+#include "../Account/SmAccount.h"
+#include "../Account/SmAccountManager.h"
+
 namespace DarkHorse {
 account_position_manager_p TotalPositionManager::get_account_position_manager(const std::string& account_no)
 {
@@ -27,11 +32,71 @@ account_position_manager_p TotalPositionManager::create_position_manager(const s
 	position_manager_map_[account_no] = position_manager;
 	return position_manager;
 }
-position_p TotalPositionManager::get_position(const std::string& account_no, const std::string& symbol_code)
+
+position_p TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code)
+{
+	auto fund = mainApp.FundMgr()->FindAddFund(fund_name);
+	auto fund_position = fund->position();
+	fund_position->average_price = 0.0;
+	fund_position->open_quantity = 0;
+	fund_position->open_profit_loss = 0.0;
+	fund_position->trade_profit_loss = 0.0;
+	const std::vector<std::shared_ptr<SmAccount>>& subAcntVector = fund->GetAccountVector();
+	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it)
+	{
+		auto sub_account = *it;
+		auto account_position_manager_p = get_account_position_manager(sub_account->No());
+		auto sub_account_position = account_position_manager_p->get_position(symbol_code);
+		if (sub_account_position->open_quantity != 0)
+		{
+			fund_position->open_quantity += sub_account_position->open_quantity;
+			fund_position->average_price += sub_account_position->average_price * sub_account_position->open_quantity;
+			
+			fund_position->open_profit_loss += sub_account_position->open_profit_loss;
+			fund_position->trade_profit_loss += sub_account_position->trade_profit_loss;
+		}
+	}
+
+	if (fund_position->open_quantity != 0)
+		fund_position->average_price = std::abs(fund_position->average_price) / std::abs(fund_position->open_quantity);
+	return fund_position;
+}
+
+position_p TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code)
 {
 	account_position_manager_p position_manager = get_account_position_manager(account_no);
 	return position_manager->get_position(symbol_code);
 }
+
+position_p TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code)
+{
+	auto parent_account = mainApp.AcntMgr()->FindAccount(account_no);
+	auto account_position = parent_account->position();
+	account_position->average_price = 0.0;
+	account_position->open_quantity = 0;
+	account_position->open_profit_loss = 0.0;
+	account_position->trade_profit_loss = 0.0;
+	const std::map<std::string, std::shared_ptr<SmAccount>>& subAcntVector = parent_account->get_sub_accounts();
+	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it)
+	{
+		auto sub_account = it->second;
+		auto account_position_manager_p = get_account_position_manager(sub_account->No());
+		auto sub_account_position = account_position_manager_p->get_position(symbol_code);
+		if (sub_account_position->open_quantity != 0)
+		{
+			account_position->open_quantity += sub_account_position->open_quantity;
+			account_position->average_price += sub_account_position->average_price * sub_account_position->open_quantity;
+
+			account_position->open_profit_loss += sub_account_position->open_profit_loss;
+			account_position->trade_profit_loss += sub_account_position->trade_profit_loss;
+		}
+	}
+
+	if (account_position->open_quantity != 0)
+		account_position->average_price = std::abs(account_position->average_price) / std::abs(account_position->open_quantity);
+	return account_position;
+}
+
 void TotalPositionManager::update_position(order_p order)
 {
 	account_position_manager_p position_manager = get_account_position_manager(order->account_no);
@@ -59,7 +124,7 @@ void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 		const double open_profit_loss = arg["symbol_open_profit_loss"];
 
 
-		std::shared_ptr<Position> position = get_position(account_no, symbol_code);
+		std::shared_ptr<Position> position = get_position_from_account(account_no, symbol_code);
 		position->account_no = account_no;
 		position->symbol_code = symbol_code;
 		position->average_price = average_price;
@@ -84,7 +149,7 @@ void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
 	try {
 		const std::string& account_no = arg["account_no"];
 		const std::string& symbol_code = arg["symbol_code"];
-		auto position = get_position(account_no, symbol_code);
+		auto position = get_position_from_account(account_no, symbol_code);
 		if (position) {
 			position->trade_profit_loss = arg["trade_profit_loss"];
 			position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];

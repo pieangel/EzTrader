@@ -15,7 +15,9 @@ using position_p = std::shared_ptr<Position>;
 class TotalPositionManager
 {
 public:
-	position_p get_position(const std::string& account_no, const std::string& symbol_code);
+	position_p get_position_from_fund(const std::string& fund_name, const std::string& symbol_code);
+	position_p get_position_from_account(const std::string& account_no, const std::string& symbol_code);
+	position_p get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code);
 	account_position_manager_p get_account_position_manager(const std::string& account_no);
 	/// <summary>
 	/// 순서는 update_position->update_account_position->update_fund_position로 진행한다. 

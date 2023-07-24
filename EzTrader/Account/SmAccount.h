@@ -9,6 +9,7 @@ namespace DarkHorse {
 	/// 계좌 클래스
 	/// 계좌 정보를 가지고 있습니다.
 	/// </summary>
+	struct Position;
 	class SmAccount
 	{
 	private:
@@ -50,11 +51,14 @@ namespace DarkHorse {
 		{
 			return sub_accounts_.find(accountNumber) == sub_accounts_.end();
 		}
+
+		std::shared_ptr<Position> position_{nullptr};
 	public:
+		std::shared_ptr<Position> position() const { return position_; }
 		int parent_id() const { return parent_id_; }
 		void parent_id(int val) { parent_id_ = val; }
 		// Function to get the list of sub-accounts
-		const std::map<std::string, std::shared_ptr<SmAccount>>& SubAccounts() const { return sub_accounts_; }
+		const std::map<std::string, std::shared_ptr<SmAccount>>& get_sub_accounts() const { return sub_accounts_; }
 		// Function to add a new sub-account to the list
 		void AddSubAccount(const std::shared_ptr<SmAccount>& subAccount);
 		

@@ -6,6 +6,7 @@ struct Position
 {
 	int symbol_id{ 0 };
 	int account_id{ 0 };
+	std::string fund_name;
 	// 심볼 코드
 	std::string symbol_code;
 	// 계좌 번호

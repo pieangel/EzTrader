@@ -598,7 +598,7 @@ void DarkHorse::ViStockClient::on_ab_symbol_profit_loss(nlohmann::json&& arg)
 	try {
 		const std::string account_no = arg["account_no"];
 		const std::string symbol_code = arg["symbol_code"];
-		auto position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
+		auto position = mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code);
 		if (position) {
 			position->trade_profit_loss = arg["trade_profit_loss"];
 			//position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
@@ -620,7 +620,7 @@ void DarkHorse::ViStockClient::on_symbol_profit_loss(nlohmann::json&& arg)
 	try {
 		const std::string& account_no = arg["account_no"];
 		const std::string& symbol_code = arg["symbol_code"];
-		auto position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
+		auto position = mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code);
 		if (position) {
 			position->trade_profit_loss = arg["trade_profit_loss"];
 			//position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
@@ -642,7 +642,7 @@ void DarkHorse::ViStockClient::on_dm_symbol_profit_loss(nlohmann::json&& arg)
 	try {
 		const std::string account_no = arg["account_no"];
 		const std::string symbol_code = arg["symbol_code"];
-		auto position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
+		auto position = mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code);
 		if (position) {
 			position->trade_profit_loss = arg["trade_profit_loss"];
 			//position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
@@ -671,7 +671,7 @@ void DarkHorse::ViStockClient::on_ab_symbol_position(nlohmann::json&& arg)
 		const double open_profit_loss = arg["symbol_open_profit_loss"];
 
 		
-		std::shared_ptr<DarkHorse::Position> position = mainApp.total_position_manager()->get_position(account_no, symbol_code);
+		std::shared_ptr<DarkHorse::Position> position = mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code);
 		position->account_no = account_no;
 		position->symbol_code = symbol_code;
 		position->average_price = average_price;

@@ -7,10 +7,11 @@
 #include "../Xml/pugixml.hpp"
 namespace DarkHorse {
 	class SmAccount;
+	struct Position;
 	class SmFund
 	{
 	public:
-		SmFund() {};
+		SmFund();
 		 SmFund(const int& id, const std::string& name) : _id(id), _Name(name) {};
 		~SmFund() {};
 		std::string Name() const { return _Name; }
@@ -39,7 +40,9 @@ namespace DarkHorse {
 		std::string fund_type() const { return fund_type_; }
 		void fund_type(std::string val) { fund_type_ = val; }
 		bool is_account_exist(const int& account_id);
+		std::shared_ptr<Position> position() const { return position_; }
 	private:
+		std::shared_ptr<Position> position_{ nullptr };
 		// key : account no, value : account object
 		std::vector<std::shared_ptr<SmAccount>> _AccountVector;
 		std::string _Name;

@@ -623,7 +623,7 @@ void DmAccountOrderCenterWindow::SetRowNarrow()
 
 void DmAccountOrderCenterWindow::OnOrderChanged(const int& account_id, const int& symbol_id)
 {
-	symbol_order_view_.OnOrderChanged(account_id, symbol_id);
+	//symbol_order_view_.OnOrderChanged(account_id, symbol_id);
 	symbol_position_view_.OnOrderChanged(account_id, symbol_id);
 }
 

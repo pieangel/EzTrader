@@ -1571,48 +1571,48 @@ void SymbolOrderView::ChangeOrderByKey(const int up_down)
 	Invalidate();
 }
 
-void SymbolOrderView::OnOrderChanged(const int& account_id, const int& symbol_id)
-{
-	if (!account_ || !symbol_) return;
-	if (account_->id() != account_id || symbol_->Id() != symbol_id) return;
+// void SymbolOrderView::OnOrderChanged(const int& account_id, const int& symbol_id)
+// {
+// 	if (!account_ || !symbol_) return;
+// 	if (account_->id() != account_id || symbol_->Id() != symbol_id) return;
+// 
+// 	UpdateOrder(symbol_->SymbolCode());
+// 	Invalidate();
+// }
 
-	UpdateOrder(symbol_->SymbolCode());
-	Invalidate();
-}
+// void SymbolOrderView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
+// {
+// 	if (!account_ || !symbol_) return;
+// 	if (account_->No() != account_no) return;
+// 	if (symbol_->SymbolCode() != symbol_code) return;
+// 
+// 	_EnableOrderShow = true;
+// 	_EnableStopShow = true;
+// }
 
-void SymbolOrderView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
-{
-	if (!account_ || !symbol_) return;
-	if (account_->No() != account_no) return;
-	if (symbol_->SymbolCode() != symbol_code) return;
+// void SymbolOrderView::OnQuoteEvent(const std::string& symbol_code)
+// {
+// 	if (!symbol_) return;
+// 	if (symbol_->SymbolCode() != symbol_code) return;
+// 	if (_FixedMode) {
+// 		ProcessFixedMode();
+// 		return;
+// 	}
+// 	_EnableQuoteShow = true;
+// }
 
-	_EnableOrderShow = true;
-	_EnableStopShow = true;
-}
+// void SymbolOrderView::OnHogaEvent(const std::string& symbol_code)
+// {
+// 	if (!symbol_) return;
+// 	if (symbol_->SymbolCode() != symbol_code) return;
+// 	_EnableHogaShow = true;
+// }
 
-void SymbolOrderView::OnQuoteEvent(const std::string& symbol_code)
-{
-	if (!symbol_) return;
-	if (symbol_->SymbolCode() != symbol_code) return;
-	if (_FixedMode) {
-		ProcessFixedMode();
-		return;
-	}
-	_EnableQuoteShow = true;
-}
-
-void SymbolOrderView::OnHogaEvent(const std::string& symbol_code)
-{
-	if (!symbol_) return;
-	if (symbol_->SymbolCode() != symbol_code) return;
-	_EnableHogaShow = true;
-}
-
-void SymbolOrderView::OnSymbolMasterEvent(const std::string& symbol_code)
-{
-	if (!symbol_) return;
-	if (symbol_->SymbolCode() != symbol_code) return;
-}
+// void SymbolOrderView::OnSymbolMasterEvent(const std::string& symbol_code)
+// {
+// 	if (!symbol_) return;
+// 	if (symbol_->SymbolCode() != symbol_code) return;
+// }
 
 void SymbolOrderView::UpdateOrderSettings(SmOrderSettings settings)
 {
@@ -1716,10 +1716,12 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 {
 	auto hoga = mainApp.HogaMgr()->get_hoga(symbol_code);
 }
-
+/// <summary>
+/// 개선의 여지가 있음. 
+/// </summary>
 void SymbolOrderView::set_position() {
 	if (!position_control_ || !account_ || !symbol_) return;
-	auto position = mainApp.total_position_manager()->get_position(account_->No(), symbol_->SymbolCode());
+	auto position = mainApp.total_position_manager()->get_position_from_account(account_->No(), symbol_->SymbolCode());
 	if (!position) return;
 	position->symbol_id = symbol_->Id();
 	position->account_id = account_->id();
@@ -1728,7 +1730,7 @@ void SymbolOrderView::set_position() {
 
 void SymbolOrderView::set_order() {
 	if (!order_control_ || !account_ || !symbol_) return;
-	//order_control_->;
+	
 	/*
 	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_->No());
 	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
