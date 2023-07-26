@@ -4,6 +4,7 @@ struct VmPosition {
 	// 계좌 번호
 	std::string account_no;
 	std::string symbol_code;
+	std::string fund_name;
 	int symbol_id{ 0 };
 	int account_id{ 0 };
 	// 포지션의 잔고

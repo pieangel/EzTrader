@@ -32,11 +32,14 @@ namespace DarkHorse {
 		void set_symbol(std::shared_ptr<SmSymbol> symbol);
 		std::pair<int, int> get_order_count(const SmPositionType& position, const int price);
 		std::shared_ptr<PriceOrderMap> get_order_map(const SmPositionType& position, const int price);
-		void load_from_account(const std::string& account_no, const std::string& symbol_code);
+		void load_from_account(const bool is_sub_account, const std::string& account_no, const std::string& symbol_code);
+		void load_from_fund(const std::string& fund_name, const std::string& symbol_code);
 	private:
+		void add_order(const std::map<std::string, std::shared_ptr<Order>>& accepted_order_map);
+		void add_order(const std::string& account_no, const std::string& symbol_code);
+		void add_order(std::shared_ptr<Order> order);
 		void on_order_unfilled(std::shared_ptr<Order> order);
 		void on_order_accepted(std::shared_ptr<Order> order);
-		void add_order(std::shared_ptr<Order> order);
 		void remove_order(std::shared_ptr<Order> order);
 		std::shared_ptr<PriceOrderMap> get_order_map(DarkHorse::SubOrderControl& order_control, const int price);
 		std::pair<int, int> get_order_count(DarkHorse::SubOrderControl& order_control, const int price);

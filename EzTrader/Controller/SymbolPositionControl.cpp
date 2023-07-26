@@ -61,6 +61,19 @@ namespace DarkHorse {
 		}
 	}
 
+	void SymbolPositionControl::update_position_from_account(const bool is_sub_account, const std::string& account_no, const std::string& symbol_code)
+	{
+		if (is_sub_account)
+			mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code, position_);
+		else 
+			mainApp.total_position_manager()->get_position_from_parent_account(account_no, symbol_code, position_);
+	}
+
+	void SymbolPositionControl::update_position_from_fund(const std::string& fund_name, const std::string& symbol_code)
+	{
+		mainApp.total_position_manager()->get_position_from_fund(fund_name, symbol_code, position_);
+	}
+
 	void SymbolPositionControl::set_symbol_id(const int symbol_id)
 	{
 		symbol_id_ = symbol_id;

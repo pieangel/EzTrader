@@ -13,6 +13,8 @@ namespace DarkHorse {
 		~SymbolPositionControl();
 		void update_profit_loss(std::shared_ptr<SmQuote> quote);
 		void update_position(std::shared_ptr<Position> position);
+		void update_position_from_account(const bool is_sub_account, const std::string& account_no, const std::string& symbol_code);
+		void update_position_from_fund(const std::string& fund_name, const std::string& symbol_code);
 		const VmPosition& get_position()
 		{
 			return position_;

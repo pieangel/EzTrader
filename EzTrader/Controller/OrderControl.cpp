@@ -10,6 +10,10 @@
 #include "../Order/OrderProcess/TotalOrderManager.h"
 #include "../Order/OrderProcess/AccountOrderManager.h"
 #include "../Order/OrderProcess/SymbolOrderManager.h"
+#include "../Fund/SmFundManager.h"
+#include "../Fund/SmFund.h"
+#include "../Account/SmAccountManager.h"
+
 namespace DarkHorse {
 
 	OrderControl::OrderControl()
@@ -36,17 +40,52 @@ namespace DarkHorse {
 		sell_order_control_.clear();
 	}
 
-	void OrderControl::load_from_account(const std::string& account_no, const std::string& symbol_code)
+
+	void OrderControl::load_from_account(const bool is_sub_account, const std::string& account_no, const std::string& symbol_code)
 	{
 		clear();
-		auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
-		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
-		const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
-		for (auto it = accepted_order_map.begin(); it != accepted_order_map.end(); it++) {
-			add_order(it->second);
+		if (is_sub_account) {
+			add_order(account_no, symbol_code);
+		}
+		else {
+			const auto& account = mainApp.AcntMgr()->FindAccount(account_no);
+			if (!account) return;
+			const auto& sub_account_vector = account->get_sub_accounts();
+			for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); ++it) {
+				auto sub_account = it->second;
+				add_order(sub_account->No(), symbol_code);
+			}
 		}
 
 		if (event_handler_) event_handler_();
+	}
+
+	void OrderControl::load_from_fund(const std::string& fund_name, const std::string& symbol_code)
+	{
+		clear();
+		auto fund = mainApp.FundMgr()->FindAddFund(fund_name);
+		const std::vector<std::shared_ptr<SmAccount>>& sub_account_vector = fund->GetAccountVector();
+		for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); ++it) {
+			auto sub_account = *it;
+			add_order(sub_account->No(), symbol_code);
+		}
+
+		if (event_handler_) event_handler_();
+	}
+
+	void OrderControl::add_order(const std::map<std::string, std::shared_ptr<Order>>& accepted_order_map)
+	{
+		for(const auto& account : accepted_order_map) {
+			add_order(account.second);
+		}
+	}
+
+	void OrderControl::add_order(const std::string& account_no, const std::string& symbol_code)
+	{
+		auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
+		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
+		const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
+		add_order(accepted_order_map);
 	}
 
 	void OrderControl::set_symbol(std::shared_ptr<SmSymbol> symbol)
@@ -54,7 +93,7 @@ namespace DarkHorse {
 		if (!symbol) return;
 		symbol_ = symbol;
 		if (!account_) return;
-		load_from_account(account_->No(), symbol_->SymbolCode());
+		load_from_account(account_->is_subaccount(), account_->No(), symbol_->SymbolCode());
 	}
 
 	void OrderControl::set_account(std::shared_ptr<SmAccount> account)
@@ -62,7 +101,7 @@ namespace DarkHorse {
 		if (!account) return;
 		account_ = account;
 		if (!symbol_) return;
-		load_from_account(account_->No(), symbol_->SymbolCode());
+		load_from_account(account_->is_subaccount(), account_->No(), symbol_->SymbolCode());
 	}
 
 	void OrderControl::update_order(std::shared_ptr<Order> order, OrderEvent order_event)
@@ -126,6 +165,8 @@ namespace DarkHorse {
 		else
 			sell_order_control_.add_order(order->order_price, order);
 	}
+
+
 
 	void OrderControl::remove_order(std::shared_ptr<Order> order)
 	{
