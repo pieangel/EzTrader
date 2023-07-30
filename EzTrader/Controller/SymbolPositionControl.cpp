@@ -9,6 +9,7 @@
 #include "../Account/SmAccount.h"
 #include "../Account/SmAccountManager.h"
 #include "../Position/TotalPositionManager.h"
+#include "../Fund/SmFund.h"
 
 namespace DarkHorse {
 	SymbolPositionControl::SymbolPositionControl()
@@ -39,20 +40,23 @@ namespace DarkHorse {
 	{
 		try {
 			if (!position) return;
-			if (symbol_id_ != 0 && 
-				(position->symbol_id != symbol_id_ || 
-				 position->account_id != account_id_)) 
-				return;
-			position_.account_id = position->account_id;
-			position_.symbol_id = position->symbol_id;
-			position_.account_no = position->account_no;
-			position_.symbol_code = position->symbol_code;
-			position_.open_quantity = position->open_quantity;
-			position_.average_price = position->average_price;
-			position_.open_profit_loss = position->open_profit_loss;
-			position_.trade_fee = position->trade_fee;
-			position_.trade_profit_loss = position->trade_profit_loss;
-			position_.pure_trade_profit_loss = position->pure_trade_profit_loss;
+			auto it = position_map_.find(position->id);
+			if (it == position_map_.end()) return;
+
+			clear_position();
+			
+			if (position_type_ == PositionType::SubAccount) {
+				if (!account_ || !symbol_) return;
+				mainApp.total_position_manager()->get_position_from_account(account_->No(), symbol_->SymbolCode(), position_, position_map_);
+			}
+			else if (position_type_ == PositionType::MainAccount) {
+				if (!account_ || !symbol_) return;
+				mainApp.total_position_manager()->get_position_from_parent_account(account_->No(), symbol_->SymbolCode(), position_, position_map_);
+			}
+			else {
+				if (!fund_ || !symbol_) return;
+				mainApp.total_position_manager()->get_position_from_fund(fund_->Name(), symbol_->SymbolCode(), position_, position_map_);
+			}
 
 			if (event_handler_) event_handler_();
 		}
@@ -65,14 +69,45 @@ namespace DarkHorse {
 	void SymbolPositionControl::update_position_from_account(const bool is_sub_account, const std::string& account_no, const std::string& symbol_code)
 	{
 		if (is_sub_account)
-			mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code, position_);
+			mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code, position_, position_map_);
 		else 
-			mainApp.total_position_manager()->get_position_from_parent_account(account_no, symbol_code, position_);
+			mainApp.total_position_manager()->get_position_from_parent_account(account_no, symbol_code, position_, position_map_);
+	}
+
+	void SymbolPositionControl::update_position_from_account(std::shared_ptr<SmAccount> account, std::shared_ptr<SmSymbol> symbol)
+	{
+		if (!account || !symbol) return;	
+		account = account;
+		symbol_ = symbol;
+		position_.account_id = account->id();
+		position_.symbol_id = symbol->Id();
+		position_.account_no = account->No();
+		position_.symbol_code = symbol->SymbolCode();
+		if (account->is_subaccount()) {
+			mainApp.total_position_manager()->get_position_from_account(account->No(), symbol->SymbolCode(), position_, position_map_);
+			position_type_ = PositionType::SubAccount;
+		}
+		else {
+			mainApp.total_position_manager()->get_position_from_account(account->No(), symbol->SymbolCode(), position_, position_map_);
+			position_type_ = PositionType::MainAccount;
+		}
 	}
 
 	void SymbolPositionControl::update_position_from_fund(const std::string& fund_name, const std::string& symbol_code)
 	{
-		mainApp.total_position_manager()->get_position_from_fund(fund_name, symbol_code, position_);
+		mainApp.total_position_manager()->get_position_from_fund(fund_name, symbol_code, position_, position_map_);
+		position_type_ = PositionType::Fund;
+	}
+
+	void SymbolPositionControl::update_position_from_fund(std::shared_ptr<SmFund> fund, std::shared_ptr<SmSymbol> symbol)
+	{
+		fund_ = fund;
+		symbol_ = symbol;
+		position_.account_id = fund->Id();
+		position_.symbol_id = symbol->Id();
+		position_.fund_name = fund->Name();
+		position_.symbol_code = symbol->SymbolCode();
+		mainApp.total_position_manager()->get_position_from_fund(fund->Name(), symbol->SymbolCode(), position_, position_map_);
 	}
 
 	void SymbolPositionControl::set_symbol_id(const int symbol_id)
@@ -112,6 +147,14 @@ namespace DarkHorse {
 			id_,
 			std::bind(&SymbolPositionControl::update_position, this, std::placeholders::_1)
 		);
+	}
+
+	void SymbolPositionControl::clear_position()
+	{
+		position_.average_price = 0.0;
+		position_.open_quantity = 0;
+		position_.open_profit_loss = 0.0;
+		position_.trade_profit_loss = 0.0;
 	}
 
 }

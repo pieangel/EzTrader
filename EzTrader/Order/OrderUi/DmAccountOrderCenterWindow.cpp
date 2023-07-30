@@ -45,6 +45,7 @@
 #include "../../Position/Position.h"
 #include "../../Order/OrderRequest/OrderRequestManager.h"
 #include "../../Order/OrderRequest/OrderRequest.h"
+#include "../../Symbol/SymbolConst.h"
 #include <functional>
 using namespace std::placeholders;
 // SmOrderWnd dialog
@@ -65,6 +66,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
 	id_ = IdGenerator::get_id();
+	symbol_order_view_.symbol_type(SymbolType::Domestic);
 	symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
 	symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
 	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
@@ -81,6 +83,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::strin
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent), symbol_code_(symbol_code), order_set_(order_set)
 {
 		id_ = IdGenerator::get_id();
+		symbol_order_view_.symbol_type(SymbolType::Domestic);
 		symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
 		symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
 		mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
@@ -307,6 +310,7 @@ std::string DmAccountOrderCenterWindow::make_symbol_name(std::shared_ptr<DarkHor
 int DmAccountOrderCenterWindow::add_to_symbol_combo(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol) return -1;
+	if (symbol->symbol_type() != DarkHorse::SymbolType::Domestic) return -1;
 	
 	auto found = symbol_to_index_.find(symbol->SymbolCode());
 	if (found != symbol_to_index_.end()) return -1;
@@ -484,7 +488,7 @@ void DmAccountOrderCenterWindow::OnTimer(UINT_PTR nIDEvent)
 
 void DmAccountOrderCenterWindow::set_symbol_from_out(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
-	if (!selected_) return;
+	if (!selected_  || symbol->symbol_type() != DarkHorse::SymbolType::Domestic) return;
 
 	add_to_symbol_combo(symbol);
 	set_symbol_info(symbol);
@@ -546,6 +550,7 @@ void DmAccountOrderCenterWindow::SetCutMode()
 void DmAccountOrderCenterWindow::set_symbol_info(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!symbol) return;
+	if (symbol->symbol_type() != DarkHorse::SymbolType::Domestic) return;
 	symbol_position_view_.Clear();
 	symbol_tick_view_.Clear();
 	symbol_order_view_.Clear();

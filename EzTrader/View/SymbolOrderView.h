@@ -18,8 +18,8 @@ class SymbolOrderView
 #include "../SmGrid/SmCellType.h"
 #include "../Order/OrderRequest/OrderRequest.h"
 #include "../Event/EventHubArg.h"
-
-
+#include "../Symbol/SymbolConst.h"
+#include "../Position/PositionConst.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -70,13 +70,13 @@ public:
 	void update_hoga();
 	void update_quote();
 
-	void SetPosition();
+	//void SetPosition();
 	void ClearOldHoga();
 	void ClearOldQuote();
 	void ClearStopOrders();
 	void ClearOrders();
-	void SetStopOrder();
-	void SetOrder();
+	//void SetStopOrder();
+	//void SetOrder();
 	void ClearOldHoga(DarkHorse::Hoga_Type hoga_type) const noexcept;
 	int FindRow(const int& value) const noexcept;
 	int FindRowFromCenterValue(const int& value);
@@ -93,8 +93,6 @@ public:
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	std::shared_ptr<DarkHorse::SmFund> fund() const { return fund_; }
 	void fund(std::shared_ptr<DarkHorse::SmFund> val);
-	void UpdateOrder(const std::string& symbol_code);
-	void ConnectOrderUpdateSignal();
 	void ArrangeCenterValue();
 	void BuyByMarketPrice();
 	void SellByMarketPrice();
@@ -179,7 +177,14 @@ public:
 	void set_center_window_id(const int center_window_id) {
 		center_window_id_ = center_window_id;
 	}
+	DarkHorse::SymbolType symbol_type() const { return symbol_type_; }
+	void symbol_type(DarkHorse::SymbolType val) { symbol_type_ = val; }
+	DarkHorse::PositionType position_type() const { return position_type_; }
+	void position_type(DarkHorse::PositionType val) { position_type_ = val; }
+
 private:
+	DarkHorse::SymbolType symbol_type_{ DarkHorse::SymbolType::None };
+	DarkHorse::PositionType position_type_{ DarkHorse::PositionType::None };
 	void CancelSellOrder(std::shared_ptr<DarkHorse::SmAccount> account);
 	void CancelBuyOrder(std::shared_ptr<DarkHorse::SmAccount> account);
 	int center_window_id_{0};

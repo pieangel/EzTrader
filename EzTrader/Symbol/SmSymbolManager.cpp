@@ -368,6 +368,7 @@ void SmSymbolManager::read_domestic_masterfile()
 			symbol->RecentMonth(_ttoi(value.c_str()));
 			value = line.substr(index, 8);
 			symbol->ExpireDate(value);
+			symbol->symbol_type(SymbolType::Domestic);
 			set_product_info(symbol);
 			set_quote_preday_close(symbol, pre_day_close);
 			AddSymbol(symbol);

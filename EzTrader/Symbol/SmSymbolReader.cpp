@@ -420,6 +420,7 @@ void SmSymbolReader::ReadAbroadSymbolFile(const std::string& fullPath) const
 			symbol->MarketName(product->MarketName());
 			symbol->SymbolNameKr(symbol_name_kr);
 			symbol->SymbolNameEn(symbol_name_en);
+			symbol->symbol_type(SymbolType::Abroad);
 			// ¼Ò¼öÁ¡
 			symbol->decimal(std::stoi(Pdesz));
 			// ¼þ¼ö

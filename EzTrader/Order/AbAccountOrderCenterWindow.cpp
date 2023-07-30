@@ -60,6 +60,7 @@ AbAccountOrderCenterWindow::AbAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
 	id_ = IdGenerator::get_id();
+	symbol_order_view_.symbol_type(SymbolType::Abroad);
 	symbol_order_view_.set_order_request_type(OrderRequestType::Abroad);
 	symbol_order_view_.set_fill_condition(SmFilledCondition::Day);
 	symbol_order_view_.set_center_window_id(id_);

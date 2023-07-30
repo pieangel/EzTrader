@@ -8,6 +8,9 @@
 namespace DarkHorse {
 	struct Position;
 	struct SmQuote;
+	class SmAccount;
+	class SmFund;
+	class SmSymbol;
 	class SymbolPositionControl
 	{
 	public:
@@ -17,6 +20,9 @@ namespace DarkHorse {
 		void update_position(std::shared_ptr<Position> position);
 		void update_position_from_account(const bool is_sub_account, const std::string& account_no, const std::string& symbol_code);
 		void update_position_from_fund(const std::string& fund_name, const std::string& symbol_code);
+
+		void update_position_from_account(std::shared_ptr<SmAccount> account, std::shared_ptr<SmSymbol> symbol);
+		void update_position_from_fund(std::shared_ptr<SmFund> account, std::shared_ptr<SmSymbol> symbol);
 		const VmPosition& get_position()
 		{
 			return position_;
@@ -43,8 +49,12 @@ namespace DarkHorse {
 		int id_{ 0 };
 		int symbol_id_{ 0 };
 		int account_id_{ 0 };
+		std::shared_ptr<SmAccount> account_{ nullptr };
+		std::shared_ptr<SmFund> fund_{ nullptr };
+		std::shared_ptr<SmSymbol> symbol_{ nullptr };
 		VmPosition position_;
 		void subscribe_position_control();
+		void clear_position();
 		std::function<void()> event_handler_;
 	};
 }

@@ -7,6 +7,7 @@ struct VmPosition {
 	std::string fund_name;
 	int symbol_id{ 0 };
 	int account_id{ 0 };
+	int fund_id{ 0 };
 	// 포지션의 잔고
 	// 포지션의 잔고는 매수는 일때는 양수, 매도일 때는 음수로 표현한다.
 	// 포지션의 잔고가 0이면 포지션이 없는 것이다.

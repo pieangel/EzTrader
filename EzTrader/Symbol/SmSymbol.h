@@ -87,8 +87,8 @@ namespace DarkHorse {
 		void quote_requested(bool val) { quote_requested_ = val; }
 		bool hoga_requested() const { return hoga_requested_; }	
 		void hoga_requested(bool val) { hoga_requested_ = val; }
-		SymbolType Symbol_type() const { return symbol_type_; }
-		void Symbol_type(SymbolType val) { symbol_type_ = val; }
+		SymbolType symbol_type() const { return symbol_type_; }
+		void symbol_type(SymbolType val) { symbol_type_ = val; }
 
 	private:
 		SymbolType symbol_type_{ SymbolType::None };

@@ -66,6 +66,7 @@ DmFundOrderCenterWindow::DmFundOrderCenterWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
 {
 	id_ = IdGenerator::get_id();
+	symbol_order_view_.symbol_type(SymbolType::Domestic);
 	symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
 	symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
 	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmFundOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
@@ -82,6 +83,7 @@ DmFundOrderCenterWindow::DmFundOrderCenterWindow(CWnd* pParent, std::string symb
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent), symbol_code_(symbol_code), order_set_(order_set)
 {
 		id_ = IdGenerator::get_id();
+		symbol_order_view_.symbol_type(SymbolType::Domestic);
 		symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
 		symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
 		mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmFundOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
@@ -490,7 +492,7 @@ void DmFundOrderCenterWindow::OnTimer(UINT_PTR nIDEvent)
 
 void DmFundOrderCenterWindow::set_symbol_from_out(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
-	if (!selected_) return;
+	if (!selected_ || symbol->symbol_type() != DarkHorse::SymbolType::Domestic) return;
 
 	add_to_symbol_combo(symbol);
 	set_symbol_info(symbol);

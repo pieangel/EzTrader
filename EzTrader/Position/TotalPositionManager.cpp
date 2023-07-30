@@ -108,6 +108,61 @@ void TotalPositionManager::get_position_from_parent_account(const std::string& a
 	//return account_position;
 }
 
+void TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position, std::map<int, std::shared_ptr<Position>>& position_map)
+{
+	position_map.clear();
+	auto fund = mainApp.FundMgr()->FindAddFund(fund_name);
+	const std::vector<std::shared_ptr<SmAccount>>& subAcntVector = fund->GetAccountVector();
+	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it)
+	{
+		auto sub_account = *it;
+		auto account_position_manager_p = get_account_position_manager(sub_account->No());
+		auto sub_account_position = account_position_manager_p->get_position(symbol_code);
+		if (sub_account_position->open_quantity != 0)
+		{
+			get_position_from_account(sub_account->No(), symbol_code, position, position_map);
+		}
+	}
+
+	if (position.open_quantity != 0)
+		position.average_price = std::abs(position.average_price) / std::abs(position.open_quantity);
+	//return fund_position;
+}
+
+void TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<int, std::shared_ptr<Position>>& position_map)
+{
+	position_map.clear();
+	account_position_manager_p position_manager = get_account_position_manager(account_no);
+	const auto& symbol_position = position_manager->get_position(symbol_code);
+	position.open_quantity += symbol_position->open_quantity;
+	position.average_price += symbol_position->average_price;
+	position.open_profit_loss += symbol_position->open_profit_loss;
+	position.trade_profit_loss += symbol_position->trade_profit_loss;
+
+	position_map[symbol_position->id] = symbol_position;
+}
+
+void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<int, std::shared_ptr<Position>>& position_map)
+{
+	position_map.clear();
+	auto parent_account = mainApp.AcntMgr()->FindAccount(account_no);
+	const std::map<std::string, std::shared_ptr<SmAccount>>& subAcntVector = parent_account->get_sub_accounts();
+	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it)
+	{
+		auto sub_account = it->second;
+		auto account_position_manager_p = get_account_position_manager(sub_account->No());
+		auto sub_account_position = account_position_manager_p->get_position(symbol_code);
+		if (sub_account_position->open_quantity != 0)
+		{
+			get_position_from_account(sub_account->No(), symbol_code, position, position_map);
+		}
+	}
+
+	if (position.open_quantity != 0)
+		position.average_price = std::abs(position.average_price) / std::abs(position.open_quantity);
+	//return account_position;
+}
+
 void TotalPositionManager::update_position(order_p order)
 {
 	account_position_manager_p position_manager = get_account_position_manager(order->account_no);

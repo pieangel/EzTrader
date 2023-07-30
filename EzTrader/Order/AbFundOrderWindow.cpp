@@ -494,6 +494,8 @@ void AbFundOrderWindow::on_symbol_view_clicked(const int center_window_id, std::
 
 void AbFundOrderWindow::OnSymbolClickedFromOut(std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
+	if (!symbol || symbol->symbol_type() != DarkHorse::SymbolType::Abroad) return;
+
 	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
 		if (it->second->Selected()) {
 			it->second->OnSymbolClicked(symbol->SymbolCode());

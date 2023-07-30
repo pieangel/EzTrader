@@ -58,6 +58,7 @@ DmOptionView::DmOptionView()
 	: id_(IdGenerator::get_id())
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->symbol_type(SymbolType::Domestic);
 	quote_control_->set_event_handler(std::bind(&DmOptionView::on_update_quote, this));
 
 	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
