@@ -1929,6 +1929,12 @@
     <ClInclude Include="Order\AbFundOrderWindow.h">
       <Filter>Order\OrderUI_AB</Filter>
     </ClInclude>
+    <ClInclude Include="Position\PositionConst.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Symbol\SymbolConst.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

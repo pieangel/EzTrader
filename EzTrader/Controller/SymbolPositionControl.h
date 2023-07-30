@@ -1,8 +1,10 @@
 #pragma once
 #include "../ViewModel/VmPosition.h"
 #include "../Util/IdGenerator.h"
+#include "../Position/PositionConst.h"
 #include <memory>
 #include <functional>
+#include <map>
 namespace DarkHorse {
 	struct Position;
 	struct SmQuote;
@@ -28,7 +30,13 @@ namespace DarkHorse {
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}
+		PositionType Position_type() const { return position_type_; }
+		void Position_type(PositionType val) { position_type_ = val; }
+
 	private:
+		PositionType position_type_{ PositionType::None };
+		// key : position id, value : position object.
+		std::map<int, std::shared_ptr<Position>> position_map_;
 		void reset_position();
 		int symbol_seung_su_{ 1 };
 		int symbol_decimal_{ 1 };

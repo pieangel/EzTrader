@@ -41,7 +41,8 @@ namespace DarkHorse {
 			if (!position) return;
 			if (symbol_id_ != 0 && 
 				(position->symbol_id != symbol_id_ || 
-				 position->account_id != account_id_)) return;
+				 position->account_id != account_id_)) 
+				return;
 			position_.account_id = position->account_id;
 			position_.symbol_id = position->symbol_id;
 			position_.account_no = position->account_no;
@@ -98,7 +99,7 @@ namespace DarkHorse {
 		auto symbol = mainApp.SymMgr()->FindSymbolById(symbol_id_);
 		if (!account || !symbol) return;
 
-		auto position = mainApp.total_position_manager()->get_position_from_account(account->No(), symbol->SymbolCode());
+		auto position = mainApp.total_position_manager()->get_position(account->No(), symbol->SymbolCode());
 		if (!position) return;
 
 		update_position(position);

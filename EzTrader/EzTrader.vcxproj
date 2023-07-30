@@ -448,6 +448,7 @@
     <ClInclude Include="Pnf\PnfManager.h" />
     <ClInclude Include="Position\AccountPositionManager.h" />
     <ClInclude Include="Position\Position.h" />
+    <ClInclude Include="Position\PositionConst.h" />
     <ClInclude Include="Position\SmAccountPositionManager.h" />
     <ClInclude Include="Position\SmPosition.h" />
     <ClInclude Include="Position\SmTotalPositionManager.h" />
@@ -498,6 +499,7 @@
     <ClInclude Include="Symbol\SmSymbolReader.h" />
     <ClInclude Include="Symbol\SmSymbolTableDialog.h" />
     <ClInclude Include="Symbol\Symbol.h" />
+    <ClInclude Include="Symbol\SymbolConst.h" />
     <ClInclude Include="Symbol\SymbolManager.h" />
     <ClInclude Include="System\SmArrayMath.h" />
     <ClInclude Include="System\SmSignal.h" />

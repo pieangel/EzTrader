@@ -4,6 +4,8 @@
 namespace DarkHorse {
 struct Position
 {
+	int id{ 0 };
+	int fund_id{ 0 };
 	int symbol_id{ 0 };
 	int account_id{ 0 };
 	std::string fund_name;

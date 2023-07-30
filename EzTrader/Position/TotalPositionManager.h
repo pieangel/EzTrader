@@ -16,6 +16,7 @@ using position_p = std::shared_ptr<Position>;
 class TotalPositionManager
 {
 public:
+	position_p get_position(const std::string& account_no, const std::string& symbol_code);
 	void get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position);
 	void get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
 	void get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
@@ -39,7 +40,10 @@ public:
 		const int& symbol_decimal
 	);
 	void update_account_profit_loss(const std::string& account_no);
+	position_p find_position_by_id(const int& position_id);
 private:
+	// key : position id, value : position object.
+	std::map<int, position_p> position_map_;
 	account_position_manager_p find_position_manager(const std::string& account_no);
 	account_position_manager_p create_position_manager(const std::string& account_no);
 	// key : account_no, value : account position manager object.

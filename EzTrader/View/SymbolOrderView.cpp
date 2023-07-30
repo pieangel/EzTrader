@@ -510,7 +510,7 @@ void SymbolOrderView::draw_order()
 void SymbolOrderView::update_quote()
 {
 	if (!quote_control_ || !product_control_) return;
-	const VmQuote quote = quote_control_->get_quote();
+	const VmQuote& quote = quote_control_->get_quote();
 	if (!center_valued_) SetCenterValues();
 	//SetCenterValues();
 	set_quote_color();
@@ -1721,7 +1721,7 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 /// </summary>
 void SymbolOrderView::set_position() {
 	if (!position_control_ || !account_ || !symbol_) return;
-	auto position = mainApp.total_position_manager()->get_position_from_account(account_->No(), symbol_->SymbolCode());
+	auto position = mainApp.total_position_manager()->get_position(account_->No(), symbol_->SymbolCode());
 	if (!position) return;
 	position->symbol_id = symbol_->Id();
 	position->account_id = account_->id();

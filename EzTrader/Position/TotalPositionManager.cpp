@@ -33,6 +33,14 @@ account_position_manager_p TotalPositionManager::create_position_manager(const s
 	return position_manager;
 }
 
+position_p TotalPositionManager::get_position(const std::string& account_no, const std::string& symbol_code)
+{
+	account_position_manager_p position_manager = get_account_position_manager(account_no);
+	position_p position = position_manager->get_position(symbol_code);
+	position_map_[position->id] = position;
+	return position;
+}
+
 void TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position)
 {
 	auto fund = mainApp.FundMgr()->FindAddFund(fund_name);
@@ -127,7 +135,7 @@ void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 		const double open_profit_loss = arg["symbol_open_profit_loss"];
 
 
-		std::shared_ptr<Position> position = get_position_from_account(account_no, symbol_code);
+		std::shared_ptr<Position> position = get_position(account_no, symbol_code);
 		position->account_no = account_no;
 		position->symbol_code = symbol_code;
 		position->average_price = average_price;
@@ -152,7 +160,7 @@ void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
 	try {
 		const std::string& account_no = arg["account_no"];
 		const std::string& symbol_code = arg["symbol_code"];
-		auto position = get_position_from_account(account_no, symbol_code);
+		auto position = get_position(account_no, symbol_code);
 		if (position) {
 			position->trade_profit_loss = arg["trade_profit_loss"];
 			position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
@@ -187,6 +195,15 @@ void TotalPositionManager::update_account_profit_loss(const std::string& account
 	account_position_manager_p position_manager = get_account_position_manager(account_no);
 	position_manager->update_account_profit_loss();
 	mainApp.event_hub()->process_account_profit_loss_event();
+}
+
+position_p TotalPositionManager::find_position_by_id(const int& position_id)
+{
+	auto it = position_map_.find(position_id);
+	if (it != position_map_.end())
+		return it->second;
+	else
+		return nullptr;
 }
 
 }
