@@ -17,9 +17,9 @@ class TotalPositionManager
 {
 public:
 	position_p get_position(const std::string& account_no, const std::string& symbol_code);
-	void get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position);
-	void get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
-	void get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
+	//void get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position);
+	//void get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
+	//void get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
 
 
 	void get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position, std::map<int, std::shared_ptr<Position>>& position_map);

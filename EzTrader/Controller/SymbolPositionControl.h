@@ -49,6 +49,7 @@ namespace DarkHorse {
 		int id_{ 0 };
 		int symbol_id_{ 0 };
 		int account_id_{ 0 };
+		int fund_id_{ 0 };
 		std::shared_ptr<SmAccount> account_{ nullptr };
 		std::shared_ptr<SmFund> fund_{ nullptr };
 		std::shared_ptr<SmSymbol> symbol_{ nullptr };

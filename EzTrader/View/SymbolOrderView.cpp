@@ -1436,13 +1436,6 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 /// </summary>
 void SymbolOrderView::set_position() {
 	if (!position_control_ || !symbol_) return;
-	/*
-	auto position = mainApp.total_position_manager()->get_position(account_->No(), symbol_->SymbolCode());
-	if (!position) return;
-	position->symbol_id = symbol_->Id();
-	position->account_id = account_->id();
-	position_control_->update_position(position);
-	*/
 	if (position_type_ == PositionType::SubAccount) {
 		if (!account_) return;
 		position_control_->update_position_from_account(account_, symbol_);

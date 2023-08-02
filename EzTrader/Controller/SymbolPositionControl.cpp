@@ -88,7 +88,7 @@ namespace DarkHorse {
 			position_type_ = PositionType::SubAccount;
 		}
 		else {
-			mainApp.total_position_manager()->get_position_from_account(account->No(), symbol->SymbolCode(), position_, position_map_);
+			mainApp.total_position_manager()->get_position_from_parent_account(account->No(), symbol->SymbolCode(), position_, position_map_);
 			position_type_ = PositionType::MainAccount;
 		}
 	}

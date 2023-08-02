@@ -70,6 +70,7 @@
 #include "Dialog/MiniJangoDialog.h"
 #include "Dialog/TotalAssetProfitLossDialog.h"
 #include "Task/SmTaskRequestManager.h"
+#include "Account/SubAccountEditor.h"
 // -----------------------------------------------------------------------------
 
 // DataFrame library is entirely under hmdf name-space
@@ -315,6 +316,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_SET_SIMULATION_MODE, &CMainFrame::OnSetSimulationMode)
 	ON_COMMAND(ID_32934, &CMainFrame::OnEnableSimulationFilledOrder)
 	ON_COMMAND(ID_DM_FUND_ORDER, &CMainFrame::OnDmFundOrder)
+	ON_COMMAND(ID_SUB_ACCOUNT, &CMainFrame::OnSubAccount)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1385,4 +1387,11 @@ void CMainFrame::OnDmFundOrder()
 	fund_order_wnd->Create(IDD_DM_FUND_ORDER_MAIN, this);
 	dm_fund_order_wnd_map_[fund_order_wnd->GetSafeHwnd()] = fund_order_wnd;
 	fund_order_wnd->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnSubAccount()
+{
+	SubAccountEditor sub_account_editor;
+	sub_account_editor.DoModal();
 }

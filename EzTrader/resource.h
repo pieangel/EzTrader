@@ -92,6 +92,7 @@
 #define IDD_DM_FUND_ORDER_CENTER        187
 #define IDD_PROGRESS                    219
 #define IDB_GRID_CONFIG                 221
+#define IDD_SUB_ACCOUNT                 222
 #define IDC_STATIC_ID                   1003
 #define IDC_STATIC_PWD                  1004
 #define IDC_STATIC_CERT                 1005
@@ -110,9 +111,12 @@
 #define IDC_CHART                       1018
 #define IDC_BUTTON1                     1019
 #define IDC_BUTTON_START                1020
+#define IDC_BTN_CREATE                  1020
 #define IDC_BTN_LEFT                    1021
+#define IDC_BTN_APPLY                   1021
 #define IDC_BTN_AMOUNT1                 1022
 #define IDC_BTN_FUND_NEW                1023
+#define IDC_BTN_DELETE                  1023
 #define IDC_BTN_ORDER_ALL               1024
 #define IDC_BTN_RELOAD                  1025
 #define IDC_BTN_GET                     1026
@@ -205,7 +209,9 @@
 #define IDC_STATIC_LINE2                1110
 #define IDC_EDIT1                       1111
 #define IDC_EDIT_CELL_HEIGHT            1111
+#define IDC_EDIT_SUB_ACCOUNT_NO         1111
 #define IDC_EDIT_AMOUNT                 1112
+#define IDC_EDIT_SUB_ACCOUNT_NAME       1112
 #define IDC_EDIT_NQ                     1113
 #define IDC_EDIT_VK1_NQ                 1114
 #define IDC_CHECK_SHOW_PWD              1115
@@ -263,9 +269,14 @@
 #define IDC_STATIC_LINE15               1165
 #define IDC_STATIC_STATE                1165
 #define IDC_EDIT_VK3_NQ_AVG             1166
+#define IDC_ACCOUNT_LIST                1166
 #define IDC_STATIC_SET                  1167
+#define IDC_SUB_ACCOUNT_LIST            1167
 #define IDC_STATIC_LINE16               1168
+#define IDC_BTN_MODIFY                  1168
 #define IDC_EDIT_VK3_NK                 1169
+#define IDC_COMBO1                      1169
+#define IDC_COMBO_ACCOUNT_TYPE          1169
 #define IDC_STATIC_FILL_SET             1170
 #define IDC_STATIC_LINE17               1171
 #define IDC_EDIT_VK3_NK_AVG             1172
@@ -522,14 +533,16 @@
 #define ID_SET_SIMULATION_MODE          32933
 #define ID_32934                        32934
 #define ID_DM_FUND_ORDER                32935
+#define ID_32936                        32936
+#define ID_SUB_ACCOUNT                  32937
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        222
-#define _APS_NEXT_COMMAND_VALUE         32936
-#define _APS_NEXT_CONTROL_VALUE         1166
+#define _APS_NEXT_RESOURCE_VALUE        225
+#define _APS_NEXT_COMMAND_VALUE         32938
+#define _APS_NEXT_CONTROL_VALUE         1170
 #define _APS_NEXT_SYMED_VALUE           119
 #endif
 #endif

@@ -59,22 +59,11 @@ namespace DarkHorse {
 		void parent_id(int val) { parent_id_ = val; }
 		// Function to get the list of sub-accounts
 		const std::map<std::string, std::shared_ptr<SmAccount>>& get_sub_accounts() const { return sub_accounts_; }
+		int get_sub_account_count() const { return sub_accounts_.size(); }
 		// Function to add a new sub-account to the list
 		void AddSubAccount(const std::shared_ptr<SmAccount>& subAccount);
 		
-		void make_default_sub_account() {
-			if (!sub_accounts_.empty()) return;
-
-			std::shared_ptr< SmAccount> sub_account = std::make_shared<SmAccount>();
-			sub_account->Name(_Name);	
-			std::string sub_account_no = _No + "_" + "1";
-			sub_account->No(sub_account_no);
-			sub_account->Type(_Type);
-			sub_account->Pwd(_pwd);
-			sub_account->is_subaccount(true);
-			sub_account->parent_id(_id);
-			AddSubAccount(sub_account);
-		}
+		void make_default_sub_account();
 		SmAccount();
 		~SmAccount();
 		int Confirm() const { return _Confirm; }

@@ -220,4 +220,5 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnEnableSimulationFilledOrder();
 	afx_msg void OnDmFundOrder();
+	afx_msg void OnSubAccount();
 };

@@ -104,6 +104,15 @@ DmFundOrderCenterWindow::~DmFundOrderCenterWindow()
 	mainApp.event_hub()->unsubscribe_symbol_event_handler(id_);
 }
 
+void DmFundOrderCenterWindow::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	symbol_order_view_.fund(val);
+	symbol_order_view_.Refresh();
+	symbol_position_view_.fund(val);
+	symbol_position_view_.Refresh();
+}
+
 void DmFundOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	account_ = val;

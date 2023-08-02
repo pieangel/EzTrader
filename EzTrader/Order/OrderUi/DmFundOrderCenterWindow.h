@@ -55,7 +55,7 @@ public:
 	enum { IDD = IDD_DM_ACNT_ORDER_CENTER};
 #endif
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return fund_; }
-	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { fund_ = val; }
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);

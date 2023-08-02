@@ -180,51 +180,9 @@ void SymbolPositionView::Symbol(std::shared_ptr<SmSymbol> val)
 	quote_control_->update_quote(quote);
 	position_control_->set_symbol_id(symbol_->Id());
 	update_quote();
+	set_position();
 	update_position();
 	enable_position_show_ = true;
-}
-
-void SymbolPositionView::UpdatePositionInfo()
-{
-	if (!account_ || !symbol_) return Clear();
-
-	std::shared_ptr<SmPosition> position = mainApp.TotalPosiMgr()->FindAddPosition(account_->No(), symbol_->SymbolCode());
-	if (position->OpenQty == 0) return Clear();
-	std::shared_ptr<SmCell> cell = _Grid->FindCell(1, 0);
-	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	cell->Text(symbol_->SymbolCode());
-	cell = _Grid->FindCell(1, 4);
-	std::string value_string = std::format("{0}", symbol_->Qoute.close);
-	if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
-		value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
-	cell->Text(value_string);
-	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-
-	const int avg_price = static_cast<int>(position->AvgPrice);
-	cell = _Grid->FindCell(1, 1);
-	position->Position == SmPositionType::Buy ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	if (position->OpenQty > 0)
-		cell->Text("매수");
-	else if (position->OpenQty < 0)
-		cell->Text("매도");
-	cell = _Grid->FindCell(1, 2);
-	cell->Text(std::to_string(position->OpenQty));
-	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	cell = _Grid->FindCell(1, 3);
-	//position->OpenQty > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	value_string = std::format("{0}", avg_price);
-	if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
-		value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
-	cell->Text(value_string);
-	cell = _Grid->FindCell(1, 5);
-	if (position->OpenPL != 0)
-		position->OpenPL > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	else
-		cell->CellType(SmCellType::CT_NORMAL);
-	const std::string open_pl = std::format("{0:.2f}", position->OpenPL);
-	cell->Text(open_pl);
-
-	//Invalidate();
 }
 
 void SymbolPositionView::OnEndEditCell(int nRow, int nCol, CString str)
@@ -239,7 +197,22 @@ void SymbolPositionView::OnEndEditCell(int nRow, int nCol, CString str)
 void SymbolPositionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	account_ = val;
-	position_control_->set_account_id(account_->id());
+	if (account_->is_subaccount())
+		position_type_ = PositionType::SubAccount;
+	else
+		position_type_ = PositionType::MainAccount;
+	//position_control_->set_account_id(account_->id());
+	set_position();
+	update_position();
+	enable_position_show_ = true;
+}
+
+void SymbolPositionView::fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	position_type_ = PositionType::Fund;
+	//position_control_->set_account_id(account_->id());
+	set_position();
 	update_position();
 	enable_position_show_ = true;
 }
@@ -257,6 +230,23 @@ void SymbolPositionView::OnQuoteEvent(const std::string& symbol_code)
 void SymbolPositionView::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
 {
 	enable_position_show_ = true;
+}
+
+void SymbolPositionView::set_position()
+{
+	if (!position_control_ || !symbol_) return;
+	if (position_type_ == PositionType::SubAccount) {
+		if (!account_) return;
+		position_control_->update_position_from_account(account_, symbol_);
+	}
+	else if (position_type_ == PositionType::MainAccount) {
+		if (!account_) return;
+		position_control_->update_position_from_account(account_, symbol_);
+	}
+	else if (position_type_ == PositionType::Fund) {
+		if (!fund_) return;
+		position_control_->update_position_from_fund(fund_, symbol_);
+	}
 }
 
 void SymbolPositionView::update_position()

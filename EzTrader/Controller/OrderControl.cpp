@@ -50,6 +50,8 @@ namespace DarkHorse {
 		else {
 			const auto& account = mainApp.AcntMgr()->FindAccount(account_no);
 			if (!account) return;
+			// For parent account
+			add_order(account_no, symbol_code);
 			const auto& sub_account_vector = account->get_sub_accounts();
 			for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); ++it) {
 				auto sub_account = it->second;

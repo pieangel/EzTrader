@@ -1190,6 +1190,26 @@ BEGIN
     CTEXT           "진행항목",IDC_STATIC_STATE,0,15,309,12
 END
 
+IDD_SUB_ACCOUNT DIALOGEX 0, 0, 440, 359
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "서브계좌편집"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_ACCOUNT_LIST,"Static",SS_BLACKRECT,7,23,210,264
+    CONTROL         "",IDC_SUB_ACCOUNT_LIST,"Static",SS_BLACKRECT,223,23,210,329
+    LTEXT           "서브계좌코드",IDC_STATIC,17,295,45,8
+    LTEXT           "서브계좌명",IDC_STATIC,18,312,38,8
+    EDITTEXT        IDC_EDIT_SUB_ACCOUNT_NO,72,292,90,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SUB_ACCOUNT_NAME,72,308,89,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "수정",IDC_BTN_MODIFY,167,291,50,14
+    PUSHBUTTON      "생성",IDC_BTN_CREATE,168,306,50,14
+    PUSHBUTTON      "확인",IDC_BTN_APPLY,38,324,50,14
+    PUSHBUTTON      "저장",IDC_BTN_SAVE,101,324,50,14
+    PUSHBUTTON      "삭제",IDC_BTN_DELETE,168,324,50,14
+    COMBOBOX        IDC_COMBO_ACCOUNT_TYPE,103,8,113,147,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "계좌타입",IDC_STATIC,12,11,39,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1456,6 +1476,14 @@ BEGIN
     IDD_PROGRESS, DIALOG
     BEGIN
     END
+
+    IDD_SUB_ACCOUNT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 433
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 352
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1715,6 +1743,11 @@ BEGIN
     0
 END
 
+IDD_SUB_ACCOUNT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1764,6 +1797,15 @@ BEGIN
 0x4d45, 0x2041, 0x6e45, 0x6576, 0x6f6c, 0x6570, 0x0073, 
     IDC_OVERLAY_BAND, 0x403, 16, 0
 0x6f42, 0x6c6c, 0x6e69, 0x6567, 0x2072, 0x6142, 0x646e, 0x0073, 
+    0
+END
+
+IDD_SUB_ACCOUNT DLGINIT
+BEGIN
+    IDC_COMBO_ACCOUNT_TYPE, 0x403, 5, 0
+0xb9b1, 0xbbb3, "\000" 
+    IDC_COMBO_ACCOUNT_TYPE, 0x403, 5, 0
+0xd8c7, 0xdcbf, "\000" 
     0
 END
 
@@ -1827,6 +1869,7 @@ BEGIN
     BEGIN
         MENUITEM "예탁잔고 및 증거금",                  ID_ASSET
         MENUITEM "계좌비밀번호관리",                    ID_MANAGE_PWD
+        MENUITEM "서브계좌편집",                      ID_SUB_ACCOUNT
     END
     POPUP "주문", INACTIVE
     BEGIN
@@ -1877,6 +1920,7 @@ BEGIN
     BEGIN
         MENUITEM "예탁잔고 및 증거금",                  ID_ASSET
         MENUITEM "계좌비밀번호관리",                    ID_MANAGE_PWD
+        MENUITEM "서브계좌편집",                      ID_SUB_ACCOUNT
     END
     POPUP "주문", INACTIVE
     BEGIN

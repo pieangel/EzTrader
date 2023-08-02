@@ -847,6 +847,15 @@
     <ClCompile Include="Order\AbFundOrderWindow.cpp">
       <Filter>Order\OrderUI_AB</Filter>
     </ClCompile>
+    <ClCompile Include="Account\MainAccountGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\SubAccountEditor.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\SubAccountGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1934,6 +1943,15 @@
     </ClInclude>
     <ClInclude Include="Symbol\SymbolConst.h">
       <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\MainAccountGrid.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\SubAccountEditor.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\SubAccountGrid.h">
+      <Filter>Account</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

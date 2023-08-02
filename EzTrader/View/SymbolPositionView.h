@@ -9,13 +9,14 @@ class SymbolPositionView
 #include <memory>
 #include <vector>
 #include <string>
-
+#include "../Position/PositionConst.h"
 #include "../SmGrid/SmGridResource.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
 	class SmCell;
 	class SmAccount;
+	class SmFund;
 	class QuoteControl;
 	class SymbolPositionControl;
 }
@@ -34,10 +35,10 @@ public:
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return symbol_; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 	void update_quote();
-	void UpdatePositionInfo();
 	void  OnEndEditCell(int nRow, int nCol, CString str);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
+	void fund(std::shared_ptr<DarkHorse::SmFund> val);
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
@@ -48,7 +49,11 @@ public:
 	}
 	void on_update_quote();
 	void on_update_position();
+	DarkHorse::PositionType position_type() const { return position_type_; }
+	void position_type(DarkHorse::PositionType val) { position_type_ = val; }
 private:
+	void set_position();
+	DarkHorse::PositionType position_type_{ DarkHorse::PositionType::None };
 	void update_position();
 	std::shared_ptr<DarkHorse::SymbolPositionControl> position_control_;
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
@@ -65,6 +70,7 @@ private:
 
 	std::shared_ptr<DarkHorse::SmSymbol> symbol_{ nullptr };
 	std::shared_ptr<DarkHorse::SmAccount> account_{ nullptr };
+	std::shared_ptr<DarkHorse::SmFund> fund_{ nullptr };
 public:
 	// OnLButtonDblClk
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);

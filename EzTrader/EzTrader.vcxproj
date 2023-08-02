@@ -222,10 +222,13 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Account\MainAccountGrid.h" />
     <ClInclude Include="Account\SmAccount.h" />
     <ClInclude Include="Account\SmAccountAsset.h" />
     <ClInclude Include="Account\SmAccountManager.h" />
     <ClInclude Include="Account\SmAccountPwdDlg.h" />
+    <ClInclude Include="Account\SubAccountEditor.h" />
+    <ClInclude Include="Account\SubAccountGrid.h" />
     <ClInclude Include="Archieve\SmSaveManager.h" />
     <ClInclude Include="ChartDialog\GaSpreadChart.h" />
     <ClInclude Include="ChartDialog\RealTimeMultiChart.h" />
@@ -586,10 +589,13 @@
     <ClInclude Include="Xml\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Account\MainAccountGrid.cpp" />
     <ClCompile Include="Account\SmAccount.cpp" />
     <ClCompile Include="Account\SmAccountAsset.cpp" />
     <ClCompile Include="Account\SmAccountManager.cpp" />
     <ClCompile Include="Account\SmAccountPwdDlg.cpp" />
+    <ClCompile Include="Account\SubAccountEditor.cpp" />
+    <ClCompile Include="Account\SubAccountGrid.cpp" />
     <ClCompile Include="Archieve\SmSaveManager.cpp" />
     <ClCompile Include="ChartDialog\GaSpreadChart.cpp" />
     <ClCompile Include="ChartDialog\RealTimeMultiChart.cpp" />
