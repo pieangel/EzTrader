@@ -198,8 +198,11 @@ namespace DarkHorse {
 		if (symbol_code.find("201") != std::string::npos ||
 			symbol_code.find("301") != std::string::npos) 
 			value_type_ = ValueType::KospiOption;
-		else if (symbol_code.find("209") != std::string::npos ||
-			symbol_code.find("309") != std::string::npos)
+		else if (
+			symbol_code.find("209") != std::string::npos ||
+			symbol_code.find("309") != std::string::npos || 
+			symbol_code.find("2AF") != std::string::npos ||
+			symbol_code.find("3AF") != std::string::npos)
 			value_type_ = ValueType::KospiWeekly;
 		else if (symbol_code.find("205") != std::string::npos ||
 			symbol_code.find("305") != std::string::npos)

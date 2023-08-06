@@ -160,6 +160,8 @@ void SmSymbolManager::add_to_yearmonth(std::shared_ptr<SmSymbol> symbol)
 		year_month_name.append(month);
 		year_month_name.append("-");
 		year_month_name.append(week);
+		year_month_name.append("-");
+		year_month_name.append("T");
 		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
 		if (!product) return;
 		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
@@ -175,6 +177,42 @@ void SmSymbolManager::add_to_yearmonth(std::shared_ptr<SmSymbol> symbol)
 		year_month_name.append(month);
 		year_month_name.append("-");
 		year_month_name.append(week);
+		year_month_name.append("-");
+		year_month_name.append("T");
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
+	}
+	else if (product_code == "2AF") { // KOSPI WEEKLY M C 2308W1 302.5
+		std::string year = symbol_name_en.substr(17, 2);
+		std::string month = symbol_name_en.substr(19, 2);
+		std::string week = symbol_name_en.substr(21, 2);
+		std::string year_month_name("20");
+		year_month_name.append(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		year_month_name.append("-");
+		year_month_name.append(week);
+		year_month_name.append("-");
+		year_month_name.append("M");
+		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
+		if (!product) return;
+		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
+		year_month->AddSymbol(symbol);
+	}
+	else if (product_code == "3AF") { // KOSPI WEEKLY P 2303W1 337.5
+		std::string year = symbol_name_en.substr(17, 2);
+		std::string month = symbol_name_en.substr(19, 2);
+		std::string week = symbol_name_en.substr(21, 2);
+		std::string year_month_name("20");
+		year_month_name.append(year);
+		year_month_name.append("-");
+		year_month_name.append(month);
+		year_month_name.append("-");
+		year_month_name.append(week);
+		year_month_name.append("-");
+		year_month_name.append("M");
 		std::shared_ptr<SmProduct> product = find_product(market_name, product_code);
 		if (!product) return;
 		std::shared_ptr<SmProductYearMonth> year_month = product->add_year_month(year_month_name);
@@ -649,6 +687,14 @@ void SmSymbolManager::MakeDomesticMarket()
 	product = market->AddProduct("309");
 	option.put_product = product;
 	product->MarketName(market_name);
+
+	product = market->AddProduct("2AF");
+	option.call_product = product;
+	product->MarketName(market_name);
+	product = market->AddProduct("3AF");
+	option.put_product = product;
+	product->MarketName(market_name);
+
 	_DomesticOptionVec.push_back(option);
 
 	option.option_name = "ÄÚ½º´Ú¿É¼Ç";
