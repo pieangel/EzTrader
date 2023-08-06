@@ -2,7 +2,9 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <vector>
 #include <stdexcept>
+#include <algorithm>
 #include "SmAccountAsset.h"
 namespace DarkHorse {
 	/// <summary>
@@ -44,24 +46,43 @@ namespace DarkHorse {
 		double _Ratio = 0;
 
 		bool is_sub_account_ = false;
-		// key : sub account number, value : sub account
-		std::map<std::string, std::shared_ptr<SmAccount>> sub_accounts_;
-		// Function to check if a given account number already exists in the sub-accounts
-		bool IsAccountNumberUnique(const std::string& accountNumber) const
-		{
-			return sub_accounts_.find(accountNumber) == sub_accounts_.end();
-		}
+		std::vector<std::shared_ptr<SmAccount>> sub_accounts_;
+		
 
 		std::shared_ptr<Position> position_{nullptr};
 	public:
+		// Function to check if a given account number already exists in the sub-accounts
+		bool IsAccountNumberUnique(const std::string& account_no)
+		{
+			std::shared_ptr<SmAccount> found_account = find_sub_account_by_no(account_no);
+			return found_account ? false : true;
+		}
+
+		// Function to find an account by its No
+		std::shared_ptr<SmAccount> find_sub_account_by_no( const std::string& accountNo) {
+			auto it = std::find_if(sub_accounts_.begin(), sub_accounts_.end(), [accountNo](const std::shared_ptr<SmAccount>& account) {
+				return account->No() == accountNo;
+				});
+
+			if (it != sub_accounts_.end()) {
+				return *it; // Return the found shared pointer to SmAccount
+			}
+
+			return nullptr; // Return nullptr if the account is not found
+		}
+
+		void move_up_sub_account(const int& target_index);
+		void move_down_sub_account(const int& target_index);
+		void remove_sub_account(const std::string& account_no);
 		std::shared_ptr<Position> position() const { return position_; }
 		int parent_id() const { return parent_id_; }
 		void parent_id(int val) { parent_id_ = val; }
 		// Function to get the list of sub-accounts
-		const std::map<std::string, std::shared_ptr<SmAccount>>& get_sub_accounts() const { return sub_accounts_; }
+		const std::vector<std::shared_ptr<SmAccount>>& get_sub_accounts() const { return sub_accounts_; }
 		int get_sub_account_count() const { return sub_accounts_.size(); }
 		// Function to add a new sub-account to the list
 		void AddSubAccount(const std::shared_ptr<SmAccount>& subAccount);
+		std::shared_ptr<SmAccount> CreateSubAccount(std::string acntNo, std::string acntName, int parent_id, const std::string& type);
 		
 		void make_default_sub_account();
 		SmAccount();

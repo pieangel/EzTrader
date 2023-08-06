@@ -147,10 +147,10 @@ void TotalPositionManager::get_position_from_parent_account(const std::string& a
 	position_map.clear();
 	get_position_from_account(account_no, symbol_code, position, position_map);
 	auto parent_account = mainApp.AcntMgr()->FindAccount(account_no);
-	const std::map<std::string, std::shared_ptr<SmAccount>>& subAcntVector = parent_account->get_sub_accounts();
+	const std::vector<std::shared_ptr<SmAccount>>& subAcntVector = parent_account->get_sub_accounts();
 	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it)
 	{
-		auto sub_account = it->second;
+		auto sub_account = *it;
 		auto account_position_manager_p = get_account_position_manager(sub_account->No());
 		auto sub_account_position = account_position_manager_p->get_position(symbol_code);
 		if (sub_account_position->open_quantity != 0)

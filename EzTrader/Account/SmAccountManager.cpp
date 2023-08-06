@@ -27,6 +27,32 @@ namespace DarkHorse {
 		_AccountIdMap[account->id()] = account;
 	}
 
+	void SmAccountManager::RemoveAccount(const std::string& account_no)
+	{
+		auto found = _AccountMap.find(account_no);
+		if (found != _AccountMap.end()) {
+			_AccountMap.erase(found);
+		}
+	}
+
+	void SmAccountManager::get_main_account_vector(std::vector<std::shared_ptr<SmAccount>>& main_acnt_vector)
+	{
+		main_acnt_vector.clear();
+		for (auto it = _AccountMap.begin(); it != _AccountMap.end(); it++) {
+			if (!it->second->is_subaccount())
+				main_acnt_vector.push_back(it->second);
+		}
+	}
+
+	void SmAccountManager::get_main_account_vector(const std::string& account_type, std::vector<std::shared_ptr<SmAccount>>& main_acnt_vector)
+	{
+		main_acnt_vector.clear();
+		for (auto it = _AccountMap.begin(); it != _AccountMap.end(); it++) {
+			if (it->second->Type() == account_type && !it->second->is_subaccount())
+				main_acnt_vector.push_back(it->second);
+		}
+	}
+
 	void SmAccountManager::GetUnusedAccountForFund(std::vector<std::shared_ptr<SmAccount>>& unused_acnt_vector)
 	{
 		for (auto it = _AccountMap.begin(); it != _AccountMap.end(); it++) {

@@ -278,6 +278,7 @@
 #define IDC_COMBO1                      1169
 #define IDC_COMBO_ACCOUNT_TYPE          1169
 #define IDC_STATIC_FILL_SET             1170
+#define IDC_STATIC_SEL_ACCOUNT          1170
 #define IDC_STATIC_LINE17               1171
 #define IDC_EDIT_VK3_NK_AVG             1172
 #define IDC_STATIC_AMOUNT               1173
@@ -542,7 +543,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        225
 #define _APS_NEXT_COMMAND_VALUE         32938
-#define _APS_NEXT_CONTROL_VALUE         1170
+#define _APS_NEXT_CONTROL_VALUE         1171
 #define _APS_NEXT_SYMED_VALUE           119
 #endif
 #endif

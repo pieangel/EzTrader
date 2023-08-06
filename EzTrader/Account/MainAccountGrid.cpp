@@ -296,22 +296,43 @@ void MainAccountGrid::ClearAccountGrid(const int& row)
 void MainAccountGrid::SetAccountList()
 {
 	_RowToAccountMap.clear();
-	const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+	std::vector<std::shared_ptr<SmAccount>> account_vector;
+	mainApp.AcntMgr()->get_main_account_vector(account_vector);
 	int row = 0;
-	for (auto it = account_map.begin(); it != account_map.end(); it++) {
-		if (it->second->Type() != account_type_) continue;
-		if (it->second->is_subaccount()) continue;
-		std::string account_name = it->second->Name();
-		const std::string account_no = it->second->No();
+	for (auto it = account_vector.begin(); it != account_vector.end(); it++) {
+		std::string account_name = (*it)->Name();
+		const std::string account_no = (*it)->No();
 		CBCGPGridRow* pRow = GetRow(row);
 		if (!pRow) continue;
 		pRow->GetItem(0)->SetValue(account_name.c_str(), TRUE);
 		pRow->GetItem(1)->SetValue(account_no.c_str(), TRUE);
 
-		pRow->GetItem(2)->SetValue(std::to_string(it->second->get_sub_account_count()).c_str(), TRUE);
+		pRow->GetItem(2)->SetValue(std::to_string((*it)->get_sub_account_count()).c_str(), TRUE);
 
 
-		_RowToAccountMap[row] = it->second;
+		_RowToAccountMap[row] = (*it);
+		row++;
+	}
+
+	ClearAccountGrid(row);
+}
+
+void MainAccountGrid::SetAccountList(const std::vector<std::shared_ptr<DarkHorse::SmAccount>>& account_vector)
+{
+	_RowToAccountMap.clear();
+	int row = 0;
+	for (auto it = account_vector.begin(); it != account_vector.end(); it++) {
+		std::string account_name = (*it)->Name();
+		const std::string account_no = (*it)->No();
+		CBCGPGridRow* pRow = GetRow(row);
+		if (!pRow) continue;
+		pRow->GetItem(0)->SetValue(account_name.c_str(), TRUE);
+		pRow->GetItem(1)->SetValue(account_no.c_str(), TRUE);
+
+		pRow->GetItem(2)->SetValue(std::to_string((*it)->get_sub_account_count()).c_str(), TRUE);
+
+
+		_RowToAccountMap[row] = (*it);
 		row++;
 	}
 
@@ -344,8 +365,7 @@ void MainAccountGrid::OnLButtonDown(UINT nFlags, CPoint point)
 
 	auto found = _RowToAccountMap.find(id.m_nRow);
 	if (found == _RowToAccountMap.end()) return;
-	//if (SubAccountGrid) SubAccountGrid->InitFund(found->second);
-	//if (_SubAccountEditor) _SubAccountEditor->CurFund(found->second);
+	if (_SubAccountEditor) _SubAccountEditor->set_account(found->second);
 
 	CBCGPGridCtrl::OnLButtonDown(nFlags, point);
 }

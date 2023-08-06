@@ -95,15 +95,13 @@ private:
 	// key : row index, value : SmAccount object
 	std::map<int, std::shared_ptr<DarkHorse::SmAccount>> _RowToAccountMap;
 	int _MaxRow = 0;
-	std::string account_type_{"9"};
-	std::string account_type() const { return account_type_; }
-	void account_type(std::string val) { account_type_ = val; }
 public:
-	void UpdateAccountInfo(std::shared_ptr<DarkHorse::SmAccount> fund);
+	void UpdateAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account);
 	std::shared_ptr<DarkHorse::SmAccount> GetFirstAccount();
 	std::shared_ptr<DarkHorse::SmAccount> GetLastAccount();
 	void ClearAccountGrid(const int& row);
 	void SetAccountList();
+	void SetAccountList(const std::vector<std::shared_ptr<DarkHorse::SmAccount>>& account_vector);
 	void StartTimer();
 	void Update();
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);

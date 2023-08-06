@@ -54,7 +54,7 @@ namespace DarkHorse {
 			add_order(account_no, symbol_code);
 			const auto& sub_account_vector = account->get_sub_accounts();
 			for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); ++it) {
-				auto sub_account = it->second;
+				auto sub_account = *it;
 				add_order(sub_account->No(), symbol_code);
 			}
 		}
