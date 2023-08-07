@@ -43,7 +43,7 @@ void SmFundEditDialog::DoDataExchange(CDataExchange* pDX)
 	CBCGPScrollDialog::DoDataExchange(pDX);
 	//DDX_Control(pDX, IDC_EDIT_ACNT_SEUNSU, _EditAcntSeungSu);
 	DDX_Control(pDX, IDC_EDIT_FUND_NAME, _EditFundName);
-	//DDX_Control(pDX, IDC_LIST_REG_ACCOUNT, _ListRegAcnt);
+	DDX_Control(pDX, IDC_COMBO_ACCOUNT_TYPE, _ComboAccountType);
 	//DDX_Control(pDX, IDC_LIST_UNREG_ACCOUNT, _ListUnregAcnt);
 	//DDX_Control(pDX, IDC_STATIC_ACNT_DETAIL, _StaticAcntDetail);
 	//DDX_Control(pDX, IDC_STATIC_ACNT_RATIO, _StaticAcntRatio);
@@ -63,6 +63,7 @@ BEGIN_MESSAGE_MAP(SmFundEditDialog, CBCGPScrollDialog)
 	ON_BN_CLICKED(IDCANCEL, &SmFundEditDialog::OnBnClickedCancel)
 	ON_EN_CHANGE(IDC_EDIT_ACNT_SEUNSU, &SmFundEditDialog::OnEnChangeEditAcntSeunsu)
 	ON_WM_CLOSE()
+	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT_TYPE, &SmFundEditDialog::OnCbnSelchangeComboAccountType)
 END_MESSAGE_MAP()
 
 
@@ -116,7 +117,7 @@ void SmFundEditDialog::UnregAccountDoubleClickEvent(const int& row)
 	//_EditFundName.SetWindowText(_CurFund->Name().c_str());
 	_FundAccountGrid.InitFund(_CurFund);
 	//RefreshUnregAccounts();
-	_AccountGrid.InitUnregAccount();
+	_AccountGrid.InitUnregAccount(account_type_);
 }
 
 void SmFundEditDialog::UnregAccountDoubleClickEvent(std::shared_ptr<DarkHorse::SmAccount> account)
@@ -125,7 +126,7 @@ void SmFundEditDialog::UnregAccountDoubleClickEvent(std::shared_ptr<DarkHorse::S
 
 	_CurFund->AddAccount(account);
 	_FundAccountGrid.InitFund(_CurFund);
-	_AccountGrid.InitUnregAccount();
+	_AccountGrid.InitUnregAccount(account_type_);
 }
 
 void SmFundEditDialog::UnregAccountClickEvent(const int& row)
@@ -154,7 +155,7 @@ void SmFundEditDialog::FundAccountDoubleClickEvent(const int& row)
 	_EditFundName.SetWindowText(_CurFund->Name().c_str());
 	_FundAccountGrid.InitFund(_CurFund);
 	//RefreshUnregAccounts();
-	_AccountGrid.InitUnregAccount();
+	_AccountGrid.InitUnregAccount(account_type_);
 }
 
 void SmFundEditDialog::FundAccountDoubleClickEvent(std::shared_ptr<DarkHorse::SmAccount> account)
@@ -172,7 +173,7 @@ void SmFundEditDialog::FundAccountDoubleClickEvent(std::shared_ptr<DarkHorse::Sm
 	//_EditFundName.SetWindowText(_CurFund->Name().c_str());
 	_FundAccountGrid.InitFund(_CurFund);
 	//RefreshUnregAccounts();
-	_AccountGrid.InitUnregAccount();
+	_AccountGrid.InitUnregAccount(account_type_);
 }
 
 void SmFundEditDialog::FundAccountClickEvent(const int& row)
@@ -212,7 +213,7 @@ void SmFundEditDialog::AddToFund(std::shared_ptr<DarkHorse::SmAccount> account)
 void SmFundEditDialog::RefreshUnregAccounts()
 {
 	//InitUnregAccount();
-	_AccountGrid.InitUnregAccount();
+	_AccountGrid.InitUnregAccount(account_type_);
 }
 
 
@@ -223,6 +224,7 @@ BOOL SmFundEditDialog::OnInitDialog()
 
 	_CurFund = mainApp.FundMgr()->FindFundById(_FundId);
 
+	_ComboAccountType.SetCurSel(0);
 
 	CRect rect;
 	CWnd* pWnd = GetDlgItem(IDC_STATIC_FUND_ACCOUNT);
@@ -241,7 +243,8 @@ BOOL SmFundEditDialog::OnInitDialog()
 	// Create the Windows control and attach it to the Grid object
 	_AccountGrid.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID6);
 	
-
+	_AccountGrid.Account_type(account_type_);
+	_FundAccountGrid.Account_type(account_type_);
 	_FundAccountGrid.AccountGrid = &_AccountGrid;
 	_AccountGrid.FundAccountGrid = &_FundAccountGrid;
 	_AccountGrid.Fund(_CurFund);
@@ -253,7 +256,7 @@ BOOL SmFundEditDialog::OnInitDialog()
 
 	_EditFundName.SetWindowText(_CurFund->Name().c_str());
 	_FundAccountGrid.InitFund();
-	_AccountGrid.InitUnregAccount();
+	_AccountGrid.InitUnregAccount(account_type_);
 
 	// 취소를 위해 백업을 받아 놓는다.
 	for (auto it = _RowToFundAccountMap.begin(); it != _RowToFundAccountMap.end(); ++it) {
@@ -332,3 +335,19 @@ void SmFundEditDialog::OnEnChangeEditAcntSeunsu()
 	
 }
 
+
+
+void SmFundEditDialog::OnCbnSelchangeComboAccountType()
+{
+	if (_ComboAccountType.GetCurSel() < 0) return;
+	int index = _ComboAccountType.GetCurSel();
+	if (index == 0)
+		account_type_ = "9";
+	else
+		account_type_ = "1";
+
+	_AccountGrid.Account_type(account_type_);
+	_FundAccountGrid.Account_type(account_type_);
+	_AccountGrid.InitUnregAccount(account_type_);
+	_FundAccountGrid.InitFund();
+}

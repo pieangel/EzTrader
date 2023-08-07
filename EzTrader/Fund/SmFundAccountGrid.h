@@ -64,6 +64,8 @@ public:
 
 // Implementation
 public:
+	std::string Account_type() const { return account_type_; }
+	void Account_type(std::string val) { account_type_ = val; }
 	SmFundGrid* FundGrid = nullptr;
 	SmAccountGrid* AccountGrid = nullptr;
 
@@ -98,6 +100,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	std::string account_type_{ "9" }; // 9: default account type
+
 	SmFundEditDialog* _FundEditDialog = nullptr;
 	SmFundDialog* _FundDialog = nullptr;
 	bool _EnableOrderShow = false;

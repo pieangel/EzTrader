@@ -323,7 +323,7 @@ void SmFundAccountGrid::MoveSelectedAccounts()
 	}
 	InitFund();
 
-	AccountGrid->InitUnregAccount();
+	AccountGrid->InitUnregAccount(account_type_);
 }
 
 void SmFundAccountGrid::MoveUp()
@@ -353,7 +353,7 @@ void SmFundAccountGrid::MoveFirstAccount()
 
 	InitFund();
 	
-	AccountGrid->InitUnregAccount();
+	AccountGrid->InitUnregAccount(account_type_);
 }
 
 void SmFundAccountGrid::MoveAllAccounts()
@@ -368,7 +368,7 @@ void SmFundAccountGrid::MoveAllAccounts()
 	
 	InitFund();
 	
-	AccountGrid->InitUnregAccount();
+	AccountGrid->InitUnregAccount(account_type_);
 	
 	ClearAll();
 }
@@ -533,7 +533,7 @@ void SmFundAccountGrid::OnLButtonDblClk(UINT nFlags, CPoint point)
 	//_EditFundName.SetWindowText(_CurFund->Name().c_str());
 	InitFund();
 	//RefreshUnregAccounts();
-	AccountGrid->InitUnregAccount();
+	AccountGrid->InitUnregAccount(account_type_);
 
 	CBCGPGridCtrl::OnLButtonDblClk(nFlags, point);
 }

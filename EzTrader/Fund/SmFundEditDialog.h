@@ -59,6 +59,8 @@ public:
 	void FundAccountDoubleClickEvent(std::shared_ptr<DarkHorse::SmAccount> account);
 	void FundAccountClickEvent(std::shared_ptr<DarkHorse::SmAccount> account);
 private:
+	CBCGPComboBox _ComboAccountType;
+	std::string account_type_{"9"}; // 9: default account type
 	void RefreshUnregAccounts();
 	void RemoveFromFund(std::shared_ptr<DarkHorse::SmAccount> account);
 	void AddToFund(std::shared_ptr<DarkHorse::SmAccount> account);
@@ -84,4 +86,5 @@ public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnEnChangeEditAcntSeunsu();
+	afx_msg void OnCbnSelchangeComboAccountType();
 };

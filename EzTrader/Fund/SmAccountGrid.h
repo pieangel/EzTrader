@@ -32,7 +32,7 @@ protected:
 
 	// Operations
 public:
-	void InitUnregAccount();
+	void InitUnregAccount(const std::string& account_type);
 	void ToggleExtendedPadding();
 	BOOL IsExtendedPadding() const
 	{
@@ -83,6 +83,10 @@ public:
 	void SetFundEditDialog(SmFundEditDialog* fund_edit_dialog) {
 		_FundEditDialog = fund_edit_dialog;
 	}
+
+	std::string Account_type() const { return account_type_; }
+	void Account_type(std::string val) { account_type_ = val; }
+
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
@@ -92,6 +96,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	std::string account_type_{ "9" }; // 9: default account type
+
 	SmFundEditDialog* _FundEditDialog = nullptr;
 	bool _EnableOrderShow = false;
 	bool _HeaderCheck = false;

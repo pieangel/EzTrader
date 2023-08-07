@@ -53,10 +53,12 @@ namespace DarkHorse {
 		}
 	}
 
-	void SmAccountManager::GetUnusedAccountForFund(std::vector<std::shared_ptr<SmAccount>>& unused_acnt_vector)
+	void SmAccountManager::GetUnusedAccountForFund(const std::string& account_type, std::vector<std::shared_ptr<SmAccount>>& unused_acnt_vector)
 	{
 		for (auto it = _AccountMap.begin(); it != _AccountMap.end(); it++) {
-			if (!it->second->UsedForFund())
+			if (it->second->is_subaccount() &&
+				it->second->Type() == account_type && 
+				!it->second->UsedForFund())
 				unused_acnt_vector.push_back(it->second);
 		}
 	}

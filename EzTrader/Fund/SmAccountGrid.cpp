@@ -56,7 +56,7 @@ void SmAccountGrid::MoveSelectedAccounts()
 		}
 	}
 	FundAccountGrid->InitFund();
-	InitUnregAccount();
+	InitUnregAccount(account_type_);
 }
 
 void SmAccountGrid::MoveFirstAccount()
@@ -68,7 +68,7 @@ void SmAccountGrid::MoveFirstAccount()
 
 	_Fund->AddAccount(found->second);
 	FundAccountGrid->InitFund();
-	InitUnregAccount();
+	InitUnregAccount(account_type_);
 }
 
 void SmAccountGrid::MoveAllAccounts()
@@ -81,7 +81,7 @@ void SmAccountGrid::MoveAllAccounts()
 
 	FundAccountGrid->InitFund();
 	
-	InitUnregAccount();
+	InitUnregAccount(account_type_);
 	
 	ClearAll();
 }
@@ -325,12 +325,12 @@ void SmAccountGrid::ClearOldContents(const int& last_index)
 	}
 }
 
-void SmAccountGrid::InitUnregAccount()
+void SmAccountGrid::InitUnregAccount(const std::string& account_type)
 {
 	_RowToAccountMap.clear();
 
 	std::vector<std::shared_ptr<DarkHorse::SmAccount>> unused_acnt_vector;
-	mainApp.AcntMgr()->GetUnusedAccountForFund(unused_acnt_vector);
+	mainApp.AcntMgr()->GetUnusedAccountForFund(account_type_, unused_acnt_vector);
 	int row = 0;
 	for (auto it = unused_acnt_vector.begin(); it != unused_acnt_vector.end(); ++it) {
 		auto account = *it;
@@ -450,7 +450,7 @@ void SmAccountGrid::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 	_Fund->AddAccount(found->second);
 	FundAccountGrid->InitFund();
-	InitUnregAccount();
+	InitUnregAccount(account_type_);
 
 	CBCGPGridCtrl::OnLButtonDblClk(nFlags, point);
 }
