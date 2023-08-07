@@ -86,7 +86,6 @@ private:
 	std::map<std::string, int> _AccountComboMap;
 	int _LineGap = 4;
 	bool _Init = false;
-	void SetAccountForOrderWnd();
 	void SetFundForOrderWnd();
 	CRect moveRect;
 	int _CurrentFundIndex{ 0 };

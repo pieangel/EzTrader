@@ -1923,7 +1923,7 @@ void SymbolOrderView::put_order(
 		if (parent_account) {
 			order_req->order_context.parent_account_id = parent_account->id();
 			order_req->order_context.parent_account_no = parent_account->No();
-			order_req->order_context.sub_account_no = account_->No();
+			order_req->order_context.sub_account_no = account->No();
 			order_req->order_context.order_type = OrderType::SubAccount;
 		}
 		if (fund_) {

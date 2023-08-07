@@ -86,9 +86,7 @@ void DmAccountOrderWindow::SetAccount()
 		SetAccountInfo(_ComboAccountMap[_CurrentAccountIndex]);
 		_LeftWnd->OnOrderChanged(0, 0);
 
-		for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-			it->second->Account(_ComboAccountMap[_CurrentAccountIndex]);
-		}
+		
 	}
 }
 
@@ -294,6 +292,8 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 
 
 	SetAccount();
+
+	SetAccountForOrderWnd();
 
 	_ComboAccount.SetDroppedWidth(150);
 

@@ -79,6 +79,15 @@ AbFundOrderCenterWindow::~AbFundOrderCenterWindow()
 	//KillTimer(1);
 }
 
+void AbFundOrderCenterWindow::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	symbol_order_view_.fund(val);
+	symbol_order_view_.Refresh();
+	symbol_position_view_.fund(val);
+	symbol_position_view_.Refresh();
+}
+
 void AbFundOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	account_ = val;

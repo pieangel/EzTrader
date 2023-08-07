@@ -39,7 +39,7 @@ void AccountOrderControl::load_order_from_account(const std::string& account_no)
 
 void AccountOrderControl::update_order(order_p order, OrderEvent order_event)
 {
-	if (!order) return;
+	if (!order || !account_) return;
 	if (order->account_no != account_->No()) return;
 
 	if (order_event == OrderEvent::OE_Accepted)
@@ -52,6 +52,7 @@ void AccountOrderControl::update_order(order_p order, OrderEvent order_event)
 
 void AccountOrderControl::on_order_unfilled(std::shared_ptr<Order> order)
 {
+	if (!order) return;
 	if (order->remain_count == 0)
 		remove_order(order);
 	else
@@ -60,6 +61,8 @@ void AccountOrderControl::on_order_unfilled(std::shared_ptr<Order> order)
 
 void AccountOrderControl::on_order_accepted(std::shared_ptr<Order> order)
 {
+	if (!order) return;
+
 	add_order(order);
 }
 
@@ -80,6 +83,7 @@ DarkHorse::order_p AccountOrderControl::get_order(const std::string& order_no)
 
 void AccountOrderControl::add_order(order_p order)
 {
+	if (!order) return;
 	auto it = order_map_.find(order->order_no);
 	if (it != order_map_.end()) return;
 	order_map_[order->order_no] = order;
@@ -87,6 +91,7 @@ void AccountOrderControl::add_order(order_p order)
 
 void AccountOrderControl::remove_order(order_p order)
 {
+	if (!order) return;
 	auto it = order_map_.find(order->order_no);
 	if (it == order_map_.end()) return;
 	order_map_.erase(it);

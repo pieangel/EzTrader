@@ -10,7 +10,7 @@ namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
 	struct SmPosition;
-
+	class SmFund;
 }
 
 
@@ -23,6 +23,7 @@ class AbFundOrderWindow : public CBCGPDialog
 	DECLARE_DYNAMIC(AbFundOrderWindow)
 
 public:
+	void SetFund();
 	void SetAccount();
 	AbFundOrderWindow(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~AbFundOrderWindow();
@@ -52,17 +53,21 @@ private:
 	bool _ShowRight = true;
 	// key : combo index, value : account object.
 	std::map<int, std::shared_ptr<DarkHorse::SmAccount>> _ComboAccountMap;
+
+	std::map<int, std::shared_ptr<DarkHorse::SmFund>> _ComboFundMap;
 	int _LineGap = 4;
 	bool _Init = false;
-	void SetAccountForOrderWnd();
+	void SetFundForOrderWnd();
 	CRect moveRect;
-	int _CurrentAccountIndex{ 0 };
+	int _CurrentFundIndex{ 0 };
 	void SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account);
 	CRect _rcMain;
 	CRect _rcLeft;
 	CRect _rcRight;
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
+	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
 	int id_{ 0 };
+	void SetFundInfo(std::shared_ptr<DarkHorse::SmFund> fund);
 public:
 	int get_id() const { return id_; }
 	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
@@ -76,7 +81,7 @@ public:
 	afx_msg void OnBnClickedBtnRight();
 	afx_msg LRESULT OnEnterSizeMove(WPARAM, LPARAM);
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);
-	CBCGPComboBox _ComboAccount;
+	CBCGPComboBox _ComboFund;
 	CStatic _StaticAccountName;
 	SmLineGrid _Line1;
 	SmLineGrid _Line2;

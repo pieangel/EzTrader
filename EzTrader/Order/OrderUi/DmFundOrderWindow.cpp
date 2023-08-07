@@ -284,7 +284,7 @@ BOOL DmFundOrderWindow::OnInitDialog()
 
 
 	SetFund();
-
+	SetFundForOrderWnd();
 	_ComboFund.SetDroppedWidth(150);
 
 	GetWindowRect(rcWnd);
@@ -526,10 +526,7 @@ void DmFundOrderWindow::RecalcChildren2(CmdMode mode)
 	SetWindowPos(nullptr, rcWnd.left, rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_NOZORDER | SWP_NOREDRAW);
 }
 
-void DmFundOrderWindow::SetAccountForOrderWnd()
-{
-	
-}
+
 
 
 void DmFundOrderWindow::SetFundForOrderWnd()
@@ -784,7 +781,7 @@ void DmFundOrderWindow::OnCbnSelchangeComboFund()
 
 	SetFundInfo(_ComboFundMap[_CurrentFundIndex]);
 
-	SetAccountForOrderWnd();
+	SetFundForOrderWnd();
 	/*
 	if (!_Account) return;
 	if (_Account->is_subaccount()) return;

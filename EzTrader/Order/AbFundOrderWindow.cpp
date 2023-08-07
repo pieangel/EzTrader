@@ -29,12 +29,37 @@
 
 #include "../Event/EventHub.h"
 #include "../Util/IdGenerator.h"
+#include "../Fund/SmFundManager.h"
+#include "../Fund/SmFund.h"
 #include <functional>
 using namespace std::placeholders;
 
 using namespace DarkHorse;
 
 const int CtrlHeight = 32;
+
+void AbFundOrderWindow::SetFund()
+{
+	const std::map<std::string, std::shared_ptr<SmFund>>& fund_map = mainApp.FundMgr()->GetFundMap();
+
+	for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
+		auto fund = it->second;
+		std::string account_info;
+		account_info.append(fund->Name());
+		//account_info.append(" : ");
+		//account_info.append(fund->No());
+		const int index = _ComboFund.AddString(account_info.c_str());
+		_ComboFundMap[index] = fund;
+
+	}
+
+	if (!_ComboFundMap.empty()) {
+		_CurrentFundIndex = 0;
+		_ComboFund.SetCurSel(_CurrentFundIndex);
+		SetFundInfo(_ComboFundMap[_CurrentFundIndex]);
+		//_LeftWnd->OnOrderChanged(0, 0);
+	}
+}
 
 //int AbFundOrderWindow::_Id = 0;
 
@@ -48,20 +73,20 @@ void AbFundOrderWindow::SetAccount()
 		account_info.append(account->Name());
 		account_info.append(" : ");
 		account_info.append(account->No());
-		const int index = _ComboAccount.AddString(account_info.c_str());
+		const int index = _ComboFund.AddString(account_info.c_str());
 		_ComboAccountMap[index] = account;
 		
 	}
 
 	if (!_ComboAccountMap.empty()) {
-		_CurrentAccountIndex = 0;
-		_ComboAccount.SetCurSel(_CurrentAccountIndex);
-		SetAccountInfo(_ComboAccountMap[_CurrentAccountIndex]);
+		_CurrentFundIndex = 0;
+		_ComboFund.SetCurSel(_CurrentFundIndex);
+		SetAccountInfo(_ComboAccountMap[_CurrentFundIndex]);
 		_LeftWnd->OnOrderChanged(0, 0);
 	}
 
 	if (_ComboAccountMap.size() > 0) {
-		const int cur_sel = _ComboAccount.GetCurSel();
+		const int cur_sel = _ComboFund.GetCurSel();
 		if (cur_sel >= 0) {
 			for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
 				it->second->Account(_ComboAccountMap[cur_sel]);
@@ -95,7 +120,7 @@ AbFundOrderWindow::~AbFundOrderWindow()
 void AbFundOrderWindow::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO_ACCOUNT, _ComboAccount);
+	DDX_Control(pDX, IDC_COMBO_ACCOUNT, _ComboFund);
 	//DDX_Control(pDX, IDC_STATIC_ACCOUNT_NAME, _StaticAccountName);
 	DDX_Control(pDX, IDC_STATIC_LINE1, _Line1);
 	DDX_Control(pDX, IDC_STATIC_LINE2, _Line2);
@@ -199,8 +224,9 @@ BOOL AbFundOrderWindow::OnInitDialog()
 	_RightWnd->ShowWindow(SW_SHOW);
 
 
-	SetAccount();
-
+	//SetAccount();
+	SetFund();
+	SetFundForOrderWnd();
 	//SetAccountForOrderWnd();
 
 
@@ -444,13 +470,13 @@ void AbFundOrderWindow::RecalcChildren2(CmdMode mode)
 	SetWindowPos(nullptr, rcWnd.left, rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_NOZORDER | SWP_NOREDRAW);
 }
 
-void AbFundOrderWindow::SetAccountForOrderWnd()
+void AbFundOrderWindow::SetFundForOrderWnd()
 {
-	if (_ComboAccountMap.size() > 0) {
-		const int cur_sel = _ComboAccount.GetCurSel();
+	if (_ComboFundMap.size() > 0) {
+		const int cur_sel = _ComboFund.GetCurSel();
 		if (cur_sel >= 0) {
 			for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-				it->second->Account(_ComboAccountMap[cur_sel]);
+				it->second->Fund(_ComboFundMap[cur_sel]);
 			}
 		}
 	}
@@ -459,7 +485,7 @@ void AbFundOrderWindow::SetAccountForOrderWnd()
 
 void AbFundOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account)
 {
-	if (!account || _CurrentAccountIndex < 0) return;
+	if (!account || _CurrentFundIndex < 0) return;
 
 	std::string account_info;
 	account_info.append(account->Name());
@@ -469,8 +495,26 @@ void AbFundOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> acc
 	mainApp.Client()->RegisterAccount(account->No());
 	_Account = account;
 
-	_LeftWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
-	_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
+	_LeftWnd->SetAccount(_ComboAccountMap[_CurrentFundIndex]);
+	_RightWnd->SetAccount(_ComboAccountMap[_CurrentFundIndex]);
+}
+
+void AbFundOrderWindow::SetFundInfo(std::shared_ptr<DarkHorse::SmFund> fund)
+{
+	if (!fund || _CurrentFundIndex < 0) return;
+
+	std::string account_info;
+	account_info.append(fund->Name());
+	//account_info.append(" : ");
+	//account_info.append(account->No());
+	//_StaticAccountName.SetWindowText(account_info.c_str());
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund->GetAccountVector();
+	for (auto it = account_vec.begin(); it != account_vec.end(); ++it) {
+		auto account = (*it);
+		mainApp.Client()->RegisterAccount(account->No());
+	}
+
+	_Fund = fund;
 }
 
 void AbFundOrderWindow::on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
@@ -527,7 +571,7 @@ void AbFundOrderWindow::OnBnClickedBtnAdd()
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetFundDialog(this);
-	center_wnd->Account(_ComboAccountMap[_CurrentAccountIndex]);
+	center_wnd->Account(_ComboAccountMap[_CurrentFundIndex]);
 	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 	center_wnd->GetWindowRect(rcCenter);
 	ScreenToClient(rcCenter);
@@ -660,12 +704,12 @@ BOOL AbFundOrderWindow::OnEraseBkgnd(CDC* pDC)
 
 void AbFundOrderWindow::OnCbnSelchangeComboAccount()
 {
-	_CurrentAccountIndex = _ComboAccount.GetCurSel();
-	if (_CurrentAccountIndex < 0) return;
+	_CurrentFundIndex = _ComboFund.GetCurSel();
+	if (_CurrentFundIndex < 0) return;
 
-	SetAccountInfo(_ComboAccountMap[_CurrentAccountIndex]);
+	SetFundInfo(_ComboFundMap[_CurrentFundIndex]);
 
-	SetAccountForOrderWnd();
+	SetFundForOrderWnd();
 }
 
 LRESULT AbFundOrderWindow::OnUmOrderUpdate(WPARAM wParam, LPARAM lParam)
