@@ -11,6 +11,7 @@ namespace DarkHorse {
 	struct Order;
 	class SmAccount;
 	class SmSymbol;
+	class SmFund;
 	class OrderControl
 	{
 	public:
@@ -29,6 +30,7 @@ namespace DarkHorse {
 		void clear();
 		void add_account_id(const int account_id);
 		void set_account(std::shared_ptr<SmAccount> account);
+		void set_fund(std::shared_ptr<SmFund> fund);
 		void set_symbol(std::shared_ptr<SmSymbol> symbol);
 		std::pair<int, int> get_order_count(const SmPositionType& position, const int price);
 		std::shared_ptr<PriceOrderMap> get_order_map(const SmPositionType& position, const int price);
@@ -48,9 +50,11 @@ namespace DarkHorse {
 		//int symbol_id_{ 0 };
 		std::shared_ptr<SmSymbol> symbol_{nullptr};
 		std::shared_ptr<SmAccount> account_{ nullptr };
+		std::shared_ptr<SmFund> fund_{ nullptr };
 		int id_{ 0 };
-		// the set of account no of which belongs to the account.
-		//std::set<std::string> account_no_set_;
+		// the map of account no of which belongs to the account.
+		// key : account no, value : account object
+		std::map<std::string, std::shared_ptr<SmAccount>> account_map_;
 		std::function<void()> event_handler_;
 	};
 }

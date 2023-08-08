@@ -39,6 +39,7 @@ namespace DarkHorse {
 		void AddTestAccounts();
 		void SetPassword(const std::string& account_no, const std::string& pwd);
 		void on_account_asset(nlohmann::json&& arg);
+		void register_accounts();
 	private:
 		
 		/// <summary>

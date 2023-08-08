@@ -181,8 +181,12 @@ public:
 	void symbol_type(DarkHorse::SymbolType val) { symbol_type_ = val; }
 	DarkHorse::PositionType position_type() const { return position_type_; }
 	void position_type(DarkHorse::PositionType val) { position_type_ = val; }
+	DarkHorse::OrderType order_type() const { return order_type_; }
+	void order_type(DarkHorse::OrderType val) { order_type_ = val; }
 
 private:
+	DarkHorse::OrderType order_type_{ DarkHorse::OrderType::None };
+
 	DarkHorse::SymbolType symbol_type_{ DarkHorse::SymbolType::None };
 	DarkHorse::PositionType position_type_{ DarkHorse::PositionType::None };
 	void CancelSellOrder(std::shared_ptr<DarkHorse::SmAccount> account);

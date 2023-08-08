@@ -1004,6 +1004,11 @@ void SymbolOrderView::fund(std::shared_ptr<DarkHorse::SmFund> val)
 
 	fund_ = val;
 	position_type_ = DarkHorse::PositionType::Fund;
+	order_type_ = DarkHorse::OrderType::Fund;
+
+	order_control_->set_fund(val);
+	//position_control_->set_fund_id(val->id());
+
 	set_order();
 	set_position();
 }
@@ -1473,9 +1478,11 @@ void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	account_ = val;
 	if (account_->is_subaccount()) {
 		position_type_ = DarkHorse::PositionType::SubAccount;
+		order_type_ = DarkHorse::OrderType::SubAccount;
 	}
 	else {
 		position_type_ = DarkHorse::PositionType::MainAccount;
+		order_type_ = DarkHorse::OrderType::MainAccount;
 	}
 	order_control_->set_account(val);
 	position_control_->set_account_id(val->id());
@@ -1837,9 +1844,12 @@ void SymbolOrderView::put_order(const SmPositionType& type, const int& price, co
 {
 	//if (!account_ || !symbol_) return;
 	//if (price < 0) return;
-	if (account_)
+	if (order_type_ == OrderType::MainAccount || order_type_ == OrderType::SubAccount) {
+		if (!account_) return;
 		put_order(account_, symbol_->SymbolCode(), type, price, _OrderAmount, price_type);
-	if (fund_) {
+	}
+	else if (order_type_ == OrderType::Fund) {
+		if (!fund_) return;
 		for (auto& account : fund_->GetAccountVector()) {
 			put_order(account, symbol_->SymbolCode(), type, price, _OrderAmount, price_type);
 		}
@@ -1898,7 +1908,7 @@ void SymbolOrderView::put_order(
 	const int amount, 
 	const DarkHorse::SmPriceType price_type)
 {
-	if (!account || !symbol_) return;
+	if (!symbol_) return;
 
 	if (symbol_->SymbolCode() != symbol_code) return;
 	if (price < 0) return;

@@ -102,21 +102,42 @@ namespace DarkHorse {
 	{
 		if (!account) return;
 		account_ = account;
+		if (account_->is_subaccount()) {
+			account_map_.clear();
+			account_map_[account_->No()] = account_;
+		}
+		else {
+			account_map_[account_->No()] = account_;
+			const auto& account_vector = account_->get_sub_accounts();
+			for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
+				auto sub_account = *it;
+				account_map_[sub_account->No()] = sub_account;
+			}
+		}
 		if (!symbol_) return;
 		load_from_account(account_->is_subaccount(), account_->No(), symbol_->SymbolCode());
 	}
 
+	void OrderControl::set_fund(std::shared_ptr<SmFund> fund)
+	{
+		if (!fund) return;
+		fund_ = fund;
+		const auto& account_vector = fund->GetAccountVector();
+		for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
+			auto sub_account = *it;
+			account_map_[sub_account->No()] = sub_account;
+		}
+
+		load_from_fund(fund->Name(), symbol_->SymbolCode());
+	}
+
 	void OrderControl::update_order(std::shared_ptr<Order> order, OrderEvent order_event)
 	{
-		if (!order || !symbol_ || !account_) return;
+		if (!order || !symbol_) return;
 		if (symbol_->SymbolCode() != order->symbol_code) return;
-		if (account_->is_subaccount()) {
-			if (account_->No() != order->account_no) return;
-		}
-		else {
-			if (!(account_->No() == order->account_no || account_->No() == order->order_context.parent_account_no))
-				return;
-		}
+		
+		auto it = account_map_.find(order->account_no);
+		if (it == account_map_.end()) return;
 
 		if (order_event == OrderEvent::OE_Accepted)
 			on_order_accepted(order);

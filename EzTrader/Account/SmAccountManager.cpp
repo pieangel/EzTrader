@@ -2,6 +2,9 @@
 #include "SmAccountManager.h"
 #include "SmAccount.h"
 #include "../Log/MyLogger.h"
+#include "../Global/SmTotalManager.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Client/ViClient.h"
 namespace DarkHorse {
 
 	int SmAccountManager::_Id = 0;
@@ -129,4 +132,13 @@ namespace DarkHorse {
 			LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 		}
 	}
+
+	void SmAccountManager::register_accounts()
+	{
+		for (auto it = _AccountMap.begin(); it != _AccountMap.end(); it++) {
+			if (it->second->is_subaccount()) continue;
+			mainApp.Client()->RegisterAccount(it->second->No());
+		}
+	}
+
 }
