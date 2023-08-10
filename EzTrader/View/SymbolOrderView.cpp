@@ -1842,10 +1842,7 @@ void SymbolOrderView::put_stop_order(const DarkHorse::SmPositionType& type, cons
 
 void SymbolOrderView::put_order(const SmPositionType& type, const int& price, const SmPriceType& price_type)
 {
-	//if (!account_ || !symbol_) return;
-	//if (price < 0) return;
 	if (order_type_ == OrderType::MainAccount || order_type_ == OrderType::SubAccount) {
-		if (!account_) return;
 		put_order(account_, symbol_->SymbolCode(), type, price, _OrderAmount, price_type);
 	}
 	else if (order_type_ == OrderType::Fund) {
@@ -1908,7 +1905,7 @@ void SymbolOrderView::put_order(
 	const int amount, 
 	const DarkHorse::SmPriceType price_type)
 {
-	if (!symbol_) return;
+	if (!symbol_ || !account) return;
 
 	if (symbol_->SymbolCode() != symbol_code) return;
 	if (price < 0) return;
@@ -1918,7 +1915,7 @@ void SymbolOrderView::put_order(
 	std::shared_ptr<OrderRequest> order_req = nullptr;
 	order_req = OrderRequestManager::make_order_request(
 		parent_account ? parent_account->No() : account->No(),
-		parent_account ? parent_account->Pwd() : account->Pwd(),
+		mainApp.AcntMgr()->get_password(account->No()),
 		price,
 		amount,
 		symbol_->SymbolCode(),
@@ -2158,7 +2155,7 @@ void SymbolOrderView::CancelOrder(const std::shared_ptr<DarkHorse::SmCell>& src_
 
 void SymbolOrderView::cancel_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell)
 {
-	if (!src_cell || !account_) return;
+	if (!src_cell) return;
 	auto it_row = row_to_price_.find(src_cell->Row());
 	if (it_row == row_to_price_.end()) return;
 	std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map = nullptr;
@@ -2176,9 +2173,10 @@ void SymbolOrderView::cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 	const std::map<std::string, std::shared_ptr<Order>>& order_map = price_order_map->get_order_map();
 	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
 		const auto& order = it->second;
+		auto parent_account = mainApp.AcntMgr()->get_parent_account(order->account_no);
 		auto order_req = OrderRequestManager::make_cancel_order_request(
-			order->account_no,
-			account_->Pwd(),
+			mainApp.AcntMgr()->get_account_no(order->account_no),
+			mainApp.AcntMgr()->get_password(order->account_no),
 			order->symbol_code,
 			order->order_no,
 			order->order_price,
@@ -2187,6 +2185,17 @@ void SymbolOrderView::cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 			SmOrderType::Cancel,
 			order->price_type,
 			fill_condition_);
+		if (parent_account) {
+			order_req->order_context.parent_account_id = parent_account->id();
+			order_req->order_context.parent_account_no = parent_account->No();
+			order_req->order_context.sub_account_no = order->account_no;
+			order_req->order_context.order_type = OrderType::SubAccount;
+		}
+		if (fund_) {
+			order_req->order_context.order_type = OrderType::Fund;
+			order_req->order_context.fund_id = fund_->Id();
+			order_req->order_context.fund_name = fund_->Name();
+		}
 		SetProfitLossCut(order_req);
 		order_req->request_type = order_request_type_;
 		order_req->price_type = price_type_;
@@ -2218,7 +2227,7 @@ void SymbolOrderView::ChangeOrder(const std::shared_ptr<DarkHorse::SmCell>& src_
 
 void SymbolOrderView::change_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& target_price)
 {
-	if (!src_cell || !account_) return;
+	if (!src_cell) return;
 	auto it_row = row_to_price_.find(src_cell->Row());
 	if (it_row == row_to_price_.end()) return;
 	std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map = nullptr;
@@ -2238,9 +2247,10 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 		const auto& order = it->second;
 		// 잔량이 설정되지 않으면 주문 정정을 못하게 막는다. 
 		if (order->remain_count == 0) continue;
+		auto parent_account = mainApp.AcntMgr()->get_parent_account(order->account_no);
 		auto order_req = OrderRequestManager::make_change_order_request(
-			order->account_no,
-			account_->Pwd(),
+			mainApp.AcntMgr()->get_account_no(order->account_no),
+			mainApp.AcntMgr()->get_password(order->account_no),
 			order->symbol_code,
 			order->order_no, 
 			target_price, 
@@ -2249,6 +2259,17 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 			SmOrderType::Modify,
 			order->price_type,
 			fill_condition_);
+		if (parent_account) {
+			order_req->order_context.parent_account_id = parent_account->id();
+			order_req->order_context.parent_account_no = parent_account->No();
+			order_req->order_context.sub_account_no = order->account_no;
+			order_req->order_context.order_type = OrderType::SubAccount;
+		}
+		if (fund_) {
+			order_req->order_context.order_type = OrderType::Fund;
+			order_req->order_context.fund_id = fund_->Id();
+			order_req->order_context.fund_name = fund_->Name();
+		}
 		SetProfitLossCut(order_req);
 		set_order_close(order_req);
 		order_req->request_type = order_request_type_;

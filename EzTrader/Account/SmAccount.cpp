@@ -50,7 +50,7 @@ namespace DarkHorse {
 			sub_account->parent_id(_id);
 	*/
 
-	std::shared_ptr<SmAccount> SmAccount::CreateSubAccount(std::string acntNo, std::string acntName, int parent_id, const std::string& type)
+	std::shared_ptr<SmAccount> SmAccount::CreateSubAccount(const std::string& acntNo, const std::string& acntName, int parent_id, const std::string& type)
 	{
 		std::shared_ptr<SmAccount> acnt = std::make_shared<SmAccount>();
 		acnt->parent_id(parent_id);
@@ -58,8 +58,11 @@ namespace DarkHorse {
 		acnt->No(acntNo);
 		acnt->Name(acntName);
 		acnt->is_subaccount(true);
+		acnt->parent_id(_id);
+		acnt->UsedForFund(false);
+		acnt->parent_account(shared_from_this());
 		sub_accounts_.push_back(acnt);
-
+		mainApp.AcntMgr()->AddAccount(acnt);
 		return acnt;
 	}
 
@@ -67,15 +70,8 @@ namespace DarkHorse {
 	{
 		if (!sub_accounts_.empty()) return;
 		for (int i = 0; i < 10; i++) {
-			std::shared_ptr< SmAccount> sub_account = std::make_shared<SmAccount>();
-			sub_account->Name(_Name);
-			std::string sub_account_no = _No + "_" + std::to_string(i+1);
-			sub_account->No(sub_account_no);
-			sub_account->Type(_Type);
-			sub_account->Pwd(_pwd);
-			sub_account->is_subaccount(true);
-			sub_account->parent_id(_id);
-			AddSubAccount(sub_account);
+			const std::string& sub_account_no = _No + "_" + std::to_string(i+1);
+			auto sub_account = CreateSubAccount(sub_account_no, _Name, _id, _Type);
 		}
 	}
 

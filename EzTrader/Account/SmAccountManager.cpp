@@ -141,4 +141,53 @@ namespace DarkHorse {
 		}
 	}
 
+	std::string SmAccountManager::get_password(const std::string& account_no)
+	{
+		std::string pwd;
+
+		auto found = _AccountMap.find(account_no);
+		if (found != _AccountMap.end()) {
+			if (found->second->is_subaccount()) {
+				auto parent_account = found->second->parent_account();
+				if (parent_account)
+					pwd = parent_account->Pwd();
+			}
+			else
+				pwd = found->second->Pwd();
+		}
+
+		return pwd;
+	}
+
+	std::string SmAccountManager::get_account_no(const std::string& account_no)
+	{
+		std::string real_account_no;
+
+		auto found = _AccountMap.find(account_no);
+		if (found != _AccountMap.end()) {
+			if (found->second->is_subaccount()) {
+				auto parent_account = found->second->parent_account();
+				if (parent_account)
+					real_account_no = parent_account->No();
+			}
+			else
+				real_account_no = found->second->No();
+		}
+
+		return real_account_no;
+	}
+
+	std::shared_ptr<DarkHorse::SmAccount> SmAccountManager::get_parent_account(const std::string& account_no)
+	{
+		auto found = _AccountMap.find(account_no);
+		if (found != _AccountMap.end()) {
+			if (found->second->is_subaccount()) {
+				return found->second->parent_account();
+			}
+			else
+				return nullptr;
+		}
+		return nullptr;
+	}
+
 }

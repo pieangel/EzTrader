@@ -571,7 +571,7 @@ void AbFundOrderWindow::OnBnClickedBtnAdd()
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetFundDialog(this);
-	center_wnd->Account(_ComboAccountMap[_CurrentFundIndex]);
+	center_wnd->Fund(_ComboFundMap[_CurrentFundIndex]);
 	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 	center_wnd->GetWindowRect(rcCenter);
 	ScreenToClient(rcCenter);
@@ -609,14 +609,6 @@ void AbFundOrderWindow::OnBnClickedBtnAdd()
 
 	//SetWindowPos(nullptr, newRcRect.left, newRcRect.top, newRcRect.Width(), newRcRect.Height(), SWP_NOZORDER | SWP_NOREDRAW);
 	MoveWindow(newRcRect);
-
-// 	for (int i = 1; i <= rcCenter.Width(); i++) {
-// 		newRcRect.left = rcWnd.left;
-// 		newRcRect.right = rcWnd.right + i;
-// 		newRcRect.top = rcWnd.top;
-// 		newRcRect.bottom = rcWnd.bottom;
-// 		MoveWindow(newRcRect);
-// 	}
 
 	CMainFrame* pFrame = (CMainFrame*) AfxGetMainWnd();
 	pFrame->ReconnectOrderEvent();

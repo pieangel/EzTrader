@@ -12,7 +12,7 @@ namespace DarkHorse {
 	/// 계좌 정보를 가지고 있습니다.
 	/// </summary>
 	struct Position;
-	class SmAccount
+	class SmAccount : public std::enable_shared_from_this<SmAccount>
 	{
 	private:
 		/// <summary>
@@ -50,7 +50,11 @@ namespace DarkHorse {
 		
 
 		std::shared_ptr<Position> position_{nullptr};
+		std::shared_ptr<SmAccount> parent_account_{ nullptr };
 	public:
+		std::shared_ptr<DarkHorse::SmAccount> parent_account() const { return parent_account_; }
+		void parent_account(std::shared_ptr<DarkHorse::SmAccount> val) { parent_account_ = val; }
+
 		// Function to check if a given account number already exists in the sub-accounts
 		bool IsAccountNumberUnique(const std::string& account_no)
 		{
@@ -82,7 +86,7 @@ namespace DarkHorse {
 		int get_sub_account_count() const { return sub_accounts_.size(); }
 		// Function to add a new sub-account to the list
 		void AddSubAccount(const std::shared_ptr<SmAccount>& subAccount);
-		std::shared_ptr<SmAccount> CreateSubAccount(std::string acntNo, std::string acntName, int parent_id, const std::string& type);
+		std::shared_ptr<SmAccount> CreateSubAccount(const std::string& acntNo, const std::string& acntName, int parent_id, const std::string& type);
 		
 		void make_default_sub_account();
 		SmAccount();

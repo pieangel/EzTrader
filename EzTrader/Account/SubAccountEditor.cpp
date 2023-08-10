@@ -171,7 +171,6 @@ void SubAccountEditor::OnBnClickedBtnCreate()
 			return;
 		}
 		auto subAcnt = selected_account_->CreateSubAccount((LPCTSTR)strAcntNo, (LPCTSTR)strAcntName, selected_account_->id(), selected_account_->Type());
-		mainApp.AcntMgr()->AddAccount(subAcnt);
 		set_sub_account_grid();
 	}
 }
