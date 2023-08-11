@@ -11,6 +11,7 @@ class SymbolPositionView
 #include <string>
 #include "../Position/PositionConst.h"
 #include "../SmGrid/SmGridResource.h"
+#include "../Symbol/SymbolConst.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -51,7 +52,10 @@ public:
 	void on_update_position();
 	DarkHorse::PositionType position_type() const { return position_type_; }
 	void position_type(DarkHorse::PositionType val) { position_type_ = val; }
+	DarkHorse::SymbolType symbol_type() const { return symbol_type_; }
+	void symbol_type(DarkHorse::SymbolType val) { symbol_type_ = val; }
 private:
+	DarkHorse::SymbolType symbol_type_{ DarkHorse::SymbolType::None };
 	void set_position();
 	DarkHorse::PositionType position_type_{ DarkHorse::PositionType::None };
 	void update_position();

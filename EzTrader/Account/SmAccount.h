@@ -50,10 +50,10 @@ namespace DarkHorse {
 		
 
 		std::shared_ptr<Position> position_{nullptr};
-		std::shared_ptr<SmAccount> parent_account_{ nullptr };
+		std::weak_ptr<SmAccount> parent_account_;
 	public:
-		std::shared_ptr<DarkHorse::SmAccount> parent_account() const { return parent_account_; }
-		void parent_account(std::shared_ptr<DarkHorse::SmAccount> val) { parent_account_ = val; }
+		std::weak_ptr<DarkHorse::SmAccount> parent_account() const { return parent_account_; }
+		void parent_account(std::weak_ptr<DarkHorse::SmAccount> val) { parent_account_ = val; }
 
 		// Function to check if a given account number already exists in the sub-accounts
 		bool IsAccountNumberUnique(const std::string& account_no)

@@ -136,6 +136,7 @@ void TotalOrderManager::set_order_request_info(const std::string& custom_info, o
 		order->account_no = order_request->order_context.sub_account_no;
 		order->order_context.sub_account_no = order_request->order_context.sub_account_no;
 		order->order_context.parent_account_no = order_request->order_context.parent_account_no;
+		order->order_context.fund_name = order_request->order_context.fund_name;
 	}
 }
 

@@ -21,12 +21,16 @@ namespace DarkHorse {
 			id_,
 			std::bind(&SymbolPositionControl::update_profit_loss, this, std::placeholders::_1)
 		);
+
+		LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl contructor id = %d", id_);
 	}
 
 	SymbolPositionControl::~SymbolPositionControl()
 	{
 		mainApp.event_hub()->unsubscribe_position_event_handler(id_);
 		mainApp.event_hub()->unsubscribe_quote_event_handler(id_);
+
+		LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl destructor id = %d", id_);
 	}
 
 	void SymbolPositionControl::update_profit_loss(std::shared_ptr<SmQuote> quote)
@@ -39,9 +43,12 @@ namespace DarkHorse {
 	void SymbolPositionControl::update_position(std::shared_ptr<Position> position)
 	{
 		try {
+
 			if (!position) return;
-			auto it = position_map_.find(position->id);
-			if (it == position_map_.end()) return;
+			LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl update_position id = %d , account_no = %s, fund_name = %s", id_, position->account_no.c_str(), position->fund_name.c_str());
+
+			auto it = account_map_.find(position->account_no);
+			if (it == account_map_.end()) return;
 
 			clear_position();
 			
@@ -76,8 +83,9 @@ namespace DarkHorse {
 
 	void SymbolPositionControl::update_position_from_account(std::shared_ptr<SmAccount> account, std::shared_ptr<SmSymbol> symbol)
 	{
-		if (!account || !symbol) return;	
-		account = account;
+		if (!account || !symbol) return;
+		clear_position();
+		account_ = account;
 		symbol_ = symbol;
 		position_.account_id = account->id();
 		position_.symbol_id = symbol->Id();
@@ -91,6 +99,7 @@ namespace DarkHorse {
 			mainApp.total_position_manager()->get_position_from_parent_account(account->No(), symbol->SymbolCode(), position_, position_map_);
 			position_type_ = PositionType::MainAccount;
 		}
+		if (event_handler_) event_handler_();
 	}
 
 	void SymbolPositionControl::update_position_from_fund(const std::string& fund_name, const std::string& symbol_code)
@@ -101,13 +110,17 @@ namespace DarkHorse {
 
 	void SymbolPositionControl::update_position_from_fund(std::shared_ptr<SmFund> fund, std::shared_ptr<SmSymbol> symbol)
 	{
+		if (!fund || !symbol) return;
+		clear_position();
 		fund_ = fund;
 		symbol_ = symbol;
 		position_.account_id = fund->Id();
 		position_.symbol_id = symbol->Id();
 		position_.fund_name = fund->Name();
 		position_.symbol_code = symbol->SymbolCode();
+		position_type_ = PositionType::Fund;
 		mainApp.total_position_manager()->get_position_from_fund(fund->Name(), symbol->SymbolCode(), position_, position_map_);
+		if (event_handler_) event_handler_();
 	}
 
 	void SymbolPositionControl::set_symbol_id(const int symbol_id)
@@ -124,6 +137,35 @@ namespace DarkHorse {
 	{
 		account_id_ = account_id;
 		reset_position();
+	}
+
+	void SymbolPositionControl::set_account(std::shared_ptr<SmAccount> account)
+	{
+		if (!account) return;
+		account_ = account;
+		if (account_->is_subaccount()) {
+			account_map_.clear();
+			account_map_[account_->No()] = account_;
+		}
+		else {
+			account_map_[account_->No()] = account_;
+			const auto& account_vector = account_->get_sub_accounts();
+			for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
+				auto sub_account = *it;
+				account_map_[sub_account->No()] = sub_account;
+			}
+		}
+	}
+
+	void SymbolPositionControl::set_fund(std::shared_ptr<SmFund> fund)
+	{
+		if (!fund) return;
+		fund_ = fund;
+		const auto& account_vector = fund->GetAccountVector();
+		for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
+			auto sub_account = *it;
+			account_map_[sub_account->No()] = sub_account;
+		}
 	}
 
 	void SymbolPositionControl::reset_position()
@@ -151,6 +193,8 @@ namespace DarkHorse {
 
 	void SymbolPositionControl::clear_position()
 	{
+		position_map_.clear();
+
 		position_.average_price = 0.0;
 		position_.open_quantity = 0;
 		position_.open_profit_loss = 0.0;

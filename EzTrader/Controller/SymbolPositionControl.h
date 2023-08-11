@@ -5,6 +5,7 @@
 #include <memory>
 #include <functional>
 #include <map>
+#include <string>
 namespace DarkHorse {
 	struct Position;
 	struct SmQuote;
@@ -38,11 +39,14 @@ namespace DarkHorse {
 		}
 		PositionType Position_type() const { return position_type_; }
 		void Position_type(PositionType val) { position_type_ = val; }
-
+		void set_account(std::shared_ptr<SmAccount> account);
+		void set_fund(std::shared_ptr<SmFund> fund);
 	private:
 		PositionType position_type_{ PositionType::None };
-		// key : position id, value : position object.
-		std::map<int, std::shared_ptr<Position>> position_map_;
+		// key : account no, value : position object.
+		std::map<std::string, std::shared_ptr<Position>> position_map_;
+		// key : account no, value : account object
+		std::map<std::string, std::shared_ptr<SmAccount>> account_map_;
 		void reset_position();
 		int symbol_seung_su_{ 1 };
 		int symbol_decimal_{ 1 };

@@ -1007,7 +1007,7 @@ void SymbolOrderView::fund(std::shared_ptr<DarkHorse::SmFund> val)
 	order_type_ = DarkHorse::OrderType::Fund;
 
 	order_control_->set_fund(val);
-	//position_control_->set_fund_id(val->id());
+	position_control_->set_fund(val);
 
 	set_order();
 	set_position();
@@ -1485,6 +1485,7 @@ void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 		order_type_ = DarkHorse::OrderType::MainAccount;
 	}
 	order_control_->set_account(val);
+	position_control_->set_account(val);
 	position_control_->set_account_id(val->id());
 	set_position();
 	set_order();
@@ -1926,15 +1927,15 @@ void SymbolOrderView::put_order(
 	if (order_req) {
 		order_req->request_type = order_request_type_;
 		order_req->order_context.order_control_id = id_;
-		order_req->order_context.order_type = OrderType::MainAccount;
+		order_req->order_context.order_source_type = OrderType::MainAccount;
 		if (parent_account) {
 			order_req->order_context.parent_account_id = parent_account->id();
 			order_req->order_context.parent_account_no = parent_account->No();
 			order_req->order_context.sub_account_no = account->No();
-			order_req->order_context.order_type = OrderType::SubAccount;
+			order_req->order_context.order_source_type = OrderType::SubAccount;
 		}
 		if (fund_) {
-			order_req->order_context.order_type = OrderType::Fund;
+			order_req->order_context.order_source_type = OrderType::Fund;
 			order_req->order_context.fund_id = fund_->Id();
 			order_req->order_context.fund_name = fund_->Name();
 		}
@@ -2185,14 +2186,15 @@ void SymbolOrderView::cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 			SmOrderType::Cancel,
 			order->price_type,
 			fill_condition_);
+		order_req->order_context.order_source_type = OrderType::MainAccount;
 		if (parent_account) {
 			order_req->order_context.parent_account_id = parent_account->id();
 			order_req->order_context.parent_account_no = parent_account->No();
 			order_req->order_context.sub_account_no = order->account_no;
-			order_req->order_context.order_type = OrderType::SubAccount;
+			order_req->order_context.order_source_type = OrderType::SubAccount;
 		}
 		if (fund_) {
-			order_req->order_context.order_type = OrderType::Fund;
+			order_req->order_context.order_source_type = OrderType::Fund;
 			order_req->order_context.fund_id = fund_->Id();
 			order_req->order_context.fund_name = fund_->Name();
 		}
@@ -2259,14 +2261,15 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 			SmOrderType::Modify,
 			order->price_type,
 			fill_condition_);
+		order_req->order_context.order_source_type = OrderType::MainAccount;
 		if (parent_account) {
 			order_req->order_context.parent_account_id = parent_account->id();
 			order_req->order_context.parent_account_no = parent_account->No();
 			order_req->order_context.sub_account_no = order->account_no;
-			order_req->order_context.order_type = OrderType::SubAccount;
+			order_req->order_context.order_source_type = OrderType::SubAccount;
 		}
 		if (fund_) {
-			order_req->order_context.order_type = OrderType::Fund;
+			order_req->order_context.order_source_type = OrderType::Fund;
 			order_req->order_context.fund_id = fund_->Id();
 			order_req->order_context.fund_name = fund_->Name();
 		}

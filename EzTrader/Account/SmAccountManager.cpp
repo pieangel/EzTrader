@@ -148,7 +148,7 @@ namespace DarkHorse {
 		auto found = _AccountMap.find(account_no);
 		if (found != _AccountMap.end()) {
 			if (found->second->is_subaccount()) {
-				auto parent_account = found->second->parent_account();
+				auto parent_account = found->second->parent_account().lock();
 				if (parent_account)
 					pwd = parent_account->Pwd();
 			}
@@ -166,7 +166,7 @@ namespace DarkHorse {
 		auto found = _AccountMap.find(account_no);
 		if (found != _AccountMap.end()) {
 			if (found->second->is_subaccount()) {
-				auto parent_account = found->second->parent_account();
+				auto parent_account = found->second->parent_account().lock();
 				if (parent_account)
 					real_account_no = parent_account->No();
 			}
@@ -182,7 +182,7 @@ namespace DarkHorse {
 		auto found = _AccountMap.find(account_no);
 		if (found != _AccountMap.end()) {
 			if (found->second->is_subaccount()) {
-				return found->second->parent_account();
+				return found->second->parent_account().lock();
 			}
 			else
 				return nullptr;

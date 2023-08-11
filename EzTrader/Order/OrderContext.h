@@ -7,7 +7,7 @@ struct OrderContext {
 	std::string sub_account_no;
 	std::string fund_name;
 	// Order Type. 1 : Sub Account, 2 : Main Account, 3 : Fund.
-	OrderType order_type = OrderType::None;
+	OrderType order_source_type = OrderType::None;
 	/// <summary>
 		/// Order Source ID
 		/// 주문이 시작된 곳의 ID. 보통은 주문창의 아이디를 가리키며, 시스템일 경우 시스템의 아이디,

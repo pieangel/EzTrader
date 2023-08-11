@@ -201,7 +201,7 @@ void SymbolPositionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 		position_type_ = PositionType::SubAccount;
 	else
 		position_type_ = PositionType::MainAccount;
-	//position_control_->set_account_id(account_->id());
+	position_control_->set_account(account_);
 	set_position();
 	update_position();
 	enable_position_show_ = true;
@@ -211,7 +211,7 @@ void SymbolPositionView::fund(std::shared_ptr<DarkHorse::SmFund> val)
 {
 	fund_ = val;
 	position_type_ = PositionType::Fund;
-	//position_control_->set_account_id(account_->id());
+	position_control_->set_fund(fund_);
 	set_position();
 	update_position();
 	enable_position_show_ = true;
@@ -251,7 +251,7 @@ void SymbolPositionView::set_position()
 
 void SymbolPositionView::update_position()
 {
-	if (!position_control_ || !symbol_ || !account_) return;
+	if (!position_control_ || !symbol_ ) return;
 
 	const VmPosition& position = position_control_->get_position();
 
@@ -280,7 +280,7 @@ void SymbolPositionView::update_position()
 	cell = _Grid->FindCell(1, 3);
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 
-	const int decimal = account_->Type() == "1" ? 2 : 0;
+	const int decimal = symbol_type_ == DarkHorse::SymbolType::Abroad ? 2 : 0;
 	std::string value_string = VtStringUtil::get_format_value(position.average_price / pow(10, symbol_->decimal()), symbol_->decimal(), true);
 	//if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
 	//	value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');

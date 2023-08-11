@@ -8,6 +8,7 @@ struct Position
 	int fund_id{ 0 };
 	int symbol_id{ 0 };
 	int account_id{ 0 };
+	OrderType order_source_type = OrderType::None;
 	std::string fund_name;
 	// 심볼 코드
 	std::string symbol_code;

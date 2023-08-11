@@ -83,6 +83,9 @@ void AccountPositionManager::update_position(order_p order)
 	position->account_no = order->account_no;
 	set_symbol_id(position, order->symbol_code);
 	set_account_id(position, order->account_no);
+	position->fund_name = order->order_context.fund_name;
+	position->fund_id = order->order_context.fund_id;
+	position->order_source_type = order->order_context.order_source_type;
 	auto symbol = mainApp.SymMgr()->FindSymbol(order->symbol_code);
 	if (!symbol) return;
 	//LOGINFO(CMyLogger::getInstance(), "position_count = [%d], filled_count = [%d], average_price = [%.2f], filled_price = [%d]", position->open_quantity, order->filled_count, position->average_price, order->filled_price);
