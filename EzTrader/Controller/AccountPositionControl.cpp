@@ -47,12 +47,17 @@ void AccountPositionControl::load_position_from_account(const std::string& accou
 void AccountPositionControl::update_position(position_p position)
 {
 	if (!position) return;
-	if (account_no_ != position->account_no) return;
-
+	if (position->order_source_type == DarkHorse::OrderType::MainAccount) {
+		if (account_no_ != position->account_no) return;
+	}
+	else {
+		if (account_no_ != position->parent_account_no) return;
+	}
+	auto symbol_position = mainApp.total_position_manager()->get_position(account_no_, position->symbol_code);
 	if (position->open_quantity == 0)
-		remove_position(position->symbol_code);
+		remove_position(symbol_position->symbol_code);
 	else
-		add_position(position);
+		add_position(symbol_position);
 	if (event_handler_) event_handler_();
 }
 

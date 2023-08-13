@@ -9,18 +9,7 @@
 namespace DarkHorse 
 {
 using account_order_manager_p = std::shared_ptr<AccountOrderManager>;
-/*
-void TotalOrderManager::on_order_event(const order_event& order_info)
-{
-	order_p order = make_order(order_info);
-	if (!order) return;
-	const std::string& custom_info = order_info["custom_info"];
-	set_order_request_info(custom_info, order);
-	const OrderEvent order_event = order_info["order_event"];
-	write_order_history(order_event, order);
-	dispatch_order(order_event, order);
-}
-*/
+
 void TotalOrderManager::on_order_event(order_event&& order_info)
 {
 	//order_p order = make_order(order_info);
@@ -132,6 +121,7 @@ void TotalOrderManager::set_order_request_info(const std::string& custom_info, o
 	order->order_context.order_control_id = order_request->order_context.order_control_id;
 	order->order_context.fund_id = order_request->order_context.fund_id;
 	order->order_context.parent_account_id = order_request->order_context.parent_account_id;
+	order->order_context.order_source_type = order_request->order_context.order_source_type;
 	if (order_request->order_context.parent_account_id != -1) {
 		order->account_no = order_request->order_context.sub_account_no;
 		order->order_context.sub_account_no = order_request->order_context.sub_account_no;

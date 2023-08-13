@@ -153,7 +153,7 @@ private:
 	void ClearOldContents();
 	void ClearOldContents(const int& last_index);
 	// key : row, value : SmPosition Object
-	std::map<int, std::shared_ptr<DarkHorse::SmPosition>> _RowToPositionMap;
+	std::map<int, std::shared_ptr<DarkHorse::Position>> _RowToPositionMap;
 	std::shared_ptr<DarkHorse::AccountPositionControl> account_position_control_;
 	std::map<int, std::shared_ptr<DarkHorse::Position>> row_to_position_;
 	std::vector<int> ab_column_widths_vector_;

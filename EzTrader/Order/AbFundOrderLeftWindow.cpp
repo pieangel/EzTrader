@@ -194,6 +194,12 @@ void AbFundOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> acc
 	//_AcceptedArea.Account(account);
 }
 
+void AbFundOrderLeftWindow::SetFund(std::shared_ptr<DarkHorse::SmFund> fund)
+{
+	account_order_view_.Fund(fund);
+	account_position_view_.Fund(fund);
+}
+
 LRESULT AbFundOrderLeftWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
 {
 	//_FavoriteGrid.AddSymbol(static_cast<int>(wParam));

@@ -9,6 +9,7 @@
 #include "../Global/SmTotalManager.h"
 #include "../Event/EventHub.h"
 #include "../Account/SmAccount.h"
+#include "../Fund/SmFund.h"
 
 namespace DarkHorse {
 AccountOrderControl::AccountOrderControl()
@@ -31,16 +32,51 @@ void AccountOrderControl::load_order_from_account(const std::string& account_no)
 	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
 	auto symbol_order_manager_map = account_order_manager->get_symbol_order_manager_map();
 	for (auto it = symbol_order_manager_map.begin(); it != symbol_order_manager_map.end(); it++) {
-		auto accepted_order_map = it->second->get_accepted_order_map();
-		add_accepted_order(accepted_order_map);
+		auto symbol_accepted_order_map = it->second->get_accepted_order_map();
+		add_accepted_order(symbol_accepted_order_map);
+	}
+	if (event_handler_) event_handler_();
+}
+
+void AccountOrderControl::load_order_from_account(account_p account)
+{
+	if (!account) return;
+	account_set_.clear();
+	if (account->is_subaccount()) {
+		if (account->parent_account().lock()) {
+			load_order_from_account(account->parent_account().lock()->No());
+			account_set_.insert(account->No());
+		}
+	}
+	else {
+		load_order_from_account(account->No());
+		const std::vector<std::shared_ptr<SmAccount>>& sub_accounts = account->get_sub_accounts();
+		for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
+			load_order_from_account((*it)->No());
+			account_set_.insert((*it)->No());
+		}
+	}
+	
+	if (event_handler_) event_handler_();
+}
+
+void AccountOrderControl::load_order_from_fund(std::shared_ptr<SmFund> fund)
+{
+	if (!fund) return;
+	// ¼­ºê °èÁÂ ÁÖ¹®µé ÀÐ¾î ¿È.
+	const std::vector<std::shared_ptr<SmAccount>>& sub_accounts = fund->GetAccountVector();
+	for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
+		load_order_from_account((*it)->No());
+		account_set_.insert((*it)->No());
 	}
 	if (event_handler_) event_handler_();
 }
 
 void AccountOrderControl::update_order(order_p order, OrderEvent order_event)
 {
-	if (!order || !account_) return;
-	if (order->account_no != account_->No()) return;
+	if (!order ) return;
+
+	if (account_set_.find(order->account_no) == account_set_.end()) return;
 
 	if (order_event == OrderEvent::OE_Accepted)
 		on_order_accepted(order);
@@ -48,6 +84,22 @@ void AccountOrderControl::update_order(order_p order, OrderEvent order_event)
 		on_order_unfilled(order);
 
 	if (event_handler_) event_handler_();
+}
+
+void AccountOrderControl::set_account(account_p account)
+{
+	account_ = account;
+	account_set_.clear();
+	accepted_order_map_.clear();
+	load_order_from_account(account);
+}
+
+void AccountOrderControl::set_fund(std::shared_ptr<SmFund> fund)
+{
+	fund_ = fund;
+	account_set_.clear();
+	accepted_order_map_.clear();
+	load_order_from_fund(fund);
 }
 
 void AccountOrderControl::on_order_unfilled(std::shared_ptr<Order> order)
@@ -76,25 +128,25 @@ void AccountOrderControl::add_accepted_order(const std::map<std::string, order_p
 
 DarkHorse::order_p AccountOrderControl::get_order(const std::string& order_no)
 {
-	auto it = order_map_.find(order_no);
-	if (it == order_map_.end()) return nullptr;
+	auto it = accepted_order_map_.find(order_no);
+	if (it == accepted_order_map_.end()) return nullptr;
 	return it->second;
 }
 
 void AccountOrderControl::add_order(order_p order)
 {
 	if (!order) return;
-	auto it = order_map_.find(order->order_no);
-	if (it != order_map_.end()) return;
-	order_map_[order->order_no] = order;
+	auto it = accepted_order_map_.find(order->order_no);
+	if (it != accepted_order_map_.end()) return;
+	accepted_order_map_[order->order_no] = order;
 }
 
 void AccountOrderControl::remove_order(order_p order)
 {
 	if (!order) return;
-	auto it = order_map_.find(order->order_no);
-	if (it == order_map_.end()) return;
-	order_map_.erase(it);
+	auto it = accepted_order_map_.find(order->order_no);
+	if (it == accepted_order_map_.end()) return;
+	accepted_order_map_.erase(it);
 }
 
 }

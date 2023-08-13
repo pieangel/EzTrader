@@ -56,7 +56,7 @@ AccountOrderView::AccountOrderView()
 void AccountOrderView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 {
 	_Fund = val;
-	UpdateFundAcceptedOrders();
+	account_order_control_->set_fund(val);
 }
 
 void AccountOrderView::on_update_order()
@@ -105,7 +105,6 @@ void AccountOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	_Account = val;
 	account_order_control_->set_account(_Account);
-	account_order_control_->load_order_from_account(_Account->No());
 }
 
 void AccountOrderView::UpdateAcceptedOrder()
@@ -215,8 +214,8 @@ void AccountOrderView::OnDestroy()
 
 void AccountOrderView::update_order()
 {
-	if (!account_order_control_ || !_Account ) return;
-	const std::map<std::string, order_p>& order_map = account_order_control_->get_order_map();
+	if (!account_order_control_ ) return;
+	const std::map<std::string, order_p>& order_map = account_order_control_->get_accepted_order_map();
 	//if (order_map.empty()) return;
 
 	int row = 0;

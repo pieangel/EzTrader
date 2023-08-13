@@ -144,6 +144,12 @@ void TotalPositionManager::get_position_from_account(const std::string& account_
 	position_map[symbol_position->account_no] = symbol_position;
 }
 
+std::shared_ptr<Position> TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code)
+{
+	account_position_manager_p position_manager = get_account_position_manager(account_no);
+	return position_manager->get_position(symbol_code);
+}
+
 void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
 {
 	//position_map.clear();
