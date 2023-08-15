@@ -19,8 +19,8 @@
 #include "TotalPositionManager.h"
 namespace DarkHorse {
 
-	AccountPositionManager::AccountPositionManager(const std::string& account_no)
-		: account_no_(account_no)
+	AccountPositionManager::AccountPositionManager(TotalPositionManager& total_position_manager, const std::string& account_no)
+		: total_position_manager_(total_position_manager), account_no_(account_no)
 	{
 		id_ = IdGenerator::get_id();
 		account_profit_loss_ = std::make_shared<AccountProfitLoss>();
@@ -109,7 +109,9 @@ void AccountPositionManager::update_position(order_p order)
 	else
 		mainApp.event_hub()->process_stop_order_event(order);
 	update_account_profit_loss();
+	auto parent_position = total_position_manager_.update_parent_position(order, position);
 	mainApp.event_hub()->process_position_event(position);
+	mainApp.event_hub()->process_position_event(parent_position);
 }
 
 void AccountPositionManager::update_position(quote_p quote)
@@ -124,6 +126,8 @@ void AccountPositionManager::update_position(quote_p quote)
 	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
 
 	update_account_profit_loss();
+	total_position_manager_.update_parent_position(position);
+	//total_position_manager_.update_parent_position(order, position);
 }
 
 void AccountPositionManager::set_symbol_id(position_p position, const std::string& symbol_code)

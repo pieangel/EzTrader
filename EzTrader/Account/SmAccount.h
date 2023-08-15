@@ -12,6 +12,7 @@ namespace DarkHorse {
 	/// 계좌 정보를 가지고 있습니다.
 	/// </summary>
 	struct Position;
+	class SmFund;
 	class SmAccount : public std::enable_shared_from_this<SmAccount>
 	{
 	private:
@@ -48,10 +49,13 @@ namespace DarkHorse {
 		bool is_sub_account_ = false;
 		std::vector<std::shared_ptr<SmAccount>> sub_accounts_;
 		
-
+		std::shared_ptr<SmFund> fund_{ nullptr };
 		std::shared_ptr<Position> position_{nullptr};
 		std::weak_ptr<SmAccount> parent_account_;
 	public:
+		std::shared_ptr<DarkHorse::SmFund> fund() const { return fund_; }
+		void fund(std::shared_ptr<DarkHorse::SmFund> val) { fund_ = val; }
+
 		std::weak_ptr<DarkHorse::SmAccount> parent_account() const { return parent_account_; }
 		void parent_account(std::weak_ptr<DarkHorse::SmAccount> val) { parent_account_ = val; }
 

@@ -255,7 +255,9 @@ void SymbolPositionView::update_position()
 
 	const VmPosition& position = position_control_->get_position();
 
-	if (position.open_quantity == 0) return Clear();
+	if (position.open_quantity == 0) {
+		Clear(); return;
+	}
 	std::shared_ptr<SmCell> cell = _Grid->FindCell(1, 0);
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	cell->Text(symbol_->SymbolCode());

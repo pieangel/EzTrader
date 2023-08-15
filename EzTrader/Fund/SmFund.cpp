@@ -31,6 +31,7 @@ namespace DarkHorse {
 
 		if (FindAccount(account->No())) return;
 		account->UsedForFund(true);
+		account->fund(shared_from_this());
 		_AccountVector.push_back(account);
 	}
 
@@ -39,6 +40,7 @@ namespace DarkHorse {
 		for (auto it = _AccountVector.begin(); it != _AccountVector.end(); it++) {
 			if ((*it)->No().compare(account_no) == 0) {
 				(*it)->UsedForFund(false);
+				(*it)->fund(nullptr);
 				_AccountVector.erase(it);
 				return;
 			}
@@ -49,6 +51,7 @@ namespace DarkHorse {
 	{
 		for (auto it = _AccountVector.begin(); it != _AccountVector.end(); it++) {
 			(*it)->UsedForFund(false);
+			(*it)->fund(nullptr);
 		}
 
 		_AccountVector.clear();

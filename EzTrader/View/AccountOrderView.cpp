@@ -62,6 +62,7 @@ void AccountOrderView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 void AccountOrderView::on_update_order()
 {
 	enable_order_show_ = true;
+	updating_order_ = true;
 }
 
 AccountOrderView::~AccountOrderView()
@@ -215,6 +216,7 @@ void AccountOrderView::OnDestroy()
 void AccountOrderView::update_order()
 {
 	if (!account_order_control_ ) return;
+	if (updating_order_) return;
 	const std::map<std::string, order_p>& order_map = account_order_control_->get_accepted_order_map();
 	//if (order_map.empty()) return;
 
@@ -266,6 +268,7 @@ void AccountOrderView::update_order()
 	}
 	ClearOldContents(row);
 	_OldMaxRow = row;
+	updating_order_ = false;
 }
 
 void AccountOrderView::ClearCheck()
