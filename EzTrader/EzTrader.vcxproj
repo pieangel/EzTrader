@@ -450,7 +450,7 @@
     <ClInclude Include="Pnf\PnfMaker.h" />
     <ClInclude Include="Pnf\PnfManager.h" />
     <ClInclude Include="Position\AccountPositionManager.h" />
-    <ClInclude Include="Position\FundPositionManager.h" />
+    <ClInclude Include="Position\GroupPositionManager.h" />
     <ClInclude Include="Position\Position.h" />
     <ClInclude Include="Position\PositionConst.h" />
     <ClInclude Include="Position\SmAccountPositionManager.h" />
@@ -788,7 +788,7 @@
     <ClCompile Include="Pnf\PnfMaker.cpp" />
     <ClCompile Include="Pnf\PnfManager.cpp" />
     <ClCompile Include="Position\AccountPositionManager.cpp" />
-    <ClCompile Include="Position\FundPositionManager.cpp" />
+    <ClCompile Include="Position\GroupPositionManager.cpp" />
     <ClCompile Include="Position\SmAccountPositionManager.cpp" />
     <ClCompile Include="Position\SmPosition.cpp" />
     <ClCompile Include="Position\SmTotalPositionManager.cpp" />

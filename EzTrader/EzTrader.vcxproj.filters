@@ -856,7 +856,7 @@
     <ClCompile Include="Account\SubAccountGrid.cpp">
       <Filter>Account</Filter>
     </ClCompile>
-    <ClCompile Include="Position\FundPositionManager.cpp">
+    <ClCompile Include="Position\GroupPositionManager.cpp">
       <Filter>Position</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1956,7 +1956,7 @@
     <ClInclude Include="Account\SubAccountGrid.h">
       <Filter>Account</Filter>
     </ClInclude>
-    <ClInclude Include="Position\FundPositionManager.h">
+    <ClInclude Include="Position\GroupPositionManager.h">
       <Filter>Position</Filter>
     </ClInclude>
   </ItemGroup>

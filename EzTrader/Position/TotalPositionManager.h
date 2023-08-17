@@ -6,12 +6,14 @@
 #include "../ViewModel/VmPosition.h"
 namespace DarkHorse {
 class AccountPositionManager;
+class GroupPositionManager;
 struct Order;
 struct SmQuote;
 using order_p = std::shared_ptr<Order>;
 using quote_p = std::shared_ptr<SmQuote>;
 struct Position;
 using account_position_manager_p = std::shared_ptr<AccountPositionManager>;
+using group_position_manager_p = std::shared_ptr<GroupPositionManager>;
 using position_p = std::shared_ptr<Position>;
 
 class TotalPositionManager
@@ -45,6 +47,7 @@ public:
 	);
 	void update_account_profit_loss(const std::string& account_no);
 	position_p find_position_by_id(const int& position_id);
+	void update_group_position(std::shared_ptr<Position> position);
 private:
 	// key : position id, value : position object.
 	std::map<int, position_p> position_map_;
@@ -52,6 +55,10 @@ private:
 	account_position_manager_p create_position_manager(const std::string& account_no);
 	// key : account_no, value : account position manager object.
 	std::map<std::string, account_position_manager_p> position_manager_map_;
+	// key : account no, value : group position manager object.
+	std::map<std::string, group_position_manager_p> account_group_position_manager_map_;
+	// key : fund name, value : group position manager object.
+	std::map<std::string, group_position_manager_p> fund_group_position_manager_map_;
 };
 }
 

@@ -1,20 +1,20 @@
 #include "stdafx.h"
-#include "FundPositionManager.h"
+#include "GroupPositionManager.h"
 #include "Position.h"
 namespace DarkHorse {
-FundPositionManager::FundPositionManager(TotalPositionManager& total_position_manager, const std::string& fund_name)
+GroupPositionManager::GroupPositionManager(TotalPositionManager& total_position_manager, const std::string& fund_name)
 	: total_position_manager_(total_position_manager)
 	, fund_name_(fund_name)
 {
 
 }
 
-FundPositionManager::~FundPositionManager()
+GroupPositionManager::~GroupPositionManager()
 {
 
 }
 
-std::shared_ptr<DarkHorse::GroupPosition> FundPositionManager::create_group_position(const std::string& fund_name, const std::string& symbol_code)
+std::shared_ptr<DarkHorse::GroupPosition> GroupPositionManager::create_group_position(const std::string& fund_name, const std::string& symbol_code)
 {
 	auto group_position = std::make_shared<GroupPosition>();
 	group_position->fund_name = fund_name;
@@ -24,10 +24,10 @@ std::shared_ptr<DarkHorse::GroupPosition> FundPositionManager::create_group_posi
 	return group_position;
 }
 
-void FundPositionManager::add_position(std::shared_ptr<Position> position)
+std::shared_ptr<GroupPosition> GroupPositionManager::add_position(std::shared_ptr<Position> position)
 {	
-	if (!position) return;
-	if (position->fund_name != fund_name_) return;
+	if (!position) return nullptr;
+	if (position->fund_name != fund_name_) return nullptr;
 	std::shared_ptr<DarkHorse::GroupPosition> group_position = nullptr;
 	auto found = group_position_map_.find(position->symbol_code);
 	if (found == group_position_map_.end()) {
@@ -36,9 +36,13 @@ void FundPositionManager::add_position(std::shared_ptr<Position> position)
 	else {
 		group_position = found->second;
 	}
+
+	group_position->sub_positions[position->symbol_code] = position;
+
+	return group_position;
 }
 
-void FundPositionManager::update_group_position(std::shared_ptr<GroupPosition> group_position)
+void GroupPositionManager::update_group_position(std::shared_ptr<GroupPosition> group_position)
 {
 	if (!group_position) return;
 
@@ -59,6 +63,14 @@ void FundPositionManager::update_group_position(std::shared_ptr<GroupPosition> g
 	group_position->open_profit_loss = open_profit_loss;
 	group_position->trade_fee = trade_fee;
 	group_position->pure_trade_profit_loss = pure_trade_profit_loss;
+}
+
+void GroupPositionManager::update_group_position(std::shared_ptr<Position> position)
+{
+	if (!position) return;
+
+	auto group_position = add_position(position);
+	update_group_position(group_position);
 }
 
 }

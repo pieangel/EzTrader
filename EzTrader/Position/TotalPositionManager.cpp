@@ -201,4 +201,19 @@ position_p TotalPositionManager::find_position_by_id(const int& position_id)
 		return nullptr;
 }
 
+void TotalPositionManager::update_group_position(std::shared_ptr<Position> position)
+{
+	if (!position) return;
+
+	if (position->order_source_type == OrderType::SubAccount) {
+		;
+	}
+	else if (position->order_source_type == OrderType::MainAccount) {
+		;
+	}
+	else if (position->order_source_type == OrderType::Fund) {
+		;
+	}
+}
+
 }
