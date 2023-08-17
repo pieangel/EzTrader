@@ -83,7 +83,7 @@ public:
 	afx_msg void OnBnClickedRadioClose();
 	afx_msg void OnBnClickedRadioPosition();
 	afx_msg void OnBnClickedRadioExpected();
-
+	afx_msg void OnDestroy();
 	CBCGPButton radio_close_;
 	CBCGPButton radio_position_;
 	CBCGPButton ratio_expected_;

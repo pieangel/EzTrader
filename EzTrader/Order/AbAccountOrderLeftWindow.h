@@ -59,6 +59,7 @@ public:
 	afx_msg void OnBnClickedBtnCancelAll();
 	afx_msg void OnBnClickedBtnLiqSel();
 	afx_msg void OnBnClickedBtnLiqAll();
+	afx_msg void OnDestroy();
 	CBCGPButton _BtnAddFav;
 	CBCGPStatic _StaticFav;
 };

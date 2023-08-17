@@ -58,6 +58,7 @@ namespace DarkHorse {
 		acnt->No(acntNo);
 		acnt->Name(acntName);
 		acnt->is_subaccount(true);
+		acnt->parent_id(_id);
 		acnt->UsedForFund(false);
 		acnt->parent_account(shared_from_this());
 		sub_accounts_.push_back(acnt);

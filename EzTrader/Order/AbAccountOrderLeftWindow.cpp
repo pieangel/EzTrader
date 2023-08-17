@@ -48,6 +48,7 @@ BEGIN_MESSAGE_MAP(AbAccountOrderLeftWindow, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTN_ADD_FAV, &AbAccountOrderLeftWindow::OnBnClickedBtnAddFav)
 	ON_MESSAGE(UM_SYMBOL_SELECTED, &AbAccountOrderLeftWindow::OnUmSymbolSelected)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BTN_CANCEL_SEL, &AbAccountOrderLeftWindow::OnBnClickedBtnCancelSel)
 	ON_BN_CLICKED(IDC_BTN_CANCEL_ALL, &AbAccountOrderLeftWindow::OnBnClickedBtnCancelAll)
 	ON_BN_CLICKED(IDC_BTN_LIQ_SEL, &AbAccountOrderLeftWindow::OnBnClickedBtnLiqSel)
@@ -228,4 +229,10 @@ void AbAccountOrderLeftWindow::OnBnClickedBtnLiqSel()
 void AbAccountOrderLeftWindow::OnBnClickedBtnLiqAll()
 {
 	account_position_view_.LiqAll();
+}
+
+void AbAccountOrderLeftWindow::OnDestroy()
+{
+	CBCGPDialog::OnDestroy();
+	KillTimer(1);
 }

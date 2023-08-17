@@ -79,6 +79,7 @@ BEGIN_MESSAGE_MAP(DmFundOrderLeftWindow, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTN_ADD_FAV, &DmFundOrderLeftWindow::OnBnClickedBtnAddFav)
 	ON_MESSAGE(UM_SYMBOL_SELECTED, &DmFundOrderLeftWindow::OnUmSymbolSelected)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BTN_CANCEL_SEL, &DmFundOrderLeftWindow::OnBnClickedBtnCancelSel)
 	ON_BN_CLICKED(IDC_BTN_CANCEL_ALL, &DmFundOrderLeftWindow::OnBnClickedBtnCancelAll)
 	ON_BN_CLICKED(IDC_BTN_LIQ_SEL, &DmFundOrderLeftWindow::OnBnClickedBtnLiqSel)
@@ -235,4 +236,10 @@ void DmFundOrderLeftWindow::OnBnClickedRadioExpected()
 {
 	future_view_.set_view_mode(ViewMode::VM_Expected);
 	option_view_.set_view_mode(ViewMode::VM_Expected);
+}
+
+void DmFundOrderLeftWindow::OnDestroy()
+{
+	CBCGPDialog::OnDestroy();
+	KillTimer(1);
 }
