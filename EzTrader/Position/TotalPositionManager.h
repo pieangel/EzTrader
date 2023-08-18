@@ -49,6 +49,8 @@ public:
 	position_p find_position_by_id(const int& position_id);
 	void update_group_position(std::shared_ptr<Position> position);
 private:
+	group_position_manager_p find_add_group_position_manager(std::shared_ptr<Position> position);
+	group_position_manager_p create_group_position_manager(std::shared_ptr<Position> position);
 	// key : position id, value : position object.
 	std::map<int, position_p> position_map_;
 	account_position_manager_p find_position_manager(const std::string& account_no);

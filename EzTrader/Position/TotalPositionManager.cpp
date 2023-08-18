@@ -13,6 +13,7 @@
 #include "../Fund/SmFund.h"
 #include "../Account/SmAccount.h"
 #include "../Account/SmAccountManager.h"
+#include "GroupPositionManager.h"
 
 namespace DarkHorse {
 account_position_manager_p TotalPositionManager::get_account_position_manager(const std::string& account_no)
@@ -21,6 +22,60 @@ account_position_manager_p TotalPositionManager::get_account_position_manager(co
 	if (position_manager) return position_manager;
 	return create_position_manager(account_no);
 }
+
+DarkHorse::group_position_manager_p TotalPositionManager::find_add_group_position_manager(std::shared_ptr<Position> position)
+{
+	if (!position) return nullptr;
+	if (position->order_source_type == OrderType::SubAccount) {
+		auto found = account_group_position_manager_map_.find(position->parent_account_no);
+		if (found != account_group_position_manager_map_.end()) {
+			return found->second;
+		}
+		else {
+			return create_group_position_manager(position);
+		}
+	}
+	else if (position->order_source_type == OrderType::MainAccount) {
+		auto found = account_group_position_manager_map_.find(position->account_no);
+		if (found != account_group_position_manager_map_.end()) {
+			return found->second;
+		}
+		else {
+			return create_group_position_manager(position);
+		}
+	}
+	else if (position->order_source_type == OrderType::Fund) {
+		auto found = fund_group_position_manager_map_.find(position->fund_name);
+		if (found != fund_group_position_manager_map_.end()) {
+			return found->second;
+		}
+		else {
+			return create_group_position_manager(position);
+		}
+	}
+	else return nullptr;
+}
+
+DarkHorse::group_position_manager_p TotalPositionManager::create_group_position_manager(std::shared_ptr<Position> position)
+{
+	if (!position) return nullptr;
+	auto group_position_manager = std::make_shared<GroupPositionManager>(*this);
+	if (position->order_source_type == OrderType::SubAccount) {
+		group_position_manager->set_account_no(position->parent_account_no);
+		account_group_position_manager_map_[position->parent_account_no] = group_position_manager;
+	}
+	else if (position->order_source_type == OrderType::MainAccount) {
+		group_position_manager->set_account_no(position->account_no);
+		account_group_position_manager_map_[position->account_no] = group_position_manager;
+	}
+	else if (position->order_source_type == OrderType::Fund) {
+		group_position_manager->set_account_no(position->fund_name);
+		fund_group_position_manager_map_[position->fund_name] = group_position_manager;
+	}
+	
+	return group_position_manager;
+}
+
 account_position_manager_p TotalPositionManager::find_position_manager(const std::string& account_no)
 {
 	auto it = position_manager_map_.find(account_no);
@@ -204,16 +259,9 @@ position_p TotalPositionManager::find_position_by_id(const int& position_id)
 void TotalPositionManager::update_group_position(std::shared_ptr<Position> position)
 {
 	if (!position) return;
-
-	if (position->order_source_type == OrderType::SubAccount) {
-		;
-	}
-	else if (position->order_source_type == OrderType::MainAccount) {
-		;
-	}
-	else if (position->order_source_type == OrderType::Fund) {
-		;
-	}
+	if (position->order_source_type == OrderType::None) return;
+	group_position_manager_p group_position_manager = find_add_group_position_manager(position);
+	group_position_manager->update_group_position(position);
 }
 
 }
