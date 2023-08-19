@@ -736,6 +736,7 @@ void AbAccountOrderCenterWindow::OnBnClickedBtnSymbol()
 {
 	symbol_table_dialog_ = std::make_shared<SmSymbolTableDialog>(this);
 	symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
+	symbol_table_dialog_->order_window_id(order_window_id_);
 	symbol_table_dialog_->ShowWindow(SW_SHOW);
 }
 

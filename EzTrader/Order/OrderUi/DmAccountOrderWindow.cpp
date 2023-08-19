@@ -217,6 +217,7 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 
 
 	_LeftWnd = std::make_shared<DmAccountOrderLeftWindow>(this);
+	_LeftWnd->order_window_id(id_);
 	_LeftWnd->Create(IDD_DM_ACNT_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
 	_LeftWnd->SetMainWnd(this);
@@ -289,6 +290,7 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 	
 
 	_RightWnd = std::make_shared<DmAccountOrderRightWindow>(this);
+	_RightWnd->order_window_id(id_);
 	_RightWnd->Create(IDD_DM_ACNT_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
 
@@ -632,6 +634,7 @@ void DmAccountOrderWindow::OnBnClickedBtnAdd()
 	GetClientRect(rcClient);
 
 	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>();
+	center_wnd->order_window_id(id_);
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetMainDialog(this);

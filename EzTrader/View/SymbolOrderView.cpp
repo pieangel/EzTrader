@@ -2473,9 +2473,9 @@ void SymbolOrderView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (ProcesButtonClickByPos(point)) return;
 
 	if (account_)
-		mainApp.event_hub()->process_symbol_order_view_event(account_->Type(), order_window_id_, symbol_);
+		mainApp.event_hub()->process_symbol_order_view_event(account_->Type(), center_window_id_, symbol_);
 	if (fund_)
-		mainApp.event_hub()->process_symbol_order_view_event(fund_->fund_type(), order_window_id_, symbol_);
+		mainApp.event_hub()->process_symbol_order_view_event(fund_->fund_type(), center_window_id_, symbol_);
 
 	auto cell = _Grid->FindCellByPos(_X, _Y);
 	if (!cell) return;

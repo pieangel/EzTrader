@@ -63,9 +63,7 @@ void AbAccountOrderLeftWindow::SetMainWnd(AbAccountOrderWindow* main_wnd)
 {
 	if (!main_wnd) return;
 	order_window_id_ = main_wnd->get_id();
-	account_order_view_.set_order_window_id(order_window_id_);
-	account_position_view_.set_order_window_id(order_window_id_);
-	favorite_symbol_view_.set_order_window_id(order_window_id_);
+
 	favorite_symbol_view_.SetMainWnd(main_wnd);
 }
 
@@ -73,9 +71,9 @@ BOOL AbAccountOrderLeftWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
-	//_AcceptedArea.SetUp();
-	//_FilledArea.SetUp();
-	//_FavoriteArea.SetUp();
+	account_order_view_.set_order_window_id(order_window_id_);
+	account_position_view_.set_order_window_id(order_window_id_);
+	favorite_symbol_view_.set_order_window_id(order_window_id_);
 	account_profit_loss_view_.SetUp();
 	
 

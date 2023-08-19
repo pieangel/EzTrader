@@ -180,12 +180,14 @@ BOOL AbAccountOrderWindow::OnInitDialog()
 
 
 	_LeftWnd = std::make_shared<AbAccountOrderLeftWindow>(this);
+	_LeftWnd->order_window_id(id_);
 	_LeftWnd->Create(IDD_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
 	_LeftWnd->SetMainWnd(this);
 
 
 	std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = std::make_shared<AbAccountOrderCenterWindow>(this);
+	center_wnd->order_window_id(id_);
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_SHOW);
 	center_wnd->SetMainDialog(this);
@@ -195,6 +197,7 @@ BOOL AbAccountOrderWindow::OnInitDialog()
 	center_wnd->GetWindowRect(rcWnd);
 	
 	_RightWnd = std::make_shared<AbAccountOrderRightWindow>(this);
+	_RightWnd->order_window_id(id_);	
 	_RightWnd->Create(IDD_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
 
@@ -524,6 +527,7 @@ void AbAccountOrderWindow::OnBnClickedBtnAdd()
 	GetClientRect(rcClient);
 
 	std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = std::make_shared<AbAccountOrderCenterWindow>();
+	center_wnd->order_window_id(id_);
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetMainDialog(this);

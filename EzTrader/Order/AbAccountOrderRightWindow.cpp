@@ -65,7 +65,7 @@ void AbAccountOrderRightWindow::OnSymbolClicked(std::shared_ptr<DarkHorse::SmSym
 BOOL AbAccountOrderRightWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
-
+	asset_view_.order_window_id(order_window_id_);
 	asset_view_.SetUp();
 	symbol_info_view_.SetUp();
 	

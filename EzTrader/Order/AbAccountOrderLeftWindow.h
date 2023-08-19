@@ -47,10 +47,7 @@ private:
 	AccountPositionView account_position_view_;
 	FavoriteSymbolView favorite_symbol_view_;
 	int order_window_id_ = 0;
-	//int order_window_id_{ 0 };
 public:
-	//int order_window_id() const { return order_window_id_; }
-	//void order_window_id(int val) { order_window_id_ = val; }
 	void order_window_id(int id) { order_window_id_ = id; };
 	void SetMainWnd(AbAccountOrderWindow* main_wnd);
 	virtual BOOL OnInitDialog();

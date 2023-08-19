@@ -106,6 +106,9 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
 
+	option_view_.order_window_id(order_window_id_);
+	future_view_.order_window_id(order_window_id_);
+	account_profit_loss_view_.order_window_id(order_window_id_);
 	account_profit_loss_view_.SetUp();
 	asset_view_.SetUp();
 	option_view_.SetUp();

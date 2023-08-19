@@ -209,15 +209,16 @@ BOOL DmFundOrderWindow::OnInitDialog()
 
 
 	_LeftWnd = std::make_shared<DmAccountOrderLeftWindow>(this);
+	_LeftWnd->order_window_id(id_);
 	_LeftWnd->Create(IDD_DM_ACNT_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
 	//_LeftWnd->SetMainWnd(this);
 
 	if (center_window_count_ == 0) {
 		std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this);
+		center_wnd->order_window_id(id_);
 		center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 		center_wnd->ShowWindow(SW_SHOW);
-		//center_wnd->SetMainDialog(this);
 		center_wnd->Selected(true);
 		center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 	}
@@ -266,6 +267,7 @@ BOOL DmFundOrderWindow::OnInitDialog()
 
 			// Create and populate DmAccountOrderCenterWindow object
 			std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, symbolCode, order_set_event);
+			center_wnd->order_window_id(id_);
 			center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 			center_wnd->ShowWindow(SW_SHOW);
 			center_wnd->SetFundDialog(this);
@@ -279,6 +281,7 @@ BOOL DmFundOrderWindow::OnInitDialog()
 	
 
 	_RightWnd = std::make_shared<DmAccountOrderRightWindow>(this);
+	_RightWnd->order_window_id(id_);
 	_RightWnd->Create(IDD_DM_ACNT_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
 
@@ -640,6 +643,7 @@ void DmFundOrderWindow::OnBnClickedBtnAdd()
 	GetClientRect(rcClient);
 
 	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>();
+	center_wnd->order_window_id(id_);
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetFundDialog(this);
