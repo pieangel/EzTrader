@@ -15,9 +15,9 @@ namespace DarkHorse {
 
 
 // SmMainOrderDialog dialog
-class AbFundOrderCenterWindow;
-class AbFundOrderLeftWindow;
-class AbFundOrderRightWindow;
+class AbAccountOrderCenterWindow;
+class AbAccountOrderLeftWindow;
+class AbAccountOrderRightWindow;
 class AbFundOrderWindow : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(AbFundOrderWindow)
@@ -39,16 +39,16 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	const std::map<int, std::shared_ptr<AbFundOrderCenterWindow>>& GetCenterWndMap() {
+	const std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>>& GetCenterWndMap() {
 		return center_window_map_;
 	}
 	void OnQuoteAreaShowHide();
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
 private:
-	std::shared_ptr<AbFundOrderLeftWindow> _LeftWnd = nullptr;
-	std::shared_ptr<AbFundOrderRightWindow> _RightWnd = nullptr;
-	std::map<int, std::shared_ptr<AbFundOrderCenterWindow>> center_window_map_;
+	std::shared_ptr<AbAccountOrderLeftWindow> _LeftWnd = nullptr;
+	std::shared_ptr<AbAccountOrderRightWindow> _RightWnd = nullptr;
+	std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>> center_window_map_;
 	bool _ShowLeft = true;
 	bool _ShowRight = true;
 	// key : combo index, value : account object.
@@ -72,7 +72,7 @@ public:
 	int get_id() const { return id_; }
 	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
-	void OnSymbolClickedFromOut(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void OnSymbolClickedFromOut(const int order_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(const std::string& symbol_code);
 	// 주문창을 추가한다.
 	afx_msg void OnBnClickedBtnAdd();

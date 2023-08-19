@@ -83,7 +83,7 @@ AbAccountOrderWindow::AbAccountOrderWindow(CWnd* pParent /*=nullptr*/)
 
 	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&AbAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&AbAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&AbAccountOrderWindow::OnSymbolClickedFromOut, this, std::placeholders::_1));
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&AbAccountOrderWindow::OnSymbolClickedFromOut, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 AbAccountOrderWindow::~AbAccountOrderWindow()
@@ -492,8 +492,9 @@ void AbAccountOrderWindow::on_symbol_view_clicked(const int center_window_id, st
 	ChangedCenterWindow(center_window_id);
 }
 
-void AbAccountOrderWindow::OnSymbolClickedFromOut(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+void AbAccountOrderWindow::OnSymbolClickedFromOut(const int order_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
+	if (order_window_id != id_) return;
 	if (!symbol || symbol->symbol_type() != DarkHorse::SymbolType::Abroad) return;
 
 	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {

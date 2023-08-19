@@ -174,7 +174,7 @@ LRESULT SmSymbolTableDialog::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
 		title.append("]");
 		SetWindowText(title.c_str());
 
-		mainApp.event_hub()->process_symbol_event(symbol);
+		mainApp.event_hub()->process_symbol_event(order_window_id_, symbol);
 
 	}
 	else {

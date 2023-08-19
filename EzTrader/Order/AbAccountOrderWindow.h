@@ -67,7 +67,7 @@ public:
 	int get_id() const { return id_; }
 	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
-	void OnSymbolClickedFromOut(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void OnSymbolClickedFromOut(const int order_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(const std::string& symbol_code);
 	// 주문창을 추가한다.
 	afx_msg void OnBnClickedBtnAdd();

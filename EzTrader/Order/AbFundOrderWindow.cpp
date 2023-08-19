@@ -5,9 +5,9 @@
 #include "../DarkHorse.h"
 #include "AbFundOrderWindow.h"
 #include "afxdialogex.h"
-#include "AbFundOrderLeftWindow.h"
-#include "AbFundOrderRightWindow.h"
-#include "AbFundOrderCenterWindow.h"
+#include "AbAccountOrderLeftWindow.h"
+#include "AbAccountOrderRightWindow.h"
+#include "AbAccountOrderCenterWindow.h"
 #include <set>
 #include "../MainFrm.h"
 #include "../Account/SmAccount.h"
@@ -108,7 +108,7 @@ AbFundOrderWindow::AbFundOrderWindow(CWnd* pParent /*=nullptr*/)
 
 	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&AbFundOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&AbFundOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&AbFundOrderWindow::OnSymbolClickedFromOut, this, std::placeholders::_1));
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&AbFundOrderWindow::OnSymbolClickedFromOut, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 AbFundOrderWindow::~AbFundOrderWindow()
@@ -204,13 +204,13 @@ BOOL AbFundOrderWindow::OnInitDialog()
 	GetWindowRect(rcWnd);
 
 
-	_LeftWnd = std::make_shared<AbFundOrderLeftWindow>(this);
+	_LeftWnd = std::make_shared<AbAccountOrderLeftWindow>(this);
 	_LeftWnd->Create(IDD_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
-	_LeftWnd->SetMainWnd(this);
+	//_LeftWnd->SetMainWnd(this);
 
 
-	std::shared_ptr<AbFundOrderCenterWindow> center_wnd = std::make_shared<AbFundOrderCenterWindow>(this);
+	std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = std::make_shared<AbAccountOrderCenterWindow>(this);
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_SHOW);
 	center_wnd->SetFundDialog(this);
@@ -219,7 +219,7 @@ BOOL AbFundOrderWindow::OnInitDialog()
 
 	center_wnd->GetWindowRect(rcWnd);
 	
-	_RightWnd = std::make_shared<AbFundOrderRightWindow>(this);
+	_RightWnd = std::make_shared<AbAccountOrderRightWindow>(this);
 	_RightWnd->Create(IDD_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
 
@@ -314,7 +314,7 @@ void AbFundOrderWindow::RecalcChildren(CmdMode mode)
 	
 
 	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-		std::shared_ptr<AbFundOrderCenterWindow> center_wnd = it->second;
+		std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 		center_wnd->GetWindowRect(rcWnd);
 		
 		
@@ -538,8 +538,9 @@ void AbFundOrderWindow::on_symbol_view_clicked(const int center_window_id, std::
 	ChangedCenterWindow(center_window_id);
 }
 
-void AbFundOrderWindow::OnSymbolClickedFromOut(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+void AbFundOrderWindow::OnSymbolClickedFromOut(const int order_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
+	if (order_window_id != id_) return;
 	if (!symbol || symbol->symbol_type() != DarkHorse::SymbolType::Abroad) return;
 
 	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
@@ -569,7 +570,7 @@ void AbFundOrderWindow::OnBnClickedBtnAdd()
 	GetWindowRect(rcWnd);
 	GetClientRect(rcClient);
 
-	std::shared_ptr<AbFundOrderCenterWindow> center_wnd = std::make_shared<AbFundOrderCenterWindow>();
+	std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = std::make_shared<AbAccountOrderCenterWindow>();
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetFundDialog(this);
@@ -660,7 +661,7 @@ void AbFundOrderWindow::OnBnClickedButton6()
 {
 	int max_delta_height = 0;
 	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-		std::shared_ptr<AbFundOrderCenterWindow> center_wnd = it->second;
+		std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 		int delta_height = center_wnd->RecalcOrderAreaHeight(this);
 		if (delta_height > max_delta_height) max_delta_height = delta_height;
 	}
@@ -785,7 +786,7 @@ void AbFundOrderWindow::OnSysCommand(UINT nID, LPARAM lParam)
 
 	if ((nID & 0x0000FFF0) == SC_KEYMENU) {
 		for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-			std::shared_ptr<AbFundOrderCenterWindow> center_wnd = it->second;
+			std::shared_ptr<AbAccountOrderCenterWindow> center_wnd = it->second;
 			center_wnd->ArrangeCenterValue();
 		}
 		return;

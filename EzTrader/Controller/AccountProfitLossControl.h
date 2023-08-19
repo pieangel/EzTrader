@@ -9,6 +9,7 @@ namespace DarkHorse {
 	struct Position;
 	struct SmQuote;
 	class SmAccount;
+	class SmFund;
 	using position_p = std::shared_ptr<Position>;
 	using quote_p = std::shared_ptr<SmQuote>;
 	class AccountProfitLossControl
@@ -35,6 +36,9 @@ namespace DarkHorse {
 			account_ = account;
 			account_id_ = account->id();
 		}
+		void set_fund(std::shared_ptr<SmFund> fund) {
+			fund_ = fund;
+		}
 	private:
 		void refresh_account_profit_loss();
 		void update_account_profit_loss();
@@ -45,5 +49,6 @@ namespace DarkHorse {
 		int account_id_{ 0 };
 		std::shared_ptr<DarkHorse::SmAccount> account_{nullptr};
 		VmAccountProfitLoss account_profit_loss_;
+		std::shared_ptr<SmFund> fund_;
 	};
 }

@@ -8,6 +8,8 @@ struct Position;
 struct SmQuote;
 using position_p = std::shared_ptr<Position>;
 using quote_p = std::shared_ptr<SmQuote>;
+class SmFund;
+class SmAccount;
 class AccountPositionControl
 {
 public:
@@ -22,6 +24,12 @@ public:
 	const std::map<std::string, position_p>& get_position_map() {
 		return position_map_;
 	}
+	void set_account(std::shared_ptr<SmAccount> account) {
+		account_ = account;
+	}
+	void set_fund(std::shared_ptr<SmFund> fund) {
+		fund_ = fund;
+	}
 private:
 	position_p get_position(const std::string& symbol_code);
 	void add_position(position_p position);
@@ -31,5 +39,7 @@ private:
 	std::function<void()> event_handler_;
 	int id_{ 0 };
 	std::string account_no_;
+	std::shared_ptr<SmAccount> account_;
+	std::shared_ptr<SmFund> fund_;
 };
 }

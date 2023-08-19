@@ -45,7 +45,10 @@ public:
 	void UpdateAssetInfo();
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
+	int order_window_id() const { return order_window_id_; }
+	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	int order_window_id_ = 0;
 	std::string get_format_price(const double& value);
 	void update_account_profit_loss();
 	void UpdateAccountAssetInfo();

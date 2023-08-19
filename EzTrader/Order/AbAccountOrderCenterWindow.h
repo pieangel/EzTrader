@@ -22,6 +22,7 @@
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
+	class SmFund;
 }
 
 
@@ -29,6 +30,7 @@ class SmOrderSetDialog;
 class SmSymbolTableDialog;
 class AbAccountOrderWindow;
 class SmFundOrderDialog;
+class AbFundOrderWindow;
 class AbAccountOrderCenterWindow : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(AbAccountOrderCenterWindow)
@@ -45,6 +47,7 @@ public:
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
 	bool Selected() const { return _Selected; }
 	void Selected(bool val);
 protected:
@@ -74,7 +77,7 @@ public:
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);
 
 	void SetMainDialog(AbAccountOrderWindow* main_dialog);
-	void SetFundDialog(SmFundOrderDialog* fund_dialog);
+	void SetFundDialog(AbFundOrderWindow* fund_dialog);
 	int ID() const { return id_; }
 	void ID(int val) { id_ = val; }
 	void SetSelected(const bool& selected);
@@ -115,10 +118,11 @@ private:
 	std::set<int> _OldHogaSellRowIndex;
 	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
+	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
 	//CExtStatusControlBar m_bar;
 	bool _Init = false;
 	bool _ShowQuoteArea = true;
-	std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
+	//std::shared_ptr< SmSymbolTableDialog> _SymbolTableDlg = nullptr;
 	void SetInfo(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 
 	SmFilledRemainButton _FilledRemainButton;
@@ -127,9 +131,12 @@ private:
 
 	DarkHorse::OrderSetEvent order_set_;
 
-	int main_window_id_ = 0;
+	std::shared_ptr< SmSymbolTableDialog> symbol_table_dialog_ = nullptr;
+
+	int order_window_id_{ 0 };
 public:
-	void set_main_window_id(int id) { main_window_id_ = id; };
+	int order_window_id() const { return order_window_id_; }
+	void order_window_id(int val) { order_window_id_ = val; }
 	void SetRowWide();
 	void SetRowNarrow();
 	void OnOrderChanged(const int& account_id, const int& symbol_id);

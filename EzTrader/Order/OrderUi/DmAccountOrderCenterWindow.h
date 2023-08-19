@@ -32,6 +32,7 @@ using json = nlohmann::json;
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
+	class SmFund;
 }
 
 
@@ -56,6 +57,7 @@ public:
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
 	bool Selected() const { return selected_; }
 	void Selected(bool val);
 protected:
@@ -84,6 +86,7 @@ public:
 	afx_msg LRESULT OnExitSizeMove(WPARAM, LPARAM);
 
 	void SetMainDialog(DmAccountOrderWindow* main_dialog);
+	void SetFundDialog(DmFundOrderWindow* main_dialog);
 	int ID() const { return id_; }
 	void ID(int val) { id_ = val; }
 	void SetSelected(const bool& selected);
@@ -102,7 +105,7 @@ private:
 	void init_views();
 	void init_dm_symbol();
 	void set_default_symbol();
-	void set_symbol_from_out(std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void set_symbol_from_out(const int order_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	bool selected_ = false;
 	void UpdateOrderSettings();
 	//DarkHorse::SmOrderSettings _OrderSettings;
@@ -131,6 +134,7 @@ private:
 	std::set<int> old_hoga_sell_row;
 	std::shared_ptr<DarkHorse::SmSymbol> symbol_ = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
+	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
 	//CExtStatusControlBar m_bar;
 	bool init_dialog_ = false;
 	bool show_symbol_tick_view_ = true;
@@ -143,7 +147,10 @@ private:
 	std::shared_ptr< SmOrderSetDialog> order_set_dialog_ = nullptr;
 	DarkHorse::OrderSetEvent order_set_;
 	std::string symbol_code_;
+	int order_window_id_{ 0 };
 public:
+	int order_window_id() const { return order_window_id_; }
+	void order_window_id(int val) { order_window_id_ = val; }
 	const DarkHorse::OrderSetEvent& get_order_set() const { return order_set_; }
 	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);
 	void on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag);

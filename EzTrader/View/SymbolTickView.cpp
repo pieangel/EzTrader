@@ -216,5 +216,5 @@ void SymbolTickView::OnTimer(UINT_PTR nIDEvent)
 
 void SymbolTickView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	mainApp.event_hub()->trigger_symbol_order_view_event(1, center_window_id_, symbol_);
+	//mainApp.event_hub()->trigger_symbol_order_view_event(1, center_window_id_, symbol_);
 }

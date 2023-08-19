@@ -31,6 +31,8 @@ public:
 
 	SmOrderCompMainDialog* CompOrderWnd() const { return _CompOrderWnd; }
 	void CompOrderWnd(SmOrderCompMainDialog* val) { _CompOrderWnd = val; }
+	int order_window_id() const { return order_window_id_; }
+	void order_window_id(int val) { order_window_id_ = val; }
 	// Attributes
 protected:
 	BOOL m_bExtendedPadding;
@@ -98,6 +100,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	int order_window_id_ = 0;
 	bool _EnableQuoteShow = false;
 	SmFundCompMainDialog* _CompFundWnd = nullptr;
 	SmOrderCompMainDialog* _CompOrderWnd = nullptr;

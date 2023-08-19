@@ -22,9 +22,9 @@ DmFundOrderWindow::~DmFundOrderWindow()
 #include "../../DarkHorse.h"
 #include "DmFundOrderWindow.h"
 #include "afxdialogex.h"
-#include "DmFundOrderLeftWindow.h"
-#include "DmFundOrderRightWindow.h"
-#include "DmFundOrderCenterWindow.h"
+#include "DmAccountOrderLeftWindow.h"
+#include "DmAccountOrderRightWindow.h"
+#include "DmAccountOrderCenterWindow.h"
 #include <set>
 #include "../../MainFrm.h"
 #include "../../Account/SmAccount.h"
@@ -208,13 +208,13 @@ BOOL DmFundOrderWindow::OnInitDialog()
 	GetWindowRect(rcWnd);
 
 
-	_LeftWnd = std::make_shared<DmFundOrderLeftWindow>(this);
+	_LeftWnd = std::make_shared<DmAccountOrderLeftWindow>(this);
 	_LeftWnd->Create(IDD_DM_ACNT_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
-	_LeftWnd->SetMainWnd(this);
+	//_LeftWnd->SetMainWnd(this);
 
 	if (center_window_count_ == 0) {
-		std::shared_ptr<DmFundOrderCenterWindow> center_wnd = std::make_shared<DmFundOrderCenterWindow>(this);
+		std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this);
 		center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 		center_wnd->ShowWindow(SW_SHOW);
 		//center_wnd->SetMainDialog(this);
@@ -265,7 +265,7 @@ BOOL DmFundOrderWindow::OnInitDialog()
 			// ... Retrieve other properties
 
 			// Create and populate DmAccountOrderCenterWindow object
-			std::shared_ptr<DmFundOrderCenterWindow> center_wnd = std::make_shared<DmFundOrderCenterWindow>(this, symbolCode, order_set_event);
+			std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, symbolCode, order_set_event);
 			center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 			center_wnd->ShowWindow(SW_SHOW);
 			center_wnd->SetFundDialog(this);
@@ -278,7 +278,7 @@ BOOL DmFundOrderWindow::OnInitDialog()
 	}
 	
 
-	_RightWnd = std::make_shared<DmFundOrderRightWindow>(this);
+	_RightWnd = std::make_shared<DmAccountOrderRightWindow>(this);
 	_RightWnd->Create(IDD_DM_ACNT_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
 
@@ -370,7 +370,7 @@ void DmFundOrderWindow::RecalcChildren(CmdMode mode)
 
 
 	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-		std::shared_ptr<DmFundOrderCenterWindow> center_wnd = it->second;
+		std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = it->second;
 		center_wnd->GetWindowRect(rcWnd);
 
 
@@ -639,7 +639,7 @@ void DmFundOrderWindow::OnBnClickedBtnAdd()
 	GetWindowRect(rcWnd);
 	GetClientRect(rcClient);
 
-	std::shared_ptr<DmFundOrderCenterWindow> center_wnd = std::make_shared<DmFundOrderCenterWindow>();
+	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>();
 	center_wnd->Create(IDD_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetFundDialog(this);
@@ -738,7 +738,7 @@ void DmFundOrderWindow::OnBnClickedButton6()
 {
 	int max_delta_height = 0;
 	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-		std::shared_ptr<DmFundOrderCenterWindow> center_wnd = it->second;
+		std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = it->second;
 		int delta_height = center_wnd->RecalcOrderAreaHeight(this);
 		if (delta_height > max_delta_height) max_delta_height = delta_height;
 	}
@@ -876,7 +876,7 @@ void DmFundOrderWindow::OnSysCommand(UINT nID, LPARAM lParam)
 
 	if ((nID & 0x0000FFF0) == SC_KEYMENU) {
 		for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-			std::shared_ptr<DmFundOrderCenterWindow> center_wnd = it->second;
+			std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = it->second;
 			center_wnd->ArrangeCenterValue();
 		}
 		return;
@@ -931,7 +931,7 @@ void DmFundOrderWindow::loadFromJson(const json& j) {
 		int window_id = std::stoi(pair.key());
 		const json& center_window_json = pair.value();
 
-		std::shared_ptr<DmFundOrderCenterWindow> center_window = std::make_shared<DmFundOrderCenterWindow>();
+		std::shared_ptr<DmAccountOrderCenterWindow> center_window = std::make_shared<DmAccountOrderCenterWindow>();
 		center_window->loadFromJson(center_window_json);
 
 		center_window_map_[window_id] = center_window;

@@ -589,61 +589,16 @@
     <ClCompile Include="View\AccountProfitLossView.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="View\BuyHogaView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\BuyOrderView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
     <ClCompile Include="View\BuyStopOrderView.cpp">
       <Filter>View</Filter>
     </ClCompile>
     <ClCompile Include="View\FavoriteSymbolView.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="View\FilledOrderInfoView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\FutureCloseView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\FutureExpectedView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\FuturePositionView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\OptionCloseView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\OptionExpectedView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\OptionPositionView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\OrderableInfoView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\PriceRangeView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\SellHogaView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\SellOrderView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\SellStopOrderView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
     <ClCompile Include="View\SymbolPositionView.cpp">
       <Filter>View</Filter>
     </ClCompile>
     <ClCompile Include="View\SymbolTickView.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="View\TotalHogaInfoView.cpp">
       <Filter>View</Filter>
     </ClCompile>
     <ClCompile Include="Event\EventHub.cpp">
@@ -672,9 +627,6 @@
     </ClCompile>
     <ClCompile Include="Util\IdGenerator.cpp">
       <Filter>Util</Filter>
-    </ClCompile>
-    <ClCompile Include="Order\OrderUi\OrderWindowControl.cpp">
-      <Filter>Order\OrderUi</Filter>
     </ClCompile>
     <ClCompile Include="Order\OrderUi\DmAccountOrderWindow.cpp">
       <Filter>Order\OrderUi</Filter>
@@ -706,46 +658,7 @@
     <ClCompile Include="Controller\AccountProfitLossControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Controller\BuyHogaControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\BuyOrderControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\BuyStopOrderControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\FavoriteSymbolControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\FilledOrderInfoControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\FutureCloseControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\FutureExpectedControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\FuturePositionControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
     <ClCompile Include="Controller\HogaControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\OptionCloseControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\OptionExpectedControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\OptionPositionControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\OrderableInfoControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\PriceRangeControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
     <ClCompile Include="Controller\ProductControl.cpp">
@@ -754,31 +667,10 @@
     <ClCompile Include="Controller\QuoteControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Controller\SellHogaControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\SellOrderControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\SellStopOrderControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\SymbolInfoControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
     <ClCompile Include="Controller\SymbolPositionControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Controller\SymbolProfitLossControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
     <ClCompile Include="Controller\SymbolTickControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\TotalHogaInfoControl.cpp">
-      <Filter>Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller\SubOrderControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
     <ClCompile Include="Controller\StopOrderControl.cpp">
@@ -823,26 +715,8 @@
     <ClCompile Include="Dialog\TotalAssetProfitLossDialog.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Order\OrderUi\DmFundOrderCenterWindow.cpp">
-      <Filter>Order\OrderUi</Filter>
-    </ClCompile>
-    <ClCompile Include="Order\OrderUi\DmFundOrderLeftWindow.cpp">
-      <Filter>Order\OrderUi</Filter>
-    </ClCompile>
-    <ClCompile Include="Order\OrderUi\DmFundOrderRightWindow.cpp">
-      <Filter>Order\OrderUi</Filter>
-    </ClCompile>
     <ClCompile Include="Order\OrderUi\DmFundOrderWindow.cpp">
       <Filter>Order\OrderUi</Filter>
-    </ClCompile>
-    <ClCompile Include="Order\AbFundOrderCenterWindow.cpp">
-      <Filter>Order\OrderUI_AB</Filter>
-    </ClCompile>
-    <ClCompile Include="Order\AbFundOrderLeftWindow.cpp">
-      <Filter>Order\OrderUI_AB</Filter>
-    </ClCompile>
-    <ClCompile Include="Order\AbFundOrderRightWindow.cpp">
-      <Filter>Order\OrderUI_AB</Filter>
     </ClCompile>
     <ClCompile Include="Order\AbFundOrderWindow.cpp">
       <Filter>Order\OrderUI_AB</Filter>
@@ -858,6 +732,9 @@
     </ClCompile>
     <ClCompile Include="Position\GroupPositionManager.cpp">
       <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\SubOrderControl.cpp">
+      <Filter>Controller</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1632,61 +1509,16 @@
     <ClInclude Include="View\AccountProfitLossView.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="View\BuyHogaView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\BuyOrderView.h">
-      <Filter>View</Filter>
-    </ClInclude>
     <ClInclude Include="View\BuyStopOrderView.h">
       <Filter>View</Filter>
     </ClInclude>
     <ClInclude Include="View\FavoriteSymbolView.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="View\FilledOrderInfoView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\FutureCloseView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\FutureExpectedView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\FuturePositionView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\OptionCloseView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\OptionExpectedView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\OptionPositionView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\OrderableInfoView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\PriceRangeView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\SellHogaView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\SellOrderView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\SellStopOrderView.h">
-      <Filter>View</Filter>
-    </ClInclude>
     <ClInclude Include="View\SymbolPositionView.h">
       <Filter>View</Filter>
     </ClInclude>
     <ClInclude Include="View\SymbolTickView.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="View\TotalHogaInfoView.h">
       <Filter>View</Filter>
     </ClInclude>
     <ClInclude Include="Event\EventHub.h">
@@ -1725,9 +1557,6 @@
     <ClInclude Include="Order\OrderUi\DmAccountOrderWindow.h">
       <Filter>Order\OrderUi</Filter>
     </ClInclude>
-    <ClInclude Include="Order\OrderUi\OrderWindowControl.h">
-      <Filter>Order\OrderUi</Filter>
-    </ClInclude>
     <ClInclude Include="Order\OrderUi\ControlId.h">
       <Filter>Order\OrderUi</Filter>
     </ClInclude>
@@ -1764,46 +1593,7 @@
     <ClInclude Include="Controller\AccountProfitLossControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Controller\BuyHogaControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\BuyOrderControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\BuyStopOrderControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\FavoriteSymbolControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\FilledOrderInfoControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\FutureCloseControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\FutureExpectedControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\FuturePositionControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
     <ClInclude Include="Controller\HogaControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\OptionCloseControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\OptionExpectedControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\OptionPositionControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\OrderableInfoControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\PriceRangeControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
     <ClInclude Include="Controller\ProductControl.h">
@@ -1812,28 +1602,10 @@
     <ClInclude Include="Controller\QuoteControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Controller\SellHogaControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\SellOrderControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\SellStopOrderControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\SymbolInfoControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
     <ClInclude Include="Controller\SymbolPositionControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Controller\SymbolProfitLossControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
     <ClInclude Include="Controller\SymbolTickControl.h">
-      <Filter>Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\TotalHogaInfoControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
     <ClInclude Include="ViewModel\VmHoga.h">
@@ -1853,9 +1625,6 @@
     </ClInclude>
     <ClInclude Include="Order\OrderUi\DmDefine.h">
       <Filter>Order\OrderUi</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\SubOrderControl.h">
-      <Filter>Controller</Filter>
     </ClInclude>
     <ClInclude Include="Controller\StopOrderControl.h">
       <Filter>Controller</Filter>
@@ -1917,26 +1686,8 @@
     <ClInclude Include="Event\EventHubArg.h">
       <Filter>Event</Filter>
     </ClInclude>
-    <ClInclude Include="Order\OrderUi\DmFundOrderCenterWindow.h">
-      <Filter>Order\OrderUi</Filter>
-    </ClInclude>
-    <ClInclude Include="Order\OrderUi\DmFundOrderLeftWindow.h">
-      <Filter>Order\OrderUi</Filter>
-    </ClInclude>
-    <ClInclude Include="Order\OrderUi\DmFundOrderRightWindow.h">
-      <Filter>Order\OrderUi</Filter>
-    </ClInclude>
     <ClInclude Include="Order\OrderUi\DmFundOrderWindow.h">
       <Filter>Order\OrderUi</Filter>
-    </ClInclude>
-    <ClInclude Include="Order\AbFundOrderCenterWindow.h">
-      <Filter>Order\OrderUI_AB</Filter>
-    </ClInclude>
-    <ClInclude Include="Order\AbFundOrderLeftWindow.h">
-      <Filter>Order\OrderUI_AB</Filter>
-    </ClInclude>
-    <ClInclude Include="Order\AbFundOrderRightWindow.h">
-      <Filter>Order\OrderUI_AB</Filter>
     </ClInclude>
     <ClInclude Include="Order\AbFundOrderWindow.h">
       <Filter>Order\OrderUI_AB</Filter>
@@ -1958,6 +1709,9 @@
     </ClInclude>
     <ClInclude Include="Position\GroupPositionManager.h">
       <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller\SubOrderControl.h">
+      <Filter>Controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

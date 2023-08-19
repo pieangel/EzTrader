@@ -1,16 +1,4 @@
 #pragma once
-#include "OrderWindowControl.h"
-/*
-class DmFundOrderWindow
-{
-public:
-	DmFundOrderWindow();
-	virtual ~DmFundOrderWindow();
-private:
-	int _id;
-};
-*/
-#pragma once
 #include <memory>
 #include <map>
 #include <unordered_map>
@@ -31,9 +19,9 @@ namespace DarkHorse {
 
 
 // SmMainOrderDialog dialog
-class DmFundOrderCenterWindow;
-class DmFundOrderLeftWindow;
-class DmFundOrderRightWindow;
+class DmAccountOrderCenterWindow;
+class DmAccountOrderLeftWindow;
+class DmAccountOrderRightWindow;
 class DmFundOrderWindow : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(DmFundOrderWindow)
@@ -61,7 +49,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	const std::map<int, std::shared_ptr<DmFundOrderCenterWindow>>& get_center_window_map() {
+	const std::map<int, std::shared_ptr<DmAccountOrderCenterWindow>>& get_center_window_map() {
 		return center_window_map_;
 	}
 	void OnQuoteAreaShowHide();
@@ -73,10 +61,10 @@ private:
 	std::string account_no_;
 	int id_{0};
 	bool destroyed_{ false };
-	std::shared_ptr<DmFundOrderLeftWindow> _LeftWnd = nullptr;
-	std::shared_ptr<DmFundOrderRightWindow> _RightWnd = nullptr;
+	std::shared_ptr<DmAccountOrderLeftWindow> _LeftWnd = nullptr;
+	std::shared_ptr<DmAccountOrderRightWindow> _RightWnd = nullptr;
 	// key : window id, value : window object.
-	std::map<int, std::shared_ptr<DmFundOrderCenterWindow>> center_window_map_;
+	std::map<int, std::shared_ptr<DmAccountOrderCenterWindow>> center_window_map_;
 	bool _ShowLeft = true;
 	bool _ShowRight = true;
 	// key : combo index, value : account object.

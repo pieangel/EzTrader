@@ -38,7 +38,10 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void on_update_account_profit_loss();
+	int order_window_id() const { return order_window_id_; }
+	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	int order_window_id_ = 0;
 	void update_account_profit_loss();
 	std::shared_ptr<DarkHorse::AccountProfitLossControl> account_profit_loss_control_;
 	std::shared_ptr<DarkHorse::AccountAssetControl> asset_control_;

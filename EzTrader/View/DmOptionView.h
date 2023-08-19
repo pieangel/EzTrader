@@ -54,7 +54,10 @@ public:
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void set_view_mode(ViewMode view_mode);
+	int order_window_id() const { return order_window_id_; }
+	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	int order_window_id_ = 0;
 	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
 	void update_quote();
 	void update_close(const DarkHorse::VmQuote& quote);

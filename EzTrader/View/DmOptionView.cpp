@@ -401,7 +401,7 @@ void DmOptionView::OnLButtonDown(UINT nFlags, CPoint point)
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
 	auto found = symbol_map_.find(cell_pos);
 	if (found == symbol_map_.end()) return;
-	mainApp.event_hub()->process_symbol_event(found->second);
+	mainApp.event_hub()->process_symbol_event(order_window_id_, found->second);
 
 	CBCGPStatic::OnLButtonDown(nFlags, point);
 }

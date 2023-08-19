@@ -81,8 +81,8 @@ namespace DarkHorse {
 	using PositionCBL = eventpp::CallbackList<void(std::shared_ptr<Position> position)>;
 	using PositionCBH = eventpp::CallbackList<void(std::shared_ptr<Position> position)>::Handle;
 
-	using SymbolCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>;
-	using SymbolCBH = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> symbol)>::Handle;
+	using SymbolCBL = eventpp::CallbackList<void(const int order_window_id, std::shared_ptr<SmSymbol> symbol)>;
+	using SymbolCBH = eventpp::CallbackList<void(const int order_window_id, std::shared_ptr<SmSymbol> symbol)>::Handle;
 
 	using OrderCBL = eventpp::CallbackList<void(std::shared_ptr<Order> order, OrderEvent order_event)>;
 	using OrderCBH = eventpp::CallbackList<void(std::shared_ptr<Order> order, OrderEvent order_event)>::Handle;
@@ -170,7 +170,7 @@ public:
 		expected_cb_list_(quote);
 	}
 
-	void subscribe_symbol_event_handler(const int symbol_control_id, std::function<void(std::shared_ptr<SmSymbol> symbol)>&& handler)
+	void subscribe_symbol_event_handler(const int symbol_control_id, std::function<void(const int order_window_id, std::shared_ptr<SmSymbol> symbol)>&& handler)
 	{
 		SymbolCBH handle = symbol_cb_list_.append(handler);
 		symbol_cb_handle_map_[symbol_control_id] = handle;
@@ -183,9 +183,9 @@ public:
 		symbol_cb_list_.remove(found->second);
 	}
 
-	void process_symbol_event(std::shared_ptr<SmSymbol> symbol)
+	void process_symbol_event(const int order_window_id, std::shared_ptr<SmSymbol> symbol)
 	{
-		symbol_cb_list_(symbol);
+		symbol_cb_list_(order_window_id, symbol);
 	}
 
 

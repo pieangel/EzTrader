@@ -365,7 +365,7 @@ void FavoriteSymbolView::OnLButtonDown(UINT nFlags, CPoint point)
 		//if (_FundOrderWnd) _FundOrderWnd->OnSymbolClicked(found->second);
 		//if (_CompOrderWnd) _CompOrderWnd->OnSymbolClicked(found->second);
 		//if (_CompFundWnd) _CompFundWnd->OnSymbolClicked(found->second);
-		mainApp.event_hub()->process_symbol_event(found->second);
+		mainApp.event_hub()->process_symbol_event(order_window_id_, found->second);
 	}
 	Invalidate();
 

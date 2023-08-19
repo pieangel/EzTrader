@@ -177,6 +177,9 @@ public:
 	void set_center_window_id(const int center_window_id) {
 		center_window_id_ = center_window_id;
 	}
+	void set_order_window_id(const int order_window_id) {
+		order_window_id_ = order_window_id;
+	}
 	DarkHorse::SymbolType symbol_type() const { return symbol_type_; }
 	void symbol_type(DarkHorse::SymbolType val) { symbol_type_ = val; }
 	DarkHorse::PositionType position_type() const { return position_type_; }
@@ -191,7 +194,8 @@ private:
 	DarkHorse::PositionType position_type_{ DarkHorse::PositionType::None };
 	void CancelSellOrder(std::shared_ptr<DarkHorse::SmAccount> account);
 	void CancelBuyOrder(std::shared_ptr<DarkHorse::SmAccount> account);
-	int center_window_id_{0};
+	int order_window_id_{0};
+	int center_window_id_{ 0 };
 	void set_fixed_selected_cell();
 	void clear_fixed_selected_cell();
 	void on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag);

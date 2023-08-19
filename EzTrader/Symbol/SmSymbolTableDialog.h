@@ -33,6 +33,7 @@ public:
 	enum { IDD = IDD_SYMBOL_TABLE };
 #endif
 
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -70,7 +71,10 @@ public:
 	GaSpreadChart* SpreadChart = nullptr;
 	FavoriteSymbolView* favorite_symbol_view_ = nullptr;
 	SmMultiSpreadChart* MultiSpreadChart = nullptr;
+	int order_window_id() const { return order_window_id_; }
+	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	int order_window_id_ = 0;
 	bool _MoreSymbol{ false };
 	int _SelectedMarketIndex{ 0 };
 	int _StartMarketRowIndex{ 0 };

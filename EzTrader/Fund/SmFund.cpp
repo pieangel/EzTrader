@@ -31,6 +31,7 @@ namespace DarkHorse {
 
 		if (FindAccount(account->No())) return;
 		account->UsedForFund(true);
+		fund_type_ = account->Type();
 		_AccountVector.push_back(account);
 	}
 

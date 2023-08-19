@@ -18,6 +18,7 @@
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
+	class SmFund;
 }
 class SmSymbolTableDialog;
 class AbAccountOrderWindow;
@@ -45,14 +46,18 @@ private:
 	AccountOrderView account_order_view_;
 	AccountPositionView account_position_view_;
 	FavoriteSymbolView favorite_symbol_view_;
-	int main_window_id_ = 0;
+	int order_window_id_ = 0;
+	//int order_window_id_{ 0 };
 public:
-	void set_main_window_id(int id) { main_window_id_ = id; };
+	//int order_window_id() const { return order_window_id_; }
+	//void order_window_id(int val) { order_window_id_ = val; }
+	void order_window_id(int id) { order_window_id_ = id; };
 	void SetMainWnd(AbAccountOrderWindow* main_wnd);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedBtnAddFav();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void SetAccount(std::shared_ptr<DarkHorse::SmAccount> account);
+	void SetFund(std::shared_ptr<DarkHorse::SmFund> fund);
 	afx_msg LRESULT OnUmSymbolSelected(WPARAM wParam, LPARAM lParam);
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
 	afx_msg void OnBnClickedBtnCancelSel();

@@ -158,7 +158,7 @@ void DmFutureView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
 	if (cell_pos.first < 0 || cell_pos.first > 4) return;
-	mainApp.event_hub()->process_symbol_event(symbol_vec_[cell_pos.first].symbol_p);
+	mainApp.event_hub()->process_symbol_event(order_window_id_, symbol_vec_[cell_pos.first].symbol_p);
 
 	CBCGPStatic::OnLButtonDown(nFlags, point);
 }

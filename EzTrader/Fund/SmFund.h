@@ -47,6 +47,7 @@ namespace DarkHorse {
 		std::vector<std::shared_ptr<SmAccount>> _AccountVector;
 		std::string _Name;
 		int _id{ -1 };
+		/// "1" : abroad, "9" : domestic
 		std::string fund_type_;
 		std::set<int> account_id_set_;
 	};

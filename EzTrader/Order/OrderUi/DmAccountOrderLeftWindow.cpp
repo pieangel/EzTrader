@@ -145,6 +145,11 @@ void DmAccountOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> 
 	account_profit_loss_view_.UpdateAssetInfo();
 }
 
+void DmAccountOrderLeftWindow::SetFund(std::shared_ptr<DarkHorse::SmFund> fund)
+{
+	account_profit_loss_view_.Fund(fund);
+}
+
 LRESULT DmAccountOrderLeftWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
 {
 	//_FavoriteGrid.AddSymbol(static_cast<int>(wParam));

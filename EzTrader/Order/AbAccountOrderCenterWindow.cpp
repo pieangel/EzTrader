@@ -41,6 +41,7 @@
 #include "../Order/OrderRequest/OrderRequest.h"
 #include "../Task/SmTaskRequestManager.h"
 #include "../Util/IdGenerator.h"
+#include "AbFundOrderWindow.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -65,6 +66,7 @@ AbAccountOrderCenterWindow::AbAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	symbol_order_view_.set_order_request_type(OrderRequestType::Abroad);
 	symbol_order_view_.set_fill_condition(SmFilledCondition::Day);
 	symbol_order_view_.set_center_window_id(id_);
+	symbol_order_view_.set_order_window_id(order_window_id_);
 	symbol_tick_view_.set_center_window_id(id_);
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
@@ -84,6 +86,15 @@ void AbAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> v
 	symbol_order_view_.Account(val);
 	symbol_order_view_.Refresh();
 	symbol_position_view_.Account(val);
+	symbol_position_view_.Refresh();
+}
+
+void AbAccountOrderCenterWindow::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	symbol_order_view_.fund(val);
+	symbol_order_view_.Refresh();
+	symbol_position_view_.fund(val);
 	symbol_position_view_.Refresh();
 }
 
@@ -226,14 +237,12 @@ LRESULT AbAccountOrderCenterWindow::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
 
 void AbAccountOrderCenterWindow::SetMainDialog(AbAccountOrderWindow* main_dialog)
 {
-	//symbol_order_view_.SetMainDialog(main_dialog);
 	if (!main_dialog) return;
-	main_window_id_ = main_dialog->get_id();
 }
 
-void AbAccountOrderCenterWindow::SetFundDialog(SmFundOrderDialog* fund_dialog)
+void AbAccountOrderCenterWindow::SetFundDialog(AbFundOrderWindow* fund_dialog)
 {
-
+	if (!fund_dialog) return;
 }
 
 void AbAccountOrderCenterWindow::SetSelected(const bool& selected)
@@ -725,7 +734,9 @@ BOOL AbAccountOrderCenterWindow::OnEraseBkgnd(CDC* pDC)
 
 void AbAccountOrderCenterWindow::OnBnClickedBtnSymbol()
 {
-	
+	symbol_table_dialog_ = std::make_shared<SmSymbolTableDialog>(this);
+	symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
+	symbol_table_dialog_->ShowWindow(SW_SHOW);
 }
 
 LRESULT AbAccountOrderCenterWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)
@@ -864,10 +875,11 @@ void AbAccountOrderCenterWindow::OnEnChangeEditSlip()
 
 void AbAccountOrderCenterWindow::OnBnClickedBtnSearch()
 {
-	_SymbolTableDlg = std::make_shared<SmSymbolTableDialog>(this);
-	_SymbolTableDlg->Create(IDD_SYMBOL_TABLE, this);
-	_SymbolTableDlg->OrderWnd = this;
-	_SymbolTableDlg->ShowWindow(SW_SHOW);
+	symbol_table_dialog_ = std::make_shared<SmSymbolTableDialog>(this);
+	symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
+	symbol_table_dialog_->order_window_id(order_window_id_);
+	symbol_table_dialog_->OrderWnd = this;
+	symbol_table_dialog_->ShowWindow(SW_SHOW);
 }
 
 

@@ -62,10 +62,10 @@ END_MESSAGE_MAP()
 void AbAccountOrderLeftWindow::SetMainWnd(AbAccountOrderWindow* main_wnd)
 {
 	if (!main_wnd) return;
-	main_window_id_ = main_wnd->get_id();
-	account_order_view_.set_main_window_id(main_window_id_);
-	account_position_view_.set_main_window_id(main_window_id_);
-	favorite_symbol_view_.set_main_window_id(main_window_id_);
+	order_window_id_ = main_wnd->get_id();
+	account_order_view_.set_order_window_id(order_window_id_);
+	account_position_view_.set_order_window_id(order_window_id_);
+	favorite_symbol_view_.set_order_window_id(order_window_id_);
 	favorite_symbol_view_.SetMainWnd(main_wnd);
 }
 
@@ -193,6 +193,12 @@ void AbAccountOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> 
 	account_profit_loss_view_.UpdateAssetInfo();
 	//_FilledArea.Account(account);
 	//_AcceptedArea.Account(account);
+}
+
+void AbAccountOrderLeftWindow::SetFund(std::shared_ptr<DarkHorse::SmFund> fund)
+{
+	account_order_view_.Fund(fund);
+	account_position_view_.Fund(fund);
 }
 
 LRESULT AbAccountOrderLeftWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)

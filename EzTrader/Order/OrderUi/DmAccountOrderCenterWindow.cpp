@@ -70,11 +70,12 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 	symbol_position_view_.symbol_type(SymbolType::Domestic);
 	symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
 	symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
-	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1, std::placeholders::_2));
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 	symbol_order_view_.set_parent(this);
 	symbol_order_view_.set_center_window_id(id_);
+	symbol_order_view_.set_order_window_id(order_window_id_);
 	symbol_tick_view_.set_parent(this);
 	mainApp.event_hub()->add_window_resize_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_resize_event_from_order_view, this));
 	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -88,11 +89,11 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::strin
 		symbol_position_view_.symbol_type(SymbolType::Domestic);
 		symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
 		symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
-		mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1));
+		mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1, std::placeholders::_2));
 		EnableVisualManagerStyle(TRUE, TRUE);
 		EnableLayout();
 		symbol_order_view_.set_parent(this);
-		symbol_order_view_.set_center_window_id(id_);
+		symbol_order_view_.set_order_window_id(order_window_id_);
 		symbol_tick_view_.set_parent(this);
 		mainApp.event_hub()->add_window_resize_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_resize_event_from_order_view, this));
 		mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -112,6 +113,15 @@ void DmAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> v
 	symbol_order_view_.Account(val);
 	symbol_order_view_.Refresh();
 	symbol_position_view_.Account(val);
+	symbol_position_view_.Refresh();
+}
+
+void DmAccountOrderCenterWindow::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	symbol_order_view_.fund(val);
+	symbol_order_view_.Refresh();
+	symbol_position_view_.fund(val);
 	symbol_position_view_.Refresh();
 }
 
@@ -216,6 +226,11 @@ void DmAccountOrderCenterWindow::SetMainDialog(DmAccountOrderWindow* main_dialog
 
 
 
+void DmAccountOrderCenterWindow::SetFundDialog(DmFundOrderWindow* main_dialog)
+{
+	symbol_order_view_.SetFundDialog(main_dialog);
+}
+
 void DmAccountOrderCenterWindow::SetSelected(const bool& selected)
 {
 	selected_ = selected;
@@ -226,7 +241,7 @@ void DmAccountOrderCenterWindow::SetSelected(const bool& selected)
 void DmAccountOrderCenterWindow::OnSymbolClicked(const std::string& symbol_code)
 {
 	auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
-	if (symbol) set_symbol_from_out(symbol);
+	if (symbol) set_symbol_from_out(order_window_id_, symbol);
 }
 
 void DmAccountOrderCenterWindow::SetOrderAmount(const int& count)
@@ -488,8 +503,9 @@ void DmAccountOrderCenterWindow::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-void DmAccountOrderCenterWindow::set_symbol_from_out(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+void DmAccountOrderCenterWindow::set_symbol_from_out(const int order_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
+	if (order_window_id != order_window_id_) return;
 	if (!selected_  || symbol->symbol_type() != DarkHorse::SymbolType::Domestic) return;
 
 	add_to_symbol_combo(symbol);
@@ -762,6 +778,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSymbol()
 {
 	symbol_table_dialog_ = std::make_shared<SmSymbolTableDialog>(this);
 	symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
+	symbol_table_dialog_->order_window_id(order_window_id_);
 	symbol_table_dialog_->ShowWindow(SW_SHOW);
 }
 
@@ -769,7 +786,7 @@ LRESULT DmAccountOrderCenterWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lPa
 {
 	const int symbol_id = (int)wParam;
 	std::shared_ptr<DarkHorse::SmSymbol> symbol = mainApp.SymMgr()->FindSymbolById(symbol_id);
-	if (symbol) set_symbol_from_out(symbol);
+	if (symbol) set_symbol_from_out(order_window_id_, symbol);
 	return 1;
 }
 
