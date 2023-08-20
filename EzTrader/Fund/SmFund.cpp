@@ -31,6 +31,7 @@ namespace DarkHorse {
 
 		if (FindAccount(account->No())) return;
 		account->UsedForFund(true);
+		account->fund_name(_Name);
 		fund_type_ = account->Type();
 		_AccountVector.push_back(account);
 	}
@@ -40,6 +41,7 @@ namespace DarkHorse {
 		for (auto it = _AccountVector.begin(); it != _AccountVector.end(); it++) {
 			if ((*it)->No().compare(account_no) == 0) {
 				(*it)->UsedForFund(false);
+				(*it)->fund_name("");
 				_AccountVector.erase(it);
 				return;
 			}
@@ -50,6 +52,7 @@ namespace DarkHorse {
 	{
 		for (auto it = _AccountVector.begin(); it != _AccountVector.end(); it++) {
 			(*it)->UsedForFund(false);
+			(*it)->fund_name("");
 		}
 
 		_AccountVector.clear();

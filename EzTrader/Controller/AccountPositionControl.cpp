@@ -9,8 +9,12 @@
 #include "../Event/EventHub.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Symbol/SmSymbolManager.h"
+#include "../Account/SmAccount.h"
+#include "../Fund/SmFund.h"
+#include "../Position/GroupPositionManager.h"
 namespace DarkHorse {
 using account_position_manager_p = std::shared_ptr<AccountPositionManager>;
+using group_position_manager_p = std::shared_ptr<GroupPositionManager>;
 AccountPositionControl::AccountPositionControl()
 	: id_(IdGenerator::get_id())
 {
@@ -35,11 +39,41 @@ AccountPositionControl::~AccountPositionControl()
 
 void AccountPositionControl::load_position_from_account(const std::string& account_no)
 {
-	account_no_ = account_no;
+	account_no_set_.clear();
+	account_no_set_.insert(account_no);
 	position_map_.clear();
 	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_no);
 	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
+		if (it->second->open_quantity == 0) continue;
+		position_map_[it->second->symbol_code] = it->second;
+	}
+}
+
+void AccountPositionControl::load_position_from_parent_account(const std::string& account_no)
+{
+	account_no_set_.clear();
+	position_map_.clear();
+	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
+	if (!group_position_mgr) return;
+	const std::map<std::string, position_p>& position_map = group_position_mgr->get_group_position_map();
+	for (auto it = position_map.begin(); it != position_map.end(); it++) {
+		account_no_set_.insert(it->second->account_no);
+		if (it->second->open_quantity == 0) continue;
+		position_map_[it->second->symbol_code] = it->second;
+	}
+}
+
+void AccountPositionControl::load_position_from_fund(const std::string& fund_name)
+{
+	account_no_set_.clear();
+	position_map_.clear();
+	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
+	if (!group_position_mgr) return;
+	const std::map<std::string, position_p>& position_map = group_position_mgr->get_group_position_map();
+	for (auto it = position_map.begin(); it != position_map.end(); it++) {
+		account_no_set_.insert(it->second->account_no);
+		if (it->second->open_quantity == 0) continue;
 		position_map_[it->second->symbol_code] = it->second;
 	}
 }
@@ -47,17 +81,25 @@ void AccountPositionControl::load_position_from_account(const std::string& accou
 void AccountPositionControl::update_position(position_p position)
 {
 	if (!position) return;
-	if (position->order_source_type == DarkHorse::OrderType::MainAccount) {
-		if (account_no_ != position->account_no) return;
+	auto found = account_no_set_.find(position->account_no);
+	if (position->order_source_type == DarkHorse::OrderType::SubAccount) {
+		if (account_) 
+			load_position_from_account(account_->No());
+		if (fund_)
+			load_position_from_fund(fund_->Name());
 	}
-	else {
-		if (account_no_ != position->parent_account_no) return;
+	else if (position->order_source_type == DarkHorse::OrderType::MainAccount) {
+		if (account_)
+			load_position_from_parent_account(account_->No());
 	}
-	auto symbol_position = mainApp.total_position_manager()->get_position(account_no_, position->symbol_code);
-	if (position->open_quantity == 0)
-		remove_position(symbol_position->symbol_code);
-	else
-		add_position(symbol_position);
+	else if (position->order_source_type == DarkHorse::OrderType::Fund) {
+		if (account_)
+			load_position_from_parent_account(account_->No());
+		if (fund_)
+			load_position_from_fund(fund_->Name());
+	}
+	else return;
+	
 	if (event_handler_) event_handler_();
 }
 
@@ -77,23 +119,27 @@ void AccountPositionControl::update_profit_loss(quote_p quote)
 	if (event_handler_) event_handler_();
 }
 
+void AccountPositionControl::set_account(std::shared_ptr<SmAccount> account)
+{
+	if (!account) return;
+	account_ = account;
+	if (account_->is_subaccount())
+		load_position_from_account(account_->No());
+	else
+		load_position_from_parent_account(account_->No());
+}
+
+void AccountPositionControl::set_fund(std::shared_ptr<SmFund> fund)
+{
+	if (!fund) return;
+	fund_ = fund;
+	load_position_from_fund(fund_->Name());
+}
+
 position_p AccountPositionControl::get_position(const std::string& symbol_code)
 {
 	auto it = position_map_.find(symbol_code);
 	if (it == position_map_.end()) return nullptr;
 	return it->second;
 }
-
-void AccountPositionControl::add_position(position_p position)
-{
-	position_map_[position->symbol_code] = position;
-}
-
-void AccountPositionControl::remove_position(const std::string& symbol_code)
-{
-	auto it = position_map_.find(symbol_code);
-	if (it == position_map_.end()) return;
-	position_map_.erase(it);
-}
-
 }

@@ -23,10 +23,16 @@ public:
 	
 	void get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map);
 	void get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map);
-	std::shared_ptr<Position> get_position_from_account(const std::string& account_no, const std::string& symbol_code);
 	void get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map);
 
+	void get_position_from_fund(const std::string& fund_name, std::map<std::string, std::shared_ptr<Position>>& position_map);
+	void get_position_from_account(const std::string& account_no, std::map<std::string, std::shared_ptr<Position>>& position_map);
+	void get_position_from_parent_account(const std::string& account_no, std::map<std::string, std::shared_ptr<Position>>& position_map);
+
+	std::shared_ptr<Position> get_position_from_account(const std::string& account_no, const std::string& symbol_code);
 	account_position_manager_p get_account_position_manager(const std::string& account_no);
+	
+
 	/// <summary>
 	/// 순서는 update_position->update_account_position->update_fund_position로 진행한다. 
 	/// 반드시 이 순서를 지켜야 한다. 그리고 모든 주문에 대하여 이 세개의 함수를 모두 불러야 하는지 
@@ -48,7 +54,14 @@ public:
 	void update_account_profit_loss(const std::string& account_no);
 	position_p find_position_by_id(const int& position_id);
 	void update_group_position(std::shared_ptr<Position> position);
+	group_position_manager_p find_fund_group_position_manager(const std::string& fund_name);
+	group_position_manager_p find_account_group_position_manager(const std::string& account_no);
+
 private:
+	group_position_manager_p find_add_account_group_position_manager(const std::string& account_no);
+	group_position_manager_p create_account_group_position_manager(const std::string& account_no);
+	group_position_manager_p find_add_fund_group_position_manager(const std::string& fund_name);
+	group_position_manager_p create_fund_group_position_manager(const std::string& fund_name);
 	group_position_manager_p find_add_group_position_manager(std::shared_ptr<Position> position);
 	group_position_manager_p create_group_position_manager(std::shared_ptr<Position> position);
 	// key : position id, value : position object.
@@ -56,7 +69,7 @@ private:
 	account_position_manager_p find_position_manager(const std::string& account_no);
 	account_position_manager_p create_position_manager(const std::string& account_no);
 	// key : account_no, value : account position manager object.
-	std::map<std::string, account_position_manager_p> position_manager_map_;
+	std::map<std::string, account_position_manager_p> account_position_manager_map_;
 	// key : account no, value : group position manager object.
 	std::map<std::string, group_position_manager_p> account_group_position_manager_map_;
 	// key : fund name, value : group position manager object.

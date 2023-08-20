@@ -51,6 +51,7 @@ namespace DarkHorse {
 
 		std::shared_ptr<Position> position_{nullptr};
 		std::weak_ptr<SmAccount> parent_account_;
+		std::string fund_name_;
 	public:
 		std::weak_ptr<DarkHorse::SmAccount> parent_account() const { return parent_account_; }
 		void parent_account(std::weak_ptr<DarkHorse::SmAccount> val) { parent_account_ = val; }
@@ -112,6 +113,8 @@ namespace DarkHorse {
 		void Ratio(double val) { _Ratio = val; }
 		bool is_subaccount() const { return is_sub_account_; }
 		void is_subaccount(bool val) { is_sub_account_ = val; }
+		std::string fund_name() const { return fund_name_; }
+		void fund_name(std::string val) { fund_name_ = val; }
 	};
 }
 

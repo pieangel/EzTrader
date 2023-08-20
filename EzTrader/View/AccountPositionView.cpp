@@ -74,8 +74,17 @@ AccountPositionView::AccountPositionView()
 
 void AccountPositionView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 {
-	_Fund = val;
-	UpdateFundPositionInfo();
+	fund_ = val;
+
+	if (!account_position_control_) return;
+	account_position_control_->set_fund(fund_);
+	enable_position_show_ = true;
+	// 계좌 유형에 따라 표시 내용과 표시 간격을 바꾼다.
+	//SetColumnName(3, "평균단가");
+	//SetColumnWidth(0, column_widths_vector_[0]);
+	set_column_widths(fund_->fund_type());
+	set_column_names(fund_->fund_type());
+	update_account_position();
 }
 
 AccountPositionView::~AccountPositionView()
@@ -121,8 +130,7 @@ void AccountPositionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	account_ = val;
 	if (!account_position_control_) return;
-
-	account_position_control_->load_position_from_account(account_->No());
+	account_position_control_->set_account(account_);
 	enable_position_show_ = true;
 	// 계좌 유형에 따라 표시 내용과 표시 간격을 바꾼다.
 	//SetColumnName(3, "평균단가");
@@ -388,9 +396,9 @@ void AccountPositionView::LiqSelPositionsForAccount()
 
 void AccountPositionView::LiqSelPositionsForFund()
 {
-	if (!_Fund) return;
+	if (!fund_) return;
 
-	const std::vector<std::shared_ptr<SmAccount>>& account_vec = _Fund->GetAccountVector();
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
 	for (auto it2 = account_vec.begin(); it2 != account_vec.end(); it2++) {
 		auto account = *it2;
 		for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
@@ -423,9 +431,9 @@ void AccountPositionView::LiqAllForAccount()
 
 void AccountPositionView::LiqAllForFund()
 {
-	if (!_Fund) return;
+	if (!fund_) return;
 
-	const std::vector<std::shared_ptr<SmAccount>>& account_vec = _Fund->GetAccountVector();
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
 	for (auto it2 = account_vec.begin(); it2 != account_vec.end(); it2++) {
 		auto account = *it2;
 		for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
@@ -585,12 +593,12 @@ void AccountPositionView::UpdateAccountPositionInfo()
 
 void AccountPositionView::UpdateFundPositionInfo()
 {
-	if (!_Fund) return;
+	if (!fund_) return;
 
 	//ClearOldContents();
 	_RowToPositionMap.clear();
 
-	const std::vector<std::shared_ptr<SmAccount>>& account_vec = _Fund->GetAccountVector();
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
 	int row = 0, total_pos_count = 0;
 	for (size_t i = 0; i < account_vec.size(); ++i) {
 		auto account = account_vec[i];
