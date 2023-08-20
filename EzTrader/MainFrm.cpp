@@ -1154,7 +1154,7 @@ void CMainFrame::OnFundOrder()
 
 void CMainFrame::OnFundRemain()
 {
-	std::shared_ptr< SmJangGoDialog> fundJangoDialog = std::make_shared<SmJangGoDialog>();
+	std::shared_ptr< MiniJangoDialog> fundJangoDialog = std::make_shared<MiniJangoDialog>();
 	fundJangoDialog->Mode(1);
 	fundJangoDialog->Create(IDD_JANGO, this);
 	_JangoWndMap[fundJangoDialog->GetSafeHwnd()] = fundJangoDialog;

@@ -177,12 +177,16 @@ void AccountAssetView::on_update_account_profit_loss()
 
 void AccountAssetView::update_account_profit_loss()
 {
-	if (!asset_control_ || !account_profit_loss_control_ || !account_) return;
+	if (!asset_control_ || !account_profit_loss_control_ ) return;
+
+	std::string format_type("1");
+	if (account_) format_type = account_->Type();
+	if (fund_) format_type = fund_->fund_type();
 
 	const VmAsset& asset = asset_control_->get_asset();
 	const VmAccountProfitLoss account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
 	auto cell = _Grid->FindCell(0, 1);
-	const int decimal = account_->Type() == "1" ? 2 : 0;
+	const int decimal = format_type == "1" ? 2 : 0;
 	std::string value;
 	value = VtStringUtil::get_format_value(asset.balance, decimal, true);
 	if (cell) cell->Text(value);

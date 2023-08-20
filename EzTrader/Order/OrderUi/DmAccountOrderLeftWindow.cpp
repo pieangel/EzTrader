@@ -156,6 +156,7 @@ void DmAccountOrderLeftWindow::SetFund(std::shared_ptr<DarkHorse::SmFund> fund)
 	//option_view_.Account(account);
 	//future_view_.Account(account);
 	//asset_view_.Account(account);
+	asset_view_.Fund(fund);
 	account_profit_loss_view_.Fund(fund);
 }
 

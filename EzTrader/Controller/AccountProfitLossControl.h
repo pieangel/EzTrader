@@ -41,6 +41,7 @@ namespace DarkHorse {
 	private:
 		position_p get_position(const std::string& symbol_code);
 		void refresh_account_profit_loss(account_profit_loss_p account_profit_loss);
+		void reset_account_profit_loss();
 		void update_account_profit_loss();
 		std::set<std::string> account_no_set_;
 		std::function<void()> event_handler_;

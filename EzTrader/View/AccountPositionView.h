@@ -136,10 +136,8 @@ private:
 	// 0 : account , 1 : fund
 	int _Mode = 0;
 	void update_account_position();
-	void update_dm_account_position(CBCGPGridRow* row, position_p position);
-	void update_ab_account_position(CBCGPGridRow* row, position_p position);
-	void UpdateAccountPositionInfo();
-	void UpdateFundPositionInfo();
+	void update_dm_account_position(CBCGPGridRow* row, position_p position, const std::string& format_type);
+	void update_ab_account_position(CBCGPGridRow* row, position_p position, const std::string& format_type);
 	bool _EnableQuoteShow = false;
 	bool enable_position_show_ = false;
 	COLORREF _DefaultBackColor;

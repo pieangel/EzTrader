@@ -148,7 +148,7 @@ public:
 	std::map<HWND, AbAccountOrderWindow*> _OrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmOrderCompMainDialog>> _CompOrderWndMap;
-	std::map<HWND, std::shared_ptr<SmJangGoDialog>> _JangoWndMap;
+	std::map<HWND, std::shared_ptr<MiniJangoDialog>> _JangoWndMap;
 	std::map<HWND, std::shared_ptr<MiniJangoDialog>> mini_jango_wnd_map_;
 	std::map<HWND, std::shared_ptr<SmFilledListDialog>> _FilledWndMap;
 

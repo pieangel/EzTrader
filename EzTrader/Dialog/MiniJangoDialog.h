@@ -35,8 +35,8 @@ private:
 	void SetAccount();
 	void SetFund();
 	// key : combo index, value : account object.
-	std::map<int, std::shared_ptr<DarkHorse::SmAccount>> _ComboAccountMap;
-	std::map<int, std::shared_ptr<DarkHorse::SmFund>> _ComboFundMap;
+	std::map<int, std::string> _ComboAccountMap;
+	std::map<int, std::string> _ComboFundMap;
 	int _CurrentAccountIndex{ 0 };
 	// 0 : account, 1 : fund
 	int _Mode = 0;

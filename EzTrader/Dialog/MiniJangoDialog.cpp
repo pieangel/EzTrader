@@ -93,32 +93,36 @@ void MiniJangoDialog::OnTimer(UINT_PTR nIDEvent)
 
 void MiniJangoDialog::SetAccount()
 {
-
+	_StaticCombo.SetWindowText("°èÁÂ");
 	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
 	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
 		auto account = it->second;
-		if (account->is_subaccount()) continue;
+		//if (account->is_subaccount()) continue;
 
 		std::string account_info;
 		account_info.append(account->Name());
 		account_info.append(" : ");
 		account_info.append(account->No());
 		const int index = _ComboAccount.AddString(account_info.c_str());
-		_ComboAccountMap[index] = account;
+		_ComboAccountMap[index] = account->No();
 
 	}
 
 	if (!_ComboAccountMap.empty()) {
 		_CurrentAccountIndex = 0;
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
-		account_profit_loss_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
-		account_position_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
+		const std::string account_no = _ComboAccountMap[_CurrentAccountIndex];
+		auto account = mainApp.AcntMgr()->FindAccount(account_no);
+		if (account == nullptr) return;
+		account_profit_loss_view_.Account(account);
+		account_position_view_.Account(account);
 	}
 }
 
 
 void MiniJangoDialog::SetFund()
 {
+	_StaticCombo.SetWindowText("ÆÝµå");
 	const std::map<std::string, std::shared_ptr<SmFund>>& fund_map = mainApp.FundMgr()->GetFundMap();
 
 	for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
@@ -126,17 +130,18 @@ void MiniJangoDialog::SetFund()
 		std::string account_info;
 		account_info.append(fund->Name());
 		const int index = _ComboAccount.AddString(account_info.c_str());
-		_ComboFundMap[index] = fund;
+		_ComboFundMap[index] = fund->Name();
 
 	}
 
 	if (!_ComboFundMap.empty()) {
 		_CurrentAccountIndex = 0;
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
-		account_profit_loss_view_.Fund(_ComboFundMap[_CurrentAccountIndex]);
-		account_position_view_.Fund(_ComboFundMap[_CurrentAccountIndex]);
-		//account_profit_loss_view_.UpdateFundAssetInfo();
-		//account_position_view_.UpdateFundPositionInfo();
+		const std::string cur_fund_name = _ComboFundMap[_CurrentAccountIndex];
+		auto fund = mainApp.FundMgr()->FindFund(cur_fund_name);
+		if (fund == nullptr) return;
+		account_profit_loss_view_.Fund(fund);
+		account_position_view_.Fund(fund);
 	}
 }
 
@@ -147,7 +152,9 @@ void MiniJangoDialog::OnCbnSelchangeComboAccount()
 
 	_CurrentAccountIndex = cur_sel;
 	if (_Mode == 0) {
-		auto account = _ComboAccountMap[_CurrentAccountIndex];
+		const std::string& account_no = _ComboAccountMap[_CurrentAccountIndex];
+		auto account = mainApp.AcntMgr()->FindAccount(account_no);
+		if (account == nullptr) return;
 		account_profit_loss_view_.Account(account);
 		account_position_view_.Account(account);
 		account_profit_loss_view_.Invalidate();
@@ -165,8 +172,11 @@ void MiniJangoDialog::OnCbnSelchangeComboAccount()
 
 	}
 	else {
-		account_profit_loss_view_.Fund(_ComboFundMap[_CurrentAccountIndex]);
-		account_position_view_.Fund(_ComboFundMap[_CurrentAccountIndex]);
+		const std::string cur_fund_name = _ComboFundMap[_CurrentAccountIndex];
+		auto fund = mainApp.FundMgr()->FindFund(cur_fund_name);
+		if (fund == nullptr) return;
+		account_profit_loss_view_.Fund(fund);
+		account_position_view_.Fund(fund);
 		//account_profit_loss_view_.UpdateFundAssetInfo();
 		//account_position_view_.UpdateFundPositionInfo();
 		account_profit_loss_view_.Invalidate();

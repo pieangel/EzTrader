@@ -2714,9 +2714,17 @@ void DarkHorse::ViClient::register_symbol(task_arg&& arg)
 
 void DarkHorse::ViClient::register_account(const std::string& account_no)
 {
+	std::string account_no_temp;
+	auto pos = account_no.find('_');
+	if (pos != std::string::npos) {
+		account_no_temp = account_no.substr(0, pos);
+	}
+	else {
+		account_no_temp = account_no;
+	}
 	const std::string user_id = mainApp.LoginMgr()->id();
-	_RegAccountSet.insert(account_no);
-	int nResult = m_CommAgent.CommSetJumunChe(user_id.c_str(), account_no.c_str());
+	_RegAccountSet.insert(account_no_temp);
+	int nResult = m_CommAgent.CommSetJumunChe(user_id.c_str(), account_no_temp.c_str());
 }
 
 void DarkHorse::ViClient::unregister_symbol(const std::string& symbol_code)

@@ -181,7 +181,7 @@ void AccountPositionView::UpdateAcceptedOrder()
 
 void AccountPositionView::UpdatePositionInfo()
 {
-	_Mode == 0 ? UpdateAccountPositionInfo() : UpdateFundPositionInfo();
+	
 }
 
 void AccountPositionView::LiqSelPositions()
@@ -349,7 +349,7 @@ void AccountPositionView::set_column_widths(const std::string& type)
 		SetColumnWidth(1, ab_column_widths_vector_[1]);
 		SetColumnWidth(2, ab_column_widths_vector_[2]);
 		SetColumnWidth(3, ab_column_widths_vector_[3]);
-		EnableCheckBoxes(TRUE);
+		EnableCheckBoxes(FALSE);
 	}
 	else {
 		SetColumnWidth(0, dm_column_widths_vector_[0]);
@@ -449,12 +449,16 @@ void AccountPositionView::LiqAllForFund()
 
 void AccountPositionView::update_account_position()
 {
-	if (!account_ || !account_position_control_) return;
+	if (!account_position_control_) return;
 
 	row_to_position_.clear();
 	
 	try {
-	
+	std::string format_type;
+	if (account_) format_type = account_->Type();
+	else if (fund_) format_type = fund_->fund_type();
+	else return;
+
 	const std::map<std::string, position_p>& account_pos_map = account_position_control_->get_position_map();
 	int row = 0;
 	for (auto it = account_pos_map.begin(); it != account_pos_map.end(); ++it) {
@@ -464,10 +468,10 @@ void AccountPositionView::update_account_position()
 		if (position->open_quantity == 0) {
 			continue;
 		}
-		if (account_->Type() == "1")
-			update_ab_account_position(pRow, position);
+		if (format_type == "1")
+			update_ab_account_position(pRow, position, format_type);
 		else
-			update_dm_account_position(pRow, position);
+			update_dm_account_position(pRow, position, format_type);
 			
 		_OldContentRowSet.insert(row);
 		row_to_position_[row] = position;
@@ -482,7 +486,7 @@ void AccountPositionView::update_account_position()
 	}
 }
 
-void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, position_p position)
+void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)
 {
 	pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
 	//pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
@@ -515,7 +519,7 @@ void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, positio
 	std::string value_string = VtStringUtil::get_format_value(position->average_price / pow(10, 2), 2, true);
 	pRow->GetItem(2)->SetValue(value_string.c_str(), TRUE);
 	//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
-	const int decimal = account_->Type() == "1" ? 2 : 0;
+	const int decimal = format_type == "1" ? 2 : 0;
 	std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);
 
 	CBCGPGridItem* pItem = pRow->GetItem(3);
@@ -537,7 +541,7 @@ void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, positio
 	
 }
 
-void AccountPositionView::update_ab_account_position(CBCGPGridRow* pRow, position_p position)
+void AccountPositionView::update_ab_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)
 {
 	pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
 	//pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
@@ -569,7 +573,7 @@ void AccountPositionView::update_ab_account_position(CBCGPGridRow* pRow, positio
 	std::string open_quantity = VtStringUtil::get_format_value(position->open_quantity, 0, true);
 	pRow->GetItem(3)->SetValue(open_quantity.c_str(), TRUE);
 	//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
-	const int decimal = account_->Type() == "1" ? 2 : 0;
+	const int decimal = format_type == "1" ? 2 : 0;
 	std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);
 	if (position->open_profit_loss > 0) {
 		pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
@@ -584,91 +588,6 @@ void AccountPositionView::update_ab_account_position(CBCGPGridRow* pRow, positio
 		pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
 	}
 	pRow->GetItem(2)->SetValue(open_pl.c_str(), TRUE);
-}
-
-void AccountPositionView::UpdateAccountPositionInfo()
-{
-	
-}
-
-void AccountPositionView::UpdateFundPositionInfo()
-{
-	if (!fund_) return;
-
-	//ClearOldContents();
-	_RowToPositionMap.clear();
-
-	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
-	int row = 0, total_pos_count = 0;
-	for (size_t i = 0; i < account_vec.size(); ++i) {
-		auto account = account_vec[i];
-
-		auto account_pos_mgr = mainApp.total_position_manager()->get_account_position_manager(account->No());
-		const std::map<std::string, position_p>& account_pos_map = account_pos_mgr->get_position_map();
-
-		for (auto it = account_pos_map.begin(); it != account_pos_map.end(); ++it) {
-			const auto position = it->second;
-			total_pos_count += abs(position->open_quantity);
-			CBCGPGridRow* pRow = GetRow(row);
-			if (!pRow) continue;
-			if (position->open_quantity == 0) {
-
-				continue;
-			}
-
-			pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
-			//pRow->GetItem(0)->SetTextColor(RGB(255, 0, 0));
-			if (position->open_quantity  > 0) {
-				//pRow->GetItem(0)->SetBackgroundColor(RGB(255, 0, 0));
-				pRow->GetItem(1)->SetBackgroundColor(RGB(255, 0, 0));
-				//pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
-				//pRow->GetItem(3)->SetBackgroundColor(RGB(255, 0, 0));
-
-				//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
-				pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
-				//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-				//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
-
-				pRow->GetItem(1)->SetValue("매수", TRUE);
-			}
-			else {
-				pRow->GetItem(1)->SetValue("매도", TRUE);
-				//pRow->GetItem(0)->SetBackgroundColor(RGB(0, 0, 255));
-				pRow->GetItem(1)->SetBackgroundColor(RGB(0, 0, 255));
-				//pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
-				//pRow->GetItem(3)->SetBackgroundColor(RGB(0, 0, 255));
-
-				//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
-				pRow->GetItem(1)->SetTextColor(RGB(255, 255, 255));
-				//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-				//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
-			}
-
-			pRow->GetItem(3)->SetValue(position->open_quantity, TRUE);
-			const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
-			pRow->GetItem(2)->SetValue(open_pl.c_str(), TRUE);
-
-			if (position->open_profit_loss > 0) {
-				pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
-				pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-			}
-			else if (position->open_profit_loss < 0) {
-				pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
-				pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-			}
-			else {
-				pRow->GetItem(2)->SetBackgroundColor(_DefaultBackColor);
-				pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
-			}
-
-			_OldContentRowSet.insert(row);
-			_RowToPositionMap[row] = position;
-			row++;
-		}
-	}
-	if (total_pos_count == 0) row = 0;
-	ClearOldContents(row);
-	_OldMaxRow = row;
 }
 
 void AccountPositionView::ClearOldContents()

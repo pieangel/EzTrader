@@ -72,7 +72,7 @@ void AccountProfitLossControl::load_position_from_parent_account(const std::stri
 		}
 	}
 	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
-	if (!group_position_mgr) return;
+	if (!group_position_mgr) { reset_account_profit_loss();  return; }
 	account_profit_loss_p account_profit_loss = group_position_mgr->get_whole_profit_loss();
 	refresh_account_profit_loss(account_profit_loss);
 
@@ -89,7 +89,7 @@ void AccountProfitLossControl::load_position_from_fund(const std::string& fund_n
 		}
 	}
 	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
-	if (!group_position_mgr) return;
+	if (!group_position_mgr) { reset_account_profit_loss();  return; }
 	account_profit_loss_p fund_profit_loss = group_position_mgr->get_whole_profit_loss();
 	refresh_account_profit_loss(fund_profit_loss);
 
@@ -172,6 +172,14 @@ void AccountProfitLossControl::refresh_account_profit_loss(account_profit_loss_p
 	account_profit_loss_.open_profit_loss = account_profit_loss->open_profit_loss;
 	account_profit_loss_.trade_fee = account_profit_loss->trade_fee;
 	account_profit_loss_.pure_trade_profit_loss = account_profit_loss->pure_trade_profit_loss;
+}
+
+void AccountProfitLossControl::reset_account_profit_loss()
+{
+	account_profit_loss_.trade_profit_loss = 0;
+	account_profit_loss_.open_profit_loss = 0;
+	account_profit_loss_.trade_fee = 0;
+	account_profit_loss_.pure_trade_profit_loss = 0;
 }
 
 void AccountProfitLossControl::update_account_profit_loss()
