@@ -41,6 +41,7 @@ namespace DarkHorse {
 		void fund_type(std::string val) { fund_type_ = val; }
 		bool is_account_exist(const int& account_id);
 		std::shared_ptr<Position> position() const { return position_; }
+		std::shared_ptr<SmAccount> get_first_account();
 	private:
 		std::shared_ptr<Position> position_{ nullptr };
 		// key : account no, value : account object

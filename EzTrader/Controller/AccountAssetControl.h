@@ -16,7 +16,7 @@ namespace DarkHorse {
 		~AccountAssetControl();
 		void load_position_from_parent_account(const std::string& account_no);
 		void load_position_from_fund(const std::string& fund_name);
-		void load_position_from_account(const std::string& account_no);
+		void load_asset_from_account(const std::string& account_no);
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}
@@ -26,6 +26,8 @@ namespace DarkHorse {
 		void set_account(std::shared_ptr<SmAccount> account);
 		void set_fund(std::shared_ptr<SmFund> fund);
 	private:
+		void load_account_asset(std::shared_ptr<DarkHorse::SmAccount> account);
+		void load_asset_from_account(std::shared_ptr<DarkHorse::SmAccount> account);
 		std::shared_ptr<DarkHorse::SmAccount> account_{ nullptr };
 		std::shared_ptr<SmFund> fund_;
 

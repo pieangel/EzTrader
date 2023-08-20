@@ -172,4 +172,11 @@ namespace DarkHorse {
 		return true;
 	}
 
+	std::shared_ptr<DarkHorse::SmAccount> SmFund::get_first_account()
+	{
+		if (_AccountVector.empty()) return nullptr;
+
+		return _AccountVector[0];
+	}
+
 } // namespace DarkHorse

@@ -142,13 +142,22 @@ void TotalAssetProfitLossView::OnPaint()
 	m_pGM->EndDraw();
 }
 
+void TotalAssetProfitLossView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+
+	if (!account_profit_loss_control_) return;
+	account_profit_loss_control_->set_fund(fund_);
+	asset_control_->set_fund(fund_);
+	enable_account_profit_loss_show_ = true;
+}
+
 void TotalAssetProfitLossView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	account_ = val;
 
 	if (!account_profit_loss_control_) return;
 	account_profit_loss_control_->set_account(account_);
-	account_profit_loss_control_->load_position_from_account(account_->No());
 	asset_control_->set_account(account_);
 	enable_account_profit_loss_show_ = true;
 }
@@ -284,9 +293,9 @@ void TotalAssetProfitLossView::SetAccountAssetInfo()
 
 void TotalAssetProfitLossView::SetFundAssetInfo()
 {
-	if (!_Fund) return;
+	if (!fund_) return;
 
-	const std::vector<std::shared_ptr<SmAccount>>& account_vec = _Fund->GetAccountVector();
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
 
 	double balance = 0.0, order_margin = 0.0, open_pl = 0.0, settled_pl = 0.0, fee = 0.0, pure_pl = 0.0;
 	for (auto it = account_vec.begin(); it != account_vec.end(); it++) {
