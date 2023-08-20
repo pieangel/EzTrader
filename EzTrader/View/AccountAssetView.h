@@ -24,8 +24,8 @@ public:
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
-	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
-	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
+	std::shared_ptr<DarkHorse::SmFund> Fund() const { return fund_; }
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
 public:
@@ -61,7 +61,7 @@ private:
 
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
-	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
+	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

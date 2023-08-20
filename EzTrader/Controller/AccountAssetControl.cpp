@@ -4,6 +4,7 @@
 #include "../Account/SmAccount.h"
 #include "../Account/SmAccountManager.h"
 #include "../Global/SmTotalManager.h"
+#include "../Fund/SmFund.h"
 namespace DarkHorse {
 
 	AccountAssetControl::AccountAssetControl()
@@ -16,6 +17,16 @@ namespace DarkHorse {
 {
 
 }
+
+	void AccountAssetControl::load_position_from_parent_account(const std::string& account_no)
+	{
+
+	}
+
+	void AccountAssetControl::load_position_from_fund(const std::string& fund_name)
+	{
+
+	}
 
 void AccountAssetControl::load_position_from_account(const std::string& account_no)
 {
@@ -35,6 +46,25 @@ void AccountAssetControl::load_position_from_account(const std::string& account_
 	asset_.additional_margin = account->Asset.AdditionalMargin; // 추가증거금
 	asset_.order_margin = account->Asset.OrderMargin; // 주문가능금액
 	asset_.currency = account->Asset.Currency;
+}
+
+void AccountAssetControl::set_account(std::shared_ptr<SmAccount> account)
+{
+	if (!account) return;
+	account_ = account;
+	if (account_->is_subaccount()) {
+		if (!account_->parent_account().lock()) return;
+		load_position_from_account(account_->parent_account().lock()->No());
+	}
+	else
+		load_position_from_parent_account(account_->No());
+}
+
+void AccountAssetControl::set_fund(std::shared_ptr<SmFund> fund)
+{
+	if (!fund) return;
+	fund_ = fund;
+	load_position_from_fund(fund_->Name());
 }
 
 }
