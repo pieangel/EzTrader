@@ -56,6 +56,7 @@ void AccountPositionControl::load_position_from_parent_account(const std::string
 	position_map_.clear();
 	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
 	if (!group_position_mgr) return;
+	//account_no_set_.insert(account_no);
 	const std::map<std::string, position_p>& position_map = group_position_mgr->get_group_position_map();
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
 		account_no_set_.insert(it->second->account_no);
@@ -82,19 +83,29 @@ void AccountPositionControl::update_position(position_p position)
 {
 	if (!position) return;
 	auto found = account_no_set_.find(position->account_no);
+	if (found == account_no_set_.end()) return;
+
 	if (position->order_source_type == DarkHorse::OrderType::SubAccount) {
-		if (account_) 
-			load_position_from_account(account_->No());
+		if (account_) {
+			if (account_->is_subaccount())
+				load_position_from_account(account_->No());
+			else
+				load_position_from_parent_account(account_->No());
+		}
 		if (fund_)
 			load_position_from_fund(fund_->Name());
 	}
 	else if (position->order_source_type == DarkHorse::OrderType::MainAccount) {
-		if (account_)
+		if (account_ && !account_->is_subaccount())
 			load_position_from_parent_account(account_->No());
 	}
 	else if (position->order_source_type == DarkHorse::OrderType::Fund) {
-		if (account_)
-			load_position_from_parent_account(account_->No());
+		if (account_) {
+			if (account_->is_subaccount())
+				load_position_from_account(account_->No());
+			else
+				load_position_from_parent_account(account_->No());
+		}
 		if (fund_)
 			load_position_from_fund(fund_->Name());
 	}

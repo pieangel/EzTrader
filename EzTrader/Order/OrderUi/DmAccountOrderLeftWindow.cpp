@@ -141,15 +141,21 @@ void DmAccountOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 
 void DmAccountOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> account)
 {
+	if (!account) return;
+
 	option_view_.Account(account);
 	future_view_.Account(account);
 	asset_view_.Account(account);
 	account_profit_loss_view_.Account(account);
-	account_profit_loss_view_.UpdateAssetInfo();
 }
 
 void DmAccountOrderLeftWindow::SetFund(std::shared_ptr<DarkHorse::SmFund> fund)
 {
+	if (!fund) return;
+
+	//option_view_.Account(account);
+	//future_view_.Account(account);
+	//asset_view_.Account(account);
 	account_profit_loss_view_.Fund(fund);
 }
 

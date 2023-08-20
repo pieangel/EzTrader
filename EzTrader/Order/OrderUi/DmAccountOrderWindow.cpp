@@ -575,9 +575,6 @@ void DmAccountOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> 
 		_LeftWnd->SetAccount(_Account);
 		_RightWnd->SetAccount(_Account);
 	}
-
-	_LeftWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
-	_RightWnd->SetAccount(_ComboAccountMap[_CurrentAccountIndex]);
 }
 
 std::string DmAccountOrderWindow::get_account_no()

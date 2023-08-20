@@ -361,6 +361,8 @@ void TotalPositionManager::update_group_position(std::shared_ptr<Position> posit
 		group_position_manager->update_group_position(position);
 	}
 	else return;
+
+	mainApp.event_hub()->process_position_event(position);
 }
 
 }

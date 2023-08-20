@@ -112,6 +112,14 @@ void AccountProfitLossView::OnPaint()
 	m_pGM->EndDraw();
 }
 
+void AccountProfitLossView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	if (!account_profit_loss_control_) return;
+	account_profit_loss_control_->set_fund(fund_);
+	enable_account_profit_loss_show_ = true;
+}
+
 void AccountProfitLossView::on_update_account_profit_loss()
 {
 	enable_account_profit_loss_show_ = true;
@@ -123,7 +131,6 @@ void AccountProfitLossView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 
 	if (!account_profit_loss_control_) return;
 	account_profit_loss_control_->set_account(account_);
-	account_profit_loss_control_->load_position_from_account(account_->No());
 	enable_account_profit_loss_show_ = true;
 }
 
@@ -167,10 +174,14 @@ std::string AccountProfitLossView::get_format_price(const double& value)
 
 void AccountProfitLossView::update_account_profit_loss()
 {
-	if (!account_profit_loss_control_ || !account_) return;
+	if (!account_profit_loss_control_ ) return;
+
+	std::string format_type("0");
+	if (account_) format_type = account_->Type();
+	if (fund_) format_type = fund_->fund_type();
 
 	const VmAccountProfitLoss& account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
-	const int decimal = account_->Type() == "1" ? 2 : 0;
+	const int decimal = format_type == "1" ? 2 : 0;
 	auto cell = _Grid->FindCell(0, 1);
 	std::string value;
 	value = VtStringUtil::get_format_value(account_profit_loss.open_profit_loss, decimal, true);
@@ -209,9 +220,9 @@ void AccountProfitLossView::UpdateAccountAssetInfo()
 
 void AccountProfitLossView::UpdateFundAssetInfo()
 {
-	if (!_Fund) return;
+	if (!fund_) return;
 
-	const std::vector<std::shared_ptr<SmAccount>>& account_vec = _Fund->GetAccountVector();
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
 
 	double open_pl = 0.0, settled_pl = 0.0, fee = 0.0, pure_pl = 0.0;
 	for (auto it = account_vec.begin(); it != account_vec.end(); it++) {

@@ -2,10 +2,15 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <set>
 #include <functional>
 #include "../ViewModel/VmAccountProfitLoss.h"
 #include "../Account/SmAccount.h"
 namespace DarkHorse {
+
+	struct AccountProfitLoss;
+	using account_profit_loss_p = std::shared_ptr<AccountProfitLoss>;
+
 	struct Position;
 	struct SmQuote;
 	class SmAccount;
@@ -17,31 +22,34 @@ namespace DarkHorse {
 	public:
 		AccountProfitLossControl();
 		~AccountProfitLossControl();
-		void load_position_from_account(const std::string& account_no);
 		void update_position(position_p position);
 		void update_profit_loss(quote_p quote);
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}
-		const std::map<std::string, position_p>& get_position_map() {
-			return position_map_;
-		}
+		
 		const VmAccountProfitLoss& get_account_profit_loss() {
 			return account_profit_loss_;
 		}
 
 		void set_account(std::shared_ptr<DarkHorse::SmAccount> account);
 		void set_fund(std::shared_ptr<SmFund> fund);
+		void load_position_from_account(const std::string& account_no);
+		void load_position_from_parent_account(const std::string& account_no);
+		void load_position_from_fund(const std::string& fund_name);
+
 	private:
-		void refresh_account_profit_loss();
+		position_p get_position(const std::string& symbol_code);
+		void refresh_account_profit_loss(account_profit_loss_p account_profit_loss);
 		void update_account_profit_loss();
-		// key : symbol code, value : position object.
-		std::map<std::string, position_p> position_map_;
+		std::set<std::string> account_no_set_;
 		std::function<void()> event_handler_;
 		int id_{ 0 };
 		int account_id_{ 0 };
 		std::shared_ptr<DarkHorse::SmAccount> account_{nullptr};
 		VmAccountProfitLoss account_profit_loss_;
 		std::shared_ptr<SmFund> fund_;
+		// key : symbol code, value : position object.
+		std::map<std::string, position_p> position_map_;
 	};
 }

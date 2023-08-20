@@ -560,40 +560,9 @@ void DmFundOrderWindow::SetFundInfo(std::shared_ptr<DarkHorse::SmFund> fund)
 	}
 
 	_Fund = fund;
+
+	_LeftWnd->SetFund(_Fund);
 }
-
-// void DmFundOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> account)
-// {
-// 	if (!account || _CurrentFundIndex < 0) return;
-// 
-// 	std::string account_info;
-// 	account_info.append(account->Name());
-// 	account_info.append(" : ");
-// 	account_info.append(account->No());
-// 	//_StaticAccountName.SetWindowText(account_info.c_str());
-// 	if (!account->is_subaccount())
-// 		mainApp.Client()->RegisterAccount(account->No());
-// 	_Account = account;
-// 	std::shared_ptr<SmAccount> parent_account = nullptr;
-// 	if (_Account->is_subaccount()) {
-// 		parent_account = mainApp.AcntMgr()->FindAccountById(_Account->parent_id());
-// 		_LeftWnd->SetAccount(parent_account);
-// 		_RightWnd->SetAccount(parent_account);
-// 	}
-// 	else {
-// 		_LeftWnd->SetAccount(_Account);
-// 		_RightWnd->SetAccount(_Account);
-// 	}
-// 
-// 	_LeftWnd->SetFund(_ComboFundMap[_CurrentFundIndex]);
-// 	_RightWnd->SetFund(_ComboFundMap[_CurrentFundIndex]);
-// }
-
-// std::string DmFundOrderWindow::get_account_no()
-// {
-// 	if (_Account) return _Account->No();
-// 	return "";	
-// }
 
 void DmFundOrderWindow::on_symbol_view_event(const std::string& fund_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
