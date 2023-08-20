@@ -53,13 +53,18 @@ void AccountPositionControl::load_position_from_account(const std::string& accou
 void AccountPositionControl::load_position_from_parent_account(const std::string& account_no)
 {
 	account_no_set_.clear();
+	account_no_set_.insert(account_no);
+	if (account_) {
+		auto sub_accounts = account_->get_sub_accounts();
+		for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
+			account_no_set_.insert((*it)->No());
+		}
+	}
 	position_map_.clear();
 	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
 	if (!group_position_mgr) return;
-	//account_no_set_.insert(account_no);
 	const std::map<std::string, position_p>& position_map = group_position_mgr->get_group_position_map();
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
-		account_no_set_.insert(it->second->account_no);
 		if (it->second->open_quantity == 0) continue;
 		position_map_[it->second->symbol_code] = it->second;
 	}
@@ -68,12 +73,17 @@ void AccountPositionControl::load_position_from_parent_account(const std::string
 void AccountPositionControl::load_position_from_fund(const std::string& fund_name)
 {
 	account_no_set_.clear();
+	if (fund_) {
+		auto sub_accounts = fund_->GetAccountVector();
+		for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
+			account_no_set_.insert((*it)->No());
+		}
+	}
 	position_map_.clear();
 	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
 	if (!group_position_mgr) return;
 	const std::map<std::string, position_p>& position_map = group_position_mgr->get_group_position_map();
 	for (auto it = position_map.begin(); it != position_map.end(); it++) {
-		account_no_set_.insert(it->second->account_no);
 		if (it->second->open_quantity == 0) continue;
 		position_map_[it->second->symbol_code] = it->second;
 	}
