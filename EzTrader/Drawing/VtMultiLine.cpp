@@ -193,19 +193,19 @@ void VtMultiLine::DrawMultiLine(std::vector<VtPoint> pointList, VtPoint end, Dra
 	for (size_t i = 0; i < size - 1; i++)
 	{
 		d->line(pointList[i].x, pointList[i].y, pointList[i + 1].x, pointList[i + 1].y, clrPen, penWidth);
-		valueText = format(_T("%.2f, %.2f"), chart->getXValue(pointList[i].x), chart->getYValue(pointList[i].y));
+		valueText = std::format(_T("%.2f, %.2f"), chart->getXValue(pointList[i].x), chart->getYValue(pointList[i].y));
 		t = d->text(valueText.c_str(), font.c_str(), 8);
 		t->draw(pointList[i].x + HandleRadius, pointList[i].y + HandleRadius, 0x000000);
 		t->destroy();
 	}
 
-	valueText = format(_T("%.2f, %.2f"), chart->getXValue(pointList[size - 1].x), chart->getYValue(pointList[size - 1].y));
+	valueText = std::format(_T("%.2f, %.2f"), chart->getXValue(pointList[size - 1].x), chart->getYValue(pointList[size - 1].y));
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(pointList[size - 1].x + HandleRadius, pointList[size - 1].y + HandleRadius, 0x000000);
 	t->destroy();
 
 	d->line(pointList[size - 1].x, pointList[size - 1].y, end.x, end.y, clrPen, penWidth);
-	valueText = format(_T("%.2f, %.2f"), chart->getXValue(end.x), chart->getYValue(end.y));
+	valueText = std::format(_T("%.2f, %.2f"), chart->getXValue(end.x), chart->getYValue(end.y));
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(end.x + HandleRadius, end.y + HandleRadius, 0x000000);
 	t->destroy();
@@ -221,13 +221,13 @@ void VtMultiLine::DrawMultiLine(std::vector<VtPoint> pointList, DrawArea* d, XYC
 	{
 		d->line(pointList[i].x, pointList[i].y, pointList[i + 1].x, pointList[i + 1].y, clrPen, penWidth);
 		d->line(pointList[i].x, pointList[i].y, pointList[i + 1].x, pointList[i + 1].y, clrPen, penWidth);
-		valueText = format(_T("%.2f, %.2f"), chart->getXValue(pointList[i].x), chart->getYValue(pointList[i].y));
+		valueText = std::format(_T("%.2f, %.2f"), chart->getXValue(pointList[i].x), chart->getYValue(pointList[i].y));
 		t = d->text(valueText.c_str(), font.c_str(), 8);
 		t->draw(pointList[i].x + HandleRadius, pointList[i].y + HandleRadius, 0x000000);
 		t->destroy();
 	}
 
-	valueText = format(_T("%.2f, %.2f"), chart->getXValue(pointList[pointList.size() - 1].x), chart->getYValue(pointList[pointList.size() - 1].y));
+	valueText = std::format(_T("%.2f, %.2f"), chart->getXValue(pointList[pointList.size() - 1].x), chart->getYValue(pointList[pointList.size() - 1].y));
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(pointList[pointList.size() - 1].x + HandleRadius, pointList[pointList.size() - 1].y + HandleRadius, 0x000000);
 	t->destroy();

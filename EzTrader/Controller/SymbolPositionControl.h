@@ -33,7 +33,7 @@ namespace DarkHorse {
 			return id_;
 		}
 		void set_symbol_id(const int symbol_id);
-		void set_account_id(const int account_id);
+		//void set_account_id(const int account_id);
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}

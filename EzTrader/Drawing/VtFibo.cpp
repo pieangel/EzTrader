@@ -185,7 +185,7 @@ void VtFibo::DrawFibo(VtPoint start, VtPoint end, VtPoint * points, XYChart * ch
 
 		d->line(start.x + dx, yPos, end.x + dx, yPos, clrPen, penWidth);
 
-		std::string valueText = format(_T("%.2f%% %.2f"), Ratio[i], chart->getYValue(yPos));
+		std::string valueText = std::format(_T("%.2f%% %.2f"), Ratio[i], chart->getYValue(yPos));
 		std::string font = _T("±¼¸²");
 		TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 		int startX = min(start.x + dx, end.x + dx);
@@ -195,7 +195,7 @@ void VtFibo::DrawFibo(VtPoint start, VtPoint end, VtPoint * points, XYChart * ch
 
 	// Show the height of the fibo.
 	{
-		std::string valueText = format(_T("height : %.2f"), abs(chart->getYValue(end.y) - chart->getYValue(start.y)));
+		std::string valueText = std::format(_T("height : %.2f"), abs(chart->getYValue(end.y) - chart->getYValue(start.y)));
 		std::string font = _T("±¼¸²");
 		TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 		int startX = max(start.x + dx, end.x + dx);

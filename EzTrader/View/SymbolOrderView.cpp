@@ -1486,7 +1486,6 @@ void SymbolOrderView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	}
 	order_control_->set_account(val);
 	position_control_->set_account(val);
-	position_control_->set_account_id(val->id());
 	set_position();
 	set_order();
 }

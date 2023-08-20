@@ -83,6 +83,17 @@ void AccountProfitLossControl::update_profit_loss(quote_p quote)
 	if (event_handler_) event_handler_();
 }
 
+void AccountProfitLossControl::set_account(std::shared_ptr<DarkHorse::SmAccount> account)
+{
+	account_ = account;
+	account_id_ = account->id();
+}
+
+void AccountProfitLossControl::set_fund(std::shared_ptr<SmFund> fund)
+{
+	fund_ = fund;
+}
+
 void AccountProfitLossControl::refresh_account_profit_loss()
 {
 	if (!account_) return;

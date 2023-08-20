@@ -159,10 +159,10 @@ namespace DarkHorse {
 		add_order(order);
 	}
 
-	void OrderControl::add_account_id(const int account_id)
-	{
-		//account_id_set_.insert(account_id);
-	}
+// 	void OrderControl::add_account_id(const int account_id)
+// 	{
+// 		account_id_set_.insert(account_id);
+// 	}
 
 	std::pair<int, int> OrderControl::get_order_count(const SmPositionType& position, const int price)
 	{

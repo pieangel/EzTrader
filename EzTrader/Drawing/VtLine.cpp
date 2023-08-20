@@ -138,18 +138,18 @@ void VtLine::DrawLine(VtPoint start, VtPoint end, DrawArea* d, XYChart* chart, i
 	double height = abs(last - first);
 
 	
-	std::string valueText = format(_T("%.2f"), first);
+	std::string valueText = std::format(_T("%.2f"), first);
 	std::string font = _T("±¼¸²");
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + HandleRadius, start.y + dy + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("%.2f"), last);
+	valueText = std::format(_T("%.2f"), last);
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(end.x + HandleRadius, end.y + dy + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("%.2f"), height);
+	valueText = std::format(_T("%.2f"), height);
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + HandleRadius, start.y + dy + HandleRadius*4, 0x0000ff);
 	t->destroy();
@@ -170,18 +170,18 @@ void VtLine::DrawLine(VtPoint start, VtPoint end, XYChart* chart, DrawArea* d, i
 	msg.Format("x1 = %d, y1 = %d, x2 = %d, y2 = %d\n", start.x, start.y, end.x, end.y);
 	//TRACE(msg);
 
-	std::string valueText = format(_T("%.2f"), first);
+	std::string valueText = std::format(_T("%.2f"), first);
 	std::string font = _T("±¼¸²");
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + HandleRadius, start.y + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("%.2f"), last);
+	valueText = std::format(_T("%.2f"), last);
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(end.x + HandleRadius, end.y + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("%.2f"), height);
+	valueText = std::format(_T("%.2f"), height);
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + HandleRadius, start.y + HandleRadius * 4, 0x0000ff);
 	t->destroy();
@@ -203,18 +203,18 @@ void VtLine::DrawLine(VtPoint start, VtPoint end, XYChart* chart, int clrPen, in
 	msg.Format("x1 = %d, y1 = %d, x2 = %d, y2 = %d\n", start.x, start.y, end.x, end.y);
 	//TRACE(msg);
 
-	std::string valueText = format(_T("%.2f"), first);
+	std::string valueText = std::format(_T("%.2f"), first);
 	std::string font = _T("±¼¸²");
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + HandleRadius, start.y + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("%.2f"), last);
+	valueText = std::format(_T("%.2f"), last);
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(end.x + HandleRadius, end.y + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("%.2f"), height);
+	valueText = std::format(_T("%.2f"), height);
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	//t->draw(start.x + HandleRadius, start.y + HandleRadius * 4, 0x0000ff);
 	t->destroy();
@@ -243,7 +243,7 @@ void VtLine::DrawLine(const VtPoint start, const VtPoint end, XYChart* chart, co
 		msg.Format("x1 = %d, y1 = %d, x2 = %d, y2 = %d\n", start.x, start.y, end.x, end.y);
 		//TRACE(msg);
 
-		std::string valueText = format(_T("%.2f"), first);
+		std::string valueText = std::format(_T("%.2f"), first);
 		std::string font = _T("±¼¸²");
 		TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 		//t->draw(start.x + HandleRadius, start.y + HandleRadius, 0x000000);
@@ -253,7 +253,7 @@ void VtLine::DrawLine(const VtPoint start, const VtPoint end, XYChart* chart, co
 // 		t = d->text(valueText.c_str(), font.c_str(), 8);
 // 		t->draw(end.x + HandleRadius, end.y + HandleRadius, 0x000000);
 // 		t->destroy();
-		valueText = format(_T("%.2f"), total_value);
+		valueText = std::format(_T("%.2f"), total_value);
 		//valueText = format(_T("%.2f £Ü"), total_value);
 		DarkHorse::SmUtil::to_thou_sep(valueText);
 		t = d->text(TCHARtoUTF8(valueText.c_str()), font.c_str(), 8);
@@ -286,14 +286,14 @@ void VtLine::DrawLine(const bool& show_text, const VtPoint& start, const VtPoint
 		msg.Format("x1 = %d, y1 = %d, x2 = %d, y2 = %d\n", start.x, start.y, end.x, end.y);
 		//TRACE(msg);
 
-		std::string valueText = format(_T("%.2f"), first);
+		std::string valueText = std::format(_T("%.2f"), first);
 		std::string font = _T("±¼¸²");
 		TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 		//t->draw(start.x + HandleRadius, start.y + HandleRadius, 0x000000);
 		t->destroy();
 
 		if (show_text) {
-			valueText = format(_T("%.2f"), total_value);
+			valueText = std::format(_T("%.2f"), total_value);
 			//valueText = format(_T("%.2f £Ü"), total_value);
 			DarkHorse::SmUtil::to_thou_sep(valueText);
 			t = d->text(TCHARtoUTF8(valueText.c_str()), font.c_str(), 8);

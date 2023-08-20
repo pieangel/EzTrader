@@ -29,16 +29,9 @@ namespace DarkHorse {
 		const VmAccountProfitLoss& get_account_profit_loss() {
 			return account_profit_loss_;
 		}
-		void set_account_id(const int account_id) {
-			account_id_ = account_id;
-		}
-		void set_account(std::shared_ptr<DarkHorse::SmAccount> account) {
-			account_ = account;
-			account_id_ = account->id();
-		}
-		void set_fund(std::shared_ptr<SmFund> fund) {
-			fund_ = fund;
-		}
+
+		void set_account(std::shared_ptr<DarkHorse::SmAccount> account);
+		void set_fund(std::shared_ptr<SmFund> fund);
 	private:
 		void refresh_account_profit_loss();
 		void update_account_profit_loss();

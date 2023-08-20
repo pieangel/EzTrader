@@ -60,7 +60,7 @@ void VtRect::Draw(int startID, int zoomStartIndex, DrawArea * d, XYChart * chart
 	DrawRect(Location0, Location1, d, chart, dx, dy, clrPen, clrFill);
 
 	std::string font = _T("±¼¸²");
-	std::string valueText = format(_T("Value X = %.2f, Value Y = %.2f"), Value1.x, Value1.y);
+	std::string valueText = std::format(_T("Value X = %.2f, Value Y = %.2f"), Value1.x, Value1.y);
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(Location0.x + dx + HandleRadius, Location0.y + dy + HandleRadius * 4 , 0x000000);
 	t->destroy();
@@ -87,12 +87,12 @@ void VtRect::DrawRect(VtPoint start, VtPoint end, DrawArea * d, XYChart * chart,
 	d->rect(start.x + dx, start.y + dy, end.x + dx, end.y + dy, clrPen, clrFill);
 
 	std::string font = _T("±¼¸²");
-	std::string valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(start.x + dx), chart->getYValue(start.y + dy));
+	std::string valueText = std::format(_T("x = %.2f, y = %.2f"), chart->getXValue(start.x + dx), chart->getYValue(start.y + dy));
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + dx + HandleRadius, start.y + dy + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x + dx), chart->getYValue(end.y + dy));
+	valueText = std::format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x + dx), chart->getYValue(end.y + dy));
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(end.x + dx  + HandleRadius, end.y + dy + HandleRadius, 0x000000);
 	t->destroy();
@@ -103,12 +103,12 @@ void VtRect::DrawRect(VtPoint start, VtPoint end, VtValue value1, VtValue value2
 	d->rect(start.x + dx, start.y + dy, end.x + dx, end.y + dy, clrPen, clrFill);
 
 	std::string font = _T("±¼¸²");
-	std::string valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(start.x + dx), chart->getYValue(start.y + dy));
+	std::string valueText = std::format(_T("x = %.2f, y = %.2f"), chart->getXValue(start.x + dx), chart->getYValue(start.y + dy));
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + dx + HandleRadius, start.y + dy + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x + dx), chart->getYValue(end.y + dy));
+	valueText = std::format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x + dx), chart->getYValue(end.y + dy));
 	//valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x + dx), chart->getYValue(end.y + dy));
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(end.x + dx + HandleRadius, end.y + dy + HandleRadius, 0x000000);
@@ -121,12 +121,12 @@ void VtRect::DrawRect(VtPoint start, VtPoint end, XYChart* chart, int clrPen, in
 	d->rect(start.x, start.y, end.x, end.y, clrPen, clrFill);
 
 	std::string font = _T("±¼¸²");
-	std::string valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(start.x), chart->getYValue(start.y));
+	std::string valueText = std::format(_T("x = %.2f, y = %.2f"), chart->getXValue(start.x), chart->getYValue(start.y));
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + HandleRadius, start.y + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x), chart->getYValue(end.y));
+	valueText = std::format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x), chart->getYValue(end.y));
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(end.x + HandleRadius, end.y + HandleRadius, 0x000000);
 	t->destroy();
@@ -137,12 +137,12 @@ void VtRect::DrawRect(VtPoint start, VtPoint end, XYChart* chart, DrawArea* d, i
 	d->rect(start.x, start.y, end.x, end.y, clrPen, clrFill);
 
 	std::string font = _T("±¼¸²");
-	std::string valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(start.x), chart->getYValue(start.y));
+	std::string valueText = std::format(_T("x = %.2f, y = %.2f"), chart->getXValue(start.x), chart->getYValue(start.y));
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(start.x + HandleRadius, start.y + HandleRadius, 0x000000);
 	t->destroy();
 
-	valueText = format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x), chart->getYValue(end.y));
+	valueText = std::format(_T("x = %.2f, y = %.2f"), chart->getXValue(end.x), chart->getYValue(end.y));
 	t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(end.x + HandleRadius, end.y + HandleRadius, 0x000000);
 	t->destroy();

@@ -28,7 +28,7 @@ namespace DarkHorse {
 			return sell_order_control_;
 		}
 		void clear();
-		void add_account_id(const int account_id);
+		//void add_account_id(const int account_id);
 		void set_account(std::shared_ptr<SmAccount> account);
 		void set_fund(std::shared_ptr<SmFund> fund);
 		void set_symbol(std::shared_ptr<SmSymbol> symbol);

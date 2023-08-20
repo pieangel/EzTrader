@@ -133,16 +133,11 @@ namespace DarkHorse {
 		reset_position();
 	}
 
-	void SymbolPositionControl::set_account_id(const int account_id)
-	{
-		account_id_ = account_id;
-		reset_position();
-	}
-
 	void SymbolPositionControl::set_account(std::shared_ptr<SmAccount> account)
 	{
 		if (!account) return;
 		account_ = account;
+		account_id_ = account_->id();
 		if (account_->is_subaccount()) {
 			account_map_.clear();
 			account_map_[account_->No()] = account_;

@@ -71,7 +71,7 @@ void VtVLine::DrawVLine(VtPoint point, DrawArea * d, XYChart * chart, int dx, in
 	int halfY = (int)(height / 2.0);
 	d->line(point.x + dx, plotAreaTopY, point.x + dx, plotAreaTopY + height, clrPen, penWidth);
 
-	std::string valueText = format(_T("%.2f"), chart->getXValue(point.x + dx));
+	std::string valueText = std::format(_T("%.2f"), chart->getXValue(point.x + dx));
 	std::string font = _T("±¼¸²");
 	TTFText* t = d->text(valueText.c_str(), font.c_str(), 8);
 	t->draw(point.x + dx + HandleRadius, halfY + HandleRadius, 0x000000);
