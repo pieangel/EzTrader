@@ -50,7 +50,7 @@ void SmAccountGrid::MoveSelectedAccounts()
 {
 	for (auto it = _RowToAccountMap.begin(); it != _RowToAccountMap.end(); it++) {
 		CBCGPGridRow* pRow = GetRow(it->first);
-		if (pRow->GetCheck()) {
+		if (pRow->IsSelected()) {
 			_Fund->AddAccount(it->second);
 			
 		}

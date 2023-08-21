@@ -17,6 +17,7 @@
 #include "../Event/SmCallbackManager.h"
 #include "SmFundEditDialog.h"
 #include "SmAccountGrid.h"
+#include "SmFundGrid.h"
 
 
 #include "../Account/SmAccountManager.h"
@@ -206,10 +207,10 @@ int SmFundAccountGrid::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetVisualManagerColorTheme(TRUE);
 
 	// Insert columns:
-	InsertColumn(0, _T("°èÁÂ"), 80);
-	InsertColumn(1, _T("°èÁÂÀÌ¸§"), 60);
-	InsertColumn(2, _T("½Â¼ö"), 60);
-	InsertColumn(3, _T("ºñÀ²"), 50);
+	InsertColumn(0, _T("°èÁÂ"), 100);
+	InsertColumn(1, _T("°èÁÂÀÌ¸§"), 90);
+	InsertColumn(2, _T("½Â¼ö"), 20);
+	InsertColumn(3, _T("ºñÀ²"), 40);
 
 	FreezeColumns(0);
 
@@ -316,7 +317,7 @@ void SmFundAccountGrid::MoveSelectedAccounts()
 {
 	for (auto it = _RowToFundAccountMap.begin(); it != _RowToFundAccountMap.end(); it++) {
 		CBCGPGridRow* pRow = GetRow(it->first);
-		if (pRow->GetCheck()) {
+		if (pRow->IsSelected()) {
 			_Fund->RemoveAccount(it->second->No());
 
 		}
@@ -332,6 +333,18 @@ void SmFundAccountGrid::MoveUp()
 	if (_SelectedIndex == -1) return;
 
 	_Fund->MoveUp(_SelectedIndex);
+
+	_SelectedIndex--;
+
+	if (_SelectedIndex < 0) {
+		_SelectedIndex = 0;
+	}
+
+	CBCGPGridRow* pRow = GetRow(_SelectedIndex);
+	if (pRow) {
+		pRow->Select();
+		pRow->GetItem(0)->Select(TRUE);
+	}
 }
 
 void SmFundAccountGrid::MoveDown()
@@ -340,6 +353,16 @@ void SmFundAccountGrid::MoveDown()
 	if (_SelectedIndex == -1) return;
 
 	_Fund->MoveDown(_SelectedIndex);
+	size_t size = _Fund->GetAccountCount();
+	_SelectedIndex++;
+	if (_SelectedIndex == size - 1) {
+		_SelectedIndex = size - 1;
+	}
+	CBCGPGridRow* pRow = GetRow(_SelectedIndex);
+	if (pRow) {
+		pRow->Select();
+		//pRow->GetItem(0)->Select(TRUE);
+	}
 }
 
 void SmFundAccountGrid::MoveFirstAccount()
@@ -482,6 +505,7 @@ void SmFundAccountGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	CBCGPGridItemID id;
 	CBCGPGridItem* item = nullptr;
 	CBCGPGridRow* pRow = HitTest(point, id, item);
+	
 
 	_SelectedIndex = id.m_nRow;
 	
@@ -533,7 +557,10 @@ void SmFundAccountGrid::OnLButtonDblClk(UINT nFlags, CPoint point)
 	//_EditFundName.SetWindowText(_CurFund->Name().c_str());
 	InitFund();
 	//RefreshUnregAccounts();
-	AccountGrid->InitUnregAccount(account_type_);
+	if (AccountGrid)
+		AccountGrid->InitUnregAccount(account_type_);
+	if (FundGrid)
+		FundGrid->SetFundList();
 
 	CBCGPGridCtrl::OnLButtonDblClk(nFlags, point);
 }

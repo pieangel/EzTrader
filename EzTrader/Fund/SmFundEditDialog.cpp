@@ -270,7 +270,7 @@ BOOL SmFundEditDialog::OnInitDialog()
 
 void SmFundEditDialog::OnBnClickedBtnIn()
 {
-	_AccountGrid.MoveFirstAccount();
+	_AccountGrid.MoveSelectedAccounts();
 }
 
 
@@ -282,7 +282,7 @@ void SmFundEditDialog::OnBnClickedBtnInAll()
 
 void SmFundEditDialog::OnBnClickedBtnOut()
 {
-	_FundAccountGrid.MoveFirstAccount();
+	_FundAccountGrid.MoveSelectedAccounts();
 }
 
 
