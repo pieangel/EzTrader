@@ -343,7 +343,7 @@ void SmFundAccountGrid::MoveUp()
 	CBCGPGridRow* pRow = GetRow(_SelectedIndex);
 	if (pRow) {
 		pRow->Select();
-		pRow->GetItem(0)->Select(TRUE);
+		//pRow->GetItem(0)->Select(TRUE);
 	}
 }
 
