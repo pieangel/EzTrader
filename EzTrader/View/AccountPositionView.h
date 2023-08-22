@@ -123,6 +123,7 @@ public:
 	void CompFundWnd(SmFundCompMainDialog* val) { _CompFundWnd = val; }
 	void set_column_widths(std::vector<int> column_width_vector);
 private:
+	bool updating_ = false;
 	void set_column_widths(const std::string& type);
 	void set_column_names(const std::string& type);
 	void LiqSelPositionsForAccount();

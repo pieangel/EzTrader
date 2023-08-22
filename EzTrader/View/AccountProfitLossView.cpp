@@ -175,7 +175,8 @@ std::string AccountProfitLossView::get_format_price(const double& value)
 void AccountProfitLossView::update_account_profit_loss()
 {
 	if (!account_profit_loss_control_ ) return;
-
+	if (updating_) return;
+	updating_ = true;
 	std::string format_type("0");
 	if (account_) format_type = account_->Type();
 	if (fund_) format_type = fund_->fund_type();
@@ -196,6 +197,9 @@ void AccountProfitLossView::update_account_profit_loss()
 	const double pure_profit = account_profit_loss.open_profit_loss + account_profit_loss.trade_profit_loss - abs(account_profit_loss.trade_fee);
 	value = VtStringUtil::get_format_value(pure_profit, decimal, true);
 	if (cell) cell->Text(value);
+
+	updating_ = false;
+	enable_account_profit_loss_show_ = true;
 }
 
 void AccountProfitLossView::UpdateAccountAssetInfo()

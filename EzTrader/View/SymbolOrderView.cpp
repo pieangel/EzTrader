@@ -1299,23 +1299,6 @@ void SymbolOrderView::PutOrderBySpaceBar()
 {
 	if (!selected_cell_ ) return;
 
-	if (account_) PutOrderBySpaceBar(account_);
-
-	if (fund_) {
-		for (auto& account : fund_->GetAccountVector()) {
-			PutOrderBySpaceBar(account);
-		}
-	}
-	_EnableOrderShow = true;
-	_EnableStopShow = true;
-}
-
-void SymbolOrderView::PutOrderBySpaceBar(std::shared_ptr<DarkHorse::SmAccount> account)
-{
-	if (!account || !symbol_) return;
-
-	if (!selected_cell_) return;
-
 	const int price = FindValue(selected_cell_->Row());
 
 	if (selected_cell_->Col() == DarkHorse::OrderHeader::SELL_ORDER)
@@ -1326,7 +1309,17 @@ void SymbolOrderView::PutOrderBySpaceBar(std::shared_ptr<DarkHorse::SmAccount> a
 		put_stop_order(SmPositionType::Buy, price);
 	else if (selected_cell_->Col() == DarkHorse::OrderHeader::SELL_STOP)
 		put_stop_order(SmPositionType::Sell, price);
+
+	_EnableOrderShow = true;
+	_EnableStopShow = true;
 }
+
+// void SymbolOrderView::PutOrderBySpaceBar(std::shared_ptr<DarkHorse::SmAccount> account)
+// {
+// 	if (!account || !symbol_) return;
+// 
+// 	if (!selected_cell_) return;
+// }
 
 void SymbolOrderView::ChangeOrderByKey(const int up_down)
 {
@@ -1852,50 +1845,6 @@ void SymbolOrderView::put_order(const SmPositionType& type, const int& price, co
 		}
 	}
 }
-
-// void SymbolOrderView::put_order(
-// 	const std::string& symbol_code, 
-// 	const DarkHorse::SmPositionType& type, 
-// 	const int price, 
-// 	const int amount, 
-// 	const DarkHorse::SmPriceType price_type)
-// {
-// 	if (!account_ || !symbol_) return;
-// 	if (symbol_->SymbolCode() != symbol_code) return;
-// 	if (price < 0) return;
-// 
-// 	auto parent_account = mainApp.AcntMgr()->FindAccountById(account_->parent_id());
-// 
-// 	std::shared_ptr<OrderRequest> order_req = nullptr;
-// 	order_req = OrderRequestManager::make_order_request(
-// 		parent_account ? parent_account->No() : account_->No(),
-// 		parent_account ? parent_account->Pwd() : account_->Pwd(),
-// 		price,
-// 		amount,
-// 		symbol_->SymbolCode(),
-// 		type,
-// 		SmOrderType::New,
-// 		price_type,
-// 		fill_condition_);
-// 	if (order_req) {
-// 		order_req->request_type = order_request_type_;
-// 		order_req->order_context.order_control_id = id_;
-// 		order_req->order_context.order_type = OrderType::MainAccount;
-// 		if (parent_account) {
-// 			order_req->order_context.parent_account_id = parent_account->id();
-// 			order_req->order_context.parent_account_no = parent_account->No();
-// 			order_req->order_context.sub_account_no = account_->No();
-// 			order_req->order_context.order_type = OrderType::SubAccount;
-// 		}
-// 		if (fund_) {
-// 			order_req->order_context.order_type = OrderType::Fund;
-// 			order_req->order_context.fund_id = fund_->Id();
-// 			order_req->order_context.fund_name = fund_->Name();
-// 		}
-// 		SetProfitLossCut(order_req);
-// 		mainApp.order_request_manager()->add_order_request(order_req);
-// 	}
-// }
 
 void SymbolOrderView::put_order(
 	std::shared_ptr<DarkHorse::SmAccount> account, 

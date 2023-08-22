@@ -215,6 +215,8 @@ void AccountOrderView::OnDestroy()
 void AccountOrderView::update_order()
 {
 	if (!account_order_control_ ) return;
+	if (updating_) return;
+	updating_ = true;
 	const std::map<std::string, order_p>& order_map = account_order_control_->get_accepted_order_map();
 	//if (order_map.empty()) return;
 
@@ -266,6 +268,8 @@ void AccountOrderView::update_order()
 	}
 	ClearOldContents(row);
 	_OldMaxRow = row;
+	enable_order_show_ = true;
+	updating_ = false;
 }
 
 void AccountOrderView::ClearCheck()

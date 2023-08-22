@@ -45,6 +45,12 @@ void AbAccountOrderRightWindow::SetAccount(const std::shared_ptr<DarkHorse::SmAc
 	asset_view_.SetAssetInfo();
 }
 
+void AbAccountOrderRightWindow::SetFund(std::shared_ptr<DarkHorse::SmFund> fund)
+{
+	asset_view_.Fund(fund);
+	asset_view_.SetAssetInfo();
+}
+
 void AbAccountOrderRightWindow::SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol)
 {
 	symbol_info_view_.Symbol(symbol);

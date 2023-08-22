@@ -451,9 +451,11 @@ void AccountPositionView::update_account_position()
 {
 	if (!account_position_control_) return;
 
+	if (updating_) return;
+	updating_ = true;
+
 	row_to_position_.clear();
 	
-	try {
 	std::string format_type;
 	if (account_) format_type = account_->Type();
 	else if (fund_) format_type = fund_->fund_type();
@@ -479,11 +481,8 @@ void AccountPositionView::update_account_position()
 	}
 	ClearOldContents(row);
 	_OldMaxRow = row;
-	}
-	catch (const std::exception& e) {
-		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
-	}
+	updating_ = false;
+	enable_position_show_ = true;
 }
 
 void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)

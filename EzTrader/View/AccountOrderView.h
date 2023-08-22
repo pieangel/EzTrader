@@ -109,6 +109,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	bool updating_ = false;
 	void update_order();
 	void ClearCheck();
 	SmFundCompMainDialog* _CompFundWnd = nullptr;

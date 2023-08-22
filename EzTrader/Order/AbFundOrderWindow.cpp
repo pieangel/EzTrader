@@ -519,7 +519,8 @@ void AbFundOrderWindow::SetFundInfo(std::shared_ptr<DarkHorse::SmFund> fund)
 
 	_Fund = fund;
 
-	_LeftWnd->SetFund(_ComboFundMap[_CurrentFundIndex]);
+	_LeftWnd->SetFund(_Fund);
+	_RightWnd->SetFund(_Fund);
 }
 
 void AbFundOrderWindow::on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)

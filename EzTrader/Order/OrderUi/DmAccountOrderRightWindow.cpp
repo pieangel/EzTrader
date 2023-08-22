@@ -36,6 +36,12 @@ END_MESSAGE_MAP()
 // DmAccountOrderRightWindow message handlers
 
 
+void DmAccountOrderRightWindow::SetFund(std::shared_ptr<DarkHorse::SmFund> fund)
+{
+	asset_view_.Fund(fund);
+	asset_view_.SetAssetInfo();
+}
+
 void DmAccountOrderRightWindow::SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account)
 {
 	asset_view_.Account(account);

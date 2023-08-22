@@ -109,7 +109,7 @@ public:
 	bool Selected() const { return _Selected; }
 	void Selected(bool val) { _Selected = val; }
 	void PutOrderBySpaceBar();
-	void PutOrderBySpaceBar(std::shared_ptr<DarkHorse::SmAccount> account);
+	//void PutOrderBySpaceBar(std::shared_ptr<DarkHorse::SmAccount> account);
 	void ChangeOrderByKey(const int up_down);
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }

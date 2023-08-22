@@ -179,6 +179,9 @@ void AccountAssetView::update_account_profit_loss()
 {
 	if (!asset_control_ || !account_profit_loss_control_ ) return;
 
+	if (updating_) return;
+	updating_ = true;
+
 	std::string format_type("1");
 	if (account_) format_type = account_->Type();
 	if (fund_) format_type = fund_->fund_type();
@@ -202,6 +205,9 @@ void AccountAssetView::update_account_profit_loss()
 	cell = _Grid->FindCell(4, 1);
 	value = VtStringUtil::get_format_value(asset.order_margin, decimal, true);
 	if (cell) cell->Text(value);
+
+	updating_ = false;
+	enable_account_profit_loss_show_ = true;
 }
 
 void AccountAssetView::SetAccountAssetInfo()

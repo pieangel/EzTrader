@@ -17,6 +17,7 @@ class DmAccountOrderRightWindow
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
+	class SmFund;
 }
 
 
@@ -45,6 +46,7 @@ private:
 public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
+	void SetFund(std::shared_ptr<DarkHorse::SmFund> fund);
 	void SetAccount(const std::shared_ptr<DarkHorse::SmAccount>& account);
 	void SetSymbol(const std::shared_ptr < DarkHorse::SmSymbol>& symbol);
 	void OnOrderChanged(const int& account_id, const int& symbol_id);

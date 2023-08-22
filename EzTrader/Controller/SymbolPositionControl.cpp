@@ -45,7 +45,7 @@ namespace DarkHorse {
 		try {
 
 			if (!position) return;
-			LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl update_position id = %d , account_no = %s, fund_name = %s", id_, position->account_no.c_str(), position->fund_name.c_str());
+			//LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl update_position id = %d , account_no = %s, fund_name = %s", id_, position->account_no.c_str(), position->fund_name.c_str());
 
 			auto it = account_map_.find(position->account_no);
 			if (it == account_map_.end()) return;
