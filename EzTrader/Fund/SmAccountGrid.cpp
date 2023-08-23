@@ -51,6 +51,7 @@ void SmAccountGrid::MoveSelectedAccounts()
 	for (auto it = _RowToAccountMap.begin(); it != _RowToAccountMap.end(); it++) {
 		CBCGPGridRow* pRow = GetRow(it->first);
 		if (pRow->IsSelected()) {
+			if (!it->second->is_subaccount()) continue;
 			_Fund->AddAccount(it->second);
 			
 		}
@@ -65,7 +66,7 @@ void SmAccountGrid::MoveFirstAccount()
 	if (_RowToAccountMap.empty()) return;
 
 	auto found = _RowToAccountMap.begin();
-
+	if (!found->second->is_subaccount()) return;
 	_Fund->AddAccount(found->second);
 	FundAccountGrid->InitFund();
 	InitUnregAccount(account_type_);
@@ -76,6 +77,7 @@ void SmAccountGrid::MoveAllAccounts()
 	if (!_Fund) return;
 	int old_size = _RowToAccountMap.size() - 1;
 	for (auto it = _RowToAccountMap.begin(); it != _RowToAccountMap.end(); ++it) {
+		if (!it->second->is_subaccount()) continue;
 		_Fund->AddAccount(it->second);
 	}
 
@@ -334,6 +336,7 @@ void SmAccountGrid::InitUnregAccount(const std::string& account_type)
 	int row = 0;
 	for (auto it = unused_acnt_vector.begin(); it != unused_acnt_vector.end(); ++it) {
 		auto account = *it;
+		
 		CString str;
 		str.Format(_T("%d"), row);
 
@@ -342,7 +345,14 @@ void SmAccountGrid::InitUnregAccount(const std::string& account_type)
 		pRow->GetItem(0)->SetValue(account->No().c_str(), TRUE);
 
 		pRow->GetItem(1)->SetValue(account->Name().c_str(), TRUE);
-
+		if (!account->is_subaccount()) {
+			pRow->GetItem(0)->SetBackgroundColor(RGB(2, 115, 202));
+			pRow->GetItem(1)->SetBackgroundColor(RGB(2, 115, 202));
+		}
+		else {
+			pRow->GetItem(0)->SetBackgroundColor(RGB(37, 37, 38));
+			pRow->GetItem(1)->SetBackgroundColor(RGB(37, 37, 38));
+		}
 
 
 		_RowToAccountMap[row] = account;
@@ -447,7 +457,7 @@ void SmAccountGrid::OnLButtonDblClk(UINT nFlags, CPoint point)
 	//	_FundEditDialog->UnregAccountDoubleClickEvent(found->second);
 	//}
 	if (!_Fund) return;
-
+	if (!found->second->is_subaccount()) return;
 	_Fund->AddAccount(found->second);
 	FundAccountGrid->InitFund();
 	InitUnregAccount(account_type_);
