@@ -736,6 +736,33 @@
     <ClCompile Include="Controller\SubOrderControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
+    <ClCompile Include="OutSystem\SmOutSystem.cpp">
+      <Filter>OutSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="OutSystem\SmOutSystemManager.cpp">
+      <Filter>OutSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\CompletionRoutineRequest.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\CompletionRoutineServer.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\IoCompletionPortReqeust.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\IoCompletionPortServer.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\ReadDirectoryChanges.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\ReadDirectoryRequest.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\ReadDirectoryServer.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1713,6 +1740,51 @@
     <ClInclude Include="Controller\SubOrderControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
+    <ClInclude Include="OutSystem\SmOutSystem.h">
+      <Filter>OutSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="OutSystem\SmOutSystemManager.h">
+      <Filter>OutSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\FileWatch.hpp">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\FileWatcher.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\auto_release.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\CompletionRoutineRequest.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\CompletionRoutineServer.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\IoCompletionPort.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\IoCompletionPortReqeust.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\IoCompletionPortServer.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\ReadDirectoryChanges.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\ReadDirectoryRequest.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\ReadDirectoryServer.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\ThreadSafeQueue.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\VtFileEventMonitor.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -1974,6 +2046,12 @@
     </Filter>
     <Filter Include="Dialog">
       <UniqueIdentifier>{9630993d-84c4-4d0b-bf37-86da105b3c78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OutSystem">
+      <UniqueIdentifier>{edd44995-e6cd-4787-961e-c1ebd5bc380e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileWatch">
+      <UniqueIdentifier>{a0023628-c7fb-484a-9337-e006fb8133c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
