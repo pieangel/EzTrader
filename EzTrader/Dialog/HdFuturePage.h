@@ -1,7 +1,7 @@
 #pragma once
 #include "afxwin.h"
-//#include "HdFutureGrid.h"
 #include <BCGCBProInc.h>
+#include "SymbolFutureView.h"
 // HdFuturePage dialog
 class HdSymbolSelecter;
 class VtOrderConfigManager;
@@ -44,6 +44,8 @@ public:
 private:
 	HdSymbolSelecter* _SymSelecter;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
+	SymbolFutureView future_view_;
+	void init_future_view();
 public:
 	void SetHftConfig(SmHftConfig* hftConfig);
 	void GetSymbolMaster();

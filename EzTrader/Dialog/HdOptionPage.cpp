@@ -28,6 +28,7 @@ void HdOptionPage::DoDataExchange(CDataExchange* pDX)
 	CBCGPDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_OPT_MARKET, _ComboOptionMarket);
 	DDX_Control(pDX, IDC_COMBO_OPT_MONTH, _ComboOptionMonth);
+	DDX_Control(pDX, IDC_STATIC_OPTION, option_view_);
 }
 
 
@@ -51,6 +52,8 @@ BOOL HdOptionPage::OnInitDialog()
 	//_OptionGrid.SymSelecter(_SymSelecter);
 	//if (_SymSelecter && _SymSelecter->SelTab == 1)
 	//	_OptionGrid.GetSymbolMasterLately();
+
+	option_view_.SetUp();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

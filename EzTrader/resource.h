@@ -451,6 +451,7 @@
 #define IDC_COMBO_OPTION_MONTH          1348
 #define IDC_STATIC_OPTION               1349
 #define IDC_STATIC_ACCOUNT_PROFIT_LOSS  1350
+#define IDC_STATIC_OPTION2              1350
 #define IDC_BTN_LIQ_ALL                 1351
 #define IDC_BTN_LIQ_ALL2                1352
 #define IDC_BTN_FUND_SET                1353

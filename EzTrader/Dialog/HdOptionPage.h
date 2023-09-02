@@ -1,6 +1,6 @@
 #pragma once
 #include "afxwin.h"
-//#include "HdOptionGrid.h"
+#include "../View/DmOptionView.h"
 #include <BCGCBProInc.h>
 // HdOptionPage dialog
 class HdSymbolSelecter;
@@ -10,6 +10,9 @@ class VtAddConnectSignalDlg;
 class VtSignalConnectionGrid;
 class VtChartTimeToolBar;
 class SmHftConfig;
+namespace DarkHorse {
+	class DmOptionView;
+}
 class HdOptionPage : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(HdOptionPage)
@@ -39,7 +42,7 @@ public:
 	CComboBox _ComboOptionMarket;
 	CComboBox _ComboOptionMonth;
 
-	//HdOptionGrid _OptionGrid;
+	DmOptionView option_view_;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnCbnSelchangeComboOptMarket();
 	afx_msg void OnCbnSelchangeComboOptMonth();
