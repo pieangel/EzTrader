@@ -304,7 +304,14 @@
     <ClInclude Include="DataFrame\Vectors\HeteroView.h" />
     <ClInclude Include="DataFrame\Vectors\VectorPtrView.h" />
     <ClInclude Include="DataFrame\Vectors\VectorView.h" />
+    <ClInclude Include="Dialog\ActiveOutSystemView.h" />
+    <ClInclude Include="Dialog\HdFuturePage.h" />
+    <ClInclude Include="Dialog\HdOptionPage.h" />
+    <ClInclude Include="Dialog\HdSymbolSelecter.h" />
     <ClInclude Include="Dialog\MiniJangoDialog.h" />
+    <ClInclude Include="Dialog\OutSystemInfoView.h" />
+    <ClInclude Include="Dialog\OutSystemView.h" />
+    <ClInclude Include="Dialog\SymbolFutureView.h" />
     <ClInclude Include="Dialog\TotalAssetProfitLossDialog.h" />
     <ClInclude Include="Drawing\VtBaseTracker.h" />
     <ClInclude Include="Drawing\VtDrawingConstants.h" />
@@ -634,7 +641,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Dialog\ActiveOutSystemView.cpp" />
+    <ClCompile Include="Dialog\HdFuturePage.cpp" />
+    <ClCompile Include="Dialog\HdOptionPage.cpp" />
+    <ClCompile Include="Dialog\HdSymbolSelecter.cpp" />
     <ClCompile Include="Dialog\MiniJangoDialog.cpp" />
+    <ClCompile Include="Dialog\OutSystemInfoView.cpp" />
+    <ClCompile Include="Dialog\OutSystemView.cpp" />
+    <ClCompile Include="Dialog\SymbolFutureView.cpp" />
     <ClCompile Include="Dialog\TotalAssetProfitLossDialog.cpp" />
     <ClCompile Include="Drawing\VtBaseTracker.cpp" />
     <ClCompile Include="Drawing\VtElement.cpp" />
