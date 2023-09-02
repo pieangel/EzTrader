@@ -775,7 +775,7 @@
     <ClCompile Include="Dialog\ActiveOutSystemView.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog\OutSystemInfoView.cpp">
+    <ClCompile Include="Dialog\OutSystemDefView.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
     <ClCompile Include="Dialog\OutSystemView.cpp">
@@ -783,6 +783,21 @@
     </ClCompile>
     <ClCompile Include="Dialog\SymbolFutureView.cpp">
       <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\VtAddConnectSignalDlg.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\VtAddOutSigDefDlg.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\VtAutoSignalManagerDialog.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog\AccountFundView.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="OutSystem\SmOutSignalDef.cpp">
+      <Filter>OutSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1818,7 +1833,7 @@
     <ClInclude Include="Dialog\ActiveOutSystemView.h">
       <Filter>Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Dialog\OutSystemInfoView.h">
+    <ClInclude Include="Dialog\OutSystemDefView.h">
       <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="Dialog\OutSystemView.h">
@@ -1826,6 +1841,21 @@
     </ClInclude>
     <ClInclude Include="Dialog\SymbolFutureView.h">
       <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\VtAddConnectSignalDlg.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\VtAddOutSigDefDlg.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\VtAutoSignalManagerDialog.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\AccountFundView.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="OutSystem\SmOutSignalDef.h">
+      <Filter>OutSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

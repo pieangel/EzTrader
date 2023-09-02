@@ -221,4 +221,5 @@ public:
 	afx_msg void OnEnableSimulationFilledOrder();
 	afx_msg void OnDmFundOrder();
 	afx_msg void OnSubAccount();
+	afx_msg void OnOutSystem();
 };

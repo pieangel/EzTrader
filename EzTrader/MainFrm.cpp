@@ -80,6 +80,7 @@ using namespace hmdf;
 #include "DataFrame/Utils/DateTime.h"
 #include "DataFrame/Utils/FixedSizePriorityQueue.h"
 #include "DataFrame/Utils/FixedSizeString.h"
+#include "Dialog/VtAutoSignalManagerDialog.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -317,6 +318,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_32934, &CMainFrame::OnEnableSimulationFilledOrder)
 	ON_COMMAND(ID_DM_FUND_ORDER, &CMainFrame::OnDmFundOrder)
 	ON_COMMAND(ID_SUB_ACCOUNT, &CMainFrame::OnSubAccount)
+	ON_COMMAND(ID_OUT_SYSTEM, &CMainFrame::OnOutSystem)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1395,4 +1397,11 @@ void CMainFrame::OnSubAccount()
 {
 	SubAccountEditor sub_account_editor;
 	sub_account_editor.DoModal();
+}
+
+
+void CMainFrame::OnOutSystem()
+{
+	VtAutoSignalManagerDialog out_system_dialog;
+	out_system_dialog.DoModal();
 }

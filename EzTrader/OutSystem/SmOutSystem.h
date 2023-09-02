@@ -27,6 +27,10 @@ namespace DarkHorse {
 		void symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { symbol_ = val; }
 		std::shared_ptr<DarkHorse::SmFund> fund() const { return fund_; }
 		void fund(std::shared_ptr<DarkHorse::SmFund> val) { fund_ = val; }
+		int seung_su() const { return seung_su_; }
+		void seung_su(int val) { seung_su_ = val; }
+		int signal_id() const { return signal_id_; }
+		void signal_id(int val) { signal_id_ = val; }
 
 	private:
 		OrderType order_type_{ OrderType::None };
@@ -37,6 +41,8 @@ namespace DarkHorse {
 		std::shared_ptr<SmSymbol> symbol_{ nullptr };
 		std::shared_ptr<SmFund> fund_{ nullptr };
 		std::string desc_;
+		int seung_su_{ 0 };
+		int signal_id_{ 0 };
 	};
 	// key : system id, value : SmOUtSystem object.
 	typedef std::map<int, std::shared_ptr<SmOutSystem>> SmOutSystemMap;

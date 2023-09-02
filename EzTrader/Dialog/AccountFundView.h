@@ -3,18 +3,17 @@
 #include <BCGCBProInc.h>
 #include <map>
 #include <memory>	
-
 namespace DarkHorse
 {
 	class SmSymbol;
 }
-const int grid_row_count3 = 100;
-class ActiveOutSystemView : public CBCGPGridCtrl
+const int grid_row_count = 100;
+class AccountFundView : public CBCGPGridCtrl
 {
-	DECLARE_DYNAMIC(ActiveOutSystemView)
+	DECLARE_DYNAMIC(AccountFundView)
 public:
-	ActiveOutSystemView();
-	virtual ~ActiveOutSystemView();
+	AccountFundView();
+	virtual ~AccountFundView();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)

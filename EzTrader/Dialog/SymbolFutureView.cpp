@@ -177,7 +177,7 @@ void SymbolFutureView::ClearGrid()
 {
 	if (!init_) return;
 
-	for (int row = 0; row < grid_row_count; row++) {
+	for (int row = 0; row < GetRowCount(); row++) {
 		CBCGPGridRow* pRow = GetRow(row);
 		if (!pRow) continue;
 		for (int col = 0; col < GetColumnCount(); col++) {

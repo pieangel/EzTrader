@@ -93,13 +93,14 @@
 #define IDD_PROGRESS                    219
 #define IDB_GRID_CONFIG                 221
 #define IDD_SUB_ACCOUNT                 222
-#define IDD_SYS_AUTO_CONNECT            226
 #define IDD_SYS_ORDER_SET               228
-#define IDD_SYS_ADD_AUTO_CONNECT        230
-#define IDD_SYS_DEF_AUTO_CONNECT        232
+#define IDD_SYS_AUTO_CONNECT            313
+#define IDD_ADD_SIG_CONNECT             324
 #define IDD_SYMBOL_SELECTER_HD          325
 #define IDD_FUT_PAGE                    335
+#define IDD_ADD_SIG_DEF                 337
 #define IDD_OPT_PAGE                    364
+#define IDD_ACNT_FUND_SELECTOR          412
 #define IDC_STATIC_ID                   1003
 #define IDC_STATIC_PWD                  1004
 #define IDC_STATIC_CERT                 1005
@@ -111,10 +112,13 @@
 #define IDC_BTN_ORDER_CONFIG            1010
 #define IDC_STATIC_DETAIL               1011
 #define IDC_STATIC_TOTAL_SIGNAL         1011
+#define IDC_STATIC_ACTIVE_OUT_SYSTEM    1011
 #define IDC_CHART_TYPE                  1012
 #define IDC_STATIC_SIGNAL_CONNECTION    1012
+#define IDC_STATIC_OUT_SYSTEM           1012
 #define IDC_LINE_TYPE                   1013
 #define IDC_STATIC_SIGNAL_DEFINITION    1013
+#define IDC_STATIC_OUT_SYSTEM_DEF       1013
 #define IDC_COMBO_ACCOUNT               1014
 #define IDC_BTN_ADD_CONNECT             1014
 #define IDC_OVERLAY_LINE                1015
@@ -126,10 +130,15 @@
 #define IDC_BTN_DEL_SIGNAL              1017
 #define IDC_CHART                       1018
 #define IDC_COMBO_SIGNAL                1018
+#define IDC_RADIO_ENTIRE                1018
 #define IDC_BUTTON1                     1019
 #define IDC_EDIT_SIGNAL                 1019
+#define IDC_RADIO_ACNT                  1019
 #define IDC_BUTTON_START                1020
 #define IDC_BTN_CREATE                  1020
+#define IDC_EDIT_SIGNAL2                1020
+#define IDC_EDIT_SIGNAL_DESC            1020
+#define IDC_RADIO_FUND                  1020
 #define IDC_BTN_LEFT                    1021
 #define IDC_BTN_APPLY                   1021
 #define IDC_SPIN_SEUNGSU                1021
@@ -176,8 +185,8 @@
 #define IDC_BTN_AMOUNT4                 1048
 #define IDC_COMBO_OPT_MARKET            1048
 #define IDC_BTN_FUND_DEL                1049
-#define IDC_CHECK_ALL                   1049
 #define IDC_COMBO_OPT_MONTH             1049
+#define IDC_CHECK_ALL                   1049
 #define IDC_CHECK_SET_WIDE              1050
 #define IDC_BTN_DAY                     1051
 #define IDC_CHECK_KOSPI                 1052
@@ -236,6 +245,7 @@
 #define IDC_STATIC_FAVORITE             1094
 #define IDC_BUTTON8                     1095
 #define IDC_BTN_SYMBOL                  1096
+#define IDC_STATIC_GRID                 1096
 #define IDC_CHECK_VIRTUAL2              1097
 #define IDC_CHECK_VIRTUAL_TO            1098
 #define IDC_BTN_ZOOM_IN                 1099
@@ -580,13 +590,15 @@
 #define ID_DM_FUND_ORDER                32935
 #define ID_32936                        32936
 #define ID_SUB_ACCOUNT                  32937
+#define ID_32938                        32938
+#define ID_OUT_SYSTEM                   32939
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        234
-#define _APS_NEXT_COMMAND_VALUE         32938
+#define _APS_NEXT_COMMAND_VALUE         32940
 #define _APS_NEXT_CONTROL_VALUE         1171
 #define _APS_NEXT_SYMED_VALUE           119
 #endif

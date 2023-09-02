@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ActiveOutSystemView.h"
+#include "AccountFundView.h"
 
 #include <vector>
 #include "../Global/SmTotalManager.h"
@@ -14,9 +14,9 @@
 #include <format>
 
 using namespace DarkHorse;
-IMPLEMENT_DYNAMIC(ActiveOutSystemView, CBCGPGridCtrl)
+IMPLEMENT_DYNAMIC(AccountFundView, CBCGPGridCtrl)
 
-BEGIN_MESSAGE_MAP(ActiveOutSystemView, CBCGPGridCtrl)
+BEGIN_MESSAGE_MAP(AccountFundView, CBCGPGridCtrl)
 	//{{AFX_MSG_MAP(CBasicGridCtrl)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
@@ -27,17 +27,17 @@ END_MESSAGE_MAP()
 
 
 
-ActiveOutSystemView::ActiveOutSystemView()
+AccountFundView::AccountFundView()
 {
 
 }
 
-ActiveOutSystemView::~ActiveOutSystemView()
+AccountFundView::~AccountFundView()
 {
 
 }
 
-void ActiveOutSystemView::OnLButtonDown(UINT nFlags, CPoint point)
+void AccountFundView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CBCGPGridItemID id;
 	CBCGPGridItem* pItem;
@@ -61,7 +61,7 @@ void ActiveOutSystemView::OnLButtonDown(UINT nFlags, CPoint point)
 
 
 
-int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int AccountFundView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CBCGPGridCtrl::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -80,22 +80,19 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetRowHeaderWidth(1);
 	SetVisualManagerColorTheme(TRUE);
 
-	std::vector<std::string> title = { "계좌번호", "종목", "포지션", "평균단가", "현재가", "평가손익", "매도주문", "매수주문", "신호차트", "청산" };
-	std::vector<int> col_width = { 100, 100, 80, 100, 100, 100, 100, 100, 124 - GetSystemMetrics(SM_CXVSCROLL), 80 };
-
-
 	// Insert columns:
-	for (size_t i = 0; i < title.size(); i++) {
-		InsertColumn(i, title[i].c_str(), col_width[i]);
-	}
+	InsertColumn(0, _T("코드"), 80);
+	InsertColumn(1, _T("이름"), 100);
+	InsertColumn(2, _T("현재가"), 60);
+
 
 
 	FreezeColumns(0);
 
 	const int nColumns = GetColumnCount();
 
-	/*
-	for (int row = 0; row < grid_row_count3; row++) {
+
+	for (int row = 0; row < grid_row_count; row++) {
 		// Create new row:
 		CBCGPGridRow* pRow = CreateRow(nColumns);
 		// Set each column data:
@@ -112,17 +109,22 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		}
 
 		// Add row to grid:
-		AddRow(pRow, FALSE );
+		AddRow(pRow, FALSE /* Don't recal. layout */);
 
 		row++;
 	}
-	*/
 
-	for (int i = 0; i < GetColumnCount(); i++)
-	{
-		SetColumnAlign(i, 2);
-		SetHeaderAlign(i, 2);
-	}
+
+	SetColumnAlign(0, 2);
+	SetColumnAlign(1, 2);
+	SetColumnAlign(2, 2);
+	SetColumnAlign(3, 2);
+	SetHeaderAlign(0, 2);
+	SetHeaderAlign(1, 2);
+	SetHeaderAlign(2, 2);
+	SetHeaderAlign(3, 2);
+
+
 
 	AdjustLayout();
 
@@ -136,13 +138,13 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void ActiveOutSystemView::OnDestroy()
+void AccountFundView::OnDestroy()
 {
 	SaveState(_T("BasicGrid"));
 	CBCGPGridCtrl::OnDestroy();
 }
 
-void ActiveOutSystemView::ClearGrid()
+void AccountFundView::ClearGrid()
 {
 	if (!init_) return;
 
