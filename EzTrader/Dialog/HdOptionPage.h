@@ -39,8 +39,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CComboBox _ComboOptionMarket;
-	CComboBox _ComboOptionMonth;
+	CComboBox combo_option_market_;
+	CComboBox combo_option_month_;
 
 	DmOptionView option_view_;
 	virtual BOOL OnInitDialog();
@@ -48,6 +48,13 @@ public:
 	afx_msg void OnCbnSelchangeComboOptMonth();
 
 private:
+	void set_option_view();
+	// key : option year-month combo index, value : year-month name
+	std::map<int, std::string> option_yearmonth_index_map;
+	int year_month_index{ 0 };
+	int option_market_index{ 0 };
+	void init_option_market();
+
 	HdSymbolSelecter* _SymSelecter;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 public:
