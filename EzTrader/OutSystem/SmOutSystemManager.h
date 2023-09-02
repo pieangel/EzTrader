@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <memory>
 #include "SmOutSystem.h"
@@ -24,13 +24,12 @@ namespace DarkHorse {
 		void remove_out_system(const std::string& signal_name);
 		void remove_out_system_by_id(const int& system_id);
 		void make_out_system_signal_map();
-		const std::map<std::string, std::shared_ptr<SmOutSignalDef>>& get_out_system_signal_map() const { return out_system_signal_map_; }
+		const std::vector<std::shared_ptr<SmOutSignalDef>>& get_out_system_signal_map() const { return out_system_signal_vec_; }
 	private:
 		std::vector<std::shared_ptr<SmOutSystem>> out_system_vec_;
 		// key : system name, value : SmOutSystem object.
 		std::map<std::string, SmOutSystemMap> out_system_map_;
-		// key : signal name, value : SmOutSignalDef object.
-		std::map<std::string, std::shared_ptr<SmOutSignalDef>> out_system_signal_map_;
+		std::vector<std::shared_ptr<SmOutSignalDef>> out_system_signal_vec_;
 	};
 }
 

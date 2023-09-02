@@ -2,19 +2,25 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 #include <BCGCBProInc.h>
+#include <map>
+#include <memory>
 //#include "VtOutSignalDefManager.h"
 
 // VtAddConnectSignalDlg dialog
-class SmAccount;
-class SmFund;
-class SmSymbol;
-class VtOutSignalDef;
-class VtSignalConnectionGrid;
+namespace DarkHorse {
+	class SmAccount;
+	class SmFund;
+	class SmSymbol;
+	class SmOutSignalDef;
+}
+class VtAutoSignalManagerDialog;
+class HdSymbolSelecter;
 class VtAddConnectSignalDlg : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(VtAddConnectSignalDlg)
 
 public:
+	VtAddConnectSignalDlg(VtAutoSignalManagerDialog* source_dialog);
 	VtAddConnectSignalDlg(CWnd* pParent = NULL);   // standard constructor
 	virtual ~VtAddConnectSignalDlg();
 
@@ -23,6 +29,8 @@ public:
 	enum { IDD = IDD_ADD_SIG_CONNECT };
 #endif
 
+	VtAutoSignalManagerDialog* source_dialog() const { return source_dialog_; }
+	void source_dialog(VtAutoSignalManagerDialog* val) { source_dialog_ = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -45,12 +53,22 @@ public:
 	int _Mode = 0;
 	void InitCombo();
 	void InitOutSigDefCombo();
-	void SetSymbol(SmSymbol* sym);
-	SmAccount* _Acnt = nullptr;
-	SmSymbol* _Symbol = nullptr;
-	SmFund* _Fund = nullptr;
-	//SharedOutSigDef _Signal = nullptr;
-	void SigConGrid(VtSignalConnectionGrid* val) { _SigConGrid = val; }
+
 private:
-	VtSignalConnectionGrid* _SigConGrid = nullptr;
+	std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
+	void set_symbol_from_out(const int window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	int id_ = 0;
+	std::shared_ptr<DarkHorse::SmAccount> account_;
+	std::shared_ptr<DarkHorse::SmFund> fund_;
+	std::shared_ptr<DarkHorse::SmSymbol> symbol_;
+	std::shared_ptr<DarkHorse::SmOutSignalDef> out_sig_def_;
+	VtAutoSignalManagerDialog* source_dialog_ = nullptr;
+	// key: combo index, value: account
+	std::map<int, std::shared_ptr<DarkHorse::SmAccount>> combo_to_account_map_;
+	// key: combo index, value: fund
+	std::map<int, std::shared_ptr<DarkHorse::SmFund>> combo_to_fund_map_;
+	// key: combo index, value: symbol
+	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> combo_to_symbol_map_;
+	// key: combo index, value: out signal def
+	std::map<int, std::shared_ptr<DarkHorse::SmOutSignalDef>> combo_to_out_sig_def_map_;
 };

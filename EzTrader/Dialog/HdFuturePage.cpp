@@ -44,6 +44,11 @@ END_MESSAGE_MAP()
 // HdFuturePage message handlers
 
 
+void HdFuturePage::set_source_window_id(const int window_id)
+{
+	future_view_.set_source_window_id(window_id);
+}
+
 BOOL HdFuturePage::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();

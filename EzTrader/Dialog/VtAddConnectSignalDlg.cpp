@@ -6,19 +6,40 @@
 #include "VtAddConnectSignalDlg.h"
 #include "afxdialogex.h"
 #include "HdSymbolSelecter.h"
-
+#include "../Global/SmTotalManager.h"
+#include "../OutSystem/SmOutSystem.h"
+#include "../OutSystem/SmOutSystemManager.h"
+#include "../OutSystem/SmOutSignalDef.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Account/SmAccount.h"
+#include "../Fund/SmFund.h"
+#include "../Fund/SmFundManager.h"
+#include "../Account/SmAccountManager.h"
+#include "../Order/SmOrderConst.h"
+#include "VtAutoSignalManagerDialog.h"
+#include "../Event/EventHub.h"
+#include <functional>
+#include "../Util/IdGenerator.h"
 // VtAddConnectSignalDlg dialog
+using namespace DarkHorse;
 
 IMPLEMENT_DYNAMIC(VtAddConnectSignalDlg, CBCGPDialog)
 
 VtAddConnectSignalDlg::VtAddConnectSignalDlg(CWnd* pParent /*=NULL*/)
-	: CBCGPDialog(IDD_ADD_SIG_CONNECT, pParent)
+	: CBCGPDialog(IDD_ADD_SIG_CONNECT, pParent), id_(IdGenerator::get_id())
 {
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&VtAddConnectSignalDlg::set_symbol_from_out, this, std::placeholders::_1, std::placeholders::_2));
+}
 
+VtAddConnectSignalDlg::VtAddConnectSignalDlg(VtAutoSignalManagerDialog* source_dialog)
+	: CBCGPDialog(IDD_ADD_SIG_CONNECT), source_dialog_(source_dialog), id_(IdGenerator::get_id())
+{
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&VtAddConnectSignalDlg::set_symbol_from_out, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 VtAddConnectSignalDlg::~VtAddConnectSignalDlg()
 {
+	mainApp.event_hub()->unsubscribe_symbol_event_handler(id_);
 }
 
 void VtAddConnectSignalDlg::DoDataExchange(CDataExchange* pDX)
@@ -60,11 +81,13 @@ void VtAddConnectSignalDlg::OnCbnSelchangeComboType()
 void VtAddConnectSignalDlg::OnCbnSelchangeComboAcnt()
 {
 	int selIndex = _ComboAcnt.GetCurSel();
-	if (selIndex != -1) {
-		if (_Mode == 0)
-			_Acnt = (SmAccount*)_ComboAcnt.GetItemDataPtr(selIndex);
-		else 
-			_Fund = (SmFund*)_ComboAcnt.GetItemDataPtr(selIndex);
+	if (selIndex == -1) {
+		return;
+	}
+
+	auto it = combo_to_account_map_.find(selIndex);
+	if (it != combo_to_account_map_.end()) {
+		account_ = it->second;
 	}
 }
 
@@ -72,77 +95,71 @@ void VtAddConnectSignalDlg::OnCbnSelchangeComboAcnt()
 void VtAddConnectSignalDlg::OnCbnSelchangeComboSymbol()
 {
 	int selIndex = _ComboSymbol.GetCurSel();
-	if (selIndex != -1) {
-		_Symbol = (SmSymbol*)_ComboSymbol.GetItemDataPtr(selIndex);
+	if (selIndex == -1) {
+		return;
+	}
+
+	auto it = combo_to_symbol_map_.find(selIndex);
+	if (it != combo_to_symbol_map_.end()) {
+		symbol_ = it->second;
 	}
 }
 
 
 void VtAddConnectSignalDlg::OnBnClickedBtnFindSymbol()
 {
-	HdSymbolSelecter dlg;
-	dlg.SetAddConSigDlg(this);
-	dlg.DoModal();
+	_SymbolSelecter = std::make_shared<HdSymbolSelecter>();
+	_SymbolSelecter->set_source_window_id(id_);
+	_SymbolSelecter->Create(IDD_SYMBOL_SELECTER_HD, this);
+	_SymbolSelecter->ShowWindow(SW_SHOW);
 }
 
 
 void VtAddConnectSignalDlg::OnCbnSelchangeComboSignal()
 {
 	int selIndex = _ComboSignal.GetCurSel();
-// 	if (selIndex != -1) {
-// 		VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
-// 		CString strName;
-// 		_ComboSignal.GetLBText(selIndex, strName);
-// 		SharedOutSigDef sig = outSigDefMgr->FindOutSigDef((LPCTSTR)strName);
-// 		sig ? _Signal = sig : _Signal = nullptr;
-// 	}
+	if (selIndex == -1) {
+		return;
+	}
+	auto it = combo_to_out_sig_def_map_.find(selIndex);
+	if (it != combo_to_out_sig_def_map_.end()) {
+		out_sig_def_ = it->second;
+	}
 }
 
 
 void VtAddConnectSignalDlg::OnBnClickedBtnOk()
 {
-// 	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
-// 
-// 	SharedSystem sys = std::make_shared<VtSystem>(VtSystemType::SYS_OUT);
-// 	if (_Mode == 0) {
-// 		if (_Acnt) {
-// 			_Acnt->AccountLevel() == 0 ? sys->SysTargetType(TargetType::RealAccount) : sys->SysTargetType(TargetType::SubAccount);
-// 			sys->Account(_Acnt);
-// 			if (_Acnt->AccountLevel() == 0) {
-// 				realtimeRegiMgr->RegisterAccount(_Acnt->AccountNo);
-// 			}
-// 			else {
-// 				VtAccount* parentAcnt = _Acnt->ParentAccount();
-// 				if (parentAcnt) {
-// 					realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
-// 				}
-// 			}
-// 		}
-// 	}
-// 	else {
-// 		if (_Fund) {
-// 			sys->SysTargetType(TargetType::Fund);
-// 			sys->Fund(_Fund);
-// 			std::set<VtAccount*> parendAcntSet = _Fund->GetParentAccountSet();
-// 			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
-// 				VtAccount* parentAcnt = *it;
-// 				realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
-// 			}
-// 		}
-// 	}
-// 
-// 	
-// 	if (_Symbol) sys->Symbol(_Symbol);
-// 
-// 	if (_Signal) sys->OutSignal(_Signal);
-// 
-// 	CString strSeungSu;
-// 	_EditSeungsu.GetWindowText(strSeungSu);
-// 	sys->SeungSu(_ttoi(strSeungSu));
-// 
-// 	if (_SigConGrid) {
-// 		_SigConGrid->AddSystem(sys);
-// 	}
+	if (_Mode == 0 && !account_) { AfxMessageBox("계좌가 없습니다. 계좌를 선택하세요!"); return; }
+	if (_Mode == 1 && !fund_) { AfxMessageBox("펀드가 없습니다. 펀드를 선택하세요!"); return; }
+	if (!symbol_) { AfxMessageBox("종목이 없습니다. 종목을 선택하세요!"); return; }
+	if (!out_sig_def_) { AfxMessageBox("목표 차트가 없습니다. 목표 차트를 선택하세요!"); return; }
+
+	DarkHorse::OrderType order_type = DarkHorse::OrderType::None;
+	if (_Mode == 0) {
+		if (account_->is_subaccount())
+			order_type = OrderType::SubAccount;
+		else
+			order_type = OrderType::MainAccount;
+	}
+	else {
+		order_type = OrderType::Fund;
+	}
+	CString strSeungSu;
+	_EditSeungsu.GetWindowText(strSeungSu);
+	auto out_system = mainApp.out_system_manager()->create_out_system
+	(
+		out_sig_def_->name, 
+		_ttoi(strSeungSu),
+		order_type,
+		_Mode == 0 ? account_ : nullptr,
+		_Mode == 1 ? fund_ : nullptr,
+		symbol_
+	);
+
+	if (source_dialog_)
+		source_dialog_->add_out_system(out_system);
+
 	CBCGPDialog::OnOK();
 }
 
@@ -173,58 +190,72 @@ void VtAddConnectSignalDlg::InitCombo()
 {
 	_ComboAcnt.ResetContent();
 	int index = -1;
-// 	if (_Mode == 0) {
-// 		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-// 		for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
-// 			VtAccount* acnt = it->second;
-// 			index = _ComboAcnt.AddString(acnt->AccountNo.c_str());
-// 			if (index == 0) _Acnt = acnt;
-// 			_ComboAcnt.SetItemDataPtr(index, acnt);
-// 		}
-// 
-// 		VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
-// 		for (auto it = subAcntMgr->AccountMap.begin(); it != subAcntMgr->AccountMap.end(); ++it) {
-// 			VtAccount* acnt = it->second;
-// 			index = _ComboAcnt.AddString(acnt->AccountNo.c_str());
-// 			_ComboAcnt.SetItemDataPtr(index, acnt);
-// 		}
-// 	}
-// 	else {
-// 		VtFundManager* fundMgr = VtFundManager::GetInstance();
-// 		std::map<std::string, VtFund*>& fundList = fundMgr->GetFundList();
-// 		for (auto it = fundList.begin(); it != fundList.end(); ++it) {
-// 			VtFund* fund = it->second;
-// 			index = _ComboAcnt.AddString(fund->Name.c_str());
-// 			if (index == 0) _Fund = fund;
-// 			_ComboAcnt.SetItemDataPtr(index, fund);
-// 		}
-// 	}
+	if (_Mode == 0) {
+		combo_to_account_map_.clear();
+		std::vector<std::shared_ptr<SmAccount>> main_account_vector;
+		mainApp.AcntMgr()->get_main_account_vector(main_account_vector);
+		if (main_account_vector.empty()) return;
+		for (auto ita = main_account_vector.begin(); ita != main_account_vector.end(); ++ita) {
+			auto main_acnt = *ita;
+			CString str;
+			str.Format(_T("%s[%s]"), main_acnt->Name().c_str(), main_acnt->No().c_str());
+			index = _ComboAcnt.AddString(str);
+			combo_to_account_map_[index] = main_acnt;
 
-	if (index != -1)
-		_ComboAcnt.SetCurSel(0);
+			const std::vector<std::shared_ptr<SmAccount>>& sub_account_vector = main_acnt->get_sub_accounts();
+			for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); it++) {
+				auto account = *it;
+				CString str;
+				str.Format(_T("%s[%s]"), account->Name().c_str(), account->No().c_str());
+				index = _ComboAcnt.AddString(str);
+				combo_to_account_map_[index] = account;
+			}
+		}
+		if (!combo_to_account_map_.empty()) {
+			_ComboAcnt.SetCurSel(0);
+			account_ = combo_to_account_map_.begin()->second;
+		}
+	}
+	else {
+		combo_to_fund_map_.clear();
+		auto fund_map = mainApp.FundMgr()->GetFundMap();
+		for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
+			auto fund = it->second;
+			CString str;
+			str.Format(_T("%s"), fund->Name().c_str());
+			index = _ComboAcnt.AddString(str);
+			combo_to_fund_map_[index] = fund;
+		}
+
+		if (!combo_to_fund_map_.empty()) {
+			_ComboAcnt.SetCurSel(0);
+			fund_ = combo_to_fund_map_.begin()->second;
+		}
+	}
 }
 
 void VtAddConnectSignalDlg::InitOutSigDefCombo()
 {
-// 	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
-// 	OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
-// 	int selIndex = -1;
-// 	for (auto it = sigDefVec.begin(); it != sigDefVec.end(); ++it) {
-// 		SharedOutSigDef& sig = *it;
-// 		selIndex = _ComboSignal.AddString(sig->SignalName.c_str());
-// 	}
-// 	if (selIndex != -1) {
-// 		_ComboSignal.SetCurSel(0);
-// 		_Signal = sigDefVec[0];
-// 	}
+	auto signal_def_vector = mainApp.out_system_manager()->get_out_system_signal_map();
+	int selIndex = -1;
+	combo_to_out_sig_def_map_.clear();
+	for (auto it = signal_def_vector.begin(); it != signal_def_vector.end(); ++it) {
+		selIndex = _ComboSignal.AddString((*it)->name.c_str());
+		combo_to_out_sig_def_map_[selIndex] = *it;
+	}
+	if (!combo_to_out_sig_def_map_.empty()) {
+		out_sig_def_ = combo_to_out_sig_def_map_.begin()->second;
+		_ComboSignal.SetCurSel(0);
+	}
 }
 
-void VtAddConnectSignalDlg::SetSymbol(SmSymbol* sym)
+void VtAddConnectSignalDlg::set_symbol_from_out(const int window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
-	if (!sym)
-		return;
-// 	int index = _ComboSymbol.AddString(sym->ShortCode.c_str());
-// 	_ComboSymbol.SetItemDataPtr(index, sym);
-// 	_ComboSymbol.SetCurSel(index);
-// 	_Symbol = sym;
+	if (window_id != id_ || !symbol) return;
+	symbol_ = symbol;
+	int index = _ComboSymbol.AddString(symbol->SymbolCode().c_str());
+	combo_to_symbol_map_[index] = symbol;
+	_ComboSymbol.SetCurSel(index);
+	if (_SymbolSelecter) _SymbolSelecter->SendMessage(WM_CLOSE);
 }
+

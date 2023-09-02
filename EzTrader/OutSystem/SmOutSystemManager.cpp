@@ -22,12 +22,6 @@ namespace DarkHorse {
 		std::shared_ptr<SmSymbol> symbol
 	)
 	{
-		if (signal_name.empty()) return nullptr;
-		if (order_type == OrderType::None) return nullptr;
-		if (order_type == OrderType::Fund && !account) return nullptr;
-		if (order_type == OrderType::Fund && !fund) return nullptr;
-		if (!symbol) return nullptr;
-
 		std::shared_ptr<SmOutSystem> out_system = std::make_shared<SmOutSystem>(signal_name);
 		out_system->seung_su(seung_su);
 		out_system->order_type(order_type);
@@ -70,9 +64,9 @@ namespace DarkHorse {
 	{
 		for (int i = 0; i < 100; i++) {
 			auto out_system_signal = std::make_shared<SmOutSignalDef>(IdGenerator::get_id());
-			out_system_signal->name = "T" + std::to_string(i);
-			out_system_signal->desc = "T" + std::to_string(i);
-			out_system_signal_map_[out_system_signal->name] = out_system_signal;
+			out_system_signal->name = "T" + std::to_string(i + 1);
+			out_system_signal->desc = "T" + std::to_string(i + 1);
+			out_system_signal_vec_.push_back(out_system_signal);
 		}
 	}
 

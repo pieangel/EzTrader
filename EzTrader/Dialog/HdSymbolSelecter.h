@@ -6,10 +6,10 @@
 // HdSymbolSelecter dialog
 class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
-class VtAddConnectSignalDlg;
 class VtSignalConnectionGrid;
 class VtChartTimeToolBar;
 class SmHftConfig;
+class VtAddConnectSignalDlg;
 class HdSymbolSelecter : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(HdSymbolSelecter)
@@ -35,6 +35,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	void set_source_window_id(const int window_id);
 	CTabCtrl _TabCtrl;
 	HdFuturePage _FutPage;
 	HdOptionPage _OptPage;

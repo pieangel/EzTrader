@@ -16,6 +16,7 @@ class OutSystemDefView : public CBCGPGridCtrl
 public:
 	OutSystemDefView();
 	virtual ~OutSystemDefView();
+	void InitGrid();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)

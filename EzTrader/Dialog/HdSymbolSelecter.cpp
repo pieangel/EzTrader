@@ -42,6 +42,12 @@ END_MESSAGE_MAP()
 // HdSymbolSelecter message handlers
 
 
+void HdSymbolSelecter::set_source_window_id(const int window_id)
+{
+	_FutPage.set_source_window_id(window_id);
+	_OptPage.set_source_window_id(window_id);
+}
+
 BOOL HdSymbolSelecter::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();

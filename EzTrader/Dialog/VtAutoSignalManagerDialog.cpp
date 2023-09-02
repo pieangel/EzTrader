@@ -79,6 +79,7 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 	ScreenToClient(&rect);
 	// Create the Windows control and attach it to the Grid object
 	out_system_def_view_.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID22);
+	out_system_def_view_.InitGrid();
 
 	SetTimer(RefTimer, 100, NULL);
 	Resize();
@@ -273,17 +274,20 @@ void VtAutoSignalManagerDialog::Resize()
 	pWnd->MoveWindow(rcCtrl, TRUE);
 	out_system_def_view_.MoveWindow(rcCtrl, TRUE);
 
-// 	_TotalSigGrid.GetScrollBarCtrl(SB_VERT)->Invalidate(TRUE);
-// 	_ConnectGrid.GetScrollBarCtrl(SB_VERT)->Invalidate(TRUE);
-// 	_DefineGrid.GetScrollBarCtrl(SB_VERT)->Invalidate(TRUE);
-
 	Invalidate(TRUE);
+}
+
+void VtAutoSignalManagerDialog::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
+{
+	if (!out_system) return;
+
+	out_system_view_.add_out_system(out_system);
 }
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect()
 {
 	VtAddConnectSignalDlg dlg;
-	//dlg.SigConGrid(&_ConnectGrid);
+	dlg.source_dialog(this);
 	dlg.DoModal();
 }
 

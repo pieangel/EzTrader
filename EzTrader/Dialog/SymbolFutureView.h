@@ -11,6 +11,7 @@ class SymbolFutureView : public CBCGPGridCtrl
 {
 	DECLARE_DYNAMIC(SymbolFutureView)
 public:
+	void set_source_window_id(const int window_id) { source_window_id_ = window_id; }
 	SymbolFutureView();
 	virtual ~SymbolFutureView();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -26,5 +27,6 @@ private:
 	COLORREF _DefaultBackColor;
 	void ClearGrid();
 	bool init_ = false;
+	int source_window_id_ = 0;
 };
 

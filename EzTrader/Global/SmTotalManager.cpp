@@ -26,6 +26,7 @@
 #include "../Order/OrderProcess/OrderProcessor.h"
 #include "../Event/EventHub.h"
 #include "../Task/ViServerDataReceiver.h"
+#include "../OutSystem/SmOutSystemManager.h"
 #include <string>
 
 using namespace DarkHorse;
@@ -63,4 +64,5 @@ void SmTotalManager::CreateManagers()
 	order_processor_ = std::make_shared<OrderProcessor>();
 	order_request_manager_ = std::make_shared<OrderRequestManager>();
 	vi_server_data_receiver_ = std::make_shared<ViServerDataReceiver>();
+	out_system_manager_ = std::make_shared<SmOutSystemManager>();
 }

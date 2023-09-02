@@ -50,6 +50,11 @@ END_MESSAGE_MAP()
 // HdOptionPage message handlers
 
 
+void HdOptionPage::set_source_window_id(const int window_id)
+{
+	option_view_.order_window_id(window_id);
+}
+
 BOOL HdOptionPage::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();

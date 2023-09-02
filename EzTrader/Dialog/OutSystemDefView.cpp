@@ -12,6 +12,11 @@
 #include "../Quote/SmQuoteManager.h"
 #include "../Symbol/SmProduct.h"
 #include "../Util/SmUtil.h"
+#include "../Global/SmTotalManager.h"
+#include "../OutSystem/SmOutSystem.h"
+#include "../OutSystem/SmOutSystemManager.h"
+#include "../OutSystem/SmOutSignalDef.h"
+
 #include <format>
 
 using namespace DarkHorse;
@@ -138,6 +143,18 @@ void OutSystemDefView::OnDestroy()
 {
 	SaveState(_T("BasicGrid"));
 	CBCGPGridCtrl::OnDestroy();
+}
+
+void OutSystemDefView::InitGrid()
+{
+	auto signal_def_vector = mainApp.out_system_manager()->get_out_system_signal_map();
+	int selIndex = -1;
+	for (size_t i = 0; i < signal_def_vector.size(); i++) {
+		CBCGPGridRow* pRow = GetRow(i);
+		if (!pRow) continue;
+		pRow->GetItem(0)->SetValue(signal_def_vector[i]->name.c_str());
+		pRow->GetItem(1)->SetValue(signal_def_vector[i]->desc.c_str());
+	}
 }
 
 void OutSystemDefView::ClearGrid()

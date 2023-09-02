@@ -61,6 +61,13 @@ void OutSystemView::OnLButtonDown(UINT nFlags, CPoint point)
 
 
 
+void OutSystemView::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
+{
+	if (!out_system) return;
+
+
+}
+
 int OutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CBCGPGridCtrl::OnCreate(lpCreateStruct) == -1)

@@ -10,6 +10,7 @@
 #include "../Quote/SmQuoteManager.h"
 #include "../Symbol/SmProduct.h"
 #include "../Util/SmUtil.h"
+#include "../Event/EventHub.h"
 #include <format>
 
 using namespace DarkHorse;
@@ -51,9 +52,7 @@ void SymbolFutureView::OnLButtonDown(UINT nFlags, CPoint point)
 	auto found = row_to_symbol_.find(id.m_nRow);
 	if (found == row_to_symbol_.end()) return;
 
-	//auto symbol = mainApp.SymMgr()->FindSymbol(found->second->symbol_code);
-	//if (!symbol) return;
-	//mainApp.event_hub()->trigger_ab_symbol_event(1, symbol);
+	mainApp.event_hub()->process_symbol_event(source_window_id_, found->second);
 	Invalidate();
 
 }

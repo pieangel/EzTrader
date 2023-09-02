@@ -2,6 +2,7 @@
 
 #include "afxwin.h"
 #include <BCGCBProInc.h>
+#include <memory>
 #include "OutSystemView.h"
 #include "ActiveOutSystemView.h"
 #include "OutSystemDefView.h"
@@ -10,6 +11,11 @@ const int STD_BUTTON_WIDTH = 90;
 const int STD_BUTTON_HEIGHT = 25;
 // VtAutoSignalManagerDialog dialog
 const int RefTimer = 0x00000010;
+
+namespace DarkHorse
+{
+	class SmOutSystem;
+}
 class VtAutoSignalManagerDialog : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(VtAutoSignalManagerDialog)
@@ -38,6 +44,7 @@ private:
 	void RefreshOrder();
 	void Resize();
 public:
+	void add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system);
 	afx_msg void OnBnClickedBtnAddConnect();
 	afx_msg void OnBnClickedBtnAddSignal();
 	afx_msg void OnBnClickedBtnDelConnect();
