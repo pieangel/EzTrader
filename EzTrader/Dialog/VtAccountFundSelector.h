@@ -30,6 +30,9 @@ public:
 	void set_mode(int mode) {
 		account_fund_view_.mode(mode);
 	}
+	void set_source_id(const int source_id) {
+		account_fund_view_.set_source_id(source_id);
+	}
 	CString m_SelectedCode;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedRadioAcnt();

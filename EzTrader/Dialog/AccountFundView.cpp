@@ -15,6 +15,7 @@
 #include "../Fund/SmFund.h"
 #include "../Account/SmAccountManager.h"
 #include "../Fund/SmFundManager.h"
+#include "../Event/EventHub.h"
 #include <format>
 
 using namespace DarkHorse;
@@ -53,9 +54,19 @@ void AccountFundView::OnLButtonDown(UINT nFlags, CPoint point)
 	//msg.Format("%d", nColumn);
 	//AfxMessageBox(msg);
 
-	//auto symbol = mainApp.SymMgr()->FindSymbol(found->second->symbol_code);
-	//if (!symbol) return;
-	//mainApp.event_hub()->trigger_ab_symbol_event(1, symbol);
+	if (mode_ == 0) {
+		auto found = row_to_account_map_.find(id.m_nRow);
+		if (found == row_to_account_map_.end()) return;
+		auto account = found->second;
+		mainApp.event_hub()->process_account_event(source_id_, account);
+	}
+	else {
+		auto found = row_to_fund_map_.find(id.m_nRow);
+		if (found == row_to_fund_map_.end()) return;
+		auto fund = found->second;
+		mainApp.event_hub()->process_fund_event(source_id_, fund);
+	}
+
 	Invalidate();
 	CBCGPGridCtrl::OnLButtonDown(nFlags, point);
 }

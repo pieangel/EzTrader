@@ -20,6 +20,7 @@ public:
 	int mode() const { return mode_; }
 	void mode(int val) { mode_ = val; }
 	void init_grid();
+	void set_source_id(const int source_id) { source_id_ = source_id; }
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -39,4 +40,5 @@ private:
 	std::shared_ptr<DarkHorse::SmAccount> account_;
 	// selected fund
 	std::shared_ptr<DarkHorse::SmFund> fund_;
+	int source_id_ = 0;
 };

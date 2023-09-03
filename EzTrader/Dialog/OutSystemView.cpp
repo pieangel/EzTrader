@@ -113,6 +113,14 @@ void OutSystemView::remove_out_system()
 	AdjustLayout();
 }
 
+std::shared_ptr<DarkHorse::SmOutSystem> OutSystemView::get_out_system(const int row)
+{
+	if (row < 0) return nullptr;
+	auto found = row_to_out_system_.find(row);
+	if (found == row_to_out_system_.end()) return nullptr;
+	return found->second;
+}
+
 int OutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CBCGPGridCtrl::OnCreate(lpCreateStruct) == -1)
@@ -345,6 +353,8 @@ CAccountItem::CAccountItem(const CString& strValue, OutSystemView& pOutSystemVei
 	m_dwFlags = PROP_HAS_BUTTON;
 	id_ = IdGenerator::get_id();
 
+	mainApp.event_hub()->subscribe_account_event_handler(id_, std::bind(&CAccountItem::set_account_from_out, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_fund_event_handler(id_, std::bind(&CAccountItem::set_fund_from_out, this, std::placeholders::_1, std::placeholders::_2));
 }
 //****************************************************************************************
 void CAccountItem::OnClickButton(CPoint /*point*/)
@@ -355,8 +365,8 @@ void CAccountItem::OnClickButton(CPoint /*point*/)
 
 	m_bButtonIsDown = TRUE;
 	Redraw();
-
 	VtAccountFundSelector dlg;
+	dlg.set_source_id(id_);
 	dlg.DoModal();
 
 	m_bButtonIsDown = FALSE;
@@ -370,6 +380,34 @@ void CAccountItem::OnClickButton(CPoint /*point*/)
 	{
 		pGridCtrl->SetFocus();
 	}
+
+	SetItemChanged();
+	Redraw();
+}
+
+void CAccountItem::set_account_from_out(const int window_id, std::shared_ptr<DarkHorse::SmAccount> account)
+{
+	if (window_id != id_ || !account) return;
+	m_varValue = account->No().c_str();
+	CBCGPGridRow* pRow = GetParentRow();
+	const int row_index = pRow->GetRowId();
+	auto out_system = pOutSystemVeiw_.get_out_system(row_index);
+	if (!out_system) return;
+	out_system->account(account);
+
+	SetItemChanged();
+	Redraw();
+}
+
+void CAccountItem::set_fund_from_out(const int window_id, std::shared_ptr<DarkHorse::SmFund> fund)
+{
+	if (window_id != id_ || !fund) return;
+	m_varValue = fund->Name().c_str();
+	CBCGPGridRow* pRow = GetParentRow();
+	const int row_index = pRow->GetRowId();
+	auto out_system = pOutSystemVeiw_.get_out_system(row_index);
+	if (!out_system) return;
+	out_system->fund(fund);
 
 	SetItemChanged();
 	Redraw();

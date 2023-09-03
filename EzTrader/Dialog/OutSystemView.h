@@ -7,6 +7,8 @@ namespace DarkHorse
 {
 	class SmSymbol;
 	class SmOutSystem;
+	class SmAccount;
+	class SmFund;
 }
 
 class HdSymbolSelecter;
@@ -20,6 +22,7 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	void add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system);
 	void remove_out_system();
+	std::shared_ptr<DarkHorse::SmOutSystem> get_out_system(const int row);
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -67,6 +70,7 @@ public:
 private:
 	OutSystemView& pOutSystemVeiw_;
 
-	//std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
+	void set_account_from_out(const int window_id, std::shared_ptr<DarkHorse::SmAccount> account);
+	void set_fund_from_out(const int window_id, std::shared_ptr<DarkHorse::SmFund> fund);
 	int id_{ 0 };
 };
