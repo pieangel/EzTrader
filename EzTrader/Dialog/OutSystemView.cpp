@@ -110,11 +110,16 @@ void OutSystemView::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_s
 	pRow->ReplaceItem(0, new CBCGPGridCheckItem(FALSE));
 	pRow->GetItem(0);
 	std::string target;
-	if (out_system->order_type() == DarkHorse::OrderType::Fund)
+	int mode = 0;
+	if (out_system->order_type() == DarkHorse::OrderType::Fund) {
 		target = out_system->fund()->Name();
-	else
+		mode = 1;
+	}
+	else {
 		target = out_system->account()->No();
-	pRow->ReplaceItem(1, new CAccountItem(target.c_str(), *this));
+		mode = 0;
+	}
+	pRow->ReplaceItem(1, new CAccountItem(target.c_str(), *this, mode));
 
 	CBCGPGridItem* pItem = new CBCGPGridItem(out_system->name().c_str());
 
@@ -281,8 +286,8 @@ void CSymbolItem::set_symbol_from_out(const int window_id, std::shared_ptr<DarkH
 /////////////////////////////////////////////////////////////////////////////
 // CFileItem Class
 
-CAccountItem::CAccountItem(const CString& strValue, OutSystemView& pOutSystemVeiw) :
-	CBCGPGridItem(_variant_t((LPCTSTR)strValue)), pOutSystemVeiw_(pOutSystemVeiw)
+CAccountItem::CAccountItem(const CString& strValue, OutSystemView& pOutSystemVeiw, const int mode) :
+	CBCGPGridItem(_variant_t((LPCTSTR)strValue)), pOutSystemVeiw_(pOutSystemVeiw), mode_(mode)
 {
 	m_dwFlags = PROP_HAS_BUTTON;
 	id_ = IdGenerator::get_id();
@@ -299,6 +304,7 @@ void CAccountItem::OnClickButton(CPoint /*point*/)
 	Redraw();
 
 	VtAccountFundSelector dlg;
+	dlg.set_mode(mode_);
 	dlg.DoModal();
 
 	m_bButtonIsDown = FALSE;

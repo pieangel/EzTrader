@@ -27,9 +27,11 @@ private:
 	AccountFundView account_fund_view_;
 
 public:
+	void set_mode(int mode) {
+		account_fund_view_.mode(mode);
+	}
 	CString m_SelectedCode;
 	virtual BOOL OnInitDialog();
-	afx_msg void OnBnClickedRadioEntire();
 	afx_msg void OnBnClickedRadioAcnt();
 	afx_msg void OnBnClickedRadioFund();
 };

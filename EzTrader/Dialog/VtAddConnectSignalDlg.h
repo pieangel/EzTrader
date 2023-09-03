@@ -71,4 +71,6 @@ private:
 	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> combo_to_symbol_map_;
 	// key: combo index, value: out signal def
 	std::map<int, std::shared_ptr<DarkHorse::SmOutSignalDef>> combo_to_out_sig_def_map_;
+public:
+	afx_msg void OnBnClickedBtnAdd();
 };

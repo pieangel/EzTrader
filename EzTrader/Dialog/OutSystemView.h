@@ -54,13 +54,17 @@ class  CAccountItem : public CBCGPGridItem
 {
 	// Construction
 public:
-	CAccountItem(const CString& strValue, OutSystemView& pOutSystemVeiw);
+	CAccountItem(const CString& strValue, OutSystemView& pOutSystemVeiw, const int mode);
 
 	// Overrides
 	virtual void OnClickButton(CPoint point);
+	int mode() const { return mode_; }
+	void mode(int val) { mode_ = val; }
+
 private:
 	OutSystemView& pOutSystemVeiw_;
 
 	//std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
 	int id_{ 0 };
+	int mode_{ 0 };
 };

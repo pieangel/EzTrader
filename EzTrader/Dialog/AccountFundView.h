@@ -6,6 +6,8 @@
 namespace DarkHorse
 {
 	class SmSymbol;
+	class SmAccount;
+	class SmFund;
 }
 const int grid_row_count5 = 100;
 class AccountFundView : public CBCGPGridCtrl
@@ -17,6 +19,7 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	int mode() const { return mode_; }
 	void mode(int val) { mode_ = val; }
+	void init_grid();
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -24,9 +27,16 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
-	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> row_to_symbol_;
 	COLORREF _DefaultBackColor;
 	void ClearGrid();
 	bool init_ = false;
 	int mode_ = 0;
+	// key : row, value : account
+	std::map<int, std::shared_ptr<DarkHorse::SmAccount>>  row_to_account_map_;
+	// key : row, value : fund
+	std::map<int, std::shared_ptr<DarkHorse::SmFund>>  row_to_fund_map_;
+	// selected account
+	std::shared_ptr<DarkHorse::SmAccount> account_;
+	// selected fund
+	std::shared_ptr<DarkHorse::SmFund> fund_;
 };

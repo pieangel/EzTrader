@@ -232,6 +232,7 @@
 #define IDC_STATIC_QUOTE                1082
 #define IDC_BTN_CANCEL                  1082
 #define IDC_BTN_ADD_SYMBOL_TO           1083
+#define IDC_BTN_OK2                     1083
 #define IDC_CHECK_DELTA2                1084
 #define IDC_CHECK_D2                    1085
 #define IDC_BUTTON6                     1086

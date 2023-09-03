@@ -62,6 +62,7 @@ BEGIN_MESSAGE_MAP(VtAddConnectSignalDlg, CBCGPDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_SIGNAL, &VtAddConnectSignalDlg::OnCbnSelchangeComboSignal)
 	ON_BN_CLICKED(IDC_BTN_OK, &VtAddConnectSignalDlg::OnBnClickedBtnOk)
 	ON_BN_CLICKED(IDC_BTN_CANCEL, &VtAddConnectSignalDlg::OnBnClickedBtnCancel)
+	ON_BN_CLICKED(IDC_BTN_ADD, &VtAddConnectSignalDlg::OnBnClickedBtnAdd)
 END_MESSAGE_MAP()
 
 
@@ -130,36 +131,6 @@ void VtAddConnectSignalDlg::OnCbnSelchangeComboSignal()
 
 void VtAddConnectSignalDlg::OnBnClickedBtnOk()
 {
-	if (_Mode == 0 && !account_) { AfxMessageBox("계좌가 없습니다. 계좌를 선택하세요!"); return; }
-	if (_Mode == 1 && !fund_) { AfxMessageBox("펀드가 없습니다. 펀드를 선택하세요!"); return; }
-	if (!symbol_) { AfxMessageBox("종목이 없습니다. 종목을 선택하세요!"); return; }
-	if (!out_sig_def_) { AfxMessageBox("목표 차트가 없습니다. 목표 차트를 선택하세요!"); return; }
-
-	DarkHorse::OrderType order_type = DarkHorse::OrderType::None;
-	if (_Mode == 0) {
-		if (account_->is_subaccount())
-			order_type = OrderType::SubAccount;
-		else
-			order_type = OrderType::MainAccount;
-	}
-	else {
-		order_type = OrderType::Fund;
-	}
-	CString strSeungSu;
-	_EditSeungsu.GetWindowText(strSeungSu);
-	auto out_system = mainApp.out_system_manager()->create_out_system
-	(
-		out_sig_def_->name, 
-		_ttoi(strSeungSu),
-		order_type,
-		_Mode == 0 ? account_ : nullptr,
-		_Mode == 1 ? fund_ : nullptr,
-		symbol_
-	);
-
-	if (source_dialog_)
-		source_dialog_->add_out_system(out_system);
-
 	CBCGPDialog::OnOK();
 }
 
@@ -259,3 +230,37 @@ void VtAddConnectSignalDlg::set_symbol_from_out(const int window_id, std::shared
 	if (_SymbolSelecter) _SymbolSelecter->SendMessage(WM_CLOSE);
 }
 
+
+
+void VtAddConnectSignalDlg::OnBnClickedBtnAdd()
+{
+	if (_Mode == 0 && !account_) { AfxMessageBox("계좌가 없습니다. 계좌를 선택하세요!"); return; }
+	if (_Mode == 1 && !fund_) { AfxMessageBox("펀드가 없습니다. 펀드를 선택하세요!"); return; }
+	if (!symbol_) { AfxMessageBox("종목이 없습니다. 종목을 선택하세요!"); return; }
+	if (!out_sig_def_) { AfxMessageBox("목표 차트가 없습니다. 목표 차트를 선택하세요!"); return; }
+
+	DarkHorse::OrderType order_type = DarkHorse::OrderType::None;
+	if (_Mode == 0) {
+		if (account_->is_subaccount())
+			order_type = OrderType::SubAccount;
+		else
+			order_type = OrderType::MainAccount;
+	}
+	else {
+		order_type = OrderType::Fund;
+	}
+	CString strSeungSu;
+	_EditSeungsu.GetWindowText(strSeungSu);
+	auto out_system = mainApp.out_system_manager()->create_out_system
+	(
+		out_sig_def_->name,
+		_ttoi(strSeungSu),
+		order_type,
+		_Mode == 0 ? account_ : nullptr,
+		_Mode == 1 ? fund_ : nullptr,
+		symbol_
+	);
+
+	if (source_dialog_)
+		source_dialog_->add_out_system(out_system);
+}

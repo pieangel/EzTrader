@@ -11,6 +11,10 @@
 #include "../Quote/SmQuoteManager.h"
 #include "../Symbol/SmProduct.h"
 #include "../Util/SmUtil.h"
+#include "../Account/SmAccount.h"
+#include "../Fund/SmFund.h"
+#include "../Account/SmAccountManager.h"
+#include "../Fund/SmFundManager.h"
 #include <format>
 
 using namespace DarkHorse;
@@ -49,9 +53,6 @@ void AccountFundView::OnLButtonDown(UINT nFlags, CPoint point)
 	//msg.Format("%d", nColumn);
 	//AfxMessageBox(msg);
 
-	auto found = row_to_symbol_.find(id.m_nRow);
-	if (found == row_to_symbol_.end()) return;
-
 	//auto symbol = mainApp.SymMgr()->FindSymbol(found->second->symbol_code);
 	//if (!symbol) return;
 	//mainApp.event_hub()->trigger_ab_symbol_event(1, symbol);
@@ -60,6 +61,68 @@ void AccountFundView::OnLButtonDown(UINT nFlags, CPoint point)
 }
 
 
+
+void AccountFundView::init_grid()
+{
+	ClearGrid();
+	int row = 0;
+	if (mode_ == 0) {
+		SetColumnName(0, _T("°èÁÂ¸í"));
+		SetColumnName(1, _T("°èÁÂ¹øÈ£"));
+		row_to_account_map_.clear();
+		std::vector<std::shared_ptr<SmAccount>> main_account_vector;
+		mainApp.AcntMgr()->get_main_account_vector(main_account_vector);
+		if (main_account_vector.empty()) return;
+		for (auto ita = main_account_vector.begin(); ita != main_account_vector.end(); ++ita) {
+			auto main_acnt = *ita;
+			row_to_account_map_[row] = main_acnt;
+
+			CBCGPGridRow* pRow = GetRow(row);
+			if (!pRow) continue;
+			pRow->GetItem(0)->SetValue(main_acnt->Name().c_str());
+			pRow->GetItem(1)->SetValue(main_acnt->No().c_str());
+			row++;
+
+			const std::vector<std::shared_ptr<SmAccount>>& sub_account_vector = main_acnt->get_sub_accounts();
+			for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); it++) {
+				auto account = *it;
+				row_to_account_map_[row] = account;
+
+				pRow = GetRow(row);
+				if (!pRow) continue;
+				pRow->GetItem(0)->SetValue(account->Name().c_str());
+				pRow->GetItem(1)->SetValue(account->No().c_str());
+				row++;
+			}
+		}
+		if (!row_to_account_map_.empty()) {
+			account_ = row_to_account_map_.begin()->second;
+		}
+	}
+	else {
+		SetColumnName(0, _T("ÆÝµåÀÌ¸§"));
+		SetColumnName(1, _T("¼³¸í"));
+		row_to_fund_map_.clear();
+		auto fund_map = mainApp.FundMgr()->GetFundMap();
+		for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
+			auto fund = it->second;
+			CString str;
+			str.Format(_T("%s"), fund->Name().c_str());
+			row_to_fund_map_[row] = fund;
+
+			CBCGPGridRow* pRow = GetRow(row);
+			if (!pRow) continue;
+			pRow->GetItem(0)->SetValue(fund->Name().c_str());
+			pRow->GetItem(1)->SetValue("");
+			row++;
+		}
+
+		if (!row_to_fund_map_.empty()) {
+			fund_ = row_to_fund_map_.begin()->second;
+		}
+	}
+	Invalidate();
+}
 
 int AccountFundView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
