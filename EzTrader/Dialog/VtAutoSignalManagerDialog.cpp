@@ -302,8 +302,7 @@ void VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal()
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnDelConnect()
 {
-	//_ConnectGrid.RemoveSystem();
-	//_ConnectGrid.Refresh();
+	out_system_view_.remove_out_system();
 }
 
 

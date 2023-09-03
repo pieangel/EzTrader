@@ -46,12 +46,20 @@ namespace DarkHorse {
 		return out_system;
 	}
 
-	void SmOutSystemManager::remove_out_system(const std::string& signal_name)
+	void SmOutSystemManager::remove_out_system(std::shared_ptr<SmOutSystem> out_system)
 	{
-		auto found = out_system_map_.find(signal_name);
-		out_system_map_.erase(found);
-		std::erase_if(out_system_vec_, [&](const std::shared_ptr<SmOutSystem>& out_system) {
-			return out_system->name() == signal_name; });
+		if (!out_system) return;
+
+		auto found = out_system_map_.find(out_system->name());
+		if (found == out_system_map_.end()) return;
+		const int system_id = out_system->id();
+		SmOutSystemMap& system_map = found->second;
+		auto it = system_map.find(out_system->id());
+		if (it != system_map.end()) {
+			system_map.erase(it);
+		}
+
+		remove_out_system_by_id(system_id);
 	}
 
 	void SmOutSystemManager::remove_out_system_by_id(const int& system_id)

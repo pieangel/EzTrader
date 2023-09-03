@@ -21,11 +21,13 @@ namespace DarkHorse {
 			std::shared_ptr<SmFund> fund,
 			std::shared_ptr<SmSymbol> symbol
 		);
-		void remove_out_system(const std::string& signal_name);
-		void remove_out_system_by_id(const int& system_id);
+		void remove_out_system(std::shared_ptr<SmOutSystem> out_system);
 		void make_out_system_signal_map();
 		const std::vector<std::shared_ptr<SmOutSignalDef>>& get_out_system_signal_map() const { return out_system_signal_vec_; }
+		size_t get_out_system_count() const { return out_system_vec_.size(); }
+		const std::vector<std::shared_ptr<SmOutSystem>>& get_out_system_vector() const { return out_system_vec_; }
 	private:
+		void remove_out_system_by_id(const int& system_id);
 		std::vector<std::shared_ptr<SmOutSystem>> out_system_vec_;
 		// key : system name, value : SmOutSystem object.
 		std::map<std::string, SmOutSystemMap> out_system_map_;

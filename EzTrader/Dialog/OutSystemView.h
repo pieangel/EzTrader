@@ -11,7 +11,6 @@ namespace DarkHorse
 
 class HdSymbolSelecter;
 class VtAccountFundSelector;
-//const int grid_row_count = 100;
 class OutSystemView : public CBCGPGridCtrl
 {
 	DECLARE_DYNAMIC(OutSystemView)
@@ -20,6 +19,7 @@ public:
 	virtual ~OutSystemView();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	void add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system);
+	void remove_out_system();
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -27,11 +27,16 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
-	std::map<int, std::shared_ptr<DarkHorse::SmSymbol>> row_to_symbol_;
+	void init_grid();
+	void remap_row_to_out_system();
+	// key : row, value : out system
+	std::map<int, std::shared_ptr<DarkHorse::SmOutSystem>> row_to_out_system_;
 	COLORREF _DefaultBackColor;
 	void ClearGrid();
-	bool init_ = false;
-
+	int out_system_row_count = 300;
+	int selected_row_ = -1;
+	void create_out_system_cells(CBCGPGridRow* pRow, std::shared_ptr<DarkHorse::SmOutSystem> out_system);
+	CBCGPGridRow* create_or_get_row(const int row_index);
 };
 
 class  CSymbolItem : public CBCGPGridItem
@@ -54,17 +59,14 @@ class  CAccountItem : public CBCGPGridItem
 {
 	// Construction
 public:
-	CAccountItem(const CString& strValue, OutSystemView& pOutSystemVeiw, const int mode);
+	CAccountItem(const CString& strValue, OutSystemView& pOutSystemVeiw);
 
 	// Overrides
 	virtual void OnClickButton(CPoint point);
-	int mode() const { return mode_; }
-	void mode(int val) { mode_ = val; }
 
 private:
 	OutSystemView& pOutSystemVeiw_;
 
 	//std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
 	int id_{ 0 };
-	int mode_{ 0 };
 };

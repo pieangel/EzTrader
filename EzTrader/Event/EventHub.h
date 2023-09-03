@@ -61,6 +61,8 @@ namespace DarkHorse {
 	struct Order;
 	class SmSymbol;
 	struct Position;
+	class SmAccount;
+	class SmFund;
 
 
 	using SymbolMasterCBL = eventpp::CallbackList<void(std::shared_ptr<SmSymbol> quote)>;
@@ -100,6 +102,12 @@ namespace DarkHorse {
 	using SymbolOrderViewCBL = eventpp::CallbackList<void(const std::string& account_type, const int center_window_id, std::shared_ptr<SmSymbol> symbol)>;
 	using SymbolOrderViewCBH = eventpp::CallbackList<void(const std::string& account_type, const int center_window_id, std::shared_ptr<SmSymbol> symbol)>::Handle;
 
+
+	using AccountCBL = eventpp::CallbackList<void(const int source_window_id, std::shared_ptr<SmAccount> account)>;
+	using AccountCBH = eventpp::CallbackList<void(const int source_window_id, std::shared_ptr<SmAccount> account)>::Handle;
+
+	using FundCBL = eventpp::CallbackList<void(const int source_window_id, std::shared_ptr<SmFund> fund)>;
+	using FundCBH = eventpp::CallbackList<void(const int source_window_id, std::shared_ptr<SmFund> fund)>::Handle;
 
 class EventHub
 {
@@ -346,6 +354,43 @@ public:
 		symbol_order_view_cb_list_(account_type, center_window_id, symbol);
 	}
 
+
+	void subscribe_account_event_handler(const int control_id, std::function<void(const int source_window_id, std::shared_ptr<SmAccount> account)>&& handler)
+	{
+		AccountCBH handle = account_cb_list_.append(handler);
+		account_cb_handle_map_[control_id] = handle;
+	}
+
+	void unsubscribe_account_event_handler(const int control_id)
+	{
+		auto found = account_cb_handle_map_.find(control_id);
+		if (found == account_cb_handle_map_.end()) return;
+		account_cb_list_.remove(found->second);
+	}
+
+	void process_account_event(const int source_window_id, std::shared_ptr<SmAccount> account)
+	{
+		account_cb_list_(source_window_id, account);
+	}
+
+	void subscribe_fund_event_handler(const int control_id, std::function<void(const int source_window_id, std::shared_ptr<SmFund> fund)>&& handler)
+	{
+		FundCBH handle = fund_cb_list_.append(handler);
+		fund_cb_handle_map_[control_id] = handle;
+	}
+
+	void unsubscribe_fund_event_handler(const int control_id)
+	{
+		auto found = fund_cb_handle_map_.find(control_id);
+		if (found == fund_cb_handle_map_.end()) return;
+		fund_cb_list_.remove(found->second);
+	}
+
+	void process_fund_event(const int source_window_id, std::shared_ptr<SmFund> fund)
+	{
+		fund_cb_list_(source_window_id, fund);
+	}
+
 private:
 	eventpp::EventDispatcher<int, void(const DarkHorse::OrderSetEvent& event, const std::string&, const bool)> parameter_dispatcher;
 
@@ -392,6 +437,12 @@ private:
 
 	SymbolOrderViewCBL symbol_order_view_cb_list_;
 	std::map<int, SymbolOrderViewCBH> symbol_order_view_cb_handle_map_;
+
+	AccountCBL account_cb_list_;
+	std::map<int, AccountCBH> account_cb_handle_map_;
+
+	FundCBL fund_cb_list_;
+	std::map<int, FundCBH> fund_cb_handle_map_;
 };
 }
 
