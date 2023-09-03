@@ -30,6 +30,10 @@ public:
 		_FutPage.OrderConfigMgr(_OrderConfigMgr);
 		_OptPage.OrderConfigMgr(_OrderConfigMgr);
 	}
+
+
+	CString m_SelectedSymbolCode;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

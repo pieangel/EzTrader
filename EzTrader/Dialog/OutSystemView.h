@@ -8,6 +8,9 @@ namespace DarkHorse
 	class SmSymbol;
 	class SmOutSystem;
 }
+
+class HdSymbolSelecter;
+class VtAccountFundSelector;
 //const int grid_row_count = 100;
 class OutSystemView : public CBCGPGridCtrl
 {
@@ -28,4 +31,36 @@ private:
 	COLORREF _DefaultBackColor;
 	void ClearGrid();
 	bool init_ = false;
+
+};
+
+class  CSymbolItem : public CBCGPGridItem
+{
+	// Construction
+public:
+	CSymbolItem(const CString& strValue, OutSystemView& pOutSystemVeiw);
+
+	// Overrides
+	virtual void OnClickButton(CPoint point);
+private:
+	OutSystemView& pOutSystemVeiw_;
+
+	int id_{ 0 };
+	void set_symbol_from_out(const int window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
+};
+
+
+class  CAccountItem : public CBCGPGridItem
+{
+	// Construction
+public:
+	CAccountItem(const CString& strValue, OutSystemView& pOutSystemVeiw);
+
+	// Overrides
+	virtual void OnClickButton(CPoint point);
+private:
+	OutSystemView& pOutSystemVeiw_;
+
+	//std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
+	int id_{ 0 };
 };

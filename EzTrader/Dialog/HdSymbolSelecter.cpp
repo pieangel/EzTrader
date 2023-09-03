@@ -51,7 +51,7 @@ void HdSymbolSelecter::set_source_window_id(const int window_id)
 BOOL HdSymbolSelecter::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
-
+	m_SelectedSymbolCode = _T("TEST");
 	//::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
 	// TODO:  Add extra initialization here
 	InitTabCtrl();

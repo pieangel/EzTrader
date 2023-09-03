@@ -799,6 +799,9 @@
     <ClCompile Include="OutSystem\SmOutSignalDef.cpp">
       <Filter>OutSystem</Filter>
     </ClCompile>
+    <ClCompile Include="Dialog\VtAccountFundSelector.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1856,6 +1859,9 @@
     </ClInclude>
     <ClInclude Include="OutSystem\SmOutSignalDef.h">
       <Filter>OutSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\VtAccountFundSelector.h">
+      <Filter>Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

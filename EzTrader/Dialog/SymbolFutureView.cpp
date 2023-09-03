@@ -55,6 +55,7 @@ void SymbolFutureView::OnLButtonDown(UINT nFlags, CPoint point)
 	mainApp.event_hub()->process_symbol_event(source_window_id_, found->second);
 	Invalidate();
 
+	CBCGPGridCtrl::OnLButtonDown(nFlags, point);
 }
 
 void SymbolFutureView::init_symbol(const int market_index)

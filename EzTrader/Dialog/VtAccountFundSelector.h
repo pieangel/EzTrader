@@ -1,11 +1,11 @@
 #pragma once
-#include "VtAccountFundGrid.h"
+#include "AccountFundView.h"
 
 // VtAccountFundSelector dialog
 class VtUsdStrategyConfigDlg;
 class VtSignalConnectionGrid;
 class SmHftConfig;
-class VtAccountFundSelector : public CDialogEx
+class VtAccountFundSelector : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(VtAccountFundSelector)
 
@@ -24,14 +24,12 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	VtAccountFundGrid _Grid;
+	AccountFundView account_fund_view_;
 
 public:
+	CString m_SelectedCode;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedRadioEntire();
 	afx_msg void OnBnClickedRadioAcnt();
 	afx_msg void OnBnClickedRadioFund();
-	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
-	void SetSignalConnectionGrid(VtSignalConnectionGrid* SigConGrid);
-	void SetHftConfig(SmHftConfig* hftConfig);
 };

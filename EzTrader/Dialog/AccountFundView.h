@@ -7,7 +7,7 @@ namespace DarkHorse
 {
 	class SmSymbol;
 }
-const int grid_row_count = 100;
+const int grid_row_count5 = 100;
 class AccountFundView : public CBCGPGridCtrl
 {
 	DECLARE_DYNAMIC(AccountFundView)
@@ -15,6 +15,8 @@ public:
 	AccountFundView();
 	virtual ~AccountFundView();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	int mode() const { return mode_; }
+	void mode(int val) { mode_ = val; }
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -26,4 +28,5 @@ private:
 	COLORREF _DefaultBackColor;
 	void ClearGrid();
 	bool init_ = false;
+	int mode_ = 0;
 };

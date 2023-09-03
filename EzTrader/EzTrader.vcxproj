@@ -314,6 +314,7 @@
     <ClInclude Include="Dialog\OutSystemView.h" />
     <ClInclude Include="Dialog\SymbolFutureView.h" />
     <ClInclude Include="Dialog\TotalAssetProfitLossDialog.h" />
+    <ClInclude Include="Dialog\VtAccountFundSelector.h" />
     <ClInclude Include="Dialog\VtAddConnectSignalDlg.h" />
     <ClInclude Include="Dialog\VtAddOutSigDefDlg.h" />
     <ClInclude Include="Dialog\VtAutoSignalManagerDialog.h" />
@@ -656,6 +657,7 @@
     <ClCompile Include="Dialog\OutSystemView.cpp" />
     <ClCompile Include="Dialog\SymbolFutureView.cpp" />
     <ClCompile Include="Dialog\TotalAssetProfitLossDialog.cpp" />
+    <ClCompile Include="Dialog\VtAccountFundSelector.cpp" />
     <ClCompile Include="Dialog\VtAddConnectSignalDlg.cpp" />
     <ClCompile Include="Dialog\VtAddOutSigDefDlg.cpp" />
     <ClCompile Include="Dialog\VtAutoSignalManagerDialog.cpp" />

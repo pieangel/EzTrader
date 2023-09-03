@@ -56,7 +56,7 @@ void AccountFundView::OnLButtonDown(UINT nFlags, CPoint point)
 	//if (!symbol) return;
 	//mainApp.event_hub()->trigger_ab_symbol_event(1, symbol);
 	Invalidate();
-
+	CBCGPGridCtrl::OnLButtonDown(nFlags, point);
 }
 
 
@@ -81,10 +81,8 @@ int AccountFundView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetVisualManagerColorTheme(TRUE);
 
 	// Insert columns:
-	InsertColumn(0, _T("코드"), 80);
-	InsertColumn(1, _T("이름"), 100);
-	InsertColumn(2, _T("현재가"), 60);
-
+	InsertColumn(0, _T("계좌명"), 80);
+	InsertColumn(1, _T("계좌번호"), 100);
 
 
 	FreezeColumns(0);
@@ -92,7 +90,7 @@ int AccountFundView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	const int nColumns = GetColumnCount();
 
 
-	for (int row = 0; row < grid_row_count; row++) {
+	for (int row = 0; row < grid_row_count5; row++) {
 		// Create new row:
 		CBCGPGridRow* pRow = CreateRow(nColumns);
 		// Set each column data:
@@ -118,11 +116,9 @@ int AccountFundView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetColumnAlign(0, 2);
 	SetColumnAlign(1, 2);
 	SetColumnAlign(2, 2);
-	SetColumnAlign(3, 2);
 	SetHeaderAlign(0, 2);
 	SetHeaderAlign(1, 2);
 	SetHeaderAlign(2, 2);
-	SetHeaderAlign(3, 2);
 
 
 

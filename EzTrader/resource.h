@@ -246,6 +246,7 @@
 #define IDC_BUTTON8                     1095
 #define IDC_BTN_SYMBOL                  1096
 #define IDC_STATIC_GRID                 1096
+#define IDC_ACNT_FUND_GRID              1096
 #define IDC_CHECK_VIRTUAL2              1097
 #define IDC_CHECK_VIRTUAL_TO            1098
 #define IDC_BTN_ZOOM_IN                 1099
