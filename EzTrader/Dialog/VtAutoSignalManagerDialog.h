@@ -44,6 +44,8 @@ private:
 	void RefreshOrder();
 	void Resize();
 public:
+	void add_active_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system);
+	void remove_active_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system);
 	void add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system);
 	afx_msg void OnBnClickedBtnAddConnect();
 	afx_msg void OnBnClickedBtnAddSignal();

@@ -27,6 +27,7 @@
 #include "../OutSystem/SmOutSystemManager.h"
 #include "../OutSystem/SmOutSignalDef.h"
 #include "VtAccountFundSelector.h"
+#include "VtAutoSignalManagerDialog.h"
 
 #include <functional>
 
@@ -74,12 +75,33 @@ void OutSystemView::OnLButtonDown(UINT nFlags, CPoint point)
 	selected_row_ = id.m_nRow;
 	auto found = row_to_out_system_.find(id.m_nRow);
 	if (found == row_to_out_system_.end()) { Invalidate(); return; }
-
+	CBCGPGridRow* pRow = GetRow(id.m_nRow);
+	CBCGPGridCheckItem* checkItem = (CBCGPGridCheckItem*)pRow->GetItem(0);
+	int mode = checkItem->GetState();
 	Invalidate();
 	CBCGPGridCtrl::OnLButtonDown(nFlags, point);
 }
 
 
+
+void OutSystemView::OnItemChanged(CBCGPGridItem* pItem, int nRow, int nColumn)
+{
+	if (!pItem) return;
+	const int col_id = pItem->GetColumnId();
+	if (col_id == 0) {
+		auto found = row_to_out_system_.find(nRow);
+		if (found == row_to_out_system_.end()) { Invalidate(); return; }
+		CBCGPGridCheckItem* checkItem = (CBCGPGridCheckItem*)pItem;
+		int mode = checkItem->GetState();
+		if (mode == 1) {
+			parent_dlg_->add_active_out_system(found->second);
+		}
+		else {
+			parent_dlg_->remove_active_out_system(found->second);
+		}
+	}
+	Invalidate();
+}
 
 void OutSystemView::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
 {
@@ -260,7 +282,7 @@ void OutSystemView::create_out_system_cells(CBCGPGridRow* pRow, std::shared_ptr<
 
 	pRow->ReplaceItem(2, new CSymbolItem(out_system->symbol()->SymbolCode().c_str(), *this));
 
-	CBCGPGridItem* pItem = new CBCGPGridItem(out_system->name().c_str());
+	COutDefItem* pItem = new COutDefItem(out_system->name().c_str(), *this);
 
 	auto signal_def_vector = mainApp.out_system_manager()->get_out_system_signal_map();
 	int selIndex = -1;
@@ -411,4 +433,31 @@ void CAccountItem::set_fund_from_out(const int window_id, std::shared_ptr<DarkHo
 
 	SetItemChanged();
 	Redraw();
+}
+
+COutDefItem::COutDefItem(const CString& strValue, OutSystemView& pOutSystemVeiw)
+	:CBCGPGridItem(_variant_t((LPCTSTR)strValue)), pOutSystemVeiw_(pOutSystemVeiw)
+{
+	id_ = IdGenerator::get_id();
+}
+
+void COutDefItem::SetItemChanged()
+{
+	CString value = m_varValue;
+ 	CBCGPGridRow* pRow = GetParentRow();
+ 	const int row_index = pRow->GetRowId();
+
+	auto out_system = pOutSystemVeiw_.get_out_system(row_index);
+	if (!out_system) return;
+	out_system->name(std::string(value));
+
+	if (m_pWndCombo) {
+		int index = m_pWndCombo->GetCurSel();
+		if (index >= 0) {
+			CString text;
+			m_pWndCombo->GetLBText(index, text);
+		}
+	}
+
+	CBCGPGridItem::SetItemChanged();
 }

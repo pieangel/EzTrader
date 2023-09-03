@@ -11,6 +11,12 @@
 #include "../Quote/SmQuoteManager.h"
 #include "../Symbol/SmProduct.h"
 #include "../Util/SmUtil.h"
+#include "../OutSystem/SmOutSystem.h"
+#include "../OutSystem/SmOutSystemManager.h"
+#include "../Account/SmAccount.h"
+#include "../Account/SmAccountManager.h"
+#include "../Fund/SmFund.h"
+#include "../Fund/SmFundManager.h"
 #include <format>
 
 using namespace DarkHorse;
@@ -49,8 +55,8 @@ void ActiveOutSystemView::OnLButtonDown(UINT nFlags, CPoint point)
 	//msg.Format("%d", nColumn);
 	//AfxMessageBox(msg);
 
-	auto found = row_to_symbol_.find(id.m_nRow);
-	if (found == row_to_symbol_.end()) return;
+	auto found = row_to_out_system_.find(id.m_nRow);
+	if (found == row_to_out_system_.end()) return;
 
 	//auto symbol = mainApp.SymMgr()->FindSymbol(found->second->symbol_code);
 	//if (!symbol) return;
@@ -60,6 +66,47 @@ void ActiveOutSystemView::OnLButtonDown(UINT nFlags, CPoint point)
 }
 
 
+
+void ActiveOutSystemView::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
+{
+	if (!out_system) return;
+	out_systems_.push_back(out_system);
+	//init_grid();
+	int row_count = GetRowCount();
+	int index = (int)out_systems_.size() - 1;
+	CBCGPGridRow* pRow = nullptr;
+	if (index <= row_count) {
+		pRow = GetRow(index);
+	}
+	else {
+		pRow = CreateRow(GetColumnCount());
+	}
+	if (out_system->order_type() == DarkHorse::OrderType::Fund)
+		pRow->GetItem(0)->SetValue(out_system->fund()->Name().c_str());
+	else
+		pRow->GetItem(0)->SetValue(out_system->account()->No().c_str());
+	pRow->GetItem(1)->SetValue(out_system->symbol()->SymbolCode().c_str());
+
+	row_to_out_system_[out_system->id()] = index;
+	Invalidate();
+}
+
+void ActiveOutSystemView::remove_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
+{
+	if (!out_system) return;
+
+	auto it = row_to_out_system_.find(out_system->id());
+	if (it == row_to_out_system_.end()) return;
+
+	std::erase_if(out_systems_, [&](const std::shared_ptr<SmOutSystem>& in_out_system) {
+		return in_out_system->id() == out_system->id(); });
+	//ClearGrid();
+	//init_grid();
+	RemoveRow(it->second);
+	row_to_out_system_.erase(it);
+	remap_row_to_out_system();
+	Invalidate();
+}
 
 int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -94,8 +141,7 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	const int nColumns = GetColumnCount();
 
-	/*
-	for (int row = 0; row < grid_row_count3; row++) {
+	for (int row = 0; row < active_out_system_row; row++) {
 		// Create new row:
 		CBCGPGridRow* pRow = CreateRow(nColumns);
 		// Set each column data:
@@ -116,7 +162,6 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 		row++;
 	}
-	*/
 
 	for (int i = 0; i < GetColumnCount(); i++)
 	{
@@ -129,7 +174,7 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetHighlightActiveItem(FALSE);
 	SetReadOnly(TRUE);
 
-
+	init_grid();
 	//start_timer();
 
 	init_ = true;
@@ -140,6 +185,35 @@ void ActiveOutSystemView::OnDestroy()
 {
 	SaveState(_T("BasicGrid"));
 	CBCGPGridCtrl::OnDestroy();
+}
+
+void ActiveOutSystemView::init_grid()
+{
+	if (out_systems_.empty()) return;
+
+	for (size_t i = 0; i < out_systems_.size(); i++)
+	{
+		CBCGPGridRow* pRow = GetRow(i);
+		if (!pRow) continue;
+		if (out_systems_[i]->order_type() == DarkHorse::OrderType::Fund)
+			pRow->GetItem(0)->SetValue(out_systems_[i]->fund()->Name().c_str());
+		else
+			pRow->GetItem(0)->SetValue(out_systems_[i]->account()->No().c_str());
+		pRow->GetItem(1)->SetValue(out_systems_[i]->symbol()->SymbolCode().c_str());
+
+		row_to_out_system_[out_systems_[i]->id()] = i;
+	}
+
+}
+
+void ActiveOutSystemView::remap_row_to_out_system()
+{
+	for (size_t i = 0; i < out_systems_.size(); i++)
+	{
+		CBCGPGridRow* pRow = GetRow(i);
+		if (!pRow) continue;
+		row_to_out_system_[out_systems_[i]->id()] = i;
+	}
 }
 
 void ActiveOutSystemView::ClearGrid()

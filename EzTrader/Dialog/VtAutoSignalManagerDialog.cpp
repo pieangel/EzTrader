@@ -67,6 +67,7 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 	ScreenToClient(&rect);
 	// Create the Windows control and attach it to the Grid object
 	out_system_view_.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID20);
+	out_system_view_.parent_dlg(this);
 
 	pWnd = GetDlgItem(IDC_STATIC_ACTIVE_OUT_SYSTEM);
 	pWnd->GetWindowRect(&rect);
@@ -275,6 +276,16 @@ void VtAutoSignalManagerDialog::Resize()
 	out_system_def_view_.MoveWindow(rcCtrl, TRUE);
 
 	Invalidate(TRUE);
+}
+
+void VtAutoSignalManagerDialog::add_active_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
+{
+	active_out_system_view_.add_out_system(out_system);
+}
+
+void VtAutoSignalManagerDialog::remove_active_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
+{
+	active_out_system_view_.remove_out_system(out_system);
 }
 
 void VtAutoSignalManagerDialog::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
