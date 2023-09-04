@@ -310,6 +310,7 @@
     <ClInclude Include="Dialog\HdOptionPage.h" />
     <ClInclude Include="Dialog\HdSymbolSelecter.h" />
     <ClInclude Include="Dialog\MiniJangoDialog.h" />
+    <ClInclude Include="Dialog\OutSigDefSelector.h" />
     <ClInclude Include="Dialog\OutSystemDefView.h" />
     <ClInclude Include="Dialog\OutSystemView.h" />
     <ClInclude Include="Dialog\SymbolFutureView.h" />
@@ -653,6 +654,7 @@
     <ClCompile Include="Dialog\HdOptionPage.cpp" />
     <ClCompile Include="Dialog\HdSymbolSelecter.cpp" />
     <ClCompile Include="Dialog\MiniJangoDialog.cpp" />
+    <ClCompile Include="Dialog\OutSigDefSelector.cpp" />
     <ClCompile Include="Dialog\OutSystemDefView.cpp" />
     <ClCompile Include="Dialog\OutSystemView.cpp" />
     <ClCompile Include="Dialog\SymbolFutureView.cpp" />

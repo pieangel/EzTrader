@@ -80,7 +80,7 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 	ScreenToClient(&rect);
 	// Create the Windows control and attach it to the Grid object
 	out_system_def_view_.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, WND_ID22);
-	out_system_def_view_.InitGrid();
+	out_system_def_view_.init_grid();
 
 	SetTimer(RefTimer, 100, NULL);
 	Resize();

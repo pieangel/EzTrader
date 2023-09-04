@@ -802,6 +802,9 @@
     <ClCompile Include="Dialog\VtAccountFundSelector.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
+    <ClCompile Include="Dialog\OutSigDefSelector.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1861,6 +1864,9 @@
       <Filter>OutSystem</Filter>
     </ClInclude>
     <ClInclude Include="Dialog\VtAccountFundSelector.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\OutSigDefSelector.h">
       <Filter>Dialog</Filter>
     </ClInclude>
   </ItemGroup>

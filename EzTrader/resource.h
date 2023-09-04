@@ -94,6 +94,8 @@
 #define IDB_GRID_CONFIG                 221
 #define IDD_SUB_ACCOUNT                 222
 #define IDD_SYS_ORDER_SET               228
+#define IDD_DIALOG7                     234
+#define IDD_OUT_SIG_SELECTOR            234
 #define IDD_SYS_AUTO_CONNECT            313
 #define IDD_ADD_SIG_CONNECT             324
 #define IDD_SYMBOL_SELECTER_HD          325
@@ -335,6 +337,7 @@
 #define IDC_STATIC_FILL_SET             1170
 #define IDC_STATIC_SEL_ACCOUNT          1170
 #define IDC_STATIC_LINE17               1171
+#define IDC_STATIC_OUT_SIG_GRID         1171
 #define IDC_EDIT_VK3_NK_AVG             1172
 #define IDC_STATIC_AMOUNT               1173
 #define IDC_STATIC_LINE18               1174
@@ -599,9 +602,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        234
+#define _APS_NEXT_RESOURCE_VALUE        236
 #define _APS_NEXT_COMMAND_VALUE         32940
-#define _APS_NEXT_CONTROL_VALUE         1171
+#define _APS_NEXT_CONTROL_VALUE         1172
 #define _APS_NEXT_SYMED_VALUE           119
 #endif
 #endif

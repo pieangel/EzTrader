@@ -28,6 +28,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	void init_grid();
+	void clear_old_contents(const int& last_index);
 	// key : out system id, value : row, 
 	std::map<int, int> row_to_out_system_;
 	std::vector<std::shared_ptr<DarkHorse::SmOutSystem>> out_systems_;
@@ -35,4 +36,5 @@ private:
 	COLORREF _DefaultBackColor;
 	void ClearGrid();
 	bool init_ = false;
+	int max_index_ = 0;
 };

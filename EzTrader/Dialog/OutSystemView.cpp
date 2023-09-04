@@ -111,16 +111,10 @@ void OutSystemView::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_s
 	if (out_system->order_type() == DarkHorse::OrderType::SubAccount && !out_system->account()) return;
 	if (out_system->order_type() == DarkHorse::OrderType::Fund && !out_system->fund()) return;
 
-	const int nColumns = GetColumnCount();
 	size_t out_system_count = mainApp.out_system_manager()->get_out_system_count();
 	if (out_system_count == 0) return;
 
-	CBCGPGridRow* pRow = create_or_get_row(out_system_count - 1);
-	if (!pRow) return;
-	create_out_system_cells(pRow, out_system);
-	row_to_out_system_[out_system_count - 1] = out_system;
-
-	AdjustLayout();
+	init_grid();
 }
 
 void OutSystemView::remove_out_system()
@@ -128,11 +122,8 @@ void OutSystemView::remove_out_system()
 	if (selected_row_ < 0) return;
 	auto found = row_to_out_system_.find(selected_row_);
 	if (found == row_to_out_system_.end()) return; 
-	RemoveRow(found->first);
 	mainApp.out_system_manager()->remove_out_system(found->second);
-	row_to_out_system_.erase(found);
-	remap_row_to_out_system();
-	AdjustLayout();
+	init_grid();
 }
 
 std::shared_ptr<DarkHorse::SmOutSystem> OutSystemView::get_out_system(const int row)
@@ -226,7 +217,6 @@ void OutSystemView::OnDestroy()
 void OutSystemView::init_grid()
 {
 	auto out_system_vector = mainApp.out_system_manager()->get_out_system_vector();
-	if (out_system_vector.empty()) { Invalidate(); return; }
 
 	row_to_out_system_.clear();
 	int row = 0;
@@ -236,6 +226,20 @@ void OutSystemView::init_grid()
 		create_out_system_cells(pRow, out_system);
 		row_to_out_system_[row] = out_system;
 		row++;
+	}
+	clear_old_contents(row);
+	max_index_ = row;
+}
+
+void OutSystemView::clear_old_contents(const int& last_index)
+{
+	if (last_index > max_index_) return;
+	for (size_t row = last_index; row < (size_t)max_index_; row++)
+	{
+		CBCGPGridRow* pRow = GetRow(row);
+		for (int i = 0; i < GetColumnCount(); i++) {
+			pRow->ReplaceItem(i, new CBCGPGridItem(""));
+		}
 	}
 }
 

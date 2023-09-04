@@ -36,6 +36,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	void init_grid();
+	void clear_old_contents(const int& last_index);
 	void remap_row_to_out_system();
 	// key : row, value : out system
 	std::map<int, std::shared_ptr<DarkHorse::SmOutSystem>> row_to_out_system_;
@@ -46,6 +47,7 @@ private:
 	void create_out_system_cells(CBCGPGridRow* pRow, std::shared_ptr<DarkHorse::SmOutSystem> out_system);
 	CBCGPGridRow* create_or_get_row(const int row_index);
 	VtAutoSignalManagerDialog* parent_dlg_{ nullptr };
+	int max_index_{ 0 };
 };
 
 class  CSymbolItem : public CBCGPGridItem

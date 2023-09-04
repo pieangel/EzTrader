@@ -71,23 +71,7 @@ void ActiveOutSystemView::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem>
 {
 	if (!out_system) return;
 	out_systems_.push_back(out_system);
-	//init_grid();
-	int row_count = GetRowCount();
-	int index = (int)out_systems_.size() - 1;
-	CBCGPGridRow* pRow = nullptr;
-	if (index <= row_count) {
-		pRow = GetRow(index);
-	}
-	else {
-		pRow = CreateRow(GetColumnCount());
-	}
-	if (out_system->order_type() == DarkHorse::OrderType::Fund)
-		pRow->GetItem(0)->SetValue(out_system->fund()->Name().c_str());
-	else
-		pRow->GetItem(0)->SetValue(out_system->account()->No().c_str());
-	pRow->GetItem(1)->SetValue(out_system->symbol()->SymbolCode().c_str());
-
-	row_to_out_system_[out_system->id()] = index;
+	init_grid();
 	Invalidate();
 }
 
@@ -98,13 +82,13 @@ void ActiveOutSystemView::remove_out_system(std::shared_ptr<DarkHorse::SmOutSyst
 	auto it = row_to_out_system_.find(out_system->id());
 	if (it == row_to_out_system_.end()) return;
 
+	CString msg;
+	msg.Format("id [%d], index [%d]\n", out_system->id(), it->second);
+	TRACE(msg);
+
 	std::erase_if(out_systems_, [&](const std::shared_ptr<SmOutSystem>& in_out_system) {
 		return in_out_system->id() == out_system->id(); });
-	//ClearGrid();
-	//init_grid();
-	RemoveRow(it->second);
-	row_to_out_system_.erase(it);
-	remap_row_to_out_system();
+	init_grid();
 	Invalidate();
 }
 
@@ -189,8 +173,7 @@ void ActiveOutSystemView::OnDestroy()
 
 void ActiveOutSystemView::init_grid()
 {
-	if (out_systems_.empty()) return;
-
+	row_to_out_system_.clear();
 	for (size_t i = 0; i < out_systems_.size(); i++)
 	{
 		CBCGPGridRow* pRow = GetRow(i);
@@ -203,11 +186,25 @@ void ActiveOutSystemView::init_grid()
 
 		row_to_out_system_[out_systems_[i]->id()] = i;
 	}
+	clear_old_contents(out_systems_.size());
+	max_index_ = out_systems_.size();
+}
 
+void ActiveOutSystemView::clear_old_contents(const int& last_index)
+{
+	if (last_index > max_index_) return;
+	for (size_t row = last_index; row < (size_t)max_index_; row++)
+	{
+		CBCGPGridRow* pRow = GetRow(row);
+		for (int i = 0; i < GetColumnCount(); i++) {
+			pRow->GetItem(i)->SetValue("");
+		}
+	}
 }
 
 void ActiveOutSystemView::remap_row_to_out_system()
 {
+	row_to_out_system_.clear();
 	for (size_t i = 0; i < out_systems_.size(); i++)
 	{
 		CBCGPGridRow* pRow = GetRow(i);

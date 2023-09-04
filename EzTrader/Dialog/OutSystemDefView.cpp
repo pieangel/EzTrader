@@ -145,7 +145,7 @@ void OutSystemDefView::OnDestroy()
 	CBCGPGridCtrl::OnDestroy();
 }
 
-void OutSystemDefView::InitGrid()
+void OutSystemDefView::init_grid()
 {
 	auto signal_def_vector = mainApp.out_system_manager()->get_out_system_signal_map();
 	int selIndex = -1;
