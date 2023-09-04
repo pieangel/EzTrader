@@ -319,6 +319,7 @@
     <ClInclude Include="Dialog\VtAddConnectSignalDlg.h" />
     <ClInclude Include="Dialog\VtAddOutSigDefDlg.h" />
     <ClInclude Include="Dialog\VtAutoSignalManagerDialog.h" />
+    <ClInclude Include="Dialog\VtSystemOrderConfig.h" />
     <ClInclude Include="Drawing\VtBaseTracker.h" />
     <ClInclude Include="Drawing\VtDrawingConstants.h" />
     <ClInclude Include="Drawing\VtElement.h" />
@@ -663,6 +664,7 @@
     <ClCompile Include="Dialog\VtAddConnectSignalDlg.cpp" />
     <ClCompile Include="Dialog\VtAddOutSigDefDlg.cpp" />
     <ClCompile Include="Dialog\VtAutoSignalManagerDialog.cpp" />
+    <ClCompile Include="Dialog\VtSystemOrderConfig.cpp" />
     <ClCompile Include="Drawing\VtBaseTracker.cpp" />
     <ClCompile Include="Drawing\VtElement.cpp" />
     <ClCompile Include="Drawing\VtEllipse.cpp" />
