@@ -2,17 +2,17 @@
 //
 
 #include "stdafx.h"
-#include "SMTrader.h"
+#include "../DarkHorse.h"
 #include "VtSystemOrderConfig.h"
-#include "afxdialogex.h"
+#include "../resource.h" 
 
 
 // VtSystemOrderConfig dialog
 
-IMPLEMENT_DYNAMIC(VtSystemOrderConfig, CDialogEx)
+IMPLEMENT_DYNAMIC(VtSystemOrderConfig, CBCGPDialog)
 
 VtSystemOrderConfig::VtSystemOrderConfig(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_SYS_ORDER, pParent)
+	: CBCGPDialog(IDD_SYS_ORDER_SET, pParent)
 {
 
 }
@@ -23,7 +23,7 @@ VtSystemOrderConfig::~VtSystemOrderConfig()
 
 void VtSystemOrderConfig::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CBCGPDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_PRICE, _ComboPrice);
 	DDX_Control(pDX, IDC_COMBO_PRICE_TYPE, _ComboPriceType);
 	DDX_Control(pDX, IDC_EDIT_TICK, _EditTick);
@@ -31,7 +31,7 @@ void VtSystemOrderConfig::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(VtSystemOrderConfig, CDialogEx)
+BEGIN_MESSAGE_MAP(VtSystemOrderConfig, CBCGPDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_PRICE_TYPE, &VtSystemOrderConfig::OnCbnSelchangeComboPriceType)
 	ON_CBN_SELCHANGE(IDC_COMBO_PRICE, &VtSystemOrderConfig::OnCbnSelchangeComboPrice)
 	ON_BN_CLICKED(IDC_BTN_OK, &VtSystemOrderConfig::OnBnClickedBtnOk)
@@ -44,11 +44,11 @@ END_MESSAGE_MAP()
 
 BOOL VtSystemOrderConfig::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CBCGPDialog::OnInitDialog();
 
 	_ComboPriceType.AddString(_T("지정가"));
 	_ComboPriceType.AddString(_T("시장가"));
-	_PriceType == VtPriceType::Price ? _ComboPriceType.SetCurSel(0) : _ComboPriceType.SetCurSel(1);
+	_PriceType == DarkHorse::SmPriceType::Price ? _ComboPriceType.SetCurSel(0) : _ComboPriceType.SetCurSel(1);
 
 	_ComboPrice.AddString(_T("현재가 + - 5"));
 	_ComboPrice.AddString(_T("현재가 + - 10"));
@@ -80,7 +80,7 @@ void VtSystemOrderConfig::OnCbnSelchangeComboPriceType()
 {
 	int selIndex = _ComboPriceType.GetCurSel();
 	if (selIndex < 0) return;
-	selIndex == 0 ? _PriceType = VtPriceType::Price : _PriceType = VtPriceType::Market;
+	selIndex == 0 ? _PriceType = DarkHorse::SmPriceType::Price : _PriceType = DarkHorse::SmPriceType::Market;
 	if (selIndex != 0) {
 		_ComboPrice.EnableWindow(FALSE);
 		_EditTick.EnableWindow(FALSE);
@@ -128,11 +128,11 @@ void VtSystemOrderConfig::OnBnClickedBtnOk()
 	_EditTick.GetWindowText(strTick);
 	_OrderTick = _ttoi(strTick);
 
-	CDialogEx::OnOK();
+	CBCGPDialog::OnOK();
 }
 
 
 void VtSystemOrderConfig::OnBnClickedBtnCancel()
 {
-	CDialogEx::OnCancel();
+	CBCGPDialog::OnCancel();
 }

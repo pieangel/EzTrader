@@ -1,11 +1,11 @@
 #pragma once
 #include "afxwin.h"
 #include "afxcmn.h"
-#include "Global/VtDefine.h"
-
+#include <BCGCBProInc.h>
+#include "../Order/SmOrderConst.h"
 // VtSystemOrderConfig dialog
 
-class VtSystemOrderConfig : public CDialogEx
+class VtSystemOrderConfig : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(VtSystemOrderConfig)
 
@@ -29,7 +29,7 @@ public:
 	CSpinButtonCtrl _SpinTick;
 	virtual BOOL OnInitDialog();
 
-	VtPriceType _PriceType = VtPriceType::Price;
+	DarkHorse::SmPriceType _PriceType = DarkHorse::SmPriceType::Price;
 	int _OrderTick = 10;
 	afx_msg void OnCbnSelchangeComboPriceType();
 	afx_msg void OnCbnSelchangeComboPrice();

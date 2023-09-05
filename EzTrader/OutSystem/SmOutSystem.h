@@ -43,6 +43,7 @@ namespace DarkHorse {
 		std::string desc_;
 		int seung_su_{ 0 };
 		int signal_id_{ 0 };
+		bool enable_{ false };
 	};
 	// key : system id, value : SmOUtSystem object.
 	typedef std::map<int, std::shared_ptr<SmOutSystem>> SmOutSystemMap;

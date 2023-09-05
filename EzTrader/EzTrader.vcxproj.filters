@@ -808,6 +808,9 @@
     <ClCompile Include="Dialog\VtSystemOrderConfig.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
+    <ClCompile Include="OutSystem\OutSystemProcessor.cpp">
+      <Filter>OutSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -1874,6 +1877,9 @@
     </ClInclude>
     <ClInclude Include="Dialog\VtSystemOrderConfig.h">
       <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="OutSystem\OutSystemProcessor.h">
+      <Filter>OutSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

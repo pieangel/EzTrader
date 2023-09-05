@@ -17,6 +17,11 @@
 #include <stdio.h>      /* puts */
 #include <time.h>       /* time_t, struct tm, time, localtime, strftime */
 #include "../Log/MyLogger.h"
+#include "../Json/json.hpp"
+#include "../Global/SmTotalManager.h"
+#include "../OutSystem/SmOutSystemManager.h"
+
+using namespace nlohmann;
 //#include "VtOutSystemOrderManager.h"
 //#include "SmFileSignalManager.h"
 using namespace rdc;
@@ -135,63 +140,6 @@ public:
 	/// <param name="fileName">액션이 일어난 파일 이름</param>
 	void OnFileChanged(DWORD action, CString fileName)
 	{
-		
-		LOGINFO(CMyLogger::getInstance(), "OnFileChanged : action = %s, 파일이름 : %s", ExplainAction(action), fileName);
-		// 파일 변경 이벤트가 아니면 반응하지 않는다.
-		if (action != FILE_ACTION_MODIFIED)
-			return;
-		const std::string filename(fileName);
-		std::string lastline;
-		try {
-			std::ifstream fs;
-			fs.open(filename.c_str(), std::fstream::in);
-			if (fs.is_open()) {
-				//Got to the last character before EOF
-				fs.seekg(-1, std::ios_base::end);
-				if (fs.peek() == '\n') {
-					//Start searching for \n occurrences
-					fs.seekg(-1, std::ios_base::cur);
-					// Returns the position of the current character in the input stream
-					int i = (int)fs.tellg();
-					for (i; i > 0; i--) {
-						if (fs.peek() == '\n') {
-							//Found
-							// Extracts characters from the stream, as unformatted input :
-							fs.get();
-							break;
-						}
-						//Move one character back
-						fs.seekg(i, std::ios_base::beg);
-					}
-				}
-				getline(fs, lastline);
-			}
-			else {
-				std::cout << "Could not find end line character" << std::endl;
-				std::string msg = "Could not find end line character";
-				LOGINFO(CMyLogger::getInstance(), _T("OnFileChanged : 파일 읽기 오류 msg = %s, 파일이름 : %s"), msg, fileName);
-			}
-			fs.close();
-		}
-		catch (std::exception& e) {
-			LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
-		}
-		catch (...) {
-			LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
-		}
-
-		std::string msg;
-		msg.append(filename);
-		msg.append(_T(","));
-		msg.append(lastline);
-		
-		//VtOutSystemOrderManager* outSysMgr = VtOutSystemOrderManager::GetInstance();
-		//outSysMgr->OnOutSignal(msg);
-
-		msg.append(_T("\n"));
-		std::cout << msg << std::endl;
-		TRACE(msg.c_str());
-		
 	}
 	/// <summary>
 	/// 감시할 디렉토리를 추가한다.
@@ -227,15 +175,15 @@ private:
 					DWORD dwAction;
 					CString strFilename;
 					changes->Pop(dwAction, strFilename);
-					//OnFileChanged(dwAction, strFilename);
 					// 파일 변경 이벤트만 처리한다.
 					if (dwAction == FILE_ACTION_MODIFIED) {
-						//SmFileSignal file_signal;
-						//file_signal.command = 1;
-						//file_signal.file_name = strFilename;
-						//file_signal.tried = false;
-						//SmFileSignalManager::GetInstance()->AddSignal(std::move(file_signal));
-						;
+						nlohmann::json order_info;
+						order_info["command"] = 1;
+						order_info["file_name"] = (const char*)(strFilename);
+						order_info["tried"] = false;
+
+						mainApp.out_system_manager()->AddSignal(std::move(order_info));
+
 					}
 				}
 			}

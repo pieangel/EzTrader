@@ -4,11 +4,18 @@
 #include <string>
 #include <memory>
 #include "SmOutSystem.h"
+#include "../Json/json.hpp"
+#include "../Common/BlockingCollection.h"
+#include "../Common/common.h"
+#include <set>
 
+#include <sstream>
+using namespace code_machina;
 namespace DarkHorse {
+	const int BulkOutSystemSize2 = 100;
 	class SmOutSystem;
 	class SmOutSignalDef;
-	class SmOutSystemManager
+	class SmOutSystemManager : public Runnable
 	{
 	public:
 		SmOutSystemManager();
@@ -26,12 +33,33 @@ namespace DarkHorse {
 		const std::vector<std::shared_ptr<SmOutSignalDef>>& get_out_system_signal_map() const { return out_system_signal_vec_; }
 		size_t get_out_system_count() const { return out_system_vec_.size(); }
 		const std::vector<std::shared_ptr<SmOutSystem>>& get_out_system_vector() const { return out_system_vec_; }
+
+
+		void StartProcess() noexcept;
+		void StopProcess() noexcept;
+		virtual unsigned int ThreadHandlerProc(void);
+		void AddSignal(nlohmann::json&& signal) noexcept;
+		std::string GetLastLine(const std::string& filename);
+		bool Enable() const { return _Enable; }
+		void Enable(bool val) { _Enable = val; }
+
 	private:
 		void remove_out_system_by_id(const int& system_id);
 		std::vector<std::shared_ptr<SmOutSystem>> out_system_vec_;
 		// key : system name, value : SmOutSystem object.
 		std::map<std::string, SmOutSystemMap> out_system_map_;
 		std::vector<std::shared_ptr<SmOutSignalDef>> out_system_signal_vec_;
+
+		void ClearTasks();
+		std::vector<std::string> split(const std::string& input, char delimiter);
+		bool _Enable{ true };
+		bool _BatchProcess{ false };
+		BlockingCollection<nlohmann::json> _SignalQueue;
+		void ProcessSignal(nlohmann::json&& signal);
+		// arr : 데이터가 들어 있는 배열, taken : 실제 데이터가 들어 있는 갯수
+		bool ProcessSignal(const std::array<nlohmann::json, BulkOutSystemSize2>& arr, const int& taken);
+
+		void execute_order(std::string&& order_signal);
 	};
 }
 

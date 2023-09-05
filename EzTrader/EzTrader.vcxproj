@@ -447,6 +447,7 @@
     <ClInclude Include="Order\SmSymbolOrderManager.h" />
     <ClInclude Include="Order\SmTotalOrderManager.h" />
     <ClInclude Include="OutputBar.h" />
+    <ClInclude Include="OutSystem\OutSystemProcessor.h" />
     <ClInclude Include="OutSystem\SmOutSignalDef.h" />
     <ClInclude Include="OutSystem\SmOutSystem.h" />
     <ClInclude Include="OutSystem\SmOutSystemManager.h" />
@@ -769,6 +770,7 @@
     <ClCompile Include="Order\SmSymbolOrderManager.cpp" />
     <ClCompile Include="Order\SmTotalOrderManager.cpp" />
     <ClCompile Include="OutputBar.cpp" />
+    <ClCompile Include="OutSystem\OutSystemProcessor.cpp" />
     <ClCompile Include="OutSystem\SmOutSignalDef.cpp" />
     <ClCompile Include="OutSystem\SmOutSystem.cpp" />
     <ClCompile Include="OutSystem\SmOutSystemManager.cpp" />
