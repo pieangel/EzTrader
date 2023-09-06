@@ -6,6 +6,8 @@ struct OrderContext {
 	std::string parent_account_no;
 	std::string sub_account_no;
 	std::string fund_name;
+	// yes chart name
+	std::string signal_name;
 	// Order Type. 1 : Sub Account, 2 : Main Account, 3 : Fund.
 	OrderType order_source_type = OrderType::None;
 	/// <summary>

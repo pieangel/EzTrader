@@ -44,6 +44,7 @@ namespace DarkHorse {
 		void Enable(bool val) { _Enable = val; }
 
 	private:
+		void put_order(const std::string& signal_name, int order_kind, int order_amount);
 		void remove_out_system_by_id(const int& system_id);
 		std::vector<std::shared_ptr<SmOutSystem>> out_system_vec_;
 		// key : system name, value : SmOutSystem object.

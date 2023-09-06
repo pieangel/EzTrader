@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <filesystem>
 
 namespace DarkHorse {
 	SmOutSystemManager::SmOutSystemManager()
@@ -65,6 +66,16 @@ namespace DarkHorse {
 		}
 
 		remove_out_system_by_id(system_id);
+	}
+
+	void SmOutSystemManager::put_order(const std::string& signal_name, int order_kind, int order_amount)
+	{
+		auto found = out_system_map_.find(signal_name);
+		if (found == out_system_map_.end()) return;
+		const SmOutSystemMap& system_map = found->second;
+		for (auto& [system_id, out_system] : system_map) {
+			out_system->put_order(signal_name, order_kind, order_amount);
+		}
 	}
 
 	void SmOutSystemManager::remove_out_system_by_id(const int& system_id)
@@ -204,7 +215,20 @@ namespace DarkHorse {
 	void SmOutSystemManager::execute_order(std::string&& order_signal)
 	{
 		std::vector<std::string> tokens = split(order_signal, ',');
-
+		if (tokens.size() > 7 && tokens[0].length() > 0) {
+			std::filesystem::path full_path(tokens[0]);
+			std::string signame = full_path.filename().string();
+			auto pos = signame.find_first_of(_T("-"));
+			signame = signame.substr(0, pos);
+			CString strOrderKind(tokens[4].c_str());
+			int order_kind = _ttoi(strOrderKind);
+			CString strAmount(tokens[6].c_str());
+			int order_amount = _ttoi(strAmount);
+			put_order(signame, order_kind, order_amount);
+		}
+		else {
+			LOGINFO(CMyLogger::getInstance(), _T("OnOutSignal : 신호 파싱 오류 신호 : %s"), order_signal);
+		}
 		
 	}
 

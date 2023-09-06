@@ -31,8 +31,9 @@ namespace DarkHorse {
 		void seung_su(int val) { seung_su_ = val; }
 		int signal_id() const { return signal_id_; }
 		void signal_id(int val) { signal_id_ = val; }
-
+		void put_order(const std::string& signal_name, int order_kind, int order_amount);
 	private:
+		void put_order_each(std::shared_ptr<SmAccount> account, const std::string& signal_name, int order_kind, int order_amount);
 		OrderType order_type_{ OrderType::None };
 		int id_{ 0 };
 		// Signal Name. "T1", "T2" for yes.
