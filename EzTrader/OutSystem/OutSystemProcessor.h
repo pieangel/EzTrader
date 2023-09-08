@@ -25,7 +25,7 @@ namespace DarkHorse {
 	private:
 		void ClearTasks();
 		bool _Enable{ true };
-  bool HandleEvent(Event event);
+	bool HandleEvent(Event event);
 		bool _BatchProcess{ false };
 		BlockingCollection<nlohmann::json> _SignalQueue;
 		void ProcessSignal(nlohmann::json&& signal);
