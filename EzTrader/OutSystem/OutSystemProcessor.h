@@ -25,10 +25,11 @@ namespace DarkHorse {
 	private:
 		void ClearTasks();
 		bool _Enable{ true };
+  bool HandleEvent(Event event);
 		bool _BatchProcess{ false };
 		BlockingCollection<nlohmann::json> _SignalQueue;
 		void ProcessSignal(nlohmann::json&& signal);
-		// arr : µ¥ÀÌÅÍ°¡ µé¾î ÀÖ´Â ¹è¿­, taken : ½ÇÁ¦ µ¥ÀÌÅÍ°¡ µé¾î ÀÖ´Â °¹¼ö
+		// arr : ë°ì´í„°ê°€ ë“¤ì–´ ìˆëŠ” ë°°ì—´, taken : ì‹¤ì œ ë°ì´í„°ê°€ ë“¤ì–´ ìˆëŠ” ê°¯ìˆ˜
 		bool ProcessSignal(const std::array<nlohmann::json, BulkOutSystemSize>& arr, const int& taken);
 	};
 }
