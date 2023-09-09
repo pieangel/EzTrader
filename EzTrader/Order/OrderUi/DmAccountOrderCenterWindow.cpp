@@ -47,6 +47,7 @@
 #include "../../Order/OrderRequest/OrderRequest.h"
 #include "../../Symbol/SymbolConst.h"
 #include "../../Dialog/HdSymbolSelecter.h"
+#include "DmFundOrderWindow.h"
 #include <functional>
 using namespace std::placeholders;
 // SmOrderWnd dialog
@@ -64,7 +65,7 @@ using account_position_manager_p = std::shared_ptr<DarkHorse::AccountPositionMan
 IMPLEMENT_DYNAMIC(DmAccountOrderCenterWindow, CBCGPDialog)
 
 DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*/)
-	: CBCGPDialog(IDD_ORDER_CENTER, pParent)
+	: CBCGPDialog(IDD_ORDER_CENTER, pParent), layout_manager_(this)
 {
 	id_ = IdGenerator::get_id();
 	symbol_order_view_.symbol_type(SymbolType::Domestic);
@@ -83,7 +84,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent /*=nullptr*
 }
 
 DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::string symbol_code, DarkHorse::OrderSetEvent order_set)
-	: CBCGPDialog(IDD_ORDER_CENTER, pParent), symbol_code_(symbol_code), order_set_(order_set)
+	: CBCGPDialog(IDD_ORDER_CENTER, pParent), symbol_code_(symbol_code), order_set_(order_set), layout_manager_(this)
 {
 		id_ = IdGenerator::get_id();
 		symbol_order_view_.symbol_type(SymbolType::Domestic);
@@ -278,25 +279,89 @@ void DmAccountOrderCenterWindow::CreateResource()
 
 }
 
-void DmAccountOrderCenterWindow::on_resize_event_from_order_view()
+void DmAccountOrderCenterWindow::recal_window_size()
 {
-	CRect rc_order_view, rc_tick_view,rc_window;
+	CRect rc_order_view, rc_tick_view, rc_window;
 	symbol_order_view_.GetWindowRect(&rc_order_view);
 
-	int order_view_width = symbol_order_view_.get_entire_width();
-	symbol_order_view_.SetWindowPos(nullptr, 0, 0, order_view_width, rc_order_view.Height(), SWP_NOMOVE | SWP_NOZORDER);
 
-	symbol_tick_view_.GetWindowRect(&rc_tick_view);
-	ScreenToClient(rc_order_view);
-	ScreenToClient(rc_tick_view);
-	const int window_width = rc_order_view.Width() + rc_tick_view.Width();
-	symbol_tick_view_.SetWindowPos(nullptr, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOSIZE | SWP_NOZORDER);
+	// 주문그리드 위치를 가져온다.
+	CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
+	// 주문설정 보기 옵션에 따라 주문 그리드 하단을 설정한다.
+	//int orderGridBottom = _ShowRemainConfig ? availableHeight - rcGrid.top - ConfigHeight : availableHeight - rcGrid.top;
+	CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
+	// 주문 그리드 위치 및 크기 설정
+	rcGrid.left = 0;
+	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
+	const int tick_width = rcTick.Width();
+	rcTick.left = rcGrid.right;
+	rcTick.right = rcTick.left + tick_width;
+	if (order_set_view_.GetSafeHwnd())
+		order_set_view_.MoveWindow(rcGrid);
+
+	if (show_symbol_tick_view_) {
+		symbol_tick_view_.ShowWindow(SW_SHOW);
+		window_size = rcGrid.Width() + rcTick.Width();
+		if (symbol_tick_view_.GetSafeHwnd())
+			symbol_tick_view_.MoveWindow(rcTick);
+	}
+	else {
+		symbol_tick_view_.ShowWindow(SW_HIDE);
+		window_size = rcGrid.Width();
+	}
+}
+
+CRect DmAccountOrderCenterWindow::GetClientArea(int resourceID)
+{
+	CWnd* wnd = (CWnd*)GetDlgItem(resourceID);
+	CRect rcWnd;
+	wnd->GetWindowRect(rcWnd);
+	ScreenToClient(rcWnd);
+
+	return rcWnd;
+}
+
+void DmAccountOrderCenterWindow::save_control_size()
+{
+	layout_manager_.ParentWnd(this);
+	layout_manager_.AddWindow(_T("주문패널"), IDC_STATIC_ORDER, GetClientArea(IDC_STATIC_ORDER));
+	layout_manager_.AddWindow(_T("틱패널"), IDC_STATIC_QUOTE, GetClientArea(IDC_STATIC_QUOTE));
+}
+
+void DmAccountOrderCenterWindow::on_resize_event_from_order_view()
+{
+	if (!init_dialog_) return;
+
+	CRect rc_order_view, rc_tick_view,rc_window;
+	symbol_order_view_.GetWindowRect(&rc_order_view);
+	GetWindowRect(rc_window);
+
+
+	// 주문그리드 위치를 가져온다.
+	CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
+	// 주문설정 보기 옵션에 따라 주문 그리드 하단을 설정한다.
+	CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
+	// 주문 그리드 위치 및 크기 설정
+	//rcGrid.left = 0;
+	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
+	const int tick_width = rcTick.Width();
+	rcTick.left = rcGrid.right;
+	rcTick.right = rcTick.left + tick_width;
+
+	rcGrid.bottom = rc_window.Height();
+	symbol_tick_view_.GetWindowRect(rc_tick_view);
+
+	symbol_order_view_.MoveWindow(rcGrid);
+
+	symbol_tick_view_.MoveWindow(rcTick);
 
 	CWnd* parent = GetParent();
-	GetWindowRect(rc_window);
-	parent->ScreenToClient(rc_window);
-	rc_window.right = rc_order_view.Width() + rc_tick_view.Width();
-	SetWindowPos(nullptr, rc_window.right, rc_window.top, rc_window.Width(), rc_window.Height(), SWP_NOMOVE | SWP_NOZORDER);
+	symbol_order_view_.Invalidate();
+	recal_window_size();
+	if (account_)
+		((DmAccountOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+	if (fund_)
+		((DmFundOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
 }
 
 void DmAccountOrderCenterWindow::on_resize_event_from_tick_view()
@@ -442,9 +507,13 @@ void DmAccountOrderCenterWindow::set_default_symbol()
 BOOL DmAccountOrderCenterWindow::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
+	save_control_size();
+	symbol_order_view_.reset_window_size();
+
 	init_views();
 	init_control();
 	init_dm_symbol();
+	recal_window_size();
 	init_dialog_ = true;
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -597,28 +666,9 @@ void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEven
 	//symbol_order_view_.on_paramter_event(event, event_message, enable);
 	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
 	symbol_order_view_.SetAllRowHeight(event.grid_height);
-	/*
+	
 	symbol_order_view_.reset_col_widths(event);
-	{
-		CRect rc_order_view, rc_tick_view, rc_window;
-		symbol_order_view_.GetWindowRect(&rc_order_view);
-
-		symbol_tick_view_.GetWindowRect(&rc_tick_view);
-		ScreenToClient(rc_order_view);
-		ScreenToClient(rc_tick_view);
-		const int window_width = rc_order_view.Width() + rc_tick_view.Width();
-		symbol_tick_view_.SetWindowPos(this, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOSIZE | SWP_NOZORDER);
-
-		CWnd* parent = GetParent();
-		GetWindowRect(rc_window);
-		parent->ScreenToClient(rc_window);
-		rc_window.right = rc_order_view.Width() + rc_tick_view.Width();
-		SetWindowPos(parent, rc_window.right, rc_window.top, rc_window.Width(), rc_window.Height(), SWP_NOMOVE | SWP_NOZORDER);
-
-	}
-	*/
-	RecalcOrderAreaHeight(this);
-	symbol_order_view_.Invalidate();
+	//on_resize_event_from_order_view();
 }
 
 void DmAccountOrderCenterWindow::on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag)
@@ -692,6 +742,28 @@ int DmAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 	return extra_height;
 }
 
+void DmAccountOrderCenterWindow::layout_order_window(const bool show_tick)
+{
+	CWnd* parent = GetParent();
+	CRect rc_tick_view;
+	symbol_tick_view_.GetWindowRect(rc_tick_view);
+	CRect rc_window;
+	GetWindowRect(rc_window);
+	parent->ScreenToClient(rc_window);
+	if (show_tick) {
+		rc_window.right = rc_window.left + rc_window.Width() + rc_tick_view.Width();
+		symbol_tick_view_.ShowWindow(SW_SHOW);
+	}
+	else {
+		rc_window.right = rc_window.left + rc_window.Width() - rc_tick_view.Width();
+		symbol_tick_view_.ShowWindow(SW_HIDE);
+	}
+
+	MoveWindow(rc_window);
+
+	((DmAccountOrderWindow*)parent)->RecalcChildren(show_tick ? CM_SHOW_TICK : CM_HIDE_TICK);
+}
+
 void DmAccountOrderCenterWindow::OnCbnSelchangeComboSymbol()
 {
 	const int cur_sel = combo_symbol_.GetCurSel();
@@ -727,6 +799,7 @@ void DmAccountOrderCenterWindow::OnSize(UINT nType, int cx, int cy)
 void DmAccountOrderCenterWindow::OnBnClickedCheckShowRealQuote()
 {
 	show_symbol_tick_view_ ? show_symbol_tick_view_ = false : show_symbol_tick_view_ = true;
+	/*
 	CWnd* parent = GetParent();
 	CRect rc_tick_view;
 	symbol_tick_view_.GetWindowRect(rc_tick_view);
@@ -743,8 +816,13 @@ void DmAccountOrderCenterWindow::OnBnClickedCheckShowRealQuote()
 	}
 
 	MoveWindow(rc_window);
-
-	((DmAccountOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+	*/
+	recal_window_size();
+	CWnd* parent = GetParent();
+	if (account_)
+		((DmAccountOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+	if (fund_)
+		((DmFundOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
 }
 
 

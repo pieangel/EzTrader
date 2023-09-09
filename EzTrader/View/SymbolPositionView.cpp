@@ -73,7 +73,7 @@ void SymbolPositionView::SetUp()
 	//InitHeader();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 2, 6);
-	int colWidth[6] = { 60, 35, 40, 70, 90, 90 };
+	int colWidth[6] = { 60, 35, 40, 60, 90, 90 };
 	int width_sum = 0;
 	for (int i = 0; i < 6; i++) {
 		_Grid->SetColWidth(i, colWidth[i]);
@@ -92,8 +92,8 @@ void SymbolPositionView::SetUp()
 		_HeaderTitles.push_back("구분");
 		_HeaderTitles.push_back("잔고");
 		_HeaderTitles.push_back("평균가");
-		_HeaderTitles.push_back("현재가");
 		_HeaderTitles.push_back("평가손익");
+		_HeaderTitles.push_back("현재가");
 
 		_Grid->SetColHeaderTitles(_HeaderTitles);
 	}
@@ -161,7 +161,7 @@ void SymbolPositionView::update_quote()
 	const VmPosition& position = position_control_->get_position();
 	std::string value = std::to_string(quote.close);
 	SmUtil::insert_decimal(value, symbol_->decimal());
-	auto cell = _Grid->FindCell(1, 4);
+	auto cell = _Grid->FindCell(1, 5);
 	if (position.open_quantity == 0)
 		cell->CellType(SmCellType::CT_NORMAL);
 	else
@@ -285,7 +285,7 @@ void SymbolPositionView::update_position()
 	//if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
 	//	value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
 	cell->Text(value_string);
-	cell = _Grid->FindCell(1, 5);
+	cell = _Grid->FindCell(1, 4);
 	if (position.open_profit_loss != 0)
 		position.open_profit_loss > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	else

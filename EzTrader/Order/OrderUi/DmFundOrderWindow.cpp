@@ -326,7 +326,6 @@ void DmFundOrderWindow::OnQuoteAreaShowHide()
 
 void DmFundOrderWindow::RecalcChildren(CmdMode mode)
 {
-
 	std::set<CWnd*> wnd_set;
 	const int top_gap = 2;
 	//const int hor_gap = 2;
@@ -378,10 +377,11 @@ void DmFundOrderWindow::RecalcChildren(CmdMode mode)
 
 
 		//center_wnd->ShowWindow(SW_HIDE);
-		center_wnd->MoveWindow(start_x, CtrlHeight + top_gap, rcWnd.Width(), rcWnd.Height());
+		int center_window_size = center_wnd->window_size;
+		center_wnd->MoveWindow(start_x, CtrlHeight + top_gap, center_window_size, rcWnd.Height());
 
 		center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
-		start_x += rcWnd.Width();
+		start_x += center_window_size;
 		width_total += rcWnd.Width();
 
 		center_wnd->RecalcOrderAreaHeight(this);

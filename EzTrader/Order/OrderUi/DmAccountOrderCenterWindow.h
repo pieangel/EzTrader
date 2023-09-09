@@ -26,7 +26,7 @@ class DmAccountOrderCenterWindow
 #include "../OrderRequest/OrderRequest.h"
 #include "../../Event/EventHubArg.h"
 #include "../../Json/json.hpp"
-
+#include "../../Dialog/VtLayoutManager.h"
 using json = nlohmann::json;
 // SmOrderWnd dialog
 namespace DarkHorse {
@@ -94,7 +94,12 @@ public:
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
 	std::string get_symbol_code();
+	int window_size = 0;
 private:
+	void recal_window_size();
+	CRect GetClientArea(int resourceID);
+	DarkHorse::VtLayoutManager layout_manager_;
+	void save_control_size();
 	void on_resize_event_from_order_view();
 	void on_resize_event_from_tick_view();
 	void set_symbol(std::shared_ptr<DarkHorse::SmSymbol>symbol);
@@ -159,6 +164,7 @@ public:
 	void SetRowNarrow();
 	void OnOrderChanged(const int& account_id, const int& symbol_id);
 	int RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up = true);
+	void layout_order_window(const bool show_tick);
 	afx_msg void OnCbnSelchangeComboSymbol();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	CBCGPStatic _StaticAccountName;

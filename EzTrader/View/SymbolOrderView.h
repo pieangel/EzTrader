@@ -186,6 +186,7 @@ public:
 	void position_type(DarkHorse::PositionType val) { position_type_ = val; }
 	DarkHorse::OrderType order_type() const { return order_type_; }
 	void order_type(DarkHorse::OrderType val) { order_type_ = val; }
+	void reset_window_size();
 
 private:
 	DarkHorse::OrderType order_type_{ DarkHorse::OrderType::None };

@@ -808,8 +808,8 @@
     <ClCompile Include="Dialog\VtSystemOrderConfig.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="OutSystem\OutSystemProcessor.cpp">
-      <Filter>OutSystem</Filter>
+    <ClCompile Include="Dialog\VtLayoutManager.cpp">
+      <Filter>Dialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1878,8 +1878,8 @@
     <ClInclude Include="Dialog\VtSystemOrderConfig.h">
       <Filter>Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="OutSystem\OutSystemProcessor.h">
-      <Filter>OutSystem</Filter>
+    <ClInclude Include="Dialog\VtLayoutManager.h">
+      <Filter>Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

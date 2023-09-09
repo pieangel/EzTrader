@@ -1049,6 +1049,17 @@ void SymbolOrderView::CancelSellStop()
 	enable_sell_stop_order_show_ = true;
 }
 
+void SymbolOrderView::reset_window_size()
+{
+	int width_sum = get_entire_width();
+
+	CRect rcWnd;
+	GetWindowRect(&rcWnd);
+	GetParent()->ScreenToClient(rcWnd);
+	rcWnd.right = width_sum;
+	SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height(), SWP_NOMOVE | SWP_NOZORDER);
+}
+
 void SymbolOrderView::CancelSellOrder()
 {
 	if (account_)
@@ -1213,6 +1224,8 @@ std::pair<int, int> SymbolOrderView::get_order_count(const std::shared_ptr<DarkH
 
 void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
 {
+	//grid_header_vector_[DarkHorse::OrderHeader::SELL_CNT].width = 0;
+	//grid_header_vector_[DarkHorse::OrderHeader::BUY_CNT].width = 0;
 	int width_sum = 0;
 	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_STOP, grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width);
 	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_ORDER, grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].width);
@@ -1225,30 +1238,14 @@ void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
 	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_STOP, grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width);
 
 
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_CNT].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_QTY].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_QTY].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_CNT].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_ORDER].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width;
-	width_sum += 1;
-	width_sum += 1;
-	width_sum += 2;
+	//width_sum = get_entire_width();
 
 	//_Grid->SetColWidth(DarkHorse::OrderHeader::QUOTE, wnd_width - width_sum);
-	CRect rcWnd;
-	GetClientRect(&rcWnd);
-	rcWnd.right = width_sum + OrderGridHeaderVector[DarkHorse::OrderHeader::QUOTE].width;
-	SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height(), SWP_NOMOVE | SWP_NOZORDER);
+	//CRect rcWnd;
+	//GetWindowRect(&rcWnd);
+	//GetParent()->ScreenToClient(rcWnd);
+	//rcWnd.right = width_sum;
+	//SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height(), SWP_NOMOVE | SWP_NOZORDER);
 
 	mainApp.event_hub()->trigger_window_resize_event(id_);
 }
@@ -1349,41 +1346,7 @@ void SymbolOrderView::reset_col_widths(const DarkHorse::OrderSetEvent& order_set
 	grid_header_vector_[7].width = order_set_event.order_width;
 	grid_header_vector_[8].width = order_set_event.stop_width;
 
-	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_STOP, grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_ORDER, grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_CNT, grid_header_vector_[DarkHorse::OrderHeader::SELL_CNT].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_QTY, grid_header_vector_[DarkHorse::OrderHeader::SELL_QTY].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::QUOTE, grid_header_vector_[DarkHorse::OrderHeader::QUOTE].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_QTY, grid_header_vector_[DarkHorse::OrderHeader::BUY_QTY].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_CNT, grid_header_vector_[DarkHorse::OrderHeader::BUY_CNT].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_ORDER, grid_header_vector_[DarkHorse::OrderHeader::BUY_ORDER].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_STOP, grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width);
-	int width_sum = 0;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_CNT].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_QTY].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_QTY].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_CNT].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_ORDER].width;
-	width_sum += 1;
-	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width;
-	width_sum += 1;
-	width_sum += 1;
-	width_sum += 2;
-	width_sum += 15;
-
-	//_Grid->SetColWidth(DarkHorse::OrderHeader::QUOTE, wnd_width - width_sum);
-	CRect rcWnd;
-	GetClientRect(&rcWnd);
-	rcWnd.right = width_sum + OrderGridHeaderVector[DarkHorse::OrderHeader::QUOTE].width;
-	SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height(), SWP_NOMOVE | SWP_NOZORDER);
+	ResetHeaderWidth(0);
 }
 
 int SymbolOrderView::get_entire_width()
@@ -1407,6 +1370,7 @@ int SymbolOrderView::get_entire_width()
 	width_sum += 1;
 	width_sum += 1;
 	width_sum += 2;
+	width_sum += 5;
 
 	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::QUOTE].width;
 

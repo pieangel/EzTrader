@@ -319,6 +319,7 @@
     <ClInclude Include="Dialog\VtAddConnectSignalDlg.h" />
     <ClInclude Include="Dialog\VtAddOutSigDefDlg.h" />
     <ClInclude Include="Dialog\VtAutoSignalManagerDialog.h" />
+    <ClInclude Include="Dialog\VtLayoutManager.h" />
     <ClInclude Include="Dialog\VtSystemOrderConfig.h" />
     <ClInclude Include="Drawing\VtBaseTracker.h" />
     <ClInclude Include="Drawing\VtDrawingConstants.h" />
@@ -447,7 +448,6 @@
     <ClInclude Include="Order\SmSymbolOrderManager.h" />
     <ClInclude Include="Order\SmTotalOrderManager.h" />
     <ClInclude Include="OutputBar.h" />
-    <ClInclude Include="OutSystem\OutSystemProcessor.h" />
     <ClInclude Include="OutSystem\SmOutSignalDef.h" />
     <ClInclude Include="OutSystem\SmOutSystem.h" />
     <ClInclude Include="OutSystem\SmOutSystemManager.h" />
@@ -665,6 +665,7 @@
     <ClCompile Include="Dialog\VtAddConnectSignalDlg.cpp" />
     <ClCompile Include="Dialog\VtAddOutSigDefDlg.cpp" />
     <ClCompile Include="Dialog\VtAutoSignalManagerDialog.cpp" />
+    <ClCompile Include="Dialog\VtLayoutManager.cpp" />
     <ClCompile Include="Dialog\VtSystemOrderConfig.cpp" />
     <ClCompile Include="Drawing\VtBaseTracker.cpp" />
     <ClCompile Include="Drawing\VtElement.cpp" />
@@ -770,7 +771,6 @@
     <ClCompile Include="Order\SmSymbolOrderManager.cpp" />
     <ClCompile Include="Order\SmTotalOrderManager.cpp" />
     <ClCompile Include="OutputBar.cpp" />
-    <ClCompile Include="OutSystem\OutSystemProcessor.cpp" />
     <ClCompile Include="OutSystem\SmOutSignalDef.cpp" />
     <ClCompile Include="OutSystem\SmOutSystem.cpp" />
     <ClCompile Include="OutSystem\SmOutSystemManager.cpp" />
