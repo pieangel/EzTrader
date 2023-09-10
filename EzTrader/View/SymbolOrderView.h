@@ -187,7 +187,8 @@ public:
 	DarkHorse::OrderType order_type() const { return order_type_; }
 	void order_type(DarkHorse::OrderType val) { order_type_ = val; }
 	void reset_window_size();
-
+	const std::vector<DarkHorse::OrderGridHeaderInfo>& grid_header_vector() const { return grid_header_vector_; }
+	void trigger_resize_event();
 private:
 	DarkHorse::OrderType order_type_{ DarkHorse::OrderType::None };
 

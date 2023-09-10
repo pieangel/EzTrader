@@ -64,8 +64,11 @@ BEGIN_MESSAGE_MAP(SmOrderSetDialog, CBCGPDialog)
 	ON_BN_CLICKED(IDC_CHECK_ALIGN_BY_ALT, &SmOrderSetDialog::OnBnClickedCheckAlignByAlt)
 	ON_BN_CLICKED(IDC_CHECK_ORDER_BY_SPACE, &SmOrderSetDialog::OnBnClickedCheckOrderBySpace)
 	ON_BN_CLICKED(IDC_CHECK_CANCEL_BY_RIGHT_CLICK, &SmOrderSetDialog::OnBnClickedCheckCancelByRightClick)
-	ON_BN_CLICKED(IDC_BUTTON1, &SmOrderSetDialog::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_CHECK_STOP_TO_REAL, &SmOrderSetDialog::OnBnClickedCheckStopToReal)
+	ON_BN_CLICKED(IDC_CHECK_SHOW_ORDER_COL, &SmOrderSetDialog::OnBnClickedCheckShowOrderCol)
+	ON_BN_CLICKED(IDC_CHECK_SHOW_STOP_COL, &SmOrderSetDialog::OnBnClickedCheckShowStopCol)
+	ON_BN_CLICKED(IDC_CHECK_SHOW_COUNT_COL, &SmOrderSetDialog::OnBnClickedCheckShowCountCol)
+	ON_BN_CLICKED(IDC_BTN_APPLY, &SmOrderSetDialog::OnBnClickedBtnApply)
 END_MESSAGE_MAP()
 
 
@@ -77,6 +80,51 @@ void SmOrderSetDialog::OnBnClickedCheckSetWide()
 	
 }
 
+
+void SmOrderSetDialog::apply_change()
+{
+	if (!edit_row_height_.GetSafeHwnd()) return;
+	if (!edit_stop_width_.GetSafeHwnd()) return;
+	if (!edit_order_width_.GetSafeHwnd()) return;
+	if (!edit_count_width_.GetSafeHwnd()) return;
+	if (!edit_qty_width_.GetSafeHwnd()) return;
+	if (!edit_quote_width_.GetSafeHwnd()) return;
+	std::vector<int> height_and_width_vec;
+	CString value;
+	edit_row_height_.GetWindowText(value);
+	height_and_width_vec.push_back(_ttoi(value));
+	edit_stop_width_.GetWindowText(value);
+	height_and_width_vec.push_back(_ttoi(value));
+	edit_order_width_.GetWindowText(value);
+	height_and_width_vec.push_back(_ttoi(value));
+	edit_count_width_.GetWindowText(value);
+	height_and_width_vec.push_back(_ttoi(value));
+	edit_qty_width_.GetWindowText(value);
+	height_and_width_vec.push_back(_ttoi(value));
+	edit_quote_width_.GetWindowText(value);
+	height_and_width_vec.push_back(_ttoi(value));
+
+	DarkHorse::OrderSetEvent order_set_event;
+	order_set_event.window_id = id_;
+	order_set_event.grid_height = height_and_width_vec[0];
+	if (check_show_stop_column_.GetCheck() == BST_UNCHECKED)
+		order_set_event.stop_width = 0;
+	else
+		order_set_event.stop_width = height_and_width_vec[1];
+	if (check_show_order_column_.GetCheck() == BST_UNCHECKED)
+		order_set_event.order_width = 0;
+	else
+		order_set_event.order_width = height_and_width_vec[2];
+	if (check_show_count_column_.GetCheck() == BST_UNCHECKED)
+		order_set_event.count_width = 0;
+	else
+		order_set_event.count_width = height_and_width_vec[3];
+	order_set_event.qty_width = height_and_width_vec[4];
+	order_set_event.quote_width = height_and_width_vec[5];
+	order_set_event.stop_as_real_order = stop_as_real_order_;
+
+	mainApp.event_hub()->trigger_parameter_event(window_id_from_, order_set_event, "test", true);
+}
 
 BOOL SmOrderSetDialog::OnInitDialog()
 {
@@ -130,47 +178,6 @@ void SmOrderSetDialog::OnBnClickedCheckCancelByRightClick()
 	// TODO: Add your control notification handler code here
 }
 
-
-void SmOrderSetDialog::OnBnClickedButton1()
-{
-	if (!edit_row_height_.GetSafeHwnd()) return;
-	if (!edit_stop_width_.GetSafeHwnd()) return;
-	if (!edit_order_width_.GetSafeHwnd()) return;
-	if (!edit_count_width_.GetSafeHwnd()) return;
-	if (!edit_qty_width_.GetSafeHwnd()) return;
-	if (!edit_quote_width_.GetSafeHwnd()) return;
-	std::vector<int> height_and_width_vec;
-	CString value;
-	edit_row_height_.GetWindowText(value);
-	height_and_width_vec.push_back(_ttoi(value));
-	edit_stop_width_.GetWindowText(value);
-	height_and_width_vec.push_back(_ttoi(value));
-	edit_order_width_.GetWindowText(value);
-	height_and_width_vec.push_back(_ttoi(value));
-	edit_count_width_.GetWindowText(value);
-	height_and_width_vec.push_back(_ttoi(value));
-	edit_qty_width_.GetWindowText(value);
-	height_and_width_vec.push_back(_ttoi(value));
-	edit_quote_width_.GetWindowText(value);
-	height_and_width_vec.push_back(_ttoi(value));
-
-	DarkHorse::OrderSetEvent order_set_event;
-	order_set_event.window_id = id_;
-	order_set_event.grid_height = height_and_width_vec[0];
-	order_set_event.stop_width = height_and_width_vec[1];
-	order_set_event.order_width = height_and_width_vec[2];
-	order_set_event.count_width = height_and_width_vec[3];
-	order_set_event.qty_width = height_and_width_vec[4];
-	order_set_event.quote_width = height_and_width_vec[5];
-	order_set_event.stop_as_real_order = stop_as_real_order_;
-
-	//mainApp.event_hub()->trigger_order_set_event(window_id_from_, order_set_event, false);
-
-
-	mainApp.event_hub()->trigger_parameter_event( window_id_from_, order_set_event, "test", true);
-}
-
-
 void SmOrderSetDialog::OnBnClickedCheckStopToReal()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -178,4 +185,28 @@ void SmOrderSetDialog::OnBnClickedCheckStopToReal()
 		stop_as_real_order_ = true;
 	else
 		stop_as_real_order_ = false;
+}
+
+
+void SmOrderSetDialog::OnBnClickedCheckShowOrderCol()
+{
+	apply_change();
+}
+
+
+void SmOrderSetDialog::OnBnClickedCheckShowStopCol()
+{
+	apply_change();
+}
+
+
+void SmOrderSetDialog::OnBnClickedCheckShowCountCol()
+{
+	apply_change();
+}
+
+
+void SmOrderSetDialog::OnBnClickedBtnApply()
+{
+	apply_change();
 }

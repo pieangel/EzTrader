@@ -279,6 +279,16 @@ void DmAccountOrderCenterWindow::CreateResource()
 
 }
 
+void DmAccountOrderCenterWindow::trigger_resize_event()
+{
+	CWnd* parent = GetParent();
+
+	if (account_)
+		((DmAccountOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+	if (fund_)
+		((DmFundOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+}
+
 void DmAccountOrderCenterWindow::recal_window_size()
 {
 	CRect rc_order_view, rc_tick_view, rc_window;
@@ -286,28 +296,27 @@ void DmAccountOrderCenterWindow::recal_window_size()
 
 
 	// 주문그리드 위치를 가져온다.
-	CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
+	//CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
 	// 주문설정 보기 옵션에 따라 주문 그리드 하단을 설정한다.
 	//int orderGridBottom = _ShowRemainConfig ? availableHeight - rcGrid.top - ConfigHeight : availableHeight - rcGrid.top;
-	CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
+	//CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
 	// 주문 그리드 위치 및 크기 설정
-	rcGrid.left = 0;
+	//rcGrid.left = 0;
 	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
+	rcGrid.bottom = rc_order_view.Height();
 	const int tick_width = rcTick.Width();
 	rcTick.left = rcGrid.right;
 	rcTick.right = rcTick.left + tick_width;
-	if (order_set_view_.GetSafeHwnd())
-		order_set_view_.MoveWindow(rcGrid);
 
 	if (show_symbol_tick_view_) {
 		symbol_tick_view_.ShowWindow(SW_SHOW);
-		window_size = rcGrid.Width() + rcTick.Width();
+		window_size = symbol_order_view_.get_entire_width() + rcTick.Width();
 		if (symbol_tick_view_.GetSafeHwnd())
 			symbol_tick_view_.MoveWindow(rcTick);
 	}
 	else {
 		symbol_tick_view_.ShowWindow(SW_HIDE);
-		window_size = rcGrid.Width();
+		window_size = symbol_order_view_.get_entire_width();
 	}
 }
 
@@ -324,44 +333,48 @@ CRect DmAccountOrderCenterWindow::GetClientArea(int resourceID)
 void DmAccountOrderCenterWindow::save_control_size()
 {
 	layout_manager_.ParentWnd(this);
-	layout_manager_.AddWindow(_T("주문패널"), IDC_STATIC_ORDER, GetClientArea(IDC_STATIC_ORDER));
-	layout_manager_.AddWindow(_T("틱패널"), IDC_STATIC_QUOTE, GetClientArea(IDC_STATIC_QUOTE));
+	//layout_manager_.AddWindow(_T("주문패널"), IDC_STATIC_ORDER, GetClientArea(IDC_STATIC_ORDER));
+	//layout_manager_.AddWindow(_T("틱패널"), IDC_STATIC_QUOTE, GetClientArea(IDC_STATIC_QUOTE));
+	rcGrid = GetClientArea(IDC_STATIC_ORDER);
+	rcTick = GetClientArea(IDC_STATIC_QUOTE);
 }
 
 void DmAccountOrderCenterWindow::on_resize_event_from_order_view()
 {
 	if (!init_dialog_) return;
-
-	CRect rc_order_view, rc_tick_view,rc_window;
+	CRect rc_order_view, rc_tick_view, rc_window;
 	symbol_order_view_.GetWindowRect(&rc_order_view);
-	GetWindowRect(rc_window);
 
 
 	// 주문그리드 위치를 가져온다.
-	CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
+	//CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
 	// 주문설정 보기 옵션에 따라 주문 그리드 하단을 설정한다.
-	CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
+	//int orderGridBottom = _ShowRemainConfig ? availableHeight - rcGrid.top - ConfigHeight : availableHeight - rcGrid.top;
+	//CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
 	// 주문 그리드 위치 및 크기 설정
 	//rcGrid.left = 0;
 	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
+	rcGrid.bottom = rc_order_view.top + rc_order_view.Height();
 	const int tick_width = rcTick.Width();
 	rcTick.left = rcGrid.right;
 	rcTick.right = rcTick.left + tick_width;
+	symbol_order_view_.Invalidate(TRUE);
+	symbol_order_view_.MoveWindow(rcGrid, TRUE);
+	if (show_symbol_tick_view_) {
+		symbol_tick_view_.ShowWindow(SW_SHOW);
+		window_size = symbol_order_view_.get_entire_width() + rcTick.Width();
+		if (symbol_tick_view_.GetSafeHwnd())
+			symbol_tick_view_.MoveWindow(rcTick);
+	}
+	else {
+		symbol_tick_view_.ShowWindow(SW_HIDE);
+		window_size = symbol_order_view_.get_entire_width();
+	}
 
-	rcGrid.bottom = rc_window.Height();
-	symbol_tick_view_.GetWindowRect(rc_tick_view);
+	//symbol_order_view_.MoveWindow(rcGrid, TRUE);
+	//symbol_order_view_.MoveWindow(rcGrid, TRUE);
 
-	symbol_order_view_.MoveWindow(rcGrid);
-
-	symbol_tick_view_.MoveWindow(rcTick);
-
-	CWnd* parent = GetParent();
-	symbol_order_view_.Invalidate();
-	recal_window_size();
-	if (account_)
-		((DmAccountOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
-	if (fund_)
-		((DmFundOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+	//symbol_order_view_.Invalidate();
 }
 
 void DmAccountOrderCenterWindow::on_resize_event_from_tick_view()
@@ -660,6 +673,20 @@ void DmAccountOrderCenterWindow::request_dm_symbol_master(const std::string symb
 	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
+void DmAccountOrderCenterWindow::reset_order_set()
+{
+	const std::vector<DarkHorse::OrderGridHeaderInfo>& grid_header_vector = symbol_order_view_.grid_header_vector();
+	order_set_.stop_width = grid_header_vector[0].width;
+	order_set_.order_width = grid_header_vector[1].width;
+	order_set_.count_width = grid_header_vector[2].width;
+	order_set_.qty_width = grid_header_vector[3].width;
+	order_set_.quote_width = grid_header_vector[4].width;
+	order_set_.qty_width = grid_header_vector[5].width;
+	order_set_.count_width = grid_header_vector[6].width;
+	order_set_.order_width = grid_header_vector[7].width;
+	order_set_.stop_width = grid_header_vector[8].width;
+}
+
 void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)
 {
 	order_set_ = event;
@@ -668,7 +695,10 @@ void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEven
 	symbol_order_view_.SetAllRowHeight(event.grid_height);
 	
 	symbol_order_view_.reset_col_widths(event);
-	//on_resize_event_from_order_view();
+	recal_window_size();
+	//symbol_order_view_.trigger_resize_event();
+	on_resize_event_from_order_view();
+	trigger_resize_event();
 }
 
 void DmAccountOrderCenterWindow::on_order_set_event(const DarkHorse::OrderSetEvent& event, const bool flag)
@@ -817,12 +847,9 @@ void DmAccountOrderCenterWindow::OnBnClickedCheckShowRealQuote()
 
 	MoveWindow(rc_window);
 	*/
-	recal_window_size();
-	CWnd* parent = GetParent();
-	if (account_)
-		((DmAccountOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
-	if (fund_)
-		((DmFundOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+	symbol_order_view_.reset_window_size();
+	on_resize_event_from_order_view();
+	trigger_resize_event();
 }
 
 
@@ -1003,7 +1030,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSearch()
 	//symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
 	//_SymbolTableDlg->OrderWnd = this;
 	//symbol_table_dialog_->ShowWindow(SW_SHOW);
-
+	reset_order_set();
 	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
 	//_OrderSetDlg->OrderWnd(this);
@@ -1013,6 +1040,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSearch()
 
 void DmAccountOrderCenterWindow::OnBnClickedBtnSet()
 {
+	reset_order_set();
 	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
 	//_OrderSetDlg->OrderWnd(this);

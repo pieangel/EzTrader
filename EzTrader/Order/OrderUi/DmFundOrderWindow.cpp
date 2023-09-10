@@ -614,7 +614,7 @@ void DmFundOrderWindow::OnBnClickedBtnAdd()
 
 	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>();
 	center_wnd->order_window_id(id_);
-	center_wnd->Create(IDD_ORDER_CENTER, this);
+	center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
 	center_wnd->SetFundDialog(this);
 	center_wnd->Fund(_ComboFundMap[_CurrentFundIndex]);

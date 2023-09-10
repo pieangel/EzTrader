@@ -687,9 +687,6 @@ void DarkHorse::SmGrid::CreateGrids()
 		}
 		y += (_RowHeightMap[row] + _RowGridHeight);
 	}
-
-	int i = 0;
-	i = i + 1;
 }
 
 

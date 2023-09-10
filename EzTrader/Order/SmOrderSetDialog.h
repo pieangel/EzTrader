@@ -36,6 +36,7 @@ private:
 	AbAccountOrderCenterWindow* _OrderWnd = nullptr;
 	SmFundOrderCenterWnd* _FundWnd = nullptr;
 	bool stop_as_real_order_{ false };
+	void apply_change();
 public:
 	CBCGPButton check_show_symbol_tick_;
 	CBCGPButton check_align_by_alt_;
@@ -58,6 +59,9 @@ public:
 	afx_msg void OnBnClickedCheckAlignByAlt();
 	afx_msg void OnBnClickedCheckOrderBySpace();
 	afx_msg void OnBnClickedCheckCancelByRightClick();
-	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedCheckStopToReal();
+	afx_msg void OnBnClickedCheckShowOrderCol();
+	afx_msg void OnBnClickedCheckShowStopCol();
+	afx_msg void OnBnClickedCheckShowCountCol();
+	afx_msg void OnBnClickedBtnApply();
 };

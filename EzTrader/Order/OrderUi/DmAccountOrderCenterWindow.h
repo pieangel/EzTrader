@@ -64,10 +64,6 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
-private:
-	//CBCGPGridCtrl m_wndPositionGrid;
-	//CBCGPGridCtrl m_wndOrderGrid;
-
 
 public:
 	void ArrangeCenterValue();
@@ -96,6 +92,9 @@ public:
 	std::string get_symbol_code();
 	int window_size = 0;
 private:
+	CRect rcGrid;
+	CRect rcTick;
+	void trigger_resize_event();
 	void recal_window_size();
 	CRect GetClientArea(int resourceID);
 	DarkHorse::VtLayoutManager layout_manager_;
@@ -153,6 +152,7 @@ private:
 	DarkHorse::OrderSetEvent order_set_;
 	std::string symbol_code_;
 	int order_window_id_{ 0 };
+	void reset_order_set();
 public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }

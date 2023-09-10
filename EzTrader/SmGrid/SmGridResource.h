@@ -44,7 +44,8 @@ struct SmOrderGridResource {
 
 	CBCGPColor SelectedValueColor = RGB(255, 0, 0);
 
-	CBCGPColor GridNormalColor = RGB(0x46, 0x46, 0x4b);
+	CBCGPColor GridNormalColor_black = RGB(0x46, 0x46, 0x4b);
+	CBCGPColor GridNormalColor = RGB(0xff, 0xff, 0xff);
 	CBCGPColor GridNormalAlterColor = RGB(0x64, 0x64, 0x64);
 
 	CBCGPColor SelectedColor = RGB(0xf0, 0x70, 0x00);
