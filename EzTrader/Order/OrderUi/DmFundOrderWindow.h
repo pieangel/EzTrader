@@ -34,8 +34,8 @@ public:
 	void SetAccount();
 	void SetFund();
 	DmFundOrderWindow(CWnd* pParent = nullptr);   // standard constructor
-	DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no);
-	DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no, const nlohmann::json center_wnd_prop);
+	DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& fund_name);
+	DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& fund_name, const nlohmann::json center_wnd_prop);
 	virtual ~DmFundOrderWindow();
 
 	// Dialog Data
@@ -60,7 +60,8 @@ public:
 private:
 	nlohmann::json center_wnd_prop_;
 	size_t center_window_count_{ 0 };
-	std::string account_no_;
+	//std::string account_no_;
+	std::string fund_name_;
 	int id_{0};
 	bool destroyed_{ false };
 	std::shared_ptr<DmAccountOrderLeftWindow> _LeftWnd = nullptr;
@@ -73,7 +74,9 @@ private:
 	//std::map<int, std::shared_ptr<DarkHorse::SmAccount>> _ComboFundMap;
 	std::map<int, std::shared_ptr<DarkHorse::SmFund>> _ComboFundMap;
 	// key : account no, value : combo index.
-	std::map<std::string, int> _AccountComboMap;
+	//std::map<std::string, int> _AccountComboMap;
+	// key : fund name : value : combo index
+	std::map<std::string, int> _FundComboMap;
 	int _LineGap = 4;
 	bool _Init = false;
 	void SetFundForOrderWnd();

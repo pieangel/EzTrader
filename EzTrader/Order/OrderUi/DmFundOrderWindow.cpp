@@ -71,7 +71,7 @@ void DmFundOrderWindow::SetFund()
 		//account_info.append(fund->No());
 		const int index = _ComboFund.AddString(account_info.c_str());
 		_ComboFundMap[index] = fund;
-
+		_FundComboMap[fund->Name()] = index;
 	}
 
 	if (!_ComboFundMap.empty()) {
@@ -79,6 +79,27 @@ void DmFundOrderWindow::SetFund()
 		_ComboFund.SetCurSel(_CurrentFundIndex);
 		SetFundInfo(_ComboFundMap[_CurrentFundIndex]);
 		//_LeftWnd->OnOrderChanged(0, 0);
+	}
+
+	if (!_ComboFundMap.empty()) {
+		// if account_no_ is empty, set the first account as default
+		if (fund_name_.empty())
+			_CurrentFundIndex = 0;
+		else {
+			// if account_no_ is not empty, set the account_no_ as default
+			auto it = _FundComboMap.find(fund_name_);
+			if (it != _FundComboMap.end()) {
+				_CurrentFundIndex = it->second;
+			}
+			else {
+				_CurrentFundIndex = 0;
+			}
+		}
+		_ComboFund.SetCurSel(_CurrentFundIndex);
+		SetFundInfo(_ComboFundMap[_CurrentFundIndex]);
+		_LeftWnd->OnOrderChanged(0, 0);
+
+
 	}
 }
 
@@ -96,8 +117,8 @@ DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent /*=nullptr*/)
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmFundOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
-DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no)
-	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent), center_window_count_(center_window_count), account_no_(account_no)
+DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& fund_name)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent), center_window_count_(center_window_count), fund_name_(fund_name)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
@@ -106,8 +127,8 @@ DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent, const size_t center_window_c
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmFundOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
-DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& account_no, const nlohmann::json center_wnd_prop)
-	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent), center_window_count_(center_window_count), account_no_(account_no), center_wnd_prop_(center_wnd_prop)
+DmFundOrderWindow::DmFundOrderWindow(CWnd* pParent, const size_t center_window_count, std::string& fund_name, const nlohmann::json center_wnd_prop)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_MAIN, pParent), center_window_count_(center_window_count), fund_name_(fund_name), center_wnd_prop_(center_wnd_prop)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();

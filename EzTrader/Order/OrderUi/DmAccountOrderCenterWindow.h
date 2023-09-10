@@ -35,7 +35,7 @@ namespace DarkHorse {
 	class SmFund;
 }
 
-
+class HdSymbolSelecter;
 class SmOrderSetDialog;
 class SmSymbolTableDialog;
 class DmAccountOrderWindow;
@@ -92,6 +92,7 @@ public:
 	std::string get_symbol_code();
 	int window_size = 0;
 private:
+	std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
 	CRect rcGrid;
 	CRect rcTick;
 	void trigger_resize_event();

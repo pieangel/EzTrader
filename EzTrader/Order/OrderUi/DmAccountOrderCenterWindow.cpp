@@ -887,8 +887,13 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSymbol()
 // 	symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
 // 	symbol_table_dialog_->order_window_id(order_window_id_);
 // 	symbol_table_dialog_->ShowWindow(SW_SHOW);
-	HdSymbolSelecter symbol_selecter;
-	symbol_selecter.DoModal();
+	//HdSymbolSelecter symbol_selecter;
+	//symbol_selecter.DoModal();
+
+	_SymbolSelecter = std::make_shared<HdSymbolSelecter>();
+	_SymbolSelecter->set_source_window_id(id_);
+	_SymbolSelecter->Create(IDD_SYMBOL_SELECTER_HD, this);
+	_SymbolSelecter->ShowWindow(SW_SHOW);
 }
 
 LRESULT DmAccountOrderCenterWindow::OnUmSymbolSelected(WPARAM wParam, LPARAM lParam)

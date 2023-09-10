@@ -1602,7 +1602,16 @@ namespace DarkHorse {
 				auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 				auto account = mainApp.AcntMgr()->FindAccount(account_no);
 				auto fund = mainApp.FundMgr()->FindFund(fund_name);
-				if (!account || !symbol || !fund) continue;
+				//if (!account || !symbol || !fund) continue;
+				if (order_type == OrderType::MainAccount || order_type == OrderType::SubAccount) {
+					if (!account) continue;
+				}
+				else if (order_type == OrderType::Fund) {
+					if (!fund) continue;
+				}
+				if (!symbol) {
+					continue;
+				}
 				auto out_system = mainApp.out_system_manager()->create_out_system(
 					name,
 					seung_su,
@@ -1663,7 +1672,7 @@ namespace DarkHorse {
 
 		// Restore data from jsonData
 		for (const auto& account_wnd_json : jsonData) {
-			std::string accountNo = account_wnd_json["account_no"].get<std::string>();
+			std::string fund_name = account_wnd_json["fund_name"].get<std::string>();
 			size_t centerWindowCount = account_wnd_json["center_window_count"].get<int>();
 
 			int x = account_wnd_json["x"].get<int>();
@@ -1695,7 +1704,7 @@ namespace DarkHorse {
 				bool show_count_column = centerWindowJson["show_count_column"].get<bool>();
 			}
 
-			DmFundOrderWindow* account_order_window = new DmFundOrderWindow(parent_window, centerWindowCount, accountNo, centerWindowMapJson);
+			DmFundOrderWindow* account_order_window = new DmFundOrderWindow(parent_window, centerWindowCount, fund_name, centerWindowMapJson);
 			account_order_window->Create(IDD_DM_FUND_ORDER_MAIN, parent_window);
 			map_to_restore[account_order_window->GetSafeHwnd()] = account_order_window;
 			account_order_window->MoveWindow(x, y, width, height, TRUE);
