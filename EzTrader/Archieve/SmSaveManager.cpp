@@ -33,6 +33,7 @@
 #include "../Dialog/MiniJangoDialog.h"
 #include "../resource.h"
 #include "../Order/OrderUi/DmAccountOrderWindow.h"
+#include "../Order/OrderUi/DmFundOrderWindow.h"
 #include "../Order/OrderUi/DmAccountOrderCenterWindow.h"
 #include "../Account/SmAccountManager.h"
 #include "../Account/SmAccount.h"
@@ -41,6 +42,8 @@
 #include "../OutSystem/SmOutSystemManager.h"
 #include "../OutSystem/SmOutSystem.h"
 #include "../Util/SmUtil.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Symbol/SmSymbolManager.h"
 
 #include <iostream>
 #include <filesystem>
@@ -957,7 +960,7 @@ namespace DarkHorse {
 		file << dialog_data.dump(4);
 		file.close();
 	}
-
+	/*
 	void SmSaveManager::restore_dm_account_order_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore)
 	{
 
@@ -992,6 +995,7 @@ namespace DarkHorse {
 			account_order_window->ShowWindow(SW_SHOW);
 		}
 	}
+	*/
 
 	std::string SmSaveManager::find_latestfile_with_prefix(const std::string& directory, const std::string& prefix) {
 		std::string latestFile;
@@ -1120,7 +1124,9 @@ namespace DarkHorse {
 		appPath.append(_T("\\user\\"));
 		appPath.append(id);
 
-		std::string latest_file = find_latestfile_with_prefix(appPath, "dm_account_order_windows_");
+		std::string full_file_name = filename;
+		full_file_name.append("_");
+		std::string latest_file = find_latestfile_with_prefix(appPath, full_file_name);
 		if (latest_file.empty()) return;
 		appPath.append("\\");
 		appPath.append(latest_file);
@@ -1186,7 +1192,7 @@ namespace DarkHorse {
 		}
 	}
 
-	void SmSaveManager::save_sub_account(const std::string& filename)
+	void SmSaveManager::save_account(const std::string& filename)
 	{
 		std::string id = mainApp.LoginMgr()->id();
 		// 아이디가 없으면 그냥 반환한다.
@@ -1370,17 +1376,428 @@ namespace DarkHorse {
 
 	void SmSaveManager::save_fund(const std::string& filename)
 	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
 
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+
+		appPath.append(filename);
+
+		nlohmann::json jsonData;
+
+		auto func_map = mainApp.FundMgr()->GetFundMap();
+		for (auto it = func_map.begin(); it != func_map.end(); ++it) {
+			auto fund = it->second;
+			nlohmann::json fund_json;
+
+			fund_json["name"] = SmUtil::MultiByteToUtf8(fund->Name());
+			fund_json["fund_type"] = fund->fund_type();
+		
+
+			auto sub_accounts = fund->GetAccountVector();
+			nlohmann::json sub_account_vector_json;
+			for (size_t i = 0; i < sub_accounts.size(); i++) {
+				auto sub_account = sub_accounts[i];
+				nlohmann::json sub_account_json;
+				sub_account_json["account_no"] = sub_account->No();
+				sub_account_vector_json.push_back(sub_account_json);
+			}
+			fund_json["sub_accounts"] = sub_account_vector_json;
+
+			jsonData[fund->Name()] = fund_json;
+		}
+		std::ofstream file(appPath);
+		file << jsonData.dump(4);
+		file.close();
 	}
 
 	void SmSaveManager::save_out_system(const std::string& filename)
 	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
 
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+
+		appPath.append(filename);
+
+		nlohmann::json jsonData;
+		auto out_system_vec = mainApp.out_system_manager()->get_out_system_vector();
+		for (auto it = out_system_vec.begin(); it != out_system_vec.end(); ++it) {
+			auto out_system = *it;
+			nlohmann::json out_system_json;
+
+			out_system_json["name"] = SmUtil::MultiByteToUtf8(out_system->name());
+			out_system_json["order_type"] = (int)out_system->order_type();
+			out_system_json["seung_su"] = out_system->seung_su();
+			out_system_json["account_no"] = out_system->account() ? out_system->account()->No() : "";
+			out_system_json["symbol_code"] = out_system->symbol() ? out_system->symbol()->SymbolCode() : "";
+			out_system_json["fund_name"] = out_system->fund() ? SmUtil::MultiByteToUtf8(out_system->fund()->Name()) : "";
+			jsonData[std::to_string(out_system->id())] = out_system_json;
+		}
+		std::ofstream file(appPath);
+		file << jsonData.dump(4);
+		file.close();
 	}
 
-	void SmSaveManager::save_fund_order_windows(const std::string& filename, const std::map<HWND, DmFundOrderWindow*>& map_to_save)
+	void SmSaveManager::restore_fund(const std::string& filename)
 	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
 
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+
+		appPath.append("\\");
+		appPath.append(filename);
+		std::ifstream file(appPath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file for restore: " << filename << std::endl;
+			return;
+		}
+
+		nlohmann::json jsonData;
+		try {
+			// Parse the JSON data from the file
+			file >> jsonData;
+		}
+		catch (const nlohmann::json::parse_error& e) {
+			std::cerr << "Failed to parse JSON file: " << e.what() << std::endl;
+			file.close();
+			return;
+		}
+		file.close();
+
+		try {
+			// Process the JSON data and reconstruct account information
+			for (json::iterator it = jsonData.begin(); it != jsonData.end(); ++it) {
+				json fundData = it.value();
+
+				// Extract and process account-related information
+				const std::string name = SmUtil::Utf8ToMultiByte(fundData["name"]);
+				auto fund = mainApp.FundMgr()->FindAddFund(name);
+
+				std::string fund_type = fundData["fund_type"];
+				fund->fund_type(fund_type);
+				// Process sub-accounts if available
+				if (fundData.find("sub_accounts") != fundData.end()) {
+					json subAccounts = fundData["sub_accounts"];
+					for (json::iterator subIt = subAccounts.begin(); subIt != subAccounts.end(); ++subIt) {
+						json subAccountData = *subIt;
+						std::string t_account_no = subAccountData["account_no"];
+						auto account = mainApp.AcntMgr()->FindAccount(t_account_no);
+						if (!account)continue;
+						fund->AddAccount(account);
+					}
+				}
+
+				// Now you have the account information, you can use it as needed.
+				// You can create objects or data structures to store this information.
+				// For simplicity, we'll just print it here.
+				std::cout << "fund name: " << name << std::endl;
+			}
+		}
+		catch (const json::parse_error& e) {
+			std::cerr << "Failed to parse JSON data: " << e.what() << std::endl;
+		}
+	}
+
+	void SmSaveManager::restore_out_system(const std::string& filename)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+
+		appPath.append("\\");
+		appPath.append(filename);
+		std::ifstream file(appPath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file for restore: " << filename << std::endl;
+			return;
+		}
+
+		nlohmann::json jsonData;
+		try {
+			// Parse the JSON data from the file
+			file >> jsonData;
+		}
+		catch (const nlohmann::json::parse_error& e) {
+			std::cerr << "Failed to parse JSON file: " << e.what() << std::endl;
+			file.close();
+			return;
+		}
+		file.close();
+
+		try {
+			// Process the JSON data and reconstruct account information
+			for (json::iterator it = jsonData.begin(); it != jsonData.end(); ++it) {
+				std::string out_system_id = it.key();
+				json out_system_data = it.value();
+
+				// Extract and process account-related information
+				const std::string name = SmUtil::Utf8ToMultiByte(out_system_data["name"]);
+				const int t_order_type = out_system_data["order_type"];
+				const int seung_su = out_system_data["seung_su"];
+				DarkHorse::OrderType order_type = (DarkHorse::OrderType)t_order_type;
+				const std::string account_no = out_system_data["account_no"];
+				const std::string symbol_code = out_system_data["symbol_code"];
+				const std::string fund_name = SmUtil::Utf8ToMultiByte(out_system_data["fund_name"]);
+				auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+				auto account = mainApp.AcntMgr()->FindAccount(account_no);
+				auto fund = mainApp.FundMgr()->FindFund(fund_name);
+				if (!account || !symbol || !fund) continue;
+				auto out_system = mainApp.out_system_manager()->create_out_system(
+					name,
+					seung_su,
+					order_type,
+					account,
+					fund,
+					symbol
+				);
+
+				// Now you have the account information, you can use it as needed.
+				// You can create objects or data structures to store this information.
+				// For simplicity, we'll just print it here.
+				std::cout << "out system id: " << out_system->id() << std::endl;
+			}
+		}
+		catch (const json::parse_error& e) {
+			std::cerr << "Failed to parse JSON data: " << e.what() << std::endl;
+		}
+	}
+
+	void SmSaveManager::restore_dm_fund_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmFundOrderWindow*>& map_to_restore)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+
+		std::string full_file_name = filename;
+		full_file_name.append("_");
+		std::string latest_file = find_latestfile_with_prefix(appPath, full_file_name);
+		if (latest_file.empty()) return;
+		appPath.append("\\");
+		appPath.append(latest_file);
+		std::ifstream file(appPath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file for restore: " << latest_file << std::endl;
+			return;
+		}
+
+		nlohmann::json jsonData;
+		try {
+			file >> jsonData;
+		}
+		catch (const nlohmann::json::parse_error& e) {
+			std::cerr << "Failed to parse JSON file: " << e.what() << std::endl;
+			file.close();
+			return;
+		}
+		file.close();
+
+		// Clear existing data in map_to_restore
+		map_to_restore.clear();
+
+		// Restore data from jsonData
+		for (const auto& account_wnd_json : jsonData) {
+			std::string accountNo = account_wnd_json["account_no"].get<std::string>();
+			size_t centerWindowCount = account_wnd_json["center_window_count"].get<int>();
+
+			int x = account_wnd_json["x"].get<int>();
+			int y = account_wnd_json["y"].get<int>();
+			int width = account_wnd_json["width"].get<int>();
+			int height = account_wnd_json["height"].get<int>();
+
+			const nlohmann::json& centerWindowMapJson = account_wnd_json["center_window_map"];
+			for (const auto& centerWindowJson : centerWindowMapJson) {
+				std::string symbolCode = centerWindowJson["symbol_code"].get<std::string>();
+				int windowId = centerWindowJson["window_id"].get<int>();
+				std::string message = centerWindowJson["message"].get<std::string>();
+
+				int grid_height = centerWindowJson["grid_height"].get<int>();
+				int stop_width = centerWindowJson["stop_width"].get<int>();
+				int order_width = centerWindowJson["order_width"].get<int>();
+				int count_width = centerWindowJson["count_width"].get<int>();
+				int qty_width = centerWindowJson["qty_width"].get<int>();
+				int quote_width = centerWindowJson["quote_width"].get<int>();
+				bool stop_as_real_order = centerWindowJson["stop_as_real_order"].get<bool>();
+
+				bool show_symbol_tick = centerWindowJson["show_symbol_tick"].get<bool>();
+				bool show_bar_color = centerWindowJson["show_bar_color"].get<bool>();
+				bool align_by_alt = centerWindowJson["align_by_alt"].get<bool>();
+				bool cancel_by_right_click = centerWindowJson["cancel_by_right_click"].get<bool>();
+				bool order_by_space = centerWindowJson["order_by_space"].get<bool>();
+				bool show_order_column = centerWindowJson["show_order_column"].get<bool>();
+				bool show_stop_column = centerWindowJson["show_stop_column"].get<bool>();
+				bool show_count_column = centerWindowJson["show_count_column"].get<bool>();
+			}
+
+			DmFundOrderWindow* account_order_window = new DmFundOrderWindow(parent_window, centerWindowCount, accountNo, centerWindowMapJson);
+			account_order_window->Create(IDD_DM_FUND_ORDER_MAIN, parent_window);
+			map_to_restore[account_order_window->GetSafeHwnd()] = account_order_window;
+			account_order_window->MoveWindow(x, y, width, height, TRUE);
+			account_order_window->ShowWindow(SW_SHOW);
+		}
+	}
+
+
+	void SmSaveManager::save_dm_fund_order_windows(const std::string& filename, const std::map<HWND, DmFundOrderWindow*>& map_to_save)
+	{
+		if (map_to_save.empty()) return;
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+
+		std::string full_file_name = filename;
+		full_file_name.append("_");
+		full_file_name.append(VtStringUtil::getTimeStr());
+		full_file_name.append(".json");
+
+		appPath.append(full_file_name);
+
+		nlohmann::json jsonData;
+
+		// Convert order_window_map_ to JSON
+		for (const auto& [wnd_handle, orderWindow] : map_to_save) {
+			nlohmann::json account_wnd_json;
+			RECT rect;
+			GetWindowRect(wnd_handle, &rect);
+
+			account_wnd_json["x"] = rect.left;
+			account_wnd_json["y"] = rect.top;
+			account_wnd_json["width"] = rect.right - rect.left;
+			account_wnd_json["height"] = rect.bottom - rect.top;
+
+			account_wnd_json["fund_name"] = orderWindow->get_fund_name();
+			account_wnd_json["center_window_count"] = orderWindow->get_center_window_count();
+
+			const std::map<int, std::shared_ptr<DmAccountOrderCenterWindow>>& center_window_map = orderWindow->get_center_window_map();
+			// Convert center_window_map_ to JSON
+			nlohmann::json centerWindowMapJson;
+			for (const auto& [windowId, centerWindow] : center_window_map) {
+				nlohmann::json centerWindowJson;
+				centerWindowJson["symbol_code"] = centerWindow->get_symbol_code();
+				const auto& order_set = centerWindow->get_order_set();
+				// Convert order_set_event_ to JSON
+				centerWindowJson["window_id"] = order_set.window_id;
+				centerWindowJson["message"] = order_set.message;
+				centerWindowJson["grid_height"] = order_set.grid_height;
+				centerWindowJson["stop_width"] = order_set.stop_width;
+				centerWindowJson["order_width"] = order_set.order_width;
+				centerWindowJson["count_width"] = order_set.count_width;
+				centerWindowJson["qty_width"] = order_set.qty_width;
+				centerWindowJson["quote_width"] = order_set.quote_width;
+				centerWindowJson["stop_as_real_order"] = order_set.stop_as_real_order;
+				centerWindowJson["show_symbol_tick"] = order_set.show_symbol_tick;
+				centerWindowJson["show_bar_color"] = order_set.show_bar_color;
+				centerWindowJson["align_by_alt"] = order_set.align_by_alt;
+				centerWindowJson["cancel_by_right_click"] = order_set.cancel_by_right_click;
+				centerWindowJson["order_by_space"] = order_set.order_by_space;
+				centerWindowJson["show_order_column"] = order_set.show_order_column;
+				centerWindowJson["show_stop_column"] = order_set.show_stop_column;
+				centerWindowJson["show_count_column"] = order_set.show_count_column;
+
+				centerWindowMapJson.push_back(centerWindowJson);
+			}
+
+			account_wnd_json["center_window_map"] = centerWindowMapJson;
+
+			jsonData.push_back(account_wnd_json);
+		}
+
+
+
+		std::ofstream file(appPath);
+		file << jsonData.dump(4);
+		file.close();
 	}
 
 }

@@ -43,6 +43,8 @@ public:
 	enum { IDD = IDD_DM_ACNT_ORDDER_MAIN };
 #endif
 
+	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -86,7 +88,7 @@ private:
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
 public:
 	//std::shared_ptr<DarkHorse::SmAccount> get_account() { return _Account; }
-	//std::string get_account_no();
+	std::string get_fund_name();
 	size_t get_center_window_count() { return center_window_map_.size(); }
 	void on_symbol_view_event(const std::string& account_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);

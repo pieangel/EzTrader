@@ -565,6 +565,12 @@ void DmFundOrderWindow::SetFundInfo(std::shared_ptr<DarkHorse::SmFund> fund)
 	_RightWnd->SetFund(_Fund);
 }
 
+std::string DmFundOrderWindow::get_fund_name()
+{
+	if (_Fund) return _Fund->Name();
+	else return "";
+}
+
 void DmFundOrderWindow::on_symbol_view_event(const std::string& fund_type, int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
 {
 	if (!_Fund || _Fund->fund_type() != fund_type) return;

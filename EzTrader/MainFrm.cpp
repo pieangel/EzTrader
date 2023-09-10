@@ -859,11 +859,17 @@ void CMainFrame::OnClose()
 		mainApp.QuoteMgr()->StopProcess();
 
 		mainApp.SaveMgr()->WriteSettings();
+
+		mainApp.SaveMgr()->save_account("account_list.json");
+		mainApp.SaveMgr()->save_fund("fund_list.json");
+		mainApp.SaveMgr()->save_out_system("out_system_list.json");
+
 		mainApp.SaveMgr()->save_dm_account_order_windows("dm_account_order_windows", dm_account_order_wnd_map_);
+		mainApp.SaveMgr()->save_dm_fund_order_windows("dm_fund_order_windows", dm_fund_order_wnd_map_);
 		mainApp.SaveMgr()->save_dm_mini_jango_windows("dm_mini_jango_windows.json", mini_jango_wnd_map_);
 		mainApp.SaveMgr()->save_total_asset_windows("dm_total_asset_windows.json", total_asset_profit_loss_map_);
 
-		mainApp.SaveMgr()->save_sub_account("account_list.json");
+		
 
 		mainApp.TaskReqMgr()->StopProcess();
 
@@ -891,7 +897,10 @@ void CMainFrame::StartLoad()
 	//mainApp.SaveMgr()->ReadSettings();
 	mainApp.AcntMgr()->register_accounts();
 	mainApp.SaveMgr()->restore_account("account_list.json");
+	mainApp.SaveMgr()->restore_fund("fund_list.json");
+	mainApp.SaveMgr()->restore_out_system("out_system_list.json");
 	mainApp.SaveMgr()->restore_dm_account_order_windows(this, "dm_account_order_windows", dm_account_order_wnd_map_);
+	mainApp.SaveMgr()->restore_dm_fund_order_windows(this, "dm_fund_order_windows", dm_fund_order_wnd_map_);
 	mainApp.SaveMgr()->restore_dm_mini_jango_windows_from_json(this, "dm_mini_jango_windows.json", mini_jango_wnd_map_);
 	mainApp.SaveMgr()->restore_total_asset_windows_from_json(this, "dm_total_asset_windows.json", total_asset_profit_loss_map_);
 	//mainApp.SystemMgr()->AddSystem("KillNasdaq");
