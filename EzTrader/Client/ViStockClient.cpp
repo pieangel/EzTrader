@@ -449,7 +449,8 @@ void DarkHorse::ViStockClient::OnAccountReceived(nlohmann::json&& arg)
 			account->No(arg["account_no"]);
 			account->Name(arg["account_name"]);
 			account->Type(account_type);
-			account->make_default_sub_account();
+			account->is_server_side(true);
+			//account->make_default_sub_account();
 			mainApp.AcntMgr()->AddAccount(account);
 		}
 	}

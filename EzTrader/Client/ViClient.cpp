@@ -3401,6 +3401,7 @@ void DarkHorse::ViClient::on_account_list(const CString& sTrCode, const LONG& nR
 		account_info["account_no"] = static_cast<const char*>(strAcctNo.Trim());
 		account_info["account_name"] = static_cast<const char*>(strAcctNm.Trim());
 		account_info["account_type"] = static_cast<const char*>(strAcctGb.Trim());
+		account_info["is_server_side"] = true;
 		if (auto wp = _Client.lock()) {
 			wp->OnAccountReceived(std::move(account_info));
 		}

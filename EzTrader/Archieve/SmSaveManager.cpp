@@ -34,6 +34,13 @@
 #include "../resource.h"
 #include "../Order/OrderUi/DmAccountOrderWindow.h"
 #include "../Order/OrderUi/DmAccountOrderCenterWindow.h"
+#include "../Account/SmAccountManager.h"
+#include "../Account/SmAccount.h"
+#include "../Fund/SmFundManager.h"
+#include "../Fund/SmFund.h"
+#include "../OutSystem/SmOutSystemManager.h"
+#include "../OutSystem/SmOutSystem.h"
+#include "../Util/SmUtil.h"
 
 #include <iostream>
 #include <filesystem>
@@ -1179,5 +1186,201 @@ namespace DarkHorse {
 		}
 	}
 
+	void SmSaveManager::save_sub_account(const std::string& filename)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+
+		std::string full_file_name = filename;
+		//full_file_name.append("_");
+		//full_file_name.append(VtStringUtil::getTimeStr());
+		//full_file_name.append(".json");
+
+		appPath.append(full_file_name);
+
+		nlohmann::json jsonData;
+
+		std::vector<std::shared_ptr<DarkHorse::SmAccount>> main_account_vector;
+		mainApp.AcntMgr()->get_main_account_vector(main_account_vector);
+		for (auto it = main_account_vector.begin(); it != main_account_vector.end(); ++it) {
+			auto account = *it;
+			nlohmann::json account_json;
+
+			account_json["name"] = SmUtil::MultiByteToUtf8(account->Name());
+			account_json["account_no"] = account->No();
+			account_json["account_type"] = account->Type();
+			account_json["used_for_fund"] = account->UsedForFund();
+			account_json["seung_su"] = account->SeungSu();
+			account_json["ratio"] = account->Ratio();
+			account_json["is_sub_account"] = account->is_subaccount();
+			account_json["fund_name"] = account->fund_name();
+			account_json["parent_account_no"] = "";
+
+			auto sub_accounts = account->get_sub_accounts();
+			nlohmann::json sub_account_vector_json;
+			for (size_t i = 0; i < sub_accounts.size(); i++) {
+				auto sub_account = sub_accounts[i];
+				nlohmann::json sub_account_json;
+				sub_account_json["name"] = SmUtil::MultiByteToUtf8(sub_account->Name());
+				sub_account_json["account_no"] = sub_account->No();
+				sub_account_json["account_type"] = sub_account->Type();
+				sub_account_json["used_for_fund"] = sub_account->UsedForFund();
+				sub_account_json["seung_su"] = sub_account->SeungSu();
+				sub_account_json["ratio"] = sub_account->Ratio();
+				sub_account_json["is_sub_account"] = sub_account->is_subaccount();
+				sub_account_json["fund_name"] = sub_account->fund_name();
+				sub_account_json["parent_account_no"] = account->No();
+				sub_account_vector_json.push_back(sub_account_json);
+			}
+			account_json["sub_accounts"] = sub_account_vector_json;
+			
+			jsonData[account->No()] = account_json;
+		}
+		std::ofstream file(appPath);
+		file << jsonData.dump(4);
+		file.close();
+	}
+
+
+	// Define a function to restore account information from a JSON file
+	void SmSaveManager::restore_account(const std::string& filename) {
+
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+
+		appPath.append("\\");
+		appPath.append(filename);
+		std::ifstream file(appPath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file for restore: " << filename << std::endl;
+			return;
+		}
+
+		nlohmann::json jsonData;
+		try {
+			// Parse the JSON data from the file
+			file >> jsonData;
+		}
+		catch (const nlohmann::json::parse_error& e) {
+			std::cerr << "Failed to parse JSON file: " << e.what() << std::endl;
+			file.close();
+			return;
+		}
+		file.close();
+
+		try {
+			// Process the JSON data and reconstruct account information
+			for (json::iterator it = jsonData.begin(); it != jsonData.end(); ++it) {
+				std::string accountNo = it.key();
+				json accountData = it.value();
+
+				// Extract and process account-related information
+				std::string account_no = accountData["account_no"];
+				auto account = mainApp.AcntMgr()->find_main_account(account_no);
+				// If the account does not exist in the list of server accounts, skip it.
+				if (!account) continue;
+
+				std::string name = SmUtil::Utf8ToMultiByte(accountData["name"]);
+				std::string account_type = accountData["account_type"];
+				bool used_for_fund = accountData["used_for_fund"];
+				int seung_su = accountData["seung_su"];
+				double ratio = accountData["ratio"];
+				bool is_sub_account = accountData["is_sub_account"];
+				std::string fund_name = accountData["fund_name"];
+				std::string parent_account_no = accountData["parent_account_no"];
+
+				// Process sub-accounts if available
+				if (accountData.find("sub_accounts") != accountData.end()) {
+					json subAccounts = accountData["sub_accounts"];
+					for (json::iterator subIt = subAccounts.begin(); subIt != subAccounts.end(); ++subIt) {
+						json subAccountData = *subIt;
+						std::string t_account_no = subAccountData["account_no"];
+						std::string t_name = SmUtil::Utf8ToMultiByte(subAccountData["name"]);
+						std::string t_account_type = subAccountData["account_type"];
+						bool t_used_for_fund = subAccountData["used_for_fund"];
+						int t_seung_su = subAccountData["seung_su"];
+						double t_ratio = subAccountData["ratio"];
+						bool t_is_sub_account = subAccountData["is_sub_account"];
+						std::string t_fund_name = subAccountData["fund_name"];
+						std::string t_parent_account_no = subAccountData["parent_account_no"];
+
+						if (t_parent_account_no != account_no) continue;
+
+						auto sub_account = account->CreateSubAccount(
+							t_account_no, 
+							t_name, 
+							account->id(),
+							t_account_type
+						);
+
+						sub_account->SeungSu(t_seung_su);
+						sub_account->Ratio(t_ratio);
+						sub_account->is_subaccount(t_is_sub_account);
+						sub_account->fund_name(t_fund_name);
+						sub_account->UsedForFund(t_used_for_fund);
+					}
+				}
+
+				// Now you have the account information, you can use it as needed.
+				// You can create objects or data structures to store this information.
+				// For simplicity, we'll just print it here.
+				std::cout << "Account No: " << accountNo << std::endl;
+				std::cout << "Name: " << name << std::endl;
+				// create some default sub accounts for the account that has no sub accounts. 
+				account->make_default_sub_account();
+			}
+		}
+		catch (const json::parse_error& e) {
+			std::cerr << "Failed to parse JSON data: " << e.what() << std::endl;
+		}
+	}
+
+	void SmSaveManager::save_fund(const std::string& filename)
+	{
+
+	}
+
+	void SmSaveManager::save_out_system(const std::string& filename)
+	{
+
+	}
+
+	void SmSaveManager::save_fund_order_windows(const std::string& filename, const std::map<HWND, DmFundOrderWindow*>& map_to_save)
+	{
+
+	}
 
 }

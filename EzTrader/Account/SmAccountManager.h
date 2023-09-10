@@ -43,6 +43,7 @@ namespace DarkHorse {
 		std::string get_password(const std::string& account_no);
 		std::string get_account_no(const std::string& account_no);
 		std::shared_ptr<SmAccount> get_parent_account(const std::string& account_no);
+		std::shared_ptr<SmAccount> find_main_account(const std::string& account_no);
 	private:
 		
 		/// <summary>

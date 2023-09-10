@@ -195,4 +195,15 @@ namespace DarkHorse {
 		return nullptr;
 	}
 
+	std::shared_ptr<DarkHorse::SmAccount> SmAccountManager::find_main_account(const std::string& account_no)
+	{
+		auto found = _AccountMap.find(account_no);
+		if (found == _AccountMap.end()) return nullptr;
+		if (found->second->is_subaccount() || !found->second->is_server_side()) {
+			return nullptr;
+		}
+		else
+			return found->second;
+	}
+
 }

@@ -20,6 +20,71 @@ namespace DarkHorse {
 
 	class SmUtil {
 	public:
+
+		static std::string Utf8ToMultiByte(std::string utf8_str)
+		{
+			std::string resultString = "";
+			char* pszIn = new char[utf8_str.length() + 1];
+			strncpy_s(pszIn, utf8_str.length() + 1, utf8_str.c_str(), utf8_str.length());
+			int nLenOfUni = 0, nLenOfANSI = 0;
+			wchar_t* uni_wchar = NULL;
+			char* pszOut = NULL;
+			// 1. utf8 Length 
+			if ((nLenOfUni = MultiByteToWideChar(CP_UTF8, 0, pszIn, (int)strlen(pszIn), NULL, 0)) <= 0) return resultString;
+			uni_wchar = new wchar_t[nLenOfUni + 1];
+			memset(uni_wchar, 0x00, sizeof(wchar_t) * (nLenOfUni + 1));
+			// 2. utf8 --> unicode 
+			nLenOfUni = MultiByteToWideChar(CP_UTF8, 0, pszIn, (int)strlen(pszIn), uni_wchar, nLenOfUni);
+			// 3. ANSI(multibyte) Length 
+			if ((nLenOfANSI = WideCharToMultiByte(CP_ACP, 0, uni_wchar, nLenOfUni, NULL, 0, NULL, NULL)) <= 0)
+			{
+				delete[] uni_wchar;
+				return resultString;
+			}
+			pszOut = new char[nLenOfANSI + 1];
+			memset(pszOut, 0x00, sizeof(char) * (nLenOfANSI + 1));
+			// 4. unicode --> ANSI(multibyte) 
+			nLenOfANSI = WideCharToMultiByte(CP_ACP, 0, uni_wchar, nLenOfUni, pszOut, nLenOfANSI, NULL, NULL);
+			pszOut[nLenOfANSI] = 0;
+			resultString = pszOut;
+			delete[] pszIn;
+			delete[] uni_wchar;
+			delete[] pszOut;
+			return resultString;
+		}
+
+		static std::string MultiByteToUtf8(std::string multibyte_str)
+		{
+			char* pszIn = new char[multibyte_str.length() + 1];
+			strncpy_s(pszIn, multibyte_str.length() + 1, multibyte_str.c_str(), multibyte_str.length());
+			std::string resultString = "";
+			int nLenOfUni = 0, nLenOfUTF = 0;
+			wchar_t* uni_wchar = NULL;
+			char* pszOut = NULL;
+			// 1. ANSI(multibyte) Length 
+			if ((nLenOfUni = MultiByteToWideChar(CP_ACP, 0, pszIn, (int)strlen(pszIn), NULL, 0)) <= 0) return resultString;
+			uni_wchar = new wchar_t[nLenOfUni + 1];
+			memset(uni_wchar, 0x00, sizeof(wchar_t) * (nLenOfUni + 1));
+			// 2. ANSI(multibyte) ---> unicode 
+			nLenOfUni = MultiByteToWideChar(CP_ACP, 0, pszIn, (int)strlen(pszIn), uni_wchar, nLenOfUni);
+			// 3. utf8 Length 
+			if ((nLenOfUTF = WideCharToMultiByte(CP_UTF8, 0, uni_wchar, nLenOfUni, NULL, 0, NULL, NULL)) <= 0)
+			{
+				delete[] uni_wchar;
+				return resultString;
+			}
+			pszOut = new char[nLenOfUTF + 1];
+			memset(pszOut, 0, sizeof(char) * (nLenOfUTF + 1));
+			// 4. unicode ---> utf8 
+			nLenOfUTF = WideCharToMultiByte(CP_UTF8, 0, uni_wchar, nLenOfUni, pszOut, nLenOfUTF, NULL, NULL);
+			pszOut[nLenOfUTF] = 0;
+			resultString = pszOut;
+			delete[] pszIn;
+			delete[] uni_wchar;
+			delete[] pszOut;
+			return resultString;
+		}
+
 		static void insert_decimal(std::string& value, const int decimal);
 		static std::vector<int> IntToDate(const int& date);
 		static std::vector<int> IntToTime(const int& time);

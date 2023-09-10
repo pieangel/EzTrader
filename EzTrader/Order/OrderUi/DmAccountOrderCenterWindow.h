@@ -141,7 +141,7 @@ private:
 	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
 	//CExtStatusControlBar m_bar;
 	bool init_dialog_ = false;
-	bool show_symbol_tick_view_ = true;
+	bool show_symbol_tick_view_ = false;
 	std::shared_ptr< SmSymbolTableDialog> symbol_table_dialog_ = nullptr;
 	void set_symbol_info(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void request_dm_symbol_master(const std::string symbol_code);

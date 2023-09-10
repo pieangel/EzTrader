@@ -8,6 +8,7 @@
 #include <set>
 class CMainFrame;
 class DmAccountOrderWindow;
+class DmFundOrderWindow;
 class MiniJangoDialog;
 class TotalAssetProfitLossDialog;
 namespace DarkHorse {
@@ -79,6 +80,11 @@ namespace DarkHorse {
 		void restore_dm_account_order_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore);
 		void restore_dm_mini_jango_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_restore);
 		void restore_dm_account_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore);
+		void save_sub_account(const std::string& filename);
+		void save_fund(const std::string& filename);
+		void save_out_system(const std::string& filename);
+		void save_fund_order_windows(const std::string& filename, const std::map<HWND, DmFundOrderWindow*>& map_to_save);
+		void restore_account(const std::string& filename);
 
 	private:
 		bool ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively);

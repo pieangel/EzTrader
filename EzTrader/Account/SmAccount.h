@@ -52,7 +52,11 @@ namespace DarkHorse {
 		std::shared_ptr<Position> position_{nullptr};
 		std::weak_ptr<SmAccount> parent_account_;
 		std::string fund_name_;
+		bool is_server_side_{ false };
 	public:
+		bool is_server_side() const { return is_server_side_; }
+		void is_server_side(bool val) { is_server_side_ = val; }
+
 		std::weak_ptr<DarkHorse::SmAccount> parent_account() const { return parent_account_; }
 		void parent_account(std::weak_ptr<DarkHorse::SmAccount> val) { parent_account_ = val; }
 
