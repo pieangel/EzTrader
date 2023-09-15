@@ -26,6 +26,7 @@ namespace DarkHorse {
 		void set_account(std::shared_ptr<SmAccount> account);
 		void set_fund(std::shared_ptr<SmFund> fund);
 	private:
+		void reset();
 		void load_account_asset(std::shared_ptr<DarkHorse::SmAccount> account);
 		void load_asset_from_account(std::shared_ptr<DarkHorse::SmAccount> account);
 		std::shared_ptr<DarkHorse::SmAccount> account_{ nullptr };

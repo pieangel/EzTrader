@@ -3,39 +3,48 @@
 
 struct SmOrderGridResource {
 	// 헤더 버튼 색상
-	CBCGPColor HeaderButtonColor = RGB(0xff, 0xff, 0xff);
+	CBCGPColor HeaderButtonColor_Black = RGB(0xff, 0xff, 0xff);
+	CBCGPColor HeaderButtonColor = RGB(0x0, 0x0, 0x0);
 	// 헤더 배경 색상
-	CBCGPColor HeaderBackColor = RGB(0x28, 0x28, 0x28);
+	CBCGPColor HeaderBackColor_Black = RGB(0x28, 0x28, 0x28);
+	CBCGPColor HeaderBackColor = RGB(0xd2, 0xe0, 0xed);
 	// 매도 버튼 색상
 	//CBCGPColor SellButtonColor = RGB(0x10, 0x84, 0xF9);
-	CBCGPColor SellButtonColor = RGB(0, 0, 255);
+	CBCGPColor SellButtonColor_Black = RGB(0, 0, 255);
 	// 매수 버튼 색상
 	//CBCGPColor BuyButtonColor = RGB(0xf0, 0x33, 0x3a);
-	CBCGPColor BuyButtonColor = RGB(255, 0, 0);
+	CBCGPColor BuyButtonColor_Black = RGB(255, 0, 0);
 	// 매도 호가 배경 색상
 	CBCGPColor SellHogaBackColor = RGB(0x6c, 0x6c, 0x6c);
 	// 매수 호가 배경 색상
-	CBCGPColor BuyHogaBackColor = RGB(0x6c, 0x6c, 0x6c);
+	CBCGPColor BuyHogaBackColor_Black = RGB(0x6c, 0x6c, 0x6c);
 	// 매도 호가 텍스트 색상
-	CBCGPColor SellHogaTextColor = RGB( 0x64, 0xf9, 0xed);
+	CBCGPColor SellHogaTextColor_Black = RGB(0x64, 0xf9, 0xed);
 	// 매수 호가 텍스트 색상
-	CBCGPColor BuyHogaTextColor = RGB(0xff, 0xa5, 0x00);
+	CBCGPColor BuyHogaTextColor_Black = RGB(0xff, 0xa5, 0x00);
 	// 종가 텍스트 색상
+	CBCGPColor CloseTextColor_Black = RGB(255, 255, 255);
 	CBCGPColor CloseTextColor = RGB(255, 255, 255);
 	// 종가 배경 색상
 	CBCGPColor CloseBackColor = RGB(0xf0, 0x70, 0x00);
 	// 일반 텍스트 색상
-	CBCGPColor TextColor = RGB(255, 255, 255);
+	CBCGPColor TextColor_Black = RGB(255, 255, 255);
+	CBCGPColor TextColor = RGB(0, 0, 0);
 	// 행 그리드 색상
-	CBCGPColor RowGridColor = RGB(0x6c, 0x6c, 0x6c);
+	CBCGPColor RowGridColor_Black = RGB(0x6c, 0x6c, 0x6c);
+	CBCGPColor RowGridColor = RGB(0xc0, 0xc0, 0xc0);
+
 	// 열 그리드 색상
-	CBCGPColor ColGridColor = RGB(0x6c, 0x6c, 0x6c);
+	CBCGPColor ColGridColor_Black = RGB(0x6c, 0x6c, 0x6c);
+	CBCGPColor ColGridColor = RGB(0xc0, 0xc0, 0xc0);
 	// 시세 배경 색상
 	CBCGPColor QuoteBackColor = RGB(255, 0, 0);
 	// 시세 텍스트 색상
-	CBCGPColor QuoteTextColor = RGB(255, 255, 255);
+	CBCGPColor QuoteTextColor_Black = RGB(255, 255, 255);
+	CBCGPColor QuoteTextColor = RGB(0, 0, 0);
 	// 그리드 경계선 버튼 색상
-	CBCGPColor GridBorderColor = RGB(255, 255, 255);
+	CBCGPColor GridBorderColor_Black = RGB(255, 255, 255);
+	CBCGPColor GridBorderColor = RGB(0x6c, 0x6c, 0x6c);
 
 	CBCGPColor OrderBuyPresentColor = RGB(139, 0, 0);
 	CBCGPColor OrderSellPresentColor = RGB(0, 0, 128);
@@ -44,11 +53,14 @@ struct SmOrderGridResource {
 
 	CBCGPColor SelectedValueColor = RGB(255, 0, 0);
 
-	CBCGPColor GridNormalColor_black = RGB(0x46, 0x46, 0x4b);
 	CBCGPColor GridNormalColor = RGB(0xff, 0xff, 0xff);
-	CBCGPColor GridNormalAlterColor = RGB(0x64, 0x64, 0x64);
+	CBCGPColor GridNormalAlterColor = RGB(0x23, 0x23, 0x23);
 
-	CBCGPColor SelectedColor = RGB(0xf0, 0x70, 0x00);
+	CBCGPColor GridNormalColor_Black = RGB(0x46, 0x46, 0x4b);
+	CBCGPColor GridNormalAlterColor_Black = RGB(0x64, 0x64, 0x64);
+
+	CBCGPColor SelectedColor_Black = RGB(0xf0, 0x70, 0x00);
+	CBCGPColor SelectedColor = RGB(0xff, 0x00, 0x00);
 
 	CBCGPColor QuoteHighColor = RGB(255, 0, 0);
 	CBCGPColor QuoteLowColor = RGB(0, 0, 255);
@@ -61,6 +73,46 @@ struct SmOrderGridResource {
 	//CBCGPColor SellPositionBackColor = RGB(0x10, 0x84, 0xF9);
 	//CBCGPColor BuyPositionBackColor = RGB(0xf0, 0x33, 0x3a);
 	CBCGPColor BuyPositionBackColor = RGB(255, 0, 0);
+
+	CBCGPColor SellOrderColor = RGB(0xda, 0xe2, 0xf5);
+	CBCGPColor BuyOrderColor = RGB(0xfc, 0xe3, 0xe4);
+	CBCGPColor SellButtonColor = RGB(0x13, 0x89, 0xf8);
+	CBCGPColor BuyButtonColor = RGB(0xf0, 0x33, 0x3a);
+	CBCGPColor SiseBackColor = RGB(0xf2, 0xf2, 0xf2);
+	CBCGPColor SellSiseBackColor = RGB(0xda, 0xe2, 0xf5);
+	CBCGPColor BuySiseBackColor = RGB(0xfc, 0xe2, 0xe4);
+	CBCGPColor HiLoSiseBackColor = RGB(0xff, 0xff, 0xff);
+	CBCGPColor SellHogaColor1 = RGB(0x9f, 0xd6, 0xff);
+	CBCGPColor SellHogaColor2 = RGB(0xb9, 0xe4, 0xff);
+	CBCGPColor SellHogaColor3 = RGB(0xcc, 0xe6, 0xfa);
+	CBCGPColor SellHogaColor4 = RGB(0xdd, 0xf3, 0xff);
+	CBCGPColor SellHogaColor5 = RGB(0xe6, 0xf7, 0xff);
+	CBCGPColor BuyHogaColor1 = RGB(0xfd, 0xad, 0xb0);
+	CBCGPColor BuyHogaColor2 = RGB(0xff, 0xc4, 0xc7);
+	CBCGPColor BuyHogaColor3 = RGB(0xff, 0xd6, 0xd4);
+	CBCGPColor BuyHogaColor4 = RGB(0xff, 0xe0, 0xe1);
+	CBCGPColor BuyHogaColor5 = RGB(0xff, 0xe8, 0xe8);
+	CBCGPColor BuyHogaTextColor = RGB(0xff, 0, 0);
+	CBCGPColor SellHogaTextColor = RGB(0, 0, 0xff);
+
+	CBCGPBrush SellOrderBrush = CBCGPBrush(SellOrderColor);
+	CBCGPBrush BuyOrderBrush = CBCGPBrush(BuyOrderColor);
+	CBCGPBrush SellButtonBrush = CBCGPBrush(SellButtonColor);
+	CBCGPBrush BuyButtonBrush = CBCGPBrush(BuyButtonColor);
+	CBCGPBrush SiseBackBrush = CBCGPBrush(SiseBackColor);
+	CBCGPBrush SellSiseBackBrush = CBCGPBrush(SellSiseBackColor);
+	CBCGPBrush BuySiseBackBrush = CBCGPBrush(BuySiseBackColor);
+	CBCGPBrush HiLoSiseBackBrush = CBCGPBrush(HiLoSiseBackColor);
+	CBCGPBrush SellHogaBrush1 = CBCGPBrush(SellHogaColor1);
+	CBCGPBrush SellHogaBrush2 = CBCGPBrush(SellHogaColor2);
+	CBCGPBrush SellHogaBrush3 = CBCGPBrush(SellHogaColor3);
+	CBCGPBrush SellHogaBrush4 = CBCGPBrush(SellHogaColor4);
+	CBCGPBrush SellHogaBrush5 = CBCGPBrush(SellHogaColor5);
+	CBCGPBrush BuyHogaBrush1 = CBCGPBrush(BuyHogaColor1);
+	CBCGPBrush BuyHogaBrush2 = CBCGPBrush(BuyHogaColor2);
+	CBCGPBrush BuyHogaBrush3 = CBCGPBrush(BuyHogaColor3);
+	CBCGPBrush BuyHogaBrush4 = CBCGPBrush(BuyHogaColor4);
+	CBCGPBrush BuyHogaBrush5 = CBCGPBrush(BuyHogaColor5);
 
 
 	CBCGPBrush OrderBuyPresentBrush = CBCGPBrush(OrderBuyPresentColor);
@@ -95,13 +147,13 @@ struct SmOrderGridResource {
 	// 헤더 배경 색상
 	CBCGPBrush HeaderBackBrush = CBCGPBrush(HeaderBackColor);
 	// 매도 버튼 색상
-	CBCGPBrush SellButtonBrush = CBCGPBrush(SellButtonColor);
+	CBCGPBrush SellButtonBrush_Black = CBCGPBrush(SellButtonColor);
 	// 매수 버튼 색상
-	CBCGPBrush BuyButtonBrush = CBCGPBrush(BuyButtonColor);
+	CBCGPBrush BuyButtonBrush_Black = CBCGPBrush(BuyButtonColor);
 	// 매도 호가 배경 색상
 	CBCGPBrush SellHogaBackBrush = CBCGPBrush(SellHogaBackColor);
 	// 매수 호가 배경 색상
-	CBCGPBrush BuyHogaBackBrush = CBCGPBrush(BuyHogaBackColor);
+	//CBCGPBrush BuyHogaBackBrush = CBCGPBrush(BuyHogaBackColor);
 	// 매도 호가 텍스트 색상
 	CBCGPBrush SellHogaTextBrush = CBCGPBrush(SellHogaTextColor);
 	// 매수 호가 텍스트 색상

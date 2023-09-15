@@ -927,9 +927,7 @@ void CMainFrame::OnColorThemeCombo()
 
 	}
 
-#ifndef _BCGSUITE_INC_
-	theApp.SetVisualTheme(m_bIsDarkTheme ? CBCGPWinApp::BCGP_VISUAL_THEME_OFFICE_2016_BLACK : CBCGPWinApp::BCGP_VISUAL_THEME_OFFICE_2016_WHITE);
-#endif
+	mainApp.use_dark_theme() ? m_bIsDarkTheme = TRUE : m_bIsDarkTheme = FALSE;
 
 	CBCGPToolbarComboBoxButton* pCombobox = DYNAMIC_DOWNCAST(CBCGPToolbarComboBoxButton, m_wndToolBar.GetButton(m_wndToolBar.CommandToIndex(ID_COLOR_THEME_COMBO)));
 	ASSERT_VALID(pCombobox);

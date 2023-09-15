@@ -110,8 +110,8 @@ void AccountPositionManager::update_position(order_p order)
 	else
 		mainApp.event_hub()->process_stop_order_event(order);
 	update_account_profit_loss();
+	mainApp.event_hub()->process_position_event(position);
 	total_position_manager_.update_group_position(position);
-	//mainApp.event_hub()->process_position_event(position);
 }
 
 void AccountPositionManager::update_position(quote_p quote)

@@ -35,6 +35,7 @@ DarkHorse::SmTotalManager mainApp;
 
 void SmTotalManager::CreateManagers()
 {
+	use_dark_theme_ = false;
 	_Client = std::make_shared<ViStockClient>();
 	_LoginMgr = std::make_shared<SmLoginManager>();
 	_ReqMkr = std::make_shared<SmTaskRequestMaker>();

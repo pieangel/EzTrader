@@ -537,24 +537,56 @@ void SymbolOrderView::update_hoga()
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_CNT);
 		if (pCell && row_index > 1 && row_index < price_end_row_) {
 			pCell->Text(std::to_string(hoga.Ary[i].SellCnt));
-			pCell->CellType(SmCellType::CT_HOGA_SELL);
+			switch (i) {
+			case 0: pCell->CellType(SmCellType::CT_SELL_HOGA1); break;
+			case 1: pCell->CellType(SmCellType::CT_SELL_HOGA2); break;
+			case 2: pCell->CellType(SmCellType::CT_SELL_HOGA3); break;
+			case 3: pCell->CellType(SmCellType::CT_SELL_HOGA4); break;
+			case 4: pCell->CellType(SmCellType::CT_SELL_HOGA5); break;
+			default: break;
+			}
+			//pCell->CellType(SmCellType::CT_HOGA_SELL);
 			_OldHogaSellRowIndex.insert(row_index);
 		}
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_QTY);
 		if (pCell && row_index > 1 && row_index < price_end_row_) {
-			pCell->CellType(SmCellType::CT_HOGA_SELL);
+			//pCell->CellType(SmCellType::CT_HOGA_SELL);
+			switch (i) {
+			case 0: pCell->CellType(SmCellType::CT_SELL_HOGA1); break;
+			case 1: pCell->CellType(SmCellType::CT_SELL_HOGA2); break;
+			case 2: pCell->CellType(SmCellType::CT_SELL_HOGA3); break;
+			case 3: pCell->CellType(SmCellType::CT_SELL_HOGA4); break;
+			case 4: pCell->CellType(SmCellType::CT_SELL_HOGA5); break;
+			default: break;
+			}
 			pCell->Text(std::to_string(hoga.Ary[i].SellQty));
 		}
 		row_index = FindRow(hoga.Ary[i].BuyPrice);
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::BUY_QTY);
 		if (pCell && row_index > 1 && row_index < price_end_row_) {
-			pCell->CellType(SmCellType::CT_HOGA_BUY);
+			//pCell->CellType(SmCellType::CT_HOGA_BUY);
+			switch (i) {
+			case 0: pCell->CellType(SmCellType::CT_BUY_HOGA1); break;
+			case 1: pCell->CellType(SmCellType::CT_BUY_HOGA2); break;
+			case 2: pCell->CellType(SmCellType::CT_BUY_HOGA3); break;
+			case 3: pCell->CellType(SmCellType::CT_BUY_HOGA4); break;
+			case 4: pCell->CellType(SmCellType::CT_BUY_HOGA5); break;
+			default: break;
+			}
 			pCell->Text(std::to_string(hoga.Ary[i].BuyQty));
 			_OldHogaBuyRowIndex.insert(row_index);
 		}
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::BUY_CNT);
 		if (pCell && row_index > 1 && row_index < price_end_row_) {
-			pCell->CellType(SmCellType::CT_HOGA_BUY);
+			//pCell->CellType(SmCellType::CT_HOGA_BUY);
+			switch (i) {
+			case 0: pCell->CellType(SmCellType::CT_BUY_HOGA1); break;
+			case 1: pCell->CellType(SmCellType::CT_BUY_HOGA2); break;
+			case 2: pCell->CellType(SmCellType::CT_BUY_HOGA3); break;
+			case 3: pCell->CellType(SmCellType::CT_BUY_HOGA4); break;
+			case 4: pCell->CellType(SmCellType::CT_BUY_HOGA5); break;
+			default: break;
+			}
 			pCell->Text(std::to_string(hoga.Ary[i].BuyCnt));
 		}
 	}
@@ -675,7 +707,7 @@ void SymbolOrderView::ClearOrders()
 	for (auto it = _OldOrderSellRowIndex.begin(); it != _OldOrderSellRowIndex.end(); ++it) {
 		pCell = _Grid->FindCell(*it, DarkHorse::OrderHeader::SELL_ORDER);
 		if (pCell) {
-			pCell->CellType(CT_NORMAL);
+			pCell->CellType(CT_ORDER_SELL_BACK);
 			pCell->ClearOrder();
 			pCell->Text("");
 		}
@@ -685,7 +717,7 @@ void SymbolOrderView::ClearOrders()
 	for (auto it = _OldOrderBuyRowIndex.begin(); it != _OldOrderBuyRowIndex.end(); ++it) {
 		pCell = _Grid->FindCell(*it, DarkHorse::OrderHeader::BUY_ORDER);
 		if (pCell) {
-			pCell->CellType(CT_NORMAL);
+			pCell->CellType(CT_ORDER_BUY_BACK);
 			pCell->ClearOrder();
 			pCell->Text("");
 		}
@@ -952,7 +984,7 @@ void SymbolOrderView::SetUp()
 	}
 
 	_Grid->RegisterOrderButtons(_ButtonMap);
-
+	set_order_area();
 	index_row_ = get_center_row();
 
 	SetTimer(1, 10, NULL);
@@ -985,7 +1017,7 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	_Grid->RegisterOrderButtons(_ButtonMap);
 	index_row_ = get_center_row();
 	SetCenterValues();
-
+	set_order_area();
 	update_quote();
 	update_hoga();
 	draw_order();
@@ -1050,11 +1082,25 @@ void SymbolOrderView::CancelSellStop()
 	enable_sell_stop_order_show_ = true;
 }
 
+void SymbolOrderView::set_order_area()
+{
+	for (int i = 1; i < _Grid->RowCount(); i++) {
+		auto cell = _Grid->FindCell(i, DarkHorse::OrderHeader::SELL_ORDER);
+		if (cell) {
+			cell->CellType(SmCellType::CT_ORDER_SELL_BACK);
+		}
+		cell = _Grid->FindCell(i, DarkHorse::OrderHeader::BUY_ORDER);
+		if (cell) {
+			cell->CellType(SmCellType::CT_ORDER_BUY_BACK);
+		}
+	}
+}
+
 void SymbolOrderView::reset_window_size()
 {
 	CRect rcWnd;
 	GetWindowRect(&rcWnd);
-	//GetParent()->ScreenToClient(rcWnd);
+	GetParent()->ScreenToClient(rcWnd);
 	SetWindowPos(nullptr, 0, 0, get_entire_width(), rcWnd.Height(), SWP_NOMOVE | SWP_NOZORDER);
 	Invalidate();
 }
@@ -1228,7 +1274,6 @@ std::pair<int, int> SymbolOrderView::get_order_count(const std::shared_ptr<DarkH
 
 void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
 {
-	int width_sum = 0;
 	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_STOP, grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width);
 	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_ORDER, grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].width);
 	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_CNT, grid_header_vector_[DarkHorse::OrderHeader::SELL_CNT].width);
@@ -1238,9 +1283,6 @@ void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
 	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_CNT, grid_header_vector_[DarkHorse::OrderHeader::BUY_CNT].width);
 	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_ORDER, grid_header_vector_[DarkHorse::OrderHeader::BUY_ORDER].width);
 	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_STOP, grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width);
-
-
-	reset_window_size();
 }
 
 void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)
@@ -1354,7 +1396,7 @@ int SymbolOrderView::get_entire_width()
 	width_sum += 1;
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_QTY].width;
 	width_sum += 1;
-	width_sum += OrderGridHeaderVector[DarkHorse::OrderHeader::QUOTE].width;
+	width_sum += grid_header_vector_[DarkHorse::OrderHeader::QUOTE].width;
 	width_sum += 1;
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_QTY].width;
 	width_sum += 1;
@@ -1364,10 +1406,6 @@ int SymbolOrderView::get_entire_width()
 	width_sum += 1;
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width;
 	width_sum += 1;
-	//width_sum += 2;
-	//width_sum += 5;
-
-	
 
 	return width_sum;
 }

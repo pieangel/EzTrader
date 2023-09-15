@@ -176,7 +176,12 @@ namespace DarkHorse {
 	{
 		if (_AccountVector.empty()) return nullptr;
 
-		return _AccountVector[0];
+		if (_AccountVector[0]->is_subaccount()) {
+			return _AccountVector[0]->parent_account().lock() ? _AccountVector[0]->parent_account().lock() : nullptr;
+		}
+		else {
+			return _AccountVector[0];
+		}
 	}
 
 } // namespace DarkHorse

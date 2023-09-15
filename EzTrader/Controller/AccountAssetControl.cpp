@@ -7,26 +7,43 @@
 #include "../Fund/SmFund.h"
 namespace DarkHorse {
 
-	AccountAssetControl::AccountAssetControl()
-	: id_(IdGenerator::get_id())
+AccountAssetControl::AccountAssetControl()
+: id_(IdGenerator::get_id())
 {
 
 }
 
-	AccountAssetControl::~AccountAssetControl()
+AccountAssetControl::~AccountAssetControl()
+{
+
+}
+void AccountAssetControl::reset()
+{
+	asset_.entrust_total = 0; // 예탁금총액
+	asset_.balance = 0; // 예탁금잔액
+	asset_.outstanding_deposit = 0; // 미결제증거금
+	asset_.order_deposit = 0; // 주문증거금
+	asset_.entrust_deposit = 0; // 위탁증거금
+	asset_.maintenance_margin = 0; // 유지증거금
+	asset_.trade_profit_loss = 0; // 청산손익
+	asset_.trade_fee = 0; // 선물옵션수수료
+	asset_.open_profit_loss = 0; // 평가손익
+	asset_.open_trust_toal = 0; // 평가예탁총액
+	asset_.additional_margin = 0; // 추가증거금
+	asset_.order_margin = 0; // 주문가능금액
+	asset_.currency = "";
+}
+
+
+void AccountAssetControl::load_position_from_parent_account(const std::string& account_no)
 {
 
 }
 
-	void AccountAssetControl::load_position_from_parent_account(const std::string& account_no)
-	{
+void AccountAssetControl::load_position_from_fund(const std::string& fund_name)
+{
 
-	}
-
-	void AccountAssetControl::load_position_from_fund(const std::string& fund_name)
-	{
-
-	}
+}
 
 void AccountAssetControl::load_asset_from_account(const std::string& account_no)
 {

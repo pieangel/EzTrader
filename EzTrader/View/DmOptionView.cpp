@@ -119,6 +119,20 @@ void DmOptionView::update_quote()
 
 }
 
+void DmOptionView::set_call_put_area()
+{
+	for (int i = 1; i < _Grid->RowCount(); i++) {
+		auto cell = _Grid->FindCell(i, 0);
+		if (cell) {
+			cell->CellType(SmCellType::CT_ORDER_SELL_BACK);
+		}
+		cell = _Grid->FindCell(i, 2);
+		if (cell) {
+			cell->CellType(SmCellType::CT_ORDER_BUY_BACK);
+		}
+	}
+}
+
 void DmOptionView::update_expected(std::shared_ptr<SmQuote> quote)
 {
 	if (!quote || view_mode_ != ViewMode::VM_Expected) return;
@@ -254,7 +268,7 @@ void DmOptionView::SetUp()
 		_HeaderTitles.push_back("PUT");
 		_Grid->SetColHeaderTitles(_HeaderTitles);
 	}
-
+	set_call_put_area();
 	SetTimer(1, 40, NULL);
 }
 
@@ -275,7 +289,7 @@ void DmOptionView::OnPaint()
 
 	if (!m_pGM->BeginDraw())
 		return;
-
+	set_call_put_area();
 	m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
 	rect.right -= 1;
 	rect.bottom -= 1;

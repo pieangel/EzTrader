@@ -61,7 +61,10 @@ namespace DarkHorse {
 		std::shared_ptr<EventHub> event_hub() { return event_hub_; }
 		std::shared_ptr<ViServerDataReceiver> vi_server_data_receiver() { return vi_server_data_receiver_; }
 		std::shared_ptr<SmOutSystemManager> out_system_manager() { return out_system_manager_; }
+		bool use_dark_theme() const { return use_dark_theme_; }
+		void use_dark_theme(bool val) { use_dark_theme_ = val; }
 	private:
+		bool use_dark_theme_ = false;
 		std::shared_ptr<SmCallbackManager> _CallbackMgr = nullptr;
 		std::shared_ptr<ViStockClient> _Client = nullptr;
 		std::shared_ptr<SmLoginManager> _LoginMgr = nullptr;

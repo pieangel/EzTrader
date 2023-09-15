@@ -66,6 +66,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	int window_size = 0;
+	void arrange_children();
 	void ArrangeCenterValue();
 	void CreateResource();
 	virtual BOOL OnInitDialog();
@@ -90,7 +92,6 @@ public:
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
 	std::string get_symbol_code();
-	int window_size = 0;
 private:
 	std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
 	CRect rcGrid;

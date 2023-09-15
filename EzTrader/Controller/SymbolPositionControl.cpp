@@ -15,7 +15,11 @@ namespace DarkHorse {
 	SymbolPositionControl::SymbolPositionControl()
 		: id_(IdGenerator::get_id())
 	{
-		subscribe_position_control();
+		mainApp.event_hub()->subscribe_position_event_handler
+		(
+			id_,
+			std::bind(&SymbolPositionControl::update_position, this, std::placeholders::_1)
+		);
 		mainApp.event_hub()->subscribe_quote_event_handler
 		(
 			id_,

@@ -190,6 +190,7 @@ public:
 	const std::vector<DarkHorse::OrderGridHeaderInfo>& grid_header_vector() const { return grid_header_vector_; }
 	void trigger_resize_event();
 private:
+	void set_order_area();
 	DarkHorse::OrderType order_type_{ DarkHorse::OrderType::None };
 
 	DarkHorse::SymbolType symbol_type_{ DarkHorse::SymbolType::None };

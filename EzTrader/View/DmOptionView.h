@@ -57,6 +57,7 @@ public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	void set_call_put_area();
 	int order_window_id_ = 0;
 	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
 	void update_quote();

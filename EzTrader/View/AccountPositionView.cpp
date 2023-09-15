@@ -231,7 +231,7 @@ int AccountPositionView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 
 	SetRowHeaderWidth(1);
-	SetVisualManagerColorTheme(FALSE);
+	SetVisualManagerColorTheme(TRUE);
 
 	// Insert columns:
 	InsertColumn(0, _T("Á¾¸ñ"), ab_column_widths_vector_[0]);
