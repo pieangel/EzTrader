@@ -9,7 +9,7 @@ class VtUsdStrategyConfigDlg;
 class VtSignalConnectionGrid;
 class VtChartTimeToolBar;
 class SmHftConfig;
-class VtAddConnectSignalDlg;
+class SmAddConnectSignalDlg;
 class HdSymbolSelecter : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(HdSymbolSelecter)
@@ -51,7 +51,7 @@ public:
 
 	int SelTab;
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
-	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg);
+	void SetAddConSigDlg(SmAddConnectSignalDlg* conSigDlg);
 	void SetSigConGrid(VtSignalConnectionGrid* sigConGrid);
 	void SetHftConfig(SmHftConfig* hftConfig);
 	void SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar);

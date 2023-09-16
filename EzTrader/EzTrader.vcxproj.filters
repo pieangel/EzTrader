@@ -433,23 +433,8 @@
     <ClCompile Include="TimeData\SmCompData.cpp">
       <Filter>TimeData</Filter>
     </ClCompile>
-    <ClCompile Include="ChartDialog\SmCompChart.cpp">
-      <Filter>ChartDialog</Filter>
-    </ClCompile>
     <ClCompile Include="Chart\ChartViewer.cpp">
       <Filter>Chart</Filter>
-    </ClCompile>
-    <ClCompile Include="ChartDialog\SmSpreadView.cpp">
-      <Filter>ChartDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="ChartDialog\SmGigaSpreadChart.cpp">
-      <Filter>ChartDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="ChartDialog\SmGigaCompChart.cpp">
-      <Filter>ChartDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="ChartDialog\SmMultiChart.cpp">
-      <Filter>ChartDialog</Filter>
     </ClCompile>
     <ClCompile Include="ChartDialog\GaSpreadChart.cpp">
       <Filter>ChartDialog</Filter>
@@ -784,13 +769,13 @@
     <ClCompile Include="Dialog\SymbolFutureView.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog\VtAddConnectSignalDlg.cpp">
+    <ClCompile Include="Dialog\SmAddConnectSignalDlg.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog\VtAddOutSigDefDlg.cpp">
+    <ClCompile Include="Dialog\SmAddOutSigDefDlg.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog\VtAutoSignalManagerDialog.cpp">
+    <ClCompile Include="Dialog\SmAutoSignalManagerDialog.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
     <ClCompile Include="Dialog\AccountFundView.cpp">
@@ -799,17 +784,176 @@
     <ClCompile Include="OutSystem\SmOutSignalDef.cpp">
       <Filter>OutSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog\VtAccountFundSelector.cpp">
+    <ClCompile Include="Dialog\SmAccountFundSelector.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
     <ClCompile Include="Dialog\OutSigDefSelector.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog\VtSystemOrderConfig.cpp">
+    <ClCompile Include="Dialog\SmSystemOrderConfig.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog\VtLayoutManager.cpp">
+    <ClCompile Include="Dialog\SmLayoutManager.cpp">
       <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCBType.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCell.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCelTyp.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCnrBtn.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCTarrw.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCtrl.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGDLType.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGDrgDrp.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGDrwHnt.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGDtaSrc.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGEdit.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGEditBase.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugformat.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\uggdinfo.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGGrid.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGHint.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ughscrol.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugLstBox.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGMEdit.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGMemMan.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGMultiS.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugprint.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugptrlst.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugsidehd.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGStrOp.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugtab.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGTopHdg.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugvscrol.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGXPThemes.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\VtGrid.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTafnt.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTAutoSize.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTbutn.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTDropGrid.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTdtp.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\ugctelps.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTExpand.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTLabeled.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTMailSort.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTMarquee.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTNote.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\ugctnotewnd.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTOutlookHeader.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTpie.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTpro1.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTprog.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTRado.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTsarw.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTSeperateText.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTsldr.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTSpin.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\EditControls\UTEdit.cpp">
+      <Filter>UGrid\EditCtrls</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\EditControls\UTMaskedEdit.cpp">
+      <Filter>UGrid\EditCtrls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1407,23 +1551,8 @@
     <ClInclude Include="TimeData\SmCompData.h">
       <Filter>TimeData</Filter>
     </ClInclude>
-    <ClInclude Include="ChartDialog\SmCompChart.h">
-      <Filter>ChartDialog</Filter>
-    </ClInclude>
     <ClInclude Include="Chart\ChartViewer.h">
       <Filter>Chart</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartDialog\SmSpreadView.h">
-      <Filter>ChartDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartDialog\SmGigaSpreadChart.h">
-      <Filter>ChartDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartDialog\SmGigaCompChart.h">
-      <Filter>ChartDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartDialog\SmMultiChart.h">
-      <Filter>ChartDialog</Filter>
     </ClInclude>
     <ClInclude Include="ChartDialog\GaSpreadChart.h">
       <Filter>ChartDialog</Filter>
@@ -1854,13 +1983,13 @@
     <ClInclude Include="Dialog\SymbolFutureView.h">
       <Filter>Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Dialog\VtAddConnectSignalDlg.h">
+    <ClInclude Include="Dialog\SmAddConnectSignalDlg.h">
       <Filter>Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Dialog\VtAddOutSigDefDlg.h">
+    <ClInclude Include="Dialog\SmAddOutSigDefDlg.h">
       <Filter>Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Dialog\VtAutoSignalManagerDialog.h">
+    <ClInclude Include="Dialog\SmAutoSignalManagerDialog.h">
       <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="Dialog\AccountFundView.h">
@@ -1869,20 +1998,191 @@
     <ClInclude Include="OutSystem\SmOutSignalDef.h">
       <Filter>OutSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Dialog\VtAccountFundSelector.h">
+    <ClInclude Include="Dialog\SmAccountFundSelector.h">
       <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="Dialog\OutSigDefSelector.h">
       <Filter>Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Dialog\VtSystemOrderConfig.h">
+    <ClInclude Include="Dialog\SmSystemOrderConfig.h">
       <Filter>Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Dialog\VtLayoutManager.h">
+    <ClInclude Include="Dialog\SmLayoutManager.h">
       <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="Util\doublebufferedqueue.h">
       <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UG64Bit.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCBType.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCell.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugceltyp.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCnrBtn.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCTarrw.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCtrl.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugdefine.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGDLType.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGDrgDrp.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGDrwHnt.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGDtaSrc.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGEdit.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGEditBase.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugformat.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\uggdinfo.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGGrid.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGHint.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ughscrol.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\uglstbox.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGMEdit.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGMemMan.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGMultiS.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugprint.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugptrlst.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugsidehd.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGStrOp.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugstruct.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugtab.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGTopHdg.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugvscrol.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugxpthemes.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\VtGrid.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTafnt.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTAutoSize.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTbutn.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTDropGrid.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTdtp.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\ugctelps.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTExpand.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTLabeled.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTMailSort.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTMarquee.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTNote.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\ugctnotewnd.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTOutlookHeader.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTpie.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTpro1.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTprog.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTRado.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTsarw.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTSeperateText.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTsldr.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTSpin.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\EditControls\UTEdit.h">
+      <Filter>UGrid\EditCtrls</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\EditControls\UTMaskedEdit.h">
+      <Filter>UGrid\EditCtrls</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\VtCellLabel.h">
+      <Filter>UGrid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2151,6 +2451,15 @@
     </Filter>
     <Filter Include="FileWatch">
       <UniqueIdentifier>{a0023628-c7fb-484a-9337-e006fb8133c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UGrid">
+      <UniqueIdentifier>{51e789ef-c8d8-4471-b95c-8bf21248fe08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UGrid\CellType">
+      <UniqueIdentifier>{c93223bb-d15a-46a2-8281-e08095c49928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UGrid\EditCtrls">
+      <UniqueIdentifier>{ea5a1548-25d6-453e-9a9d-9db2b21dedca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

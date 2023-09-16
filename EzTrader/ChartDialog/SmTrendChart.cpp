@@ -158,7 +158,7 @@ void SmTrendChart::drawChart(CChartViewer* viewer)
 	LOGINFO(CMyLogger::getInstance(), "size = %d, startindex = %d, endindex = %d, error = %s", df.shape().first, startIndex, endIndex, error.c_str());
 
 	if (startIndex < 0) startIndex = 0;
-	if (endIndex >= df.shape().first) endIndex = df.shape().first - 1;
+	if (endIndex >= (int)df.shape().first) endIndex = df.shape().first - 1;
 
 
 	size_t duration = endIndex - startIndex + 1;
@@ -351,9 +351,9 @@ void SmTrendChart::drawChart(CChartViewer* viewer)
 
 
 		// Use a loop to create a line layer for each color
-		for (int i = 0; i < colors_size; ++i) {
-			int n = 0;
-			for (int j = 0; j < duration; ++j) {
+		for (size_t i = 0; i < colors_size; ++i) {
+			size_t n = 0;
+			for (size_t j = 0; j < duration; ++j) {
 				// We include data points of the target type in the line layer.
 				if ((j < point_vector.size()) && (point_vector[j] == i)) {
 					lineX[n] = j;

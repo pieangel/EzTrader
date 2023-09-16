@@ -12,8 +12,8 @@ namespace DarkHorse
 }
 
 class HdSymbolSelecter;
-class VtAccountFundSelector;
-class VtAutoSignalManagerDialog;
+class SmAccountFundSelector;
+class SmAutoSignalManagerDialog;
 class OutSystemView : public CBCGPGridCtrl
 {
 	DECLARE_DYNAMIC(OutSystemView)
@@ -26,8 +26,8 @@ public:
 	void remove_out_system();
 	std::shared_ptr<DarkHorse::SmOutSystem> get_out_system(const int row);
 	std::shared_ptr<DarkHorse::SmOutSystem> get_selected_out_system();
-	VtAutoSignalManagerDialog* parent_dlg() const { return parent_dlg_; }
-	void parent_dlg(VtAutoSignalManagerDialog* val) { parent_dlg_ = val; }
+	SmAutoSignalManagerDialog* parent_dlg() const { return parent_dlg_; }
+	void parent_dlg(SmAutoSignalManagerDialog* val) { parent_dlg_ = val; }
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -46,7 +46,7 @@ private:
 	int selected_row_ = -1;
 	void create_out_system_cells(CBCGPGridRow* pRow, std::shared_ptr<DarkHorse::SmOutSystem> out_system);
 	CBCGPGridRow* create_or_get_row(const int row_index);
-	VtAutoSignalManagerDialog* parent_dlg_{ nullptr };
+	SmAutoSignalManagerDialog* parent_dlg_{ nullptr };
 	int max_index_{ 0 };
 };
 

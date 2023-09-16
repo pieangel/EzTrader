@@ -12,7 +12,7 @@
 #include "../Symbol/SmProduct.h"
 #include "../Util/SmUtil.h"
 #include "../OutSystem/SmOutSystem.h"
-#include "VtAddOutSigDefDlg.h"
+#include "SmAddOutSigDefDlg.h"
 #include "../resource.h"
 #include "../Account/SmAccount.h"
 #include "../Fund/SmFund.h"
@@ -26,8 +26,8 @@
 #include "../OutSystem/SmOutSystem.h"
 #include "../OutSystem/SmOutSystemManager.h"
 #include "../OutSystem/SmOutSignalDef.h"
-#include "VtAccountFundSelector.h"
-#include "VtAutoSignalManagerDialog.h"
+#include "SmAccountFundSelector.h"
+#include "SmAutoSignalManagerDialog.h"
 
 #include <functional>
 
@@ -417,7 +417,7 @@ void CAccountItem::OnClickButton(CPoint /*point*/)
 
 	m_bButtonIsDown = TRUE;
 	Redraw();
-	VtAccountFundSelector dlg;
+	SmAccountFundSelector dlg;
 	dlg.set_source_id(id_);
 	dlg.DoModal();
 

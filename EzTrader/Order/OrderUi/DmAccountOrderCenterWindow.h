@@ -26,7 +26,7 @@ class DmAccountOrderCenterWindow
 #include "../OrderRequest/OrderRequest.h"
 #include "../../Event/EventHubArg.h"
 #include "../../Json/json.hpp"
-#include "../../Dialog/VtLayoutManager.h"
+#include "../../Dialog/SmLayoutManager.h"
 using json = nlohmann::json;
 // SmOrderWnd dialog
 namespace DarkHorse {
@@ -99,7 +99,7 @@ private:
 	void trigger_resize_event();
 	void recal_window_size();
 	CRect GetClientArea(int resourceID);
-	DarkHorse::VtLayoutManager layout_manager_;
+	DarkHorse::SmLayoutManager layout_manager_;
 	void save_control_size();
 	void on_resize_event_from_order_view();
 	void on_resize_event_from_tick_view();

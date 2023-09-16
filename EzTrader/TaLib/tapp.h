@@ -447,21 +447,21 @@ private:
     unsigned inputSize;
 
     void Init (const std::string &name) {
-		if (TA_GetFuncHandle(name.c_str(), &funcHandle) != TA_SUCCESS) panic();
-		if (TA_GetFuncInfo(funcHandle, &funcInfo) != TA_SUCCESS) panic();
-		if (TA_ParamHolderAlloc(funcHandle, &params) != TA_SUCCESS) panic();
+		if (TA_GetFuncHandle(name.c_str(), &funcHandle) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
+		if (TA_GetFuncInfo(funcHandle, &funcInfo) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
+		if (TA_ParamHolderAlloc(funcHandle, &params) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
 
         // opt input parameter info
         for (unsigned i = 0; i < funcInfo->nbOptInput; ++i) {
             const TA_OptInputParameterInfo *info;
-		    if (TA_GetOptInputParameterInfo(funcHandle, i, &info) != TA_SUCCESS) panic();
+		    if (TA_GetOptInputParameterInfo(funcHandle, i, &info) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
             optionMap[std::string(info->paramName)] = i;
         }
 
         outputs.resize(funcInfo->nbOutput);
         for (unsigned i = 0; i < funcInfo->nbOutput; ++i) {
             const TA_OutputParameterInfo *info;
-		    if (TA_GetOutputParameterInfo(funcHandle, i, &info) != TA_SUCCESS) panic();
+		    if (TA_GetOutputParameterInfo(funcHandle, i, &info) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
             outputs[i].type = info->type;
             outputs[i].name = info->paramName;
             outputs[i].real.setFlags(info->flags);
@@ -471,21 +471,21 @@ private:
 
     void setInputHelper (unsigned idx, const RealSeries &input) {
         const TA_InputParameterInfo *info;
-		if (TA_GetInputParameterInfo(funcHandle, idx, &info) != TA_SUCCESS) panic();
+		if (TA_GetInputParameterInfo(funcHandle, idx, &info) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
         verify(info->type == TA_Input_Real);
-        if (TA_SetInputParamRealPtr(params, idx, &input[inputFirst]) != TA_SUCCESS) panic();
+        if (TA_SetInputParamRealPtr(params, idx, &input[inputFirst]) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
     };
 
     void setInputHelper (unsigned idx, const IntegerSeries &input) {
         const TA_InputParameterInfo *info;
-		if (TA_GetInputParameterInfo(funcHandle, idx, &info) != TA_SUCCESS) panic();
+		if (TA_GetInputParameterInfo(funcHandle, idx, &info) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
         verify(info->type == TA_Input_Integer);
-        if (TA_SetInputParamIntegerPtr(params, idx, &input[inputFirst]) != TA_SUCCESS) panic();
+        if (TA_SetInputParamIntegerPtr(params, idx, &input[inputFirst]) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
     };
 
     void setInputHelper (unsigned idx, const Candles &input) {
         const TA_InputParameterInfo *info;
-		if (TA_GetInputParameterInfo(funcHandle, idx, &info) != TA_SUCCESS) panic();
+		if (TA_GetInputParameterInfo(funcHandle, idx, &info) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
         verify(info->type == TA_Input_Price);
         if (TA_SetInputParamPricePtr(params, idx,
                     &input.getOpen()[inputFirst],
@@ -493,7 +493,7 @@ private:
                     &input.getLow()[inputFirst],
                     &input.getClose()[inputFirst],
                     &input.getVolume()[inputFirst],
-                    &input.getOpenInterest()[inputFirst]) != TA_SUCCESS) panic();
+                    &input.getOpenInterest()[inputFirst]) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
     };
 
     template <typename T>
@@ -520,42 +520,42 @@ private:
         verify(it != optionMap.end());
 
         const TA_OptInputParameterInfo *info;
-		if (TA_GetOptInputParameterInfo(funcHandle, it->second, &info) != TA_SUCCESS) panic();
+		if (TA_GetOptInputParameterInfo(funcHandle, it->second, &info) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
         if (info->type == TA_OptInput_RealRange
             || info->type == TA_OptInput_RealList) {
-            if (TA_SetOptInputParamReal(params, it->second, option.getReal()) != TA_SUCCESS) panic();
+            if (TA_SetOptInputParamReal(params, it->second, option.getReal()) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
         }
         else if (info->type == TA_OptInput_IntegerRange
             || info->type == TA_OptInput_IntegerList) {
-            if (TA_SetOptInputParamInteger(params, it->second, option.getInteger()) != TA_SUCCESS) panic();
+            if (TA_SetOptInputParamInteger(params, it->second, option.getInteger()) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
         }
     };
 
     void update ()
     {
         TA_Integer lookback = 0;
-        if (TA_GetLookback(params, &lookback) != TA_SUCCESS) panic();
+        if (TA_GetLookback(params, &lookback) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
         TA_Integer outputFirst = inputFirst + lookback;
         for (unsigned i = 0; i < outputs.size(); ++i) {
             switch (outputs[i].type) {
             case TA_Output_Real:
                 outputs[i].real.setFirst(outputFirst);
                 outputs[i].real.resize(inputSize);
-                if (TA_SetOutputParamRealPtr(params, i, &outputs[i].real[outputFirst]) != TA_SUCCESS) panic();
+                if (TA_SetOutputParamRealPtr(params, i, &outputs[i].real[outputFirst]) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
                 break;
             case TA_Output_Integer:
                 outputs[i].integer.setFirst(outputFirst);
                 outputs[i].integer.resize(inputSize);
-                if (TA_SetOutputParamIntegerPtr(params, i, &outputs[i].integer[outputFirst]) != TA_SUCCESS) panic();
+                if (TA_SetOutputParamIntegerPtr(params, i, &outputs[i].integer[outputFirst]) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
                 break;
                 default:
-                panic();
+                    panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
             }
         }
         TA_Integer outBegIdx, outNbElement;
-        if (TA_CallFunc(params, 0, inputSize - inputFirst - 1, &outBegIdx, &outNbElement) != TA_SUCCESS) panic();
-        verify(outBegIdx == lookback);
-        verify(outNbElement == inputSize - outputFirst);
+        if (TA_CallFunc(params, 0, inputSize - inputFirst - 1, &outBegIdx, &outNbElement) != TA_SUCCESS) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
+        if(outBegIdx != lookback) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
+        if(outNbElement != inputSize - outputFirst) panic_intern("%s: %s: %d: ", __FILE__, __FUNCTION__, __LINE__);
     }
 
 public:

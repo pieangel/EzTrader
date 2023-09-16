@@ -6,7 +6,7 @@
 class HdSymbolSelecter;
 class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
-class VtAddConnectSignalDlg;
+class SmAddConnectSignalDlg;
 class VtSignalConnectionGrid;
 class VtChartTimeToolBar;
 class SmHftConfig;
@@ -51,7 +51,7 @@ public:
 	void SetHftConfig(SmHftConfig* hftConfig);
 	void GetSymbolMaster();
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
-	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg);
+	void SetAddConSigDlg(SmAddConnectSignalDlg* conSigDlg);
 	void SetSigConGrid(VtSignalConnectionGrid* sigConGrid);
 	void SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar);
 };

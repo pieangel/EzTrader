@@ -44,9 +44,6 @@
 #include "Quote/SmQuoteProcessor.h"
 #include "ChartDialog/GaSpreadChart.h"
 #include "ChartDialog/SmMultiSpreadChart.h"
-#include "ChartDialog/SmCompChart.h"
-#include "ChartDialog/SmGigaSpreadChart.h" 
-#include "ChartDialog/SmGigaCompChart.h"
 #include "ChartDialog/RealTimeMultiChart.h"
 #include "ChartDialog/SmTrendChart.h"
 #include "resource.h"
@@ -58,7 +55,6 @@
 
 #include <iostream>
 
-#include "ChartDialog/SmMultiChart.h"
 #include "ChartDialog/SmStockChart.h"
 #include "System/SmSystemManager.h"
 
@@ -80,7 +76,7 @@ using namespace hmdf;
 #include "DataFrame/Utils/DateTime.h"
 #include "DataFrame/Utils/FixedSizePriorityQueue.h"
 #include "DataFrame/Utils/FixedSizeString.h"
-#include "Dialog/VtAutoSignalManagerDialog.h"
+#include "Dialog/SmAutoSignalManagerDialog.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -1304,8 +1300,6 @@ void CMainFrame::OnGigaCompChart()
 // 	_GigaCompChartMap[spreadChart->GetSafeHwnd()] = spreadChart;
 // 	spreadChart->ShowWindow(SW_SHOW);
 
-	SmMultiChart dlg;
-	dlg.DoModal();
 }
 
 void CMainFrame::OnStockChart()
@@ -1412,6 +1406,6 @@ void CMainFrame::OnSubAccount()
 
 void CMainFrame::OnOutSystem()
 {
-	VtAutoSignalManagerDialog out_system_dialog;
+	SmAutoSignalManagerDialog out_system_dialog;
 	out_system_dialog.DoModal();
 }

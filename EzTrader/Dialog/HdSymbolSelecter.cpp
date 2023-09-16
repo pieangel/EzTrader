@@ -131,7 +131,7 @@ void HdSymbolSelecter::SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg)
 	_OptPage.SetConfigDlg(ConfigDlg);
 }
 
-void HdSymbolSelecter::SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg)
+void HdSymbolSelecter::SetAddConSigDlg(SmAddConnectSignalDlg* conSigDlg)
 {
 	_FutPage.SetAddConSigDlg(conSigDlg);
 	_OptPage.SetAddConSigDlg(conSigDlg);
