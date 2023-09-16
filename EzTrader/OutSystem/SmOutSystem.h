@@ -36,6 +36,8 @@ namespace DarkHorse {
 		void put_order(const std::string& signal_name, int order_kind, int order_amount);
 		std::shared_ptr<QuoteControl> quote_control() const { return quote_control_; }
 		std::shared_ptr<SymbolPositionControl> position_control() const { return position_control_; }
+		bool enable() const { return enable_; }
+		void enable(bool val) { enable_ = val; }
 	private:
 		std::shared_ptr<QuoteControl> quote_control_;
 		std::shared_ptr<SymbolPositionControl> position_control_;

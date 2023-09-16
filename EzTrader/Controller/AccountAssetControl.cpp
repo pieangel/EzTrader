@@ -108,7 +108,10 @@ void AccountAssetControl::set_fund(std::shared_ptr<SmFund> fund)
 	if (!fund) return;
 	fund_ = fund;
 	auto first_account = fund_->get_first_account();
-	if (!first_account) return;
+	if (!first_account) {
+		reset();  
+		return;
+	}
 	load_asset_from_account(first_account);
 }
 

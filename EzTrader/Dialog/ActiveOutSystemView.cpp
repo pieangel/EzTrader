@@ -179,7 +179,7 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetReadOnly(TRUE);
 
 	init_grid();
-	SetTimer(1, 10, NULL);
+	//SetTimer(1, 10, NULL);
 
 	init_ = true;
 	return 0;
@@ -194,12 +194,13 @@ void ActiveOutSystemView::OnDestroy()
 
 void ActiveOutSystemView::OnTimer(UINT_PTR nIDEvent)
 {
-	TRACE("ActiveOutSystemView::OnTimer");
+	TRACE("ActiveOutSystemView::OnTimer\n");
 }
 
 void ActiveOutSystemView::init_grid()
 {
 	row_to_out_system_.clear();
+	out_system_map_.clear();
 	for (size_t i = 0; i < out_systems_.size(); i++)
 	{
 		CBCGPGridRow* pRow = GetRow(i);

@@ -75,9 +75,17 @@ void OutSystemView::OnLButtonDown(UINT nFlags, CPoint point)
 	selected_row_ = id.m_nRow;
 	auto found = row_to_out_system_.find(id.m_nRow);
 	if (found == row_to_out_system_.end()) { Invalidate(); return; }
+	/*
 	CBCGPGridRow* pRow = GetRow(id.m_nRow);
 	CBCGPGridCheckItem* checkItem = (CBCGPGridCheckItem*)pRow->GetItem(0);
-	int mode = checkItem->GetState();
+	const int mode = checkItem->GetState();
+	if (mode == 1) {
+		found->second->enable(true);
+	}
+	else {
+		found->second->enable(false);
+	}
+	*/
 	Invalidate();
 	CBCGPGridCtrl::OnLButtonDown(nFlags, point);
 }
@@ -87,16 +95,20 @@ void OutSystemView::OnLButtonDown(UINT nFlags, CPoint point)
 void OutSystemView::OnItemChanged(CBCGPGridItem* pItem, int nRow, int nColumn)
 {
 	if (!pItem) return;
+	TRACE("OutSystemView::OnItemChanged nRow = %d\n", nRow);
 	const int col_id = pItem->GetColumnId();
 	if (col_id == 0) {
 		auto found = row_to_out_system_.find(nRow);
 		if (found == row_to_out_system_.end()) { Invalidate(); return; }
 		CBCGPGridCheckItem* checkItem = (CBCGPGridCheckItem*)pItem;
 		int mode = checkItem->GetState();
-		if (mode == 1) {
+		if (mode == 1 && !found->second->enable()) {
+			found->second->enable(true);
 			parent_dlg_->add_active_out_system(found->second);
 		}
 		else {
+			TRACE("parent_dlg_->remove_active_out_system nRow = %d\n", nRow);
+			found->second->enable(false);
 			parent_dlg_->remove_active_out_system(found->second);
 		}
 	}
@@ -233,6 +245,12 @@ void OutSystemView::init_grid()
 		if (!pRow) return;
 		create_out_system_cells(pRow, out_system);
 		row_to_out_system_[row] = out_system;
+		if (out_system->enable()) {
+			CBCGPGridRow* pRow = GetRow(row);
+			CBCGPGridCheckItem* checkItem = (CBCGPGridCheckItem*)pRow->GetItem(0);
+			checkItem->SetState(1);
+		}
+
 		row++;
 	}
 	clear_old_contents(row);
