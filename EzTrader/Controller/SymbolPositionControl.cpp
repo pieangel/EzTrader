@@ -31,15 +31,15 @@ namespace DarkHorse {
 
 	SymbolPositionControl::~SymbolPositionControl()
 	{
-		mainApp.event_hub()->unsubscribe_position_event_handler(id_);
 		mainApp.event_hub()->unsubscribe_quote_event_handler(id_);
+		mainApp.event_hub()->unsubscribe_position_event_handler(id_);
 
-		LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl destructor id = %d", id_);
+		//LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl destructor id = %d", id_);
 	}
 
 	void SymbolPositionControl::update_profit_loss(std::shared_ptr<SmQuote> quote)
 	{
-		if (symbol_id_ != 0 && quote->symbol_id != symbol_id_ ) return;
+		if (symbol_id_ != 0 && quote->symbol_id != symbol_id_) return;
 		position_.open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position_.open_quantity, quote->close, position_.average_price, symbol_seung_su_, symbol_decimal_);
 		if (event_handler_) event_handler_();
 	}
@@ -55,7 +55,7 @@ namespace DarkHorse {
 			if (it == account_map_.end()) return;
 
 			clear_position();
-			
+
 			if (position_type_ == PositionType::SubAccount) {
 				if (!account_ || !symbol_) return;
 				mainApp.total_position_manager()->get_position_from_account(account_->No(), symbol_->SymbolCode(), position_, position_map_);
@@ -70,6 +70,7 @@ namespace DarkHorse {
 			}
 
 			if (event_handler_) event_handler_();
+			if (out_system_event_handler_) out_system_event_handler_(out_system_id_);
 		}
 		catch (const std::exception& e) {
 			const std::string error = e.what();
@@ -81,7 +82,7 @@ namespace DarkHorse {
 	{
 		if (is_sub_account)
 			mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code, position_, position_map_);
-		else 
+		else
 			mainApp.total_position_manager()->get_position_from_parent_account(account_no, symbol_code, position_, position_map_);
 	}
 
@@ -147,6 +148,7 @@ namespace DarkHorse {
 			account_map_[account_->No()] = account_;
 		}
 		else {
+			account_map_.clear();
 			account_map_[account_->No()] = account_;
 			const auto& account_vector = account_->get_sub_accounts();
 			for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
@@ -160,6 +162,7 @@ namespace DarkHorse {
 	{
 		if (!fund) return;
 		fund_ = fund;
+		account_map_.clear();
 		const auto& account_vector = fund->GetAccountVector();
 		for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
 			auto sub_account = *it;

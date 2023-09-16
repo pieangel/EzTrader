@@ -41,6 +41,12 @@ namespace DarkHorse {
 		void Position_type(PositionType val) { position_type_ = val; }
 		void set_account(std::shared_ptr<SmAccount> account);
 		void set_fund(std::shared_ptr<SmFund> fund);
+		void set_out_system_event_handler(std::function<void(const int)> out_system_event_handler) {
+			out_system_event_handler_ = out_system_event_handler;
+		}
+		void set_out_system_id(const int out_system_id) {
+			out_system_id_ = out_system_id;
+		};
 	private:
 		PositionType position_type_{ PositionType::None };
 		// key : account no, value : position object.
@@ -54,6 +60,7 @@ namespace DarkHorse {
 		int symbol_id_{ 0 };
 		int account_id_{ 0 };
 		int fund_id_{ 0 };
+		int out_system_id_{ 0 };
 		std::shared_ptr<SmAccount> account_{ nullptr };
 		std::shared_ptr<SmFund> fund_{ nullptr };
 		std::shared_ptr<SmSymbol> symbol_{ nullptr };
@@ -61,5 +68,6 @@ namespace DarkHorse {
 		void subscribe_position_control();
 		void clear_position();
 		std::function<void()> event_handler_;
+		std::function<void(const int)> out_system_event_handler_;
 	};
 }

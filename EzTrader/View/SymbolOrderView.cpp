@@ -2318,6 +2318,7 @@ void SymbolOrderView::OnPaint()
 		set_moving_rect();
 		set_fixed_selected_cell();
 		_Grid->draw_cells(m_pGM, rect);
+		rect.right += 1;
 		_Grid->DrawBorder(m_pGM, rect, _Selected);
 		DrawMovingOrder();
 

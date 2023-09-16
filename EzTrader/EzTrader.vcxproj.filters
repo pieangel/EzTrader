@@ -1881,6 +1881,9 @@
     <ClInclude Include="Dialog\VtLayoutManager.h">
       <Filter>Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="Util\doublebufferedqueue.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

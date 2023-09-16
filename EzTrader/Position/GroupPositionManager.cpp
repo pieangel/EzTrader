@@ -19,14 +19,18 @@ std::shared_ptr<DarkHorse::Position> GroupPositionManager::create_group_position
 	if (position->order_source_type == OrderType::None) return nullptr;
 
 	auto group_position = std::make_shared<Position>();
-	if (position->order_source_type == OrderType::SubAccount ) {
+	// 서브 계좌의 경우 부모 계좌로 변경, 그리고 혹시 펀드가 할당되어 있다면 펀드 그룹 포지션도 만들어 줘야 한다. 
+	// 여기서는 일단 부모 계좌 그룹 포지션만 만들어 준다. 추후에 펀드 그룹 포지션도 만들어 줘야 한다.
+	if (position->order_source_type == OrderType::SubAccount) {
 		group_position->account_no = position->parent_account_no;
+		group_position->order_source_type = OrderType::MainAccount;
 	}
 	else if (position->order_source_type == OrderType::MainAccount) {
 		group_position->account_no = position->account_no;
 	}
 	else {
 		group_position->fund_name = position->fund_name;
+		group_position->order_source_type = OrderType::Fund;
 	}
 	group_position->symbol_code = position->symbol_code;
 	group_position_map_[position->symbol_code] = group_position;

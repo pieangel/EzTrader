@@ -134,6 +134,14 @@ std::shared_ptr<DarkHorse::SmOutSystem> OutSystemView::get_out_system(const int 
 	return found->second;
 }
 
+std::shared_ptr<DarkHorse::SmOutSystem> OutSystemView::get_selected_out_system()
+{
+	if (selected_row_ < 0) return nullptr;
+	auto found = row_to_out_system_.find(selected_row_);
+	if (found == row_to_out_system_.end()) return nullptr;
+	return found->second;
+}
+
 int OutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CBCGPGridCtrl::OnCreate(lpCreateStruct) == -1)

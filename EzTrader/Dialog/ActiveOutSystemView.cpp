@@ -92,6 +92,26 @@ void ActiveOutSystemView::remove_out_system(std::shared_ptr<DarkHorse::SmOutSyst
 	Invalidate();
 }
 
+void ActiveOutSystemView::on_update_quote()
+{
+
+}
+
+void ActiveOutSystemView::on_update_position()
+{
+
+}
+
+void ActiveOutSystemView::update_position(const position_p& position)
+{
+
+}
+
+void ActiveOutSystemView::update_quute(const quote_p& quote)
+{
+
+}
+
 int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CBCGPGridCtrl::OnCreate(lpCreateStruct) == -1)
@@ -142,7 +162,7 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		}
 
 		// Add row to grid:
-		AddRow(pRow, FALSE );
+		AddRow(pRow, FALSE);
 
 		row++;
 	}
@@ -159,7 +179,7 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetReadOnly(TRUE);
 
 	init_grid();
-	//start_timer();
+	SetTimer(1, 10, NULL);
 
 	init_ = true;
 	return 0;
@@ -167,8 +187,14 @@ int ActiveOutSystemView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void ActiveOutSystemView::OnDestroy()
 {
+	KillTimer(1);
 	SaveState(_T("BasicGrid"));
 	CBCGPGridCtrl::OnDestroy();
+}
+
+void ActiveOutSystemView::OnTimer(UINT_PTR nIDEvent)
+{
+	TRACE("ActiveOutSystemView::OnTimer");
 }
 
 void ActiveOutSystemView::init_grid()
@@ -185,6 +211,7 @@ void ActiveOutSystemView::init_grid()
 		pRow->GetItem(1)->SetValue(out_systems_[i]->symbol()->SymbolCode().c_str());
 
 		row_to_out_system_[out_systems_[i]->id()] = i;
+		out_system_map_[out_systems_[i]->id()] = out_system_map_[i];
 	}
 	clear_old_contents(out_systems_.size());
 	max_index_ = out_systems_.size();

@@ -313,6 +313,8 @@ void VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal()
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnDelConnect()
 {
+	auto out_system = out_system_view_.get_selected_out_system();
+	if (out_system) active_out_system_view_.remove_out_system(out_system);
 	out_system_view_.remove_out_system();
 }
 

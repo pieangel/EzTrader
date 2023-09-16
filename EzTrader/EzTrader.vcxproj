@@ -538,6 +538,7 @@
     <ClInclude Include="Util\cryptor.hpp" />
     <ClInclude Include="Util\Delegate.h" />
     <ClInclude Include="Util\DHTime.h" />
+    <ClInclude Include="Util\doublebufferedqueue.h" />
     <ClInclude Include="Util\formatstdstring.h" />
     <ClInclude Include="Util\IdGenerator.h" />
     <ClInclude Include="Util\Signal.h" />

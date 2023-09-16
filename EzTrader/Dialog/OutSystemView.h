@@ -25,7 +25,7 @@ public:
 	void add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system);
 	void remove_out_system();
 	std::shared_ptr<DarkHorse::SmOutSystem> get_out_system(const int row);
-
+	std::shared_ptr<DarkHorse::SmOutSystem> get_selected_out_system();
 	VtAutoSignalManagerDialog* parent_dlg() const { return parent_dlg_; }
 	void parent_dlg(VtAutoSignalManagerDialog* val) { parent_dlg_ = val; }
 protected:

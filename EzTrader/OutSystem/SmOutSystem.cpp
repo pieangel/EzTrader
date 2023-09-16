@@ -8,15 +8,35 @@
 #include "../Account/SmAccount.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Log/MyLogger.h"
+#include "../Controller/SymbolPositionControl.h"
+#include "../Controller/QuoteControl.h"
+
 
 namespace DarkHorse {
 	SmOutSystem::SmOutSystem(const std::string& name)
 		:name_(name), id_(IdGenerator::get_id())
 	{
+		position_control_ = std::make_shared<SymbolPositionControl>();
+		position_control_->set_out_system_id(id_);
+		quote_control_ = std::make_shared<QuoteControl>();
 	}
 
 	SmOutSystem::~SmOutSystem()
 	{
+	}
+
+	void SmOutSystem::account(std::shared_ptr<SmAccount> val)
+	{
+		if (!val) return;
+		account_ = val;
+		position_control_->set_account(account_);
+	}
+
+	void SmOutSystem::fund(std::shared_ptr<DarkHorse::SmFund> val)
+	{
+		if (!val) return;
+		fund_ = val;
+		position_control_->set_fund(fund_);
 	}
 
 	void SmOutSystem::put_order(const std::string& signal_name, int order_kind, int order_amount)
@@ -46,7 +66,7 @@ namespace DarkHorse {
 		//order_req->order_price = order_price;
 		order_req->order_amount = order_amount * seung_su_;
 		order_req->symbol_code = symbol_->SymbolCode();
-		
+
 		// 		order_req->order_type = order_type;
 		// 		order_req->price_type = price_type;
 		// 		order_req->fill_condition = fill_condition;

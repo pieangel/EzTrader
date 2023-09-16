@@ -4,7 +4,7 @@
 struct SmOrderGridResource {
 	// 헤더 버튼 색상
 	CBCGPColor HeaderButtonColor_Black = RGB(0xff, 0xff, 0xff);
-	CBCGPColor HeaderButtonColor = RGB(0x0, 0x0, 0x0);
+	CBCGPColor HeaderButtonColor = RGB(0x6c, 0x6c, 0x6c);
 	// 헤더 배경 색상
 	CBCGPColor HeaderBackColor_Black = RGB(0x28, 0x28, 0x28);
 	CBCGPColor HeaderBackColor = RGB(0xd2, 0xe0, 0xed);
