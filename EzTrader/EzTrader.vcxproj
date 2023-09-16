@@ -446,6 +446,10 @@
     <ClInclude Include="OutSystem\SmOutSignalDef.h" />
     <ClInclude Include="OutSystem\SmOutSystem.h" />
     <ClInclude Include="OutSystem\SmOutSystemManager.h" />
+    <ClInclude Include="OutSystem\VtAutoSignalManagerDialog.h" />
+    <ClInclude Include="OutSystem\VtSignalConnectionGrid.h" />
+    <ClInclude Include="OutSystem\VtSignalDefinitionGrid.h" />
+    <ClInclude Include="OutSystem\VtTotalSignalGrid.h" />
     <ClInclude Include="Pnf\pnfDefine.h" />
     <ClInclude Include="Pnf\PnfMaker.h" />
     <ClInclude Include="Pnf\PnfManager.h" />
@@ -822,6 +826,10 @@
     <ClCompile Include="OutSystem\SmOutSignalDef.cpp" />
     <ClCompile Include="OutSystem\SmOutSystem.cpp" />
     <ClCompile Include="OutSystem\SmOutSystemManager.cpp" />
+    <ClCompile Include="OutSystem\VtAutoSignalManagerDialog.cpp" />
+    <ClCompile Include="OutSystem\VtSignalConnectionGrid.cpp" />
+    <ClCompile Include="OutSystem\VtSignalDefinitionGrid.cpp" />
+    <ClCompile Include="OutSystem\VtTotalSignalGrid.cpp" />
     <ClCompile Include="Pnf\PnfMaker.cpp" />
     <ClCompile Include="Pnf\PnfManager.cpp" />
     <ClCompile Include="Position\AccountPositionManager.cpp" />

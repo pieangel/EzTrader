@@ -955,6 +955,18 @@
     <ClCompile Include="UGrid\EditControls\UTMaskedEdit.cpp">
       <Filter>UGrid\EditCtrls</Filter>
     </ClCompile>
+    <ClCompile Include="OutSystem\VtAutoSignalManagerDialog.cpp">
+      <Filter>OutSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="OutSystem\VtSignalConnectionGrid.cpp">
+      <Filter>OutSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="OutSystem\VtSignalDefinitionGrid.cpp">
+      <Filter>OutSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="OutSystem\VtTotalSignalGrid.cpp">
+      <Filter>OutSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -2183,6 +2195,18 @@
     </ClInclude>
     <ClInclude Include="UGrid\VtCellLabel.h">
       <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="OutSystem\VtAutoSignalManagerDialog.h">
+      <Filter>OutSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="OutSystem\VtSignalConnectionGrid.h">
+      <Filter>OutSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="OutSystem\VtSignalDefinitionGrid.h">
+      <Filter>OutSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="OutSystem\VtTotalSignalGrid.h">
+      <Filter>OutSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

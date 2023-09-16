@@ -31,8 +31,9 @@ public:
 	}
 	void update_account_profit_loss();
 	position_p find_position(const std::string& symbol_code);
+	void update_position(position_p position);
 private:
-	std::shared_ptr<GroupPosition> create_group_position(const std::string& account_no, const std::string& symbol_code);
+	//std::shared_ptr<GroupPosition> create_group_position(const std::string& account_no, const std::string& symbol_code);
 	void set_symbol_id(position_p position, const std::string& symbol_code);
 	void set_account_id(position_p position, const std::string& account_no);
 	int calculate_position_count(order_p order, position_p position);

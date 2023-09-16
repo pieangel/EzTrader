@@ -13,6 +13,10 @@
 #include "../Fund/SmFund.h"
 #include "../Account/SmAccount.h"
 #include "../Account/SmAccountManager.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
 #include "GroupPositionManager.h"
 #include <algorithm>
 
@@ -208,7 +212,6 @@ void TotalPositionManager::get_position_from_account(const std::string& account_
 
 void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
 {
-	//position_map.clear();
 	get_position_from_account(account_no, symbol_code, position, position_map);
 	auto parent_account = mainApp.AcntMgr()->FindAccount(account_no);
 	const std::vector<std::shared_ptr<SmAccount>>& subAcntVector = parent_account->get_sub_accounts();
@@ -321,6 +324,18 @@ double TotalPositionManager::calculate_symbol_open_profit_loss(
 	return open_profit_loss / pow(10, symbol_decimal);
 }
 
+void TotalPositionManager::calculate_symbol_open_profit_loss(const std::shared_ptr<Position>& position)
+{
+	if (!position) return;
+	std::shared_ptr<SmQuote> quote = mainApp.QuoteMgr()->get_quote(position->symbol_code);
+	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->symbol_code);
+	if (!quote || !symbol) return;
+
+	double open_profit_loss = 0.0;
+	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
+	position->open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
+}
+
 void TotalPositionManager::update_account_profit_loss(const std::string& account_no)
 {
 	account_position_manager_p position_manager = get_account_position_manager(account_no);
@@ -342,23 +357,27 @@ void TotalPositionManager::update_group_position(std::shared_ptr<Position> posit
 	if (!position) return;
 	if (position->order_source_type == OrderType::SubAccount) {
 		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->parent_account_no);
-		group_position_manager->update_group_position(position);
+		auto account_group_position = group_position_manager->create_account_group_position(position->parent_account_no, position->symbol_code);
+		group_position_manager->update_group_position(account_group_position, position);
 		auto sub_account = mainApp.AcntMgr()->FindAccount(position->account_no);
-		if (!sub_account) return;
-		if (sub_account->fund_name().empty()) return;
+		if (!sub_account || sub_account->fund_name().empty()) return;
 		group_position_manager = find_add_fund_group_position_manager(sub_account->fund_name());
-		group_position_manager->update_group_position(position);
+		auto fund_group_position = group_position_manager->create_fund_group_position(position->fund_name, position->symbol_code);
+		group_position_manager->update_group_position(fund_group_position, position);
 	}
 	else if (position->order_source_type == OrderType::MainAccount) {
 		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->account_no);
-		group_position_manager->update_group_position(position);
+		auto account_group_position = group_position_manager->create_account_group_position(position->account_no, position->symbol_code);
+		group_position_manager->update_group_position(account_group_position, position);
 	}
 	else if (position->order_source_type == OrderType::Fund) {
 		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->parent_account_no);
-		group_position_manager->update_group_position(position);
+		auto account_group_position = group_position_manager->create_account_group_position(position->parent_account_no, position->symbol_code);
+		group_position_manager->update_group_position(account_group_position, position);
 
 		group_position_manager = find_add_fund_group_position_manager(position->fund_name);
-		group_position_manager->update_group_position(position);
+		auto fund_group_position = group_position_manager->create_fund_group_position(position->fund_name, position->symbol_code);
+		group_position_manager->update_group_position(fund_group_position, position);
 	}
 	else return;
 }

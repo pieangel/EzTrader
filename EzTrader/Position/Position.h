@@ -27,7 +27,7 @@ struct Position
 	double pure_trade_profit_loss{ 0.0f }; // 청산 순손익
 	double trade_fee{ 0.0f }; // 청산 수수료
 	std::string parent_account_no;
-
+	bool is_group{ false };
 	// key : account_no, value : position
 	std::map<std::string, std::shared_ptr<Position>> sub_positions;
 };

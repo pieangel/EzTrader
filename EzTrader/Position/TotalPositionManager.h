@@ -51,6 +51,7 @@ public:
 		const int& symbol_seungsu,
 		const int& symbol_decimal
 	);
+	static void calculate_symbol_open_profit_loss(const std::shared_ptr<Position>& position);
 	void update_account_profit_loss(const std::string& account_no);
 	position_p find_position_by_id(const int& position_id);
 	void update_group_position(std::shared_ptr<Position> position);

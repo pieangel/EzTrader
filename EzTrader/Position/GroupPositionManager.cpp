@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GroupPositionManager.h"
 #include "Position.h"
+#include "TotalPositionManager.h"
 namespace DarkHorse {
 GroupPositionManager::GroupPositionManager(TotalPositionManager& total_position_manager)
 	: total_position_manager_(total_position_manager)
@@ -13,48 +14,7 @@ GroupPositionManager::~GroupPositionManager()
 
 }
 
-std::shared_ptr<DarkHorse::Position> GroupPositionManager::create_group_position(std::shared_ptr<Position> position)
-{
-	if (!position) return nullptr;
-	if (position->order_source_type == OrderType::None) return nullptr;
-
-	auto group_position = std::make_shared<Position>();
-	// 서브 계좌의 경우 부모 계좌로 변경, 그리고 혹시 펀드가 할당되어 있다면 펀드 그룹 포지션도 만들어 줘야 한다. 
-	// 여기서는 일단 부모 계좌 그룹 포지션만 만들어 준다. 추후에 펀드 그룹 포지션도 만들어 줘야 한다.
-	if (position->order_source_type == OrderType::SubAccount) {
-		group_position->account_no = position->parent_account_no;
-		group_position->order_source_type = OrderType::MainAccount;
-	}
-	else if (position->order_source_type == OrderType::MainAccount) {
-		group_position->account_no = position->account_no;
-	}
-	else {
-		group_position->fund_name = position->fund_name;
-		group_position->order_source_type = OrderType::Fund;
-	}
-	group_position->symbol_code = position->symbol_code;
-	group_position_map_[position->symbol_code] = group_position;
-
-	return group_position;
-}
-
-std::shared_ptr<Position> GroupPositionManager::add_position(std::shared_ptr<Position> position)
-{	
-	if (!position) return nullptr;
-	std::shared_ptr<Position> group_position = nullptr;
-	auto found = group_position_map_.find(position->symbol_code);
-	if (found == group_position_map_.end()) {
-		group_position = create_group_position(position);
-	}
-	else {
-		group_position = found->second;
-	}
-
-	group_position->sub_positions[position->account_no] = position;
-	return group_position;
-}
-
-void GroupPositionManager::update_group_position_by(std::shared_ptr<Position> group_position)
+void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Position> group_position)
 {
 	if (!group_position) return;
 
@@ -67,7 +27,7 @@ void GroupPositionManager::update_group_position_by(std::shared_ptr<Position> gr
 	double average_price{ 0.0f };
 	for (auto& sub_position : sub_positions) {
 		auto position = sub_position.second;
-		//update_open_profit_loss(position);
+		TotalPositionManager::calculate_symbol_open_profit_loss(position);
 		trade_profit_loss += position->trade_profit_loss;
 		open_profit_loss += position->open_profit_loss;
 		trade_fee += position->trade_fee;
@@ -89,12 +49,18 @@ void GroupPositionManager::update_group_position_by(std::shared_ptr<Position> gr
 	update_whole_group_position();
 }
 
-void GroupPositionManager::update_group_position(std::shared_ptr<Position> position)
+std::shared_ptr<DarkHorse::Position> GroupPositionManager::get_group_position(const std::string& symbol_code)
 {
-	if (!position) return;
+	auto found = group_position_map_.find(symbol_code);
+	if (found == group_position_map_.end()) return nullptr;
+	else return found->second;
+}
 
-	auto group_position = add_position(position);
-	if (group_position) update_group_position_by(group_position);
+void GroupPositionManager::update_group_position(const std::shared_ptr<Position>& group_position, const std::shared_ptr<Position>& position)
+{
+	if (!group_position || !position) return;
+	group_position->sub_positions[position->account_no] = position;
+	update_group_position_by_symbol(group_position);
 }
 
 void GroupPositionManager::update_whole_group_position()
@@ -120,6 +86,42 @@ void GroupPositionManager::update_whole_group_position()
 	whole_profit_loss_->open_profit_loss = open_profit_loss;
 	whole_profit_loss_->trade_fee = trade_fee;
 	whole_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
+}
+
+std::shared_ptr<Position> GroupPositionManager::create_account_group_position(const std::string& account_no, const std::string symbol_code)
+{
+	std::shared_ptr<Position> group_position = nullptr;
+	auto found = group_position_map_.find(symbol_code);
+	if (found == group_position_map_.end()) {
+		group_position = std::make_shared<Position>();
+		group_position->account_no = account_no;
+		group_position->symbol_code = symbol_code;
+		group_position->order_source_type = OrderType::MainAccount;
+		group_position->is_group = true;
+		group_position_map_[symbol_code] = group_position;
+	}
+	else {
+		group_position = found->second;
+	}
+	return group_position;
+}
+
+std::shared_ptr<Position> GroupPositionManager::create_fund_group_position(const std::string& fund_name, const std::string& symbol_code)
+{
+	std::shared_ptr<Position> group_position = nullptr;
+	auto found = group_position_map_.find(symbol_code);
+	if (found == group_position_map_.end()) {
+		group_position = std::make_shared<Position>();
+		group_position->fund_name = fund_name;
+		group_position->symbol_code = symbol_code;
+		group_position->order_source_type = OrderType::Fund;
+		group_position->is_group = true;
+		group_position_map_[symbol_code] = group_position;
+	}
+	else {
+		group_position = found->second;
+	}
+	return group_position;
 }
 
 }

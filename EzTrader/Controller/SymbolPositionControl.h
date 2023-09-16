@@ -48,6 +48,7 @@ namespace DarkHorse {
 			out_system_id_ = out_system_id;
 		};
 	private:
+		bool is_account_exist(const std::shared_ptr<Position>& position);
 		PositionType position_type_{ PositionType::None };
 		// key : account no, value : position object.
 		std::map<std::string, std::shared_ptr<Position>> position_map_;

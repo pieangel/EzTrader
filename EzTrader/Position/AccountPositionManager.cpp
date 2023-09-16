@@ -19,17 +19,17 @@
 #include "TotalPositionManager.h"
 namespace DarkHorse {
 
-	AccountPositionManager::AccountPositionManager(TotalPositionManager& total_position_manager, const std::string& account_no)
-		: total_position_manager_(total_position_manager)
-		, account_no_(account_no)
-	{
-		id_ = IdGenerator::get_id();
-		account_profit_loss_ = std::make_shared<AccountProfitLoss>();
-	}
+AccountPositionManager::AccountPositionManager(TotalPositionManager& total_position_manager, const std::string& account_no)
+	: total_position_manager_(total_position_manager)
+	, account_no_(account_no)
+{
+	id_ = IdGenerator::get_id();
+	account_profit_loss_ = std::make_shared<AccountProfitLoss>();
+}
 
-	AccountPositionManager::~AccountPositionManager()
-	{
-	}
+AccountPositionManager::~AccountPositionManager()
+{
+}
 
 position_p AccountPositionManager::get_position(const std::string& symbol_code)
 {
@@ -119,16 +119,20 @@ void AccountPositionManager::update_position(quote_p quote)
 	if (!quote) return;
 	position_p position = find_position(quote->symbol_code);
 	if (!position) return;
-	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->symbol_code);
-	if (!symbol) return;
-
-	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
+	TotalPositionManager::calculate_symbol_open_profit_loss(position);
 	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
 
 	update_account_profit_loss();
 }
 
+void AccountPositionManager::update_position(position_p position)
+{
+	if (!position) return;
+	update_open_profit_loss(position);
+	update_account_profit_loss();
+}
 
+/*
 std::shared_ptr<GroupPosition> AccountPositionManager::create_group_position(const std::string& account_no, const std::string& symbol_code)
 {
 	auto group_position = std::make_shared<GroupPosition>();
@@ -138,6 +142,7 @@ std::shared_ptr<GroupPosition> AccountPositionManager::create_group_position(con
 
 	return group_position;
 }
+*/
 
 void AccountPositionManager::set_symbol_id(position_p position, const std::string& symbol_code)
 {
@@ -202,13 +207,7 @@ double AccountPositionManager::calculate_average_price(order_p order, position_p
 }
 void AccountPositionManager::update_open_profit_loss(position_p position)
 {
-	if (!position) return;
-	std::shared_ptr<SmQuote> quote = mainApp.QuoteMgr()->get_quote(position->symbol_code);
-	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position->symbol_code);
-	if (!quote || !symbol) return;
-
-	position->open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position->open_quantity, quote->close, position->average_price, symbol->seung_su(), symbol->decimal());
-	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
+	TotalPositionManager::calculate_symbol_open_profit_loss(position);
 }
 
 }

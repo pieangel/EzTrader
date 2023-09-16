@@ -55,6 +55,11 @@ namespace DarkHorse {
 		else return;
 	}
 
+	void SmOutSystem::liq_all()
+	{
+
+	}
+
 	void SmOutSystem::put_order_each(std::shared_ptr<SmAccount> account, const std::string& signal_name, int order_kind, int order_amount)
 	{
 		if (!account || !symbol_) return;

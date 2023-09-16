@@ -38,6 +38,7 @@ namespace DarkHorse {
 		std::shared_ptr<SymbolPositionControl> position_control() const { return position_control_; }
 		bool enable() const { return enable_; }
 		void enable(bool val) { enable_ = val; }
+		void liq_all();
 	private:
 		std::shared_ptr<QuoteControl> quote_control_;
 		std::shared_ptr<SymbolPositionControl> position_control_;
