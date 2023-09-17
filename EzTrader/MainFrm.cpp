@@ -77,6 +77,7 @@ using namespace hmdf;
 #include "DataFrame/Utils/FixedSizePriorityQueue.h"
 #include "DataFrame/Utils/FixedSizeString.h"
 #include "Dialog/SmAutoSignalManagerDialog.h"
+#include "OutSystem/VtAutoSignalManagerDialog.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -1406,6 +1407,9 @@ void CMainFrame::OnSubAccount()
 
 void CMainFrame::OnOutSystem()
 {
-	SmAutoSignalManagerDialog out_system_dialog;
-	out_system_dialog.DoModal();
+	//SmAutoSignalManagerDialog out_system_dialog;
+	//out_system_dialog.DoModal();
+
+	VtAutoSignalManagerDialog auto_signal_dialog;
+	auto_signal_dialog.DoModal();
 }

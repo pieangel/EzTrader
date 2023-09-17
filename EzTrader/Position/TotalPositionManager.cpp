@@ -182,6 +182,14 @@ void TotalPositionManager::get_position_from_fund(const std::string& fund_name, 
 	std::copy(source_position_map.begin(), source_position_map.end(), std::inserter(position_map, position_map.end()));
 }
 
+void TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position)
+{
+	auto group_position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
+	auto group_position = group_position_manager->get_group_position(symbol_code);
+	if (!group_position) return;
+	group_position_manager->update_group_position_by_symbol(group_position, position);
+}
+
 void TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
 {
 	//position_map.clear();
@@ -208,6 +216,14 @@ void TotalPositionManager::get_position_from_account(const std::string& account_
 	if (!account_position_manager) return;
 	const auto& source_position_map = account_position_manager->get_position_map();
 	std::copy(source_position_map.begin(), source_position_map.end(), std::inserter(position_map, position_map.end()));
+}
+
+void TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position)
+{
+	auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(account_no);
+	auto symbol_position = account_position_manager->find_position(symbol_code);
+	if (!symbol_position) return;
+	account_position_manager->update_position(symbol_position, position);
 }
 
 void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
@@ -237,6 +253,14 @@ void TotalPositionManager::get_position_from_parent_account(const std::string& a
 	if (!group_position_manager) return;
 	const auto& source_position_map = group_position_manager->get_group_position_map();
 	std::copy(source_position_map.begin(), source_position_map.end(), std::inserter(position_map, position_map.end()));
+}
+
+void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position)
+{
+	auto group_position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
+	auto group_position = group_position_manager->get_group_position(symbol_code);
+	if (!group_position) return;
+	group_position_manager->update_group_position_by_symbol(group_position, position);
 }
 
 void TotalPositionManager::update_position(order_p order)

@@ -132,6 +132,20 @@ void AccountPositionManager::update_position(position_p position)
 	update_account_profit_loss();
 }
 
+void AccountPositionManager::update_position(position_p position, VmPosition& dest_position)
+{
+	if (!position) return;
+	update_open_profit_loss(position);
+	dest_position.open_profit_loss = position->open_profit_loss;
+
+	dest_position.trade_profit_loss = position->trade_profit_loss;
+	dest_position.open_profit_loss = position->open_profit_loss;
+	dest_position.trade_fee = position->trade_fee;
+	dest_position.pure_trade_profit_loss = position->pure_trade_profit_loss;
+
+	update_account_profit_loss();
+}
+
 /*
 std::shared_ptr<GroupPosition> AccountPositionManager::create_group_position(const std::string& account_no, const std::string& symbol_code)
 {

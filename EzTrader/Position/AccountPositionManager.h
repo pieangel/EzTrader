@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include "../ViewModel/VmPosition.h"
 namespace DarkHorse {
 	struct Position;
 	struct SmQuote;
@@ -32,6 +33,7 @@ public:
 	void update_account_profit_loss();
 	position_p find_position(const std::string& symbol_code);
 	void update_position(position_p position);
+	void update_position(position_p position, VmPosition& dest_position);
 private:
 	//std::shared_ptr<GroupPosition> create_group_position(const std::string& account_no, const std::string& symbol_code);
 	void set_symbol_id(position_p position, const std::string& symbol_code);

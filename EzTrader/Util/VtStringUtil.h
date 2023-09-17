@@ -29,7 +29,7 @@ namespace DarkHorse {
 			ltrim(s);
 			rtrim(s);
 		}
-		static std::string formatWithThousandsSeparator(double value, int precision);
+		static std::string format_with_thousand_separator(double value, int precision);
 		static std::string get_format_value(const std::string& type, const double& value, const bool thousand_separator = false);
 		static std::string get_format_value(const double& value, const int decimal, const bool thousand_separator = false);
 		static std::pair<std::string, std::string> GetCurrentDateTime();

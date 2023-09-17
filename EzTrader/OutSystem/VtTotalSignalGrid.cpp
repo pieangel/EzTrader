@@ -17,16 +17,19 @@
 #include "../Symbol/SmSymbolManager.h"
 #include "../Quote/SmQuote.h"
 #include "../Quote/SmQuoteManager.h"
-
-COLORREF GridTitleBackColor = RGB(210, 224, 237);
-COLORREF GridTitleTextColor = RGB(0, 0, 0);
-COLORREF SelDialogBackColor = RGB(210, 224, 237);
-COLORREF SelCellBackColor = RGB(252, 252, 190);
-COLORREF MainBackColor = RGB(220, 220, 220);
-COLORREF MainTextColor = RGB(0, 0, 0);
+#include "../ViewModel/VmPosition.h"
+#include "../OutSystem/SmOutSystem.h"
+#include "../Controller/SymbolPositionControl.h"
+#include "../Util/VtStringUtil.h"
+#include "../Quote/SmQuote.h"
+#include "../Controller/QuoteControl.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Global/SmConst.h"
 
 VtTotalSignalGrid::VtTotalSignalGrid()
 {
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->set_event_handler(std::bind(&VtTotalSignalGrid::on_update_quote, this));
 }
 
 
@@ -125,58 +128,53 @@ void VtTotalSignalGrid::RefreshOrders()
 	auto out_system_vector = mainApp.out_system_manager()->get_out_system_vector();
 	int i = 0;
 	for (auto it = out_system_vector.begin(); it != out_system_vector.end(); ++it) {
-		auto sys = *it;
-		if (sys->order_type() == DarkHorse::OrderType::MainAccount || sys->order_type() == DarkHorse::OrderType::SubAccount) {
-			if (sys->account()) QuickSetText(0, i, sys->account()->No().c_str());
+		auto out_system = *it;
+		if (out_system->order_type() == DarkHorse::OrderType::MainAccount || out_system->order_type() == DarkHorse::OrderType::SubAccount) {
+			if (out_system->account()) QuickSetText(0, i, out_system->account()->No().c_str());
 		}
 		else {
-			if (sys->fund()) QuickSetText(0, i, sys->fund()->Name().c_str());
+			if (out_system->fund()) QuickSetText(0, i, out_system->fund()->Name().c_str());
 		}
 
-		if (sys->symbol()) QuickSetText(1, i, sys->symbol()->SymbolCode().c_str());
+		if (out_system->symbol()) QuickSetText(1, i, out_system->symbol()->SymbolCode().c_str());
 
 		// 포지션 표시
-		VtPosition posi = sys->GetPosition();
-		posi.Position == VtPositionType::None ? QuickSetText(2, i, _T("없음")) : posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
-		CString thVal;
+		const VmPosition& posi = out_system->position_control()->get_position();
+		posi.open_quantity == 0 ? QuickSetText(2, i, _T("없음")) : posi.open_quantity > 0 ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
+		std::string thVal;
 		std::string temp;
-		if (sys->Symbol()) {
-			temp = std::format(posi.AvgPrice, sys->symbol()->decimal());
-			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->Decimal);
+		if (out_system->symbol()) {
+			thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(posi.average_price, out_system->symbol()->decimal());
 		}
 		else {
-			temp = NumberFormatter::format(0, 0);
-			thVal = XFormatNumber(temp.c_str(), -1);
+			thVal = "0";
 		}
-		QuickSetText(3, i, thVal);
+		QuickSetText(3, i, thVal.c_str());
 
 
 		// 현재가 표시
 		CUGCell cell;
 		GetCell(4, i, &cell);
-		int curValue = sys->Symbol() ? sys->Symbol()->Quote.intClose : 0;
-		if (sys->Symbol()) {
-			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->Decimal), sys->Symbol()->Decimal);
-			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->Decimal);
+		auto quote_p = mainApp.QuoteMgr()->find_quote(out_system->symbol()->SymbolCode());
+		if (quote_p) {
+			thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(quote_p->close / std::pow(out_system->symbol()->decimal(), out_system->symbol()->decimal()), out_system->symbol()->decimal());
 		}
 		else {
-			temp = NumberFormatter::format(0, 0);
-			thVal = XFormatNumber(temp.c_str(), -1);
+			thVal = "0";
 		}
-		cell.SetText(thVal);
-		cell.LongValue(curValue);
+		cell.SetText(thVal.c_str());
+		cell.LongValue(quote_p->close);
 		SetCell(4, i, &cell);
 
-		temp = NumberFormatter::format(posi.OpenProfitLoss, 0);
-		CString profitLoss = XFormatNumber(temp.c_str(), -1);
+		thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(posi.open_profit_loss, out_system->symbol()->decimal());
 		// 평가손익 표시
-		if (posi.OpenProfitLoss > 0) {
+		if (posi.open_profit_loss > 0) {
 			QuickSetTextColor(5, i, RGB(255, 0, 0));
-			QuickSetText(5, i, profitLoss);
+			QuickSetText(5, i, thVal.c_str());
 		}
-		else if (posi.OpenProfitLoss < 0) {
+		else if (posi.open_profit_loss < 0) {
 			QuickSetTextColor(5, i, RGB(0, 0, 255));
-			QuickSetText(5, i, profitLoss);
+			QuickSetText(5, i, thVal.c_str());
 		}
 		else {
 			QuickSetTextColor(5, i, RGB(0, 0, 0));
@@ -184,13 +182,13 @@ void VtTotalSignalGrid::RefreshOrders()
 		}
 
 		// 잔고 표시
-		if (posi.OpenQty != 0) {
-			if (posi.OpenQty > 0) {
-				QuickSetNumber(7, i, std::abs(posi.OpenQty));
+		if (posi.open_quantity != 0) {
+			if (posi.open_quantity > 0) {
+				QuickSetNumber(7, i, std::abs(posi.open_quantity));
 				QuickSetNumber(6, i, 0);
 			}
-			else if (posi.OpenQty < 0) {
-				QuickSetNumber(6, i, std::abs(posi.OpenQty));
+			else if (posi.open_quantity < 0) {
+				QuickSetNumber(6, i, std::abs(posi.open_quantity));
 				QuickSetNumber(7, i, 0);
 			}
 		}
@@ -199,7 +197,7 @@ void VtTotalSignalGrid::RefreshOrders()
 			QuickSetNumber(7, i, 0);
 		}
 		// 시그널 이름 표시
-		QuickSetText(8, i, sys->OutSignal()->SignalName.c_str());
+		QuickSetText(8, i, out_system->name().c_str());
 
 		GetCell(9, i, &cell);
 		cell.SetCellType(m_nButtonIndex);
@@ -208,7 +206,7 @@ void VtTotalSignalGrid::RefreshOrders()
 		cell.SetFont(&_titleFont);
 		cell.SetTextColor(RGB(0, 0, 0));
 		cell.SetBackColor(RGB(218, 226, 245));
-		cell.Tag((void*)sys.get());
+		cell.Tag((void*)out_system.get());
 		cell.SetText("청산");
 		SetCell(9, i, &cell);
 
@@ -219,7 +217,12 @@ void VtTotalSignalGrid::RefreshOrders()
 		i++;
 	}
 
-	_RowNumber = sysMap.size();
+	_RowNumber = out_system_vector.size();
+}
+
+void VtTotalSignalGrid::on_update_quote()
+{
+
 }
 
 int VtTotalSignalGrid::OnButton(long ID, int col, long row, long msg, long param)
@@ -233,16 +236,17 @@ int VtTotalSignalGrid::OnButton(long ID, int col, long row, long msg, long param
 
 	CUGCell cell;
 	GetCell(col, row, &cell);
-	VtSystem* sys = (VtSystem*)cell.Tag();
-	if (sys) {
-		VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+	auto found = out_system_map_.find(row);
+	if (found == out_system_map_.end()) return 0;
+	auto out_system = found->second;
+	if (out_system) {
 		// 시스템을 청산시킨다.
-		sys->LiqudAll();
+		out_system->liq_all();
 		// 시스템을 없애 버린다.
-		outSysOrderMgr->RemoveSystem(sys->Id());
+		mainApp.out_system_manager()->remove_out_system(out_system);
 		// 연결창에서 체크를 풀고 시스템을 비활성화 시킨다.
 		if (_ConnectGrid) {
-			_ConnectGrid->ClearCheck(sys);
+			_ConnectGrid->ClearCheck(out_system);
 		}
 		// 모든 셀을 지운다.
 		ClearCells();

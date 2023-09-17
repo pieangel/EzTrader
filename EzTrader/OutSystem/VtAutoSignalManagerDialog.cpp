@@ -2,20 +2,17 @@
 //
 
 #include "stdafx.h"
-#include "SMTrader.h"
+#include "../DarkHorse.h"
 #include "VtAutoSignalManagerDialog.h"
 #include "afxdialogex.h"
-#include "VtAddConnectSignalDlg.h"
-#include "VtAddOutSigDefDlg.h"
-#include "VtSystemOrderConfig.h"
-#include "System/VtSystem.h"
+#include "../Global/SmConst.h"
 
 // VtAutoSignalManagerDialog dialog
 
-IMPLEMENT_DYNAMIC(VtAutoSignalManagerDialog, CDialogEx)
+IMPLEMENT_DYNAMIC(VtAutoSignalManagerDialog, CBCGPDialog)
 
 VtAutoSignalManagerDialog::VtAutoSignalManagerDialog(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_SYS_AUTO_CONNECT, pParent)
+	: CBCGPDialog(IDD_SYS_AUTO_CONNECT, pParent)
 {
 
 }
@@ -26,18 +23,18 @@ VtAutoSignalManagerDialog::~VtAutoSignalManagerDialog()
 
 void VtAutoSignalManagerDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CBCGPDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_CHECK_ALL, _CheckAll);
 }
 
 
 void VtAutoSignalManagerDialog::PostNcDestroy()
 {
-	delete this;
-	CDialogEx::PostNcDestroy();
+	//delete this;
+	CBCGPDialog::PostNcDestroy();
 }
 
-BEGIN_MESSAGE_MAP(VtAutoSignalManagerDialog, CDialogEx)
+BEGIN_MESSAGE_MAP(VtAutoSignalManagerDialog, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTN_ADD_CONNECT, &VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect)
 	ON_BN_CLICKED(IDC_BTN_ADD_SIGNAL, &VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal)
 	ON_BN_CLICKED(IDC_BTN_DEL_CONNECT, &VtAutoSignalManagerDialog::OnBnClickedBtnDelConnect)
@@ -55,7 +52,7 @@ END_MESSAGE_MAP()
 
 BOOL VtAutoSignalManagerDialog::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CBCGPDialog::OnInitDialog();
 
 	// TODO:  Add extra initialization here
 	_TotalSigGrid.AttachGrid(this, IDC_STATIC_TOTAL_SIGNAL);
@@ -262,17 +259,17 @@ void VtAutoSignalManagerDialog::Resize()
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect()
 {
-	VtAddConnectSignalDlg dlg;
-	dlg.SigConGrid(&_ConnectGrid);
-	dlg.DoModal();
+	//VtAddConnectSignalDlg dlg;
+	//dlg.SigConGrid(&_ConnectGrid);
+	//dlg.DoModal();
 }
 
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal()
 {
-	VtAddOutSigDefDlg dlg;
-	dlg.SigDefGrid(&_DefineGrid);
-	dlg.DoModal();
+	//VtAddOutSigDefDlg dlg;
+	//dlg.SigDefGrid(&_DefineGrid);
+	//dlg.DoModal();
 }
 
 
@@ -294,18 +291,19 @@ void VtAutoSignalManagerDialog::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == RefTimer) {
 		RefreshOrder();
 	}
-	CDialogEx::OnTimer(nIDEvent);
+	CBCGPDialog::OnTimer(nIDEvent);
 }
 
 
 void VtAutoSignalManagerDialog::OnClose()
 {
 	KillTimer(RefTimer);
-	CDialogEx::OnClose();
+	CBCGPDialog::OnClose();
 }
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnOrderConfig()
 {
+	/*
 	VtSystemOrderConfig orderCfgDlg;
 	orderCfgDlg._PriceType = VtOutSystemManager::PriceType;
 	orderCfgDlg._OrderTick = VtOutSystemManager::OrderTick;
@@ -322,6 +320,7 @@ void VtAutoSignalManagerDialog::OnBnClickedBtnOrderConfig()
 			sys->OrderTick(orderCfgDlg._OrderTick);
 		}
 	}
+	*/
 }
 
 
@@ -338,7 +337,7 @@ void VtAutoSignalManagerDialog::OnBnClickedCheckAll()
 
 void VtAutoSignalManagerDialog::OnSize(UINT nType, int cx, int cy)
 {
-	CDialogEx::OnSize(nType, cx, cy);
+	CBCGPDialog::OnSize(nType, cx, cy);
 
 	this->Resize();
 }

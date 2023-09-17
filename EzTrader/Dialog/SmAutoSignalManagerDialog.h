@@ -6,11 +6,6 @@
 #include "OutSystemView.h"
 #include "ActiveOutSystemView.h"
 #include "OutSystemDefView.h"
-const int STD_GAP = 8;
-const int STD_BUTTON_WIDTH = 90;
-const int STD_BUTTON_HEIGHT = 25;
-// VtAutoSignalManagerDialog dialog
-const int RefTimer = 0x00000010;
 
 namespace DarkHorse
 {

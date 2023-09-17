@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "SmAddConnectSignalDlg.h"
 #include "SmAddOutSigDefDlg.h"
+#include "../Global/SmConst.h"
 
 #define WND_ID20 0x00000020
 #define WND_ID21 0x00000021

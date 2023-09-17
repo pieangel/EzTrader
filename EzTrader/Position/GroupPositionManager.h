@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 #include "../Order/SmOrderConst.h"
+#include "../ViewModel/VmPosition.h"
 namespace DarkHorse {
 	class TotalPositionManager;
 	struct GroupPosition;
@@ -32,6 +33,7 @@ namespace DarkHorse {
 		std::shared_ptr<Position> create_account_group_position(const std::string& account_no, const std::string symbol_code);
 		std::shared_ptr<Position> create_fund_group_position(const std::string& func_name, const std::string& symbol_code);
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position);
+		void update_group_position_by_symbol(std::shared_ptr<Position> group_position, VmPosition& dest_position);
 		std::shared_ptr<Position> get_group_position(const std::string& symbol_code);
 	private:
 		account_profit_loss_p whole_profit_loss_{ nullptr };

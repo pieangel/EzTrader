@@ -5,6 +5,11 @@
 #include "../UGrid/CellTypes/UGCTbutn.h"
 #include <map>
 #include <vector>
+#include <memory>
+namespace DarkHorse {
+	class QuoteControl;
+	class SmOutSystem;
+}
 class VtSignalConnectionGrid;
 class VtTotalSignalGrid : public VtGrid
 {
@@ -32,9 +37,13 @@ public:
 	VtSignalConnectionGrid* ConnectGrid() const { return _ConnectGrid; }
 	void ConnectGrid(VtSignalConnectionGrid* val) { _ConnectGrid = val; }
 private:
+	void on_update_quote();
+	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	int OnButton(long ID, int col, long row, long msg, long param);
 	void InitGrid();
 	int _RowNumber = 0;
+	// key : row index, value : out system object.
+	std::map<int, std::shared_ptr<DarkHorse::SmOutSystem>> out_system_map_;
 	VtSignalConnectionGrid* _ConnectGrid = nullptr;
 };
 

@@ -3,11 +3,14 @@
 
 struct SmButtonResource {
 	// Border Color
-	CBCGPColor BorderColor = RGB(255, 255, 255);
+	CBCGPColor BorderColor_Black = RGB(255, 255, 255);
+	CBCGPColor BorderColor = RGB(0x6c, 0x6c, 0x6c);
 	// Background Color
 	CBCGPColor BackColor = RGB(0x28, 0x28, 0x28);
+	CBCGPColor BackColor_Black = RGB(0xff, 0xff, 0xff);
 	// Text Color
-	CBCGPColor TextColor = RGB(255, 255, 255);
+	CBCGPColor TextColor_Black = RGB(255, 255, 255);
+	CBCGPColor TextColor = RGB(0, 0, 0);
 	// hover Color
 	CBCGPColor HoverColor = RGB(255, 0, 0);
 	// Selected Color
@@ -19,7 +22,7 @@ struct SmButtonResource {
 
 
 	CBCGPBrush BorderBrush = CBCGPBrush(BorderColor);
-	CBCGPBrush BackBrush = CBCGPBrush(BackColor);
+	CBCGPBrush BackBrush = CBCGPBrush(BackColor_Black);
 	CBCGPBrush TextBrush = CBCGPBrush(TextColor);
 	CBCGPBrush HoverBrush = CBCGPBrush(HoverColor);
 	CBCGPBrush SelectBrush = CBCGPBrush(SelectColor);

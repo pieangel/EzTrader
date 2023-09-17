@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "VtSignalDefinitionGrid.h"
-#include "VtGlobal.h"
-#include "VtOutSignalDefManager.h"
-#include "VtOutSignalDef.h"
+#include "../Global/SmConst.h"
 
 VtSignalDefinitionGrid::VtSignalDefinitionGrid()
 {
@@ -134,8 +132,8 @@ void VtSignalDefinitionGrid::SetColTitle()
 		SetColWidth(i, colWidth[i]);
 		GetCell(i, -1, &cell);
 		cell.SetText(title[i]);
-		cell.SetBackColor(VtGlobal::GridTitleBackColor);
-		cell.SetTextColor(VtGlobal::GridTitleTextColor);
+		cell.SetBackColor(GridTitleBackColor);
+		cell.SetTextColor(GridTitleTextColor);
 		cell.SetAlignment(UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		cell.SetFont(&_titleFont);
 		SetCell(i, -1, &cell);
@@ -157,6 +155,7 @@ void VtSignalDefinitionGrid::QuickRedrawCell(int col, long row)
 
 void VtSignalDefinitionGrid::InitGrid()
 {
+	/*
 	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
 	int i = 0;
 	OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
@@ -168,6 +167,7 @@ void VtSignalDefinitionGrid::InitGrid()
 		QuickRedrawCell(1, i);
 		i++;
 	}
+	*/
 }
 
 void VtSignalDefinitionGrid::ClearCells()
@@ -184,7 +184,7 @@ void VtSignalDefinitionGrid::ClearCells()
 		}
 	}
 }
-
+/*
 void VtSignalDefinitionGrid::AddOutSigDef(SharedOutSigDef sig)
 {
 	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
@@ -195,3 +195,4 @@ void VtSignalDefinitionGrid::AddOutSigDef(SharedOutSigDef sig)
 	QuickRedrawCell(0, yIndex);
 	QuickRedrawCell(1, yIndex);
 }
+*/

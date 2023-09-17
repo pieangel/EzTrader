@@ -49,6 +49,42 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 	update_whole_group_position();
 }
 
+
+void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Position> group_position, VmPosition& dest_position)
+{
+	if (!group_position) return;
+
+	auto sub_positions = group_position->sub_positions;
+	double trade_profit_loss{ 0.0f };       //매매(청산)손익
+	double open_profit_loss{ 0.0f };		//평가손익
+	double pure_trade_profit_loss{ 0.0f };  // 청산 순손익
+	double trade_fee{ 0.0f };   // 청산 수수료
+	int open_quantity{ 0 };
+	double average_price{ 0.0f };
+	for (auto& sub_position : sub_positions) {
+		auto position = sub_position.second;
+		TotalPositionManager::calculate_symbol_open_profit_loss(position);
+		trade_profit_loss += position->trade_profit_loss;
+		open_profit_loss += position->open_profit_loss;
+		trade_fee += position->trade_fee;
+		pure_trade_profit_loss += position->pure_trade_profit_loss;
+
+		open_quantity += position->open_quantity;
+		average_price += position->average_price;
+	}
+	dest_position.trade_profit_loss = trade_profit_loss;
+	dest_position.open_profit_loss = open_profit_loss;
+	dest_position.trade_fee = trade_fee;
+	dest_position.pure_trade_profit_loss = pure_trade_profit_loss;
+	dest_position.open_quantity = open_quantity;
+	if (open_quantity == 0)
+		dest_position.average_price = 0.0f;
+	else
+		dest_position.average_price = average_price / dest_position.open_quantity;
+
+	update_whole_group_position();
+}
+
 std::shared_ptr<DarkHorse::Position> GroupPositionManager::get_group_position(const std::string& symbol_code)
 {
 	auto found = group_position_map_.find(symbol_code);

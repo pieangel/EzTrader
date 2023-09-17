@@ -377,6 +377,7 @@
     <ClInclude Include="Fund\SmFundOrderLeft.h" />
     <ClInclude Include="Fund\SmFundOrderRight.h" />
     <ClInclude Include="Fund\SmFundPositionArea.h" />
+    <ClInclude Include="Global\SmConst.h" />
     <ClInclude Include="Global\SmTotalManager.h" />
     <ClInclude Include="GridDefine.h" />
     <ClInclude Include="Grid\CellRange.h" />

@@ -1,10 +1,9 @@
 #pragma once
-#include "Skel/VtGrid.h"
-#include "UGrid/CellTypes/UGCTSeperateText.h"
-#include "Global/VtDefine.h"
+#include "../UGrid/VtGrid.h"
+#include "../UGrid/CellTypes/UGCTSeperateText.h"
 #include <map>
 #include <vector>
-#include "VtOutSignalDefManager.h"
+//#include "VtOutSignalDefManager.h"
 class VtSignalDefinitionGrid : public VtGrid
 {
 public:
@@ -26,7 +25,7 @@ public:
 	void InitGrid();
 
 	void ClearCells();
-	void AddOutSigDef(SharedOutSigDef sig);
+	//void AddOutSigDef(SharedOutSigDef sig);
 private:
 	int _SelRow = -2;
 	int _OldSelRow = -2;

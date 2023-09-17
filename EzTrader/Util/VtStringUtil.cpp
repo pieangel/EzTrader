@@ -282,20 +282,20 @@ std::string VtStringUtil::get_format_value(const std::string& type, const double
 {
 	std::string value_string;
 	if (type == "1")
-		value_string = formatWithThousandsSeparator(value, 2);
+		value_string = format_with_thousand_separator(value, 2);
 	else
-		value_string = formatWithThousandsSeparator(value, 0);
+		value_string = format_with_thousand_separator(value, 0);
 	return value_string;
 }
 
 std::string VtStringUtil::get_format_value(const double& value, const int decimal, const bool thousand_separator /*= false*/)
 {
 	std::string value_string;
-	value_string = formatWithThousandsSeparator(value, decimal);
+	value_string = format_with_thousand_separator(value, decimal);
 	return value_string;
 }
 
-std::string VtStringUtil::formatWithThousandsSeparator(double value, int precision) {
+std::string VtStringUtil::format_with_thousand_separator(double value, int precision) {
 	std::stringstream ss;
 	ss.imbue(std::locale(""));  // Use the user's default locale for thousands separator
 

@@ -1,23 +1,24 @@
 #pragma once
-#include "Skel/VtGrid.h"
-#include "UGrid/CellTypes/UGCTSeperateText.h"
-#include "Global/VtDefine.h"
+#include "../UGrid/VtGrid.h"
+#include "../UGrid/CellTypes/UGCTSeperateText.h"
 #include <map>
 #include <vector>
-#include "UGrid/CellTypes/ugctelps.h"
-#include "UGrid/CellTypes/ugctspin.h"
-#include "UGrid/CellTypes/UGCTbutn.h"
-#include "VtOutSystemManager.h"
+#include <memory>
+#include "../UGrid/CellTypes/ugctelps.h"
+#include "../UGrid/CellTypes/ugctspin.h"
+#include "../UGrid/CellTypes/UGCTbutn.h"
 
 #define ELLIPSISBUTTON_CLICK_ACNT		150
 #define ELLIPSISBUTTON_CLICK_PRDT		151
 #define SPIN_TYPE_SEUNGSU               152
-class VtAccount;
-class VtFund;
-class VtSystem;
-class VtTotalSignalGrid;
-class VtSymbol;
+namespace DarkHorse {
+	class SmAccount;
+	class SmFund;
+	class SmOutSystem;
+	class SmSymbol;
+}
 class VtOrderLogDlg;
+class VtTotalSignalGrid;
 class VtSignalConnectionGrid : public VtGrid
 {
 public:
@@ -52,16 +53,16 @@ public:
 	//Spin Button cell type
 	CUGSpinButtonType	m_spin;
 	int					m_nSpinIndex;
-	void SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtFund*>& selItem);
-	void SetSymbol(VtSymbol* sym);
-	void AddSystem(SharedSystem sys);
+	void SetTargetAcntOrFund(std::tuple<int, std::shared_ptr<DarkHorse::SmAccount>, std::shared_ptr<DarkHorse::SmFund>>& selItem);
+	void SetSymbol(std::shared_ptr<DarkHorse::SmSymbol> sym);
+	void AddSystem(std::shared_ptr<DarkHorse::SmOutSystem> sys);
 	void RemoveSystem();
 	VtTotalSignalGrid* TotalGrid() const { return _TotalGrid; }
 	void TotalGrid(VtTotalSignalGrid* val) { _TotalGrid = val; }
 	void Refresh();
 	void SetCheck(bool flag);
 	void RefreshOrders();
-	void ClearCheck(VtSystem* sys);
+	void ClearCheck(std::shared_ptr<DarkHorse::SmOutSystem> sys);
 private:
 	int _SelRow = -2;
 	int _OldSelRow = -2;
@@ -78,7 +79,7 @@ private:
 	int OnLogButton(int col, long row);
 	int OnButton(long ID, int col, long row, long msg, long param);
 	// 키 : 행인덱스, 값 : 시스템 객체
-	std::map<int, SharedSystem> _SystemMap;
+	std::map<int, std::shared_ptr<DarkHorse::SmOutSystem>> _SystemMap;
 	// 키 : 시스템 아이디, 값 : 행 인덱스
 	std::map<int, int> _SystemToRowMap;
 	VtTotalSignalGrid* _TotalGrid = nullptr;

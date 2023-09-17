@@ -25,6 +25,10 @@ public:
 	void get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map);
 	void get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map);
 
+	void get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position);
+	void get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
+	void get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
+
 	void get_position_from_fund(const std::string& fund_name, std::map<std::string, std::shared_ptr<Position>>& position_map);
 	void get_position_from_account(const std::string& account_no, std::map<std::string, std::shared_ptr<Position>>& position_map);
 	void get_position_from_parent_account(const std::string& account_no, std::map<std::string, std::shared_ptr<Position>>& position_map);

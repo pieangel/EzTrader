@@ -1,23 +1,31 @@
 #include "stdafx.h"
 #include "VtSignalConnectionGrid.h"
-#include "VtGlobal.h"
-#include "VtOutSignalDefManager.h"
-#include "VtAccount.h"
-#include "VtFund.h"
-#include "VtAccountFundSelector.h"
-#include "HdSymbolSelecter.h"
-#include "System/VtSystem.h"
-#include "VtSymbol.h"
-#include "VtOutSignalDef.h"
-#include "VtOutSystemOrderManager.h"
 #include "VtTotalSignalGrid.h"
-#include "VtOutSignalDefManager.h"
-#include "VtSymbol.h"
-#include "VtOrderLogDlg.h"
-#include "XFormatNumber.h"
-#include "Poco/NumberFormatter.h"
-using Poco::NumberFormatter;
+#include "../Log/MyLogger.h"
+#include "../OutSystem/SmOutSystem.h"
+#include "../OutSystem/SmOutSystemManager.h"
+#include "../OutSystem/SmOutSignalDef.h"
+#include "../Global/SmTotalManager.h"
+#include "../Account/SmAccount.h"
+#include "../Fund/SmFund.h"
+#include "../Dialog/HdSymbolSelecter.h"
+#include "../Util/IdGenerator.h"
+#include "../Event/EventHub.h"
+#include "../Order/SmOrderConst.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../ViewModel/VmPosition.h"
+#include "../OutSystem/SmOutSystem.h"
+#include "../Controller/SymbolPositionControl.h"
+#include "../Util/VtStringUtil.h"
+#include "../Quote/SmQuote.h"
+#include "../Controller/QuoteControl.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Global/SmConst.h"
 
+using namespace DarkHorse;
 VtSignalConnectionGrid::VtSignalConnectionGrid()
 {
 }
@@ -45,7 +53,6 @@ void VtSignalConnectionGrid::OnSetup()
 	SetNumberRows(_RowCount);
 	SetNumberCols(_ColCount);
 
-	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
 	CUGCell cell;
 	for (int yIndex = 0; yIndex < _RowCount; yIndex++) {
 		for (int xIndex = 0; xIndex < _ColCount; xIndex++) {
@@ -186,8 +193,8 @@ void VtSignalConnectionGrid::SetColTitle()
 		SetColWidth(i, colWidth[i]);
 		GetCell(i, -1, &cell);
 		cell.SetText(title[i]);
-		cell.SetBackColor(VtGlobal::GridTitleBackColor);
-		cell.SetTextColor(VtGlobal::GridTitleTextColor);
+		cell.SetBackColor(GridTitleBackColor);
+		cell.SetTextColor(GridTitleTextColor);
 		cell.SetAlignment(UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		cell.SetFont(&_titleFont);
 		SetCell(i, -1, &cell);
@@ -214,20 +221,16 @@ void VtSignalConnectionGrid::InitGrid()
 	_SystemToRowMap.clear();
 	int yIndex = 0;
 	CUGCell cell;
-	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
-	VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
-	SharedSystemVec& outSysMap = outSysMgr->GetSysMap();
-	for (auto it = outSysMap.begin(); it != outSysMap.end(); ++it) {
-		SharedSystem sys = *it;
-		VtPosition posi = sys->GetPosition();
+	auto out_system_vector = mainApp.out_system_manager()->get_out_system_vector();
+	for (auto it = out_system_vector.begin(); it != out_system_vector.end(); ++it) {
+		auto out_system = *it;
+		const VmPosition& posi = out_system->position_control()->get_position();
 		CString thVal;
 		std::string temp;
-		temp = NumberFormatter::format(posi.OpenProfitLoss, 0);
-		CString profitLoss = XFormatNumber(temp.c_str(), -1);
 		for (int xIndex = 0; xIndex < _ColCount; ++xIndex) {
 			if (xIndex == 0) {
 				GetCell(xIndex, yIndex, &cell);
-				sys->Enable() ? cell.SetNumber(1.0) : cell.SetNumber(0.0);
+				out_system->enable() ? cell.SetNumber(1.0) : cell.SetNumber(0.0);
 				cell.SetLabelText(_T(""));
 				cell.SetCellType(UGCT_CHECKBOX);
 				cell.SetCellTypeEx(UGCT_CHECKBOXFLAT | UGCT_CHECKBOXCHECKMARK);
@@ -235,11 +238,11 @@ void VtSignalConnectionGrid::InitGrid()
 			}
 			else if (xIndex == 1) {
 				GetCell(xIndex, yIndex, &cell);
-				if (sys->SysTargetType() == TargetType::RealAccount || sys->SysTargetType() == TargetType::SubAccount) {
-					if (sys->Account()) cell.SetText(sys->Account()->AccountNo.c_str());
+				if (out_system->order_type() == OrderType::MainAccount || out_system->order_type() == OrderType::SubAccount) {
+					if (out_system->account()) cell.SetText(out_system->account()->No().c_str());
 				}
 				else {
-					if (sys->Fund()) cell.SetText(sys->Fund()->Name.c_str());
+					if (out_system->fund()) cell.SetText(out_system->fund()->Name().c_str());
 				}
 				cell.SetCellType(m_nEllipsisIndex);
 				cell.SetCellTypeEx(UGCT_NORMALELLIPSIS);
@@ -248,7 +251,7 @@ void VtSignalConnectionGrid::InitGrid()
 			}
 			else if (xIndex == 2) {
 				GetCell(xIndex, yIndex, &cell);
-				if (sys->Symbol()) cell.SetText(sys->Symbol()->ShortCode.c_str());
+				if (out_system->symbol()) cell.SetText(out_system->symbol()->SymbolCode().c_str());
 				cell.SetCellType(m_nEllipsisIndex);
 				cell.SetCellTypeEx(UGCT_NORMALELLIPSIS);
 				cell.SetParam(ELLIPSISBUTTON_CLICK_PRDT);
@@ -256,31 +259,30 @@ void VtSignalConnectionGrid::InitGrid()
 			}
 			else if (xIndex == 3) {
 				GetCell(xIndex, yIndex, &cell);
-				if (sys->OutSignal())  cell.SetText(sys->OutSignal()->SignalName.c_str());
+				cell.SetText(out_system->name().c_str());
 				cell.SetCellType(UGCT_DROPLIST);
 				cell.SetCellTypeEx(UGCT_DROPLISTHIDEBUTTON);
 				cell.SetReadOnly(FALSE);
-				cell.SetLabelText(outSigDefMgr->GetOutSigDefString().c_str());
+				cell.SetLabelText(out_system->desc().c_str());
 				SetCell(xIndex, yIndex, &cell);
 			}
 			else if (xIndex == 4) {
 				GetCell(xIndex, yIndex, &cell);
-				cell.SetNumber(sys->SeungSu());
+				cell.SetNumber(out_system->seung_su());
 				cell.SetCellType(m_nSpinIndex);
 				cell.SetParam(SPIN_TYPE_SEUNGSU);
 				SetCell(xIndex, yIndex, &cell);
 			}
 			else if (xIndex == 5) {
-				temp = NumberFormatter::format(posi.OpenProfitLoss, 0);
-				CString profitLoss = XFormatNumber(temp.c_str(), -1);
+				std::string thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(posi.open_profit_loss, out_system->symbol()->decimal());
 				// 평가손익 표시
-				if (posi.OpenProfitLoss > 0) {
+				if (posi.open_profit_loss > 0) {
 					QuickSetTextColor(5, yIndex, RGB(255, 0, 0));
-					QuickSetText(5, yIndex, profitLoss);
+					QuickSetText(5, yIndex, thVal.c_str());
 				}
-				else if (posi.OpenProfitLoss < 0) {
+				else if (posi.open_profit_loss < 0) {
 					QuickSetTextColor(5, yIndex, RGB(0, 0, 255));
-					QuickSetText(5, yIndex, profitLoss);
+					QuickSetText(5, yIndex, thVal.c_str());
 				}
 				else {
 					QuickSetTextColor(5, yIndex, RGB(0, 0, 0));
@@ -288,16 +290,15 @@ void VtSignalConnectionGrid::InitGrid()
 				}
 			}
 			else if (xIndex == 6) {
-				temp = NumberFormatter::format(posi.TradePL, 0);
-				profitLoss = XFormatNumber(temp.c_str(), -1);
+				std::string thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(posi.trade_profit_loss, out_system->symbol()->decimal());
 				// 실현손익 표시
-				if (posi.TradePL > 0) {
+				if (posi.trade_profit_loss > 0) {
 					QuickSetTextColor(6, yIndex, RGB(255, 0, 0));
-					QuickSetText(6, yIndex, profitLoss);
+					QuickSetText(6, yIndex, thVal.c_str());
 				}
-				else if (posi.TradePL < 0) {
+				else if (posi.trade_profit_loss < 0) {
 					QuickSetTextColor(6, yIndex, RGB(0, 0, 255));
-					QuickSetText(6, yIndex, profitLoss);
+					QuickSetText(6, yIndex, thVal.c_str());
 				}
 				else {
 					QuickSetTextColor(6, yIndex, RGB(0, 0, 0));
@@ -305,19 +306,17 @@ void VtSignalConnectionGrid::InitGrid()
 				}
 			}
 			else if (xIndex == 7) {
-				double totalPL = posi.OpenProfitLoss + posi.TradePL;
-
-				temp = NumberFormatter::format(totalPL, 0);
-				profitLoss = XFormatNumber(temp.c_str(), -1);
+				double total_profit_loss = posi.open_profit_loss + posi.trade_profit_loss;
+				std::string thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(total_profit_loss, out_system->symbol()->decimal());
 
 				// 총손익 표시
-				if (totalPL > 0) {
+				if (total_profit_loss > 0) {
 					QuickSetTextColor(7, yIndex, RGB(255, 0, 0));
-					QuickSetText(7, yIndex, profitLoss);
+					QuickSetText(7, yIndex, thVal.c_str());
 				}
-				else if (totalPL < 0) {
+				else if (total_profit_loss < 0) {
 					QuickSetTextColor(7, yIndex, RGB(0, 0, 255));
-					QuickSetText(7, yIndex, profitLoss);
+					QuickSetText(7, yIndex, thVal.c_str());
 				}
 				else {
 					QuickSetTextColor(7, yIndex, RGB(0, 0, 0));
@@ -326,7 +325,7 @@ void VtSignalConnectionGrid::InitGrid()
 			}
 			else if (xIndex == 8) {
 				GetCell(xIndex, yIndex, &cell);
-				cell.SetNumber(sys->SeungSu());
+				cell.SetNumber(out_system->seung_su());
 				cell.SetCellType(m_nButtonIndex);
 				cell.SetCellTypeEx(UGCT_BUTTONNOFOCUS);
 				cell.SetAlignment(UG_ALIGNCENTER | UG_ALIGNVCENTER);
@@ -338,18 +337,18 @@ void VtSignalConnectionGrid::InitGrid()
 			}
 			QuickRedrawCell(xIndex, yIndex);			
 		}
-		_SystemMap[yIndex] = sys;
-		_SystemToRowMap[sys->Id()] = yIndex;
+		_SystemMap[yIndex] = out_system;
+		_SystemToRowMap[out_system->id()] = yIndex;
 		yIndex++;
 	}
 	_OccupiedRowCount = yIndex;
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 }
 
@@ -369,8 +368,9 @@ void VtSignalConnectionGrid::ClearCells()
 	}
 }
 
-void VtSignalConnectionGrid::SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtFund*>& selItem)
+void VtSignalConnectionGrid::SetTargetAcntOrFund(std::tuple<int, std::shared_ptr<SmAccount>, std::shared_ptr<SmFund>>& selItem)
 {
+	/*
 	try {
 	CUGCell cell;
 	GetCell(1, _ButtonRow, &cell);
@@ -403,44 +403,43 @@ void VtSignalConnectionGrid::SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtF
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
-void VtSignalConnectionGrid::SetSymbol(VtSymbol* sym)
+void VtSignalConnectionGrid::SetSymbol(std::shared_ptr<SmSymbol> sym)
 {
 	try {
 	if (!sym)
 		return;
-	SharedSystem sys = _SystemMap[_ButtonRow];
+	auto sys = _SystemMap[_ButtonRow];
 	if (sys) {
 		CUGCell cell;
 		GetCell(2, _ButtonRow, &cell);
-		cell.SetText(sym->ShortCode.c_str());
-		cell.Tag(sym);
+		cell.SetText(sym->SymbolCode().c_str());
 		SetCell(2, _ButtonRow, &cell);
-		sys->Symbol(sym);
+		sys->symbol(sym);
 		QuickRedrawCell(2, _ButtonRow);
 	}
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 }
 
-void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
+void VtSignalConnectionGrid::AddSystem(std::shared_ptr<SmOutSystem> sys)
 {
 	try {
-	VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
-	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
+	auto out_system_vector = mainApp.out_system_manager()->get_out_system_vector();
 	CUGCell cell;
-	int yIndex = outSysMgr->GetSysMap().size();
+	int yIndex = out_system_vector.size();
 	for (int xIndex = 0; xIndex < _ColCount; ++xIndex) {
 		if (xIndex == 0) {
 			GetCell(xIndex, yIndex, &cell);
-			sys->Enable() ? cell.SetNumber(1.0) : cell.SetNumber(0.0);
+			sys->enable() ? cell.SetNumber(1.0) : cell.SetNumber(0.0);
 			cell.SetLabelText(_T(""));
 			cell.SetCellType(UGCT_CHECKBOX);
 			cell.SetCellTypeEx(UGCT_CHECKBOXFLAT | UGCT_CHECKBOXCHECKMARK);
@@ -448,11 +447,11 @@ void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
 		}
 		else if (xIndex == 1) {
 			GetCell(xIndex, yIndex, &cell);
-			if (sys->SysTargetType() == TargetType::RealAccount || sys->SysTargetType() == TargetType::SubAccount) {
-				if (sys->Account()) cell.SetText(sys->Account()->AccountNo.c_str());
+			if (sys->order_type() == OrderType::MainAccount || sys->order_type() == OrderType::SubAccount) {
+				if (sys->account()) cell.SetText(sys->account()->No().c_str());
 			}
 			else {
-				if (sys->Fund()) cell.SetText(sys->Fund()->Name.c_str());
+				if (sys->fund()) cell.SetText(sys->fund()->Name().c_str());
 			}
 			cell.SetCellType(m_nEllipsisIndex);
 			cell.SetCellTypeEx(UGCT_NORMALELLIPSIS);
@@ -461,7 +460,7 @@ void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
 		}
 		else if (xIndex == 2) {
 			GetCell(xIndex, yIndex, &cell);
-			if (sys->Symbol()) cell.SetText(sys->Symbol()->ShortCode.c_str());
+			if (sys->symbol()) cell.SetText(sys->symbol()->SymbolCode().c_str());
 			cell.SetCellType(m_nEllipsisIndex);
 			cell.SetCellTypeEx(UGCT_NORMALELLIPSIS);
 			cell.SetParam(ELLIPSISBUTTON_CLICK_PRDT);
@@ -469,23 +468,23 @@ void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
 		}
 		else if (xIndex == 3) {
 			GetCell(xIndex, yIndex, &cell);
-			if (sys->OutSignal())  cell.SetText(sys->OutSignal()->SignalName.c_str());
+			cell.SetText(sys->name().c_str());
 			cell.SetCellType(UGCT_DROPLIST);
 			cell.SetCellTypeEx(UGCT_DROPLISTHIDEBUTTON);
 			cell.SetReadOnly(FALSE);
-			cell.SetLabelText(outSigDefMgr->GetOutSigDefString().c_str());
+			cell.SetLabelText(sys->desc().c_str());
 			SetCell(xIndex, yIndex, &cell);
 		}
 		else if (xIndex == 4) {
 			GetCell(xIndex, yIndex, &cell);
-			cell.SetNumber(sys->SeungSu());
+			cell.SetNumber(sys->seung_su());
 			cell.SetCellType(m_nSpinIndex);
 			cell.SetParam(SPIN_TYPE_SEUNGSU);
 			SetCell(xIndex, yIndex, &cell);
 		}
 		else if (xIndex == 8) {
 			GetCell(xIndex, yIndex, &cell);
-			cell.SetNumber(sys->SeungSu());
+			cell.SetNumber(sys->seung_su());
 			cell.SetCellType(m_nButtonIndex);
 			cell.SetCellTypeEx(UGCT_BUTTONNOFOCUS);
 			cell.SetAlignment(UG_ALIGNCENTER | UG_ALIGNVCENTER);
@@ -498,15 +497,16 @@ void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
 		QuickRedrawCell(xIndex, yIndex);
 	}
 	_SystemMap[yIndex] = sys;
-	outSysMgr->AddSystem(sys);
+	//mainApp.out_system_manager()->add_out_system(sys);
 	_OccupiedRowCount = yIndex;
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), " %s 알수없는 오류", __FUNCTION__);
 	}
 }
 
@@ -516,18 +516,18 @@ void VtSignalConnectionGrid::RemoveSystem()
 	int row = _ClickedRow;
 	auto it = _SystemMap.find(row);
 	if (it != _SystemMap.end()) {
-		SharedSystem sys = it->second;
+		auto  sys = it->second;
 		// 시스템을 정지 시킨다.
-		sys->Enable(false);
-		VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+		sys->enable(false);
+		//VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
 		// 주문관리자에서 삭제한다.
-		outSysOrderMgr->RemoveSystem(sys);
+		//outSysOrderMgr->RemoveSystem(sys);
 		// 주문상태 목록을 리프레쉬 한다.
 		if (_TotalGrid) _TotalGrid->Refresh();
 
 		// 시스템 목록에서 삭제한다.
-		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
-		outSysMgr->RemoveSystem(sys->Id());
+		//VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		//outSysMgr->RemoveSystem(sys->id());
 
 		// 모든 셀 정보를 초기화 시킨다.
 		CUGCell cell;
@@ -542,10 +542,10 @@ void VtSignalConnectionGrid::RemoveSystem()
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 }
 
@@ -561,19 +561,19 @@ void VtSignalConnectionGrid::SetCheck(bool flag)
 	_TotalGrid->ClearCells();
 	int row = 0;
 	CUGCell cell;
-	VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+	//VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
 	for (auto it = _SystemMap.begin(); it != _SystemMap.end(); ++it) {
-		SharedSystem sys = _SystemMap[row];
+		auto sys = _SystemMap[row];
 		GetCell(0, row, &cell);
 		if (flag) {
 			cell.SetNumber(1);
-			sys->Enable(true);
-			outSysOrderMgr->AddSystem(sys);
+			sys->enable(true);
+			//outSysOrderMgr->AddSystem(sys);
 		}
 		else {
 			cell.SetNumber(0);
-			sys->Enable(false);
-			outSysOrderMgr->RemoveSystem(sys);
+			sys->enable(false);
+			//outSysOrderMgr->RemoveSystem(sys);
 		}
 		SetCell(0, row, &cell);
 		QuickRedrawCell(0, row);
@@ -583,10 +583,10 @@ void VtSignalConnectionGrid::SetCheck(bool flag)
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 }
 
@@ -598,59 +598,53 @@ void VtSignalConnectionGrid::RefreshOrders()
 
 	int i = 0;
 	for (auto it = _SystemMap.begin(); it != _SystemMap.end(); ++it) {
-		SharedSystem sys = it->second;
+		auto sys = it->second;
 	
 		
-		VtPosition posi = sys->GetPosition();
+		const VmPosition& posi = sys->position_control()->get_position();
 
-		CString thVal;
-		std::string temp;
-	
-		temp = NumberFormatter::format(posi.OpenProfitLoss, 0);
-		CString profitLoss = XFormatNumber(temp.c_str(), -1);
+		std::string thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(posi.open_profit_loss, 0);
 		// 평가손익 표시
-		if (posi.OpenProfitLoss > 0) {
+		if (posi.open_profit_loss > 0) {
 			QuickSetTextColor(5, i, RGB(255, 0, 0));
-			QuickSetText(5, i, profitLoss);
+			QuickSetText(5, i, thVal.c_str());
 		}
-		else if (posi.OpenProfitLoss < 0) {
+		else if (posi.open_profit_loss < 0) {
 			QuickSetTextColor(5, i, RGB(0, 0, 255));
-			QuickSetText(5, i, profitLoss);
+			QuickSetText(5, i, thVal.c_str());
 		}
 		else {
 			QuickSetTextColor(5, i, RGB(0, 0, 0));
 			QuickSetNumber(5, i, 0);
 		}
 
-		temp = NumberFormatter::format(posi.TradePL, 0);
-		profitLoss = XFormatNumber(temp.c_str(), -1);
+		thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(posi.trade_profit_loss, 0);
 		// 실현손익 표시
-		if (posi.TradePL > 0) {
+		if (posi.trade_profit_loss > 0) {
 			QuickSetTextColor(6, i, RGB(255, 0, 0));
-			QuickSetText(6, i, profitLoss);
+			QuickSetText(6, i, thVal.c_str());
 		}
-		else if (posi.TradePL < 0) {
+		else if (posi.trade_profit_loss < 0) {
 			QuickSetTextColor(6, i, RGB(0, 0, 255));
-			QuickSetText(6, i, profitLoss);
+			QuickSetText(6, i, thVal.c_str());
 		}
 		else {
 			QuickSetTextColor(6, i, RGB(0, 0, 0));
 			QuickSetNumber(6, i, 0);
 		}
 
-		double totalPL = posi.OpenProfitLoss + posi.TradePL;
+		double total_profit_loss = posi.open_profit_loss + posi.trade_profit_loss;
 
-		temp = NumberFormatter::format(totalPL, 0);
-		profitLoss = XFormatNumber(temp.c_str(), -1);
+		thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(total_profit_loss, 0);
 
 		// 총손익 표시
-		if (totalPL > 0) {
+		if (total_profit_loss > 0) {
 			QuickSetTextColor(7, i, RGB(255, 0, 0));
-			QuickSetText(7, i, profitLoss);
+			QuickSetText(7, i, thVal.c_str());
 		}
-		else if (totalPL < 0) {
+		else if (total_profit_loss < 0) {
 			QuickSetTextColor(7, i, RGB(0, 0, 255));
-			QuickSetText(7, i, profitLoss);
+			QuickSetText(7, i, thVal.c_str());
 		}
 		else {
 			QuickSetTextColor(7, i, RGB(0, 0, 0));
@@ -667,24 +661,24 @@ void VtSignalConnectionGrid::RefreshOrders()
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 }
 
-void VtSignalConnectionGrid::ClearCheck(VtSystem* sys)
+void VtSignalConnectionGrid::ClearCheck(std::shared_ptr<SmOutSystem> sys)
 {
 	if (!sys)
 		return;
-	auto it = _SystemToRowMap.find(sys->Id());
+	auto it = _SystemToRowMap.find(sys->id());
 	if (it != _SystemToRowMap.end()) {
 		int row = it->second;
 		CUGCell cell;
 		GetCell(0, row, &cell);
 		cell.SetNumber(0);
-		sys->Enable(false);
+		sys->enable(false);
 		SetCell(0, row, &cell);
 		QuickRedrawCell(0, row);
 	}
@@ -696,32 +690,35 @@ int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, lon
 	if (msg == UGCT_DROPLISTSTART) {
 		CStringList* pList = (CStringList*)param;
 		pList->RemoveAll();
+		/*
 		VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
 		OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
 		for (size_t loop = 0; loop < sigDefVec.size(); loop++) {
 			SharedOutSigDef sig = sigDefVec[loop];
 			pList->AddTail(sig->SignalName.c_str());
 		}
+		*/
 	}
 	if (msg == UGCT_DROPLISTSELECT) {
 		CUGCell cell;
 		GetCell(col, row, &cell);
 		CString oldSigName;
 		oldSigName = cell.GetText();
-		SharedSystem sys = _SystemMap[row];
+		auto sys = _SystemMap[row];
 		if (!sys)
 			return TRUE;
 
-		VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+		//VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
 		// 먼저 기존 시그널을 없애 준다.
-		if (sys->Enable())
-			outSysOrderMgr->RemoveSystem(sys);
+		//if (sys->enable())
+		//	outSysOrderMgr->RemoveSystem(sys);
 
 		// 새로운 시그널을 등록해 준다.
 		CString * pString = (CString*)param;
-		std::string sigName = *pString;
-		VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
-		SharedOutSigDef sig = outSigMgr->FindOutSigDef(sigName);
+		std::string sigName(*pString);
+		//VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
+		//SharedOutSigDef sig = outSigMgr->FindOutSigDef(sigName);
+		/*
 		if (sig) {
 			sys->OutSignal(sig);
 			CUGCell cell;
@@ -731,14 +728,15 @@ int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, lon
 			if (sys->Enable())
 				outSysOrderMgr->AddSystem(sys);
 		}
+		*/
 	}
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 	
 	return TRUE;
@@ -747,29 +745,29 @@ int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, lon
 int VtSignalConnectionGrid::OnCheckbox(long ID, int col, long row, long msg, long param)
 {
 	try {
-		VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
-		SharedSystem sys = _SystemMap[row];
+		//VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+		auto sys = _SystemMap[row];
 		if (sys) {
 			CUGCell cell;
 			GetCell(col, row, &cell);
 			double num = cell.GetNumber();
 			if (num == 1.0) {
-				sys->Enable(true);
-				outSysOrderMgr->AddSystem(sys);
+				sys->enable(true);
+				//outSysOrderMgr->AddSystem(sys);
 			}
 			else {
-				sys->Enable(false);
-				outSysOrderMgr->RemoveSystem(sys);
+				sys->enable(false);
+				//outSysOrderMgr->RemoveSystem(sys);
 			}
 			if (_TotalGrid) _TotalGrid->Refresh();
 		}
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 
 	return TRUE;
@@ -785,15 +783,15 @@ int VtSignalConnectionGrid::OnEllipsisButton(long ID, int col, long row, long ms
 	if (msg == UGCT_ELLIPSISBUTTONCLICK) {
 		if (nParam == ELLIPSISBUTTON_CLICK_ACNT) {
 			_ButtonRow = row;
-			VtAccountFundSelector dlg;
-			dlg.SetSignalConnectionGrid(this);
-			dlg.DoModal();
+			//VtAccountFundSelector dlg;
+			//dlg.SetSignalConnectionGrid(this);
+			//dlg.DoModal();
 		}
 		else if (nParam == ELLIPSISBUTTON_CLICK_PRDT) {
 			_ButtonRow = row;
-			HdSymbolSelecter dlg;
-			dlg.SetSigConGrid(this);
-			dlg.DoModal();
+			//HdSymbolSelecter dlg;
+			//dlg.SetSigConGrid(this);
+			//dlg.DoModal();
 		}
 		else {
 			MessageBox("The button was clicked", "Cell Type Notification");
@@ -822,8 +820,8 @@ int VtSignalConnectionGrid::OnSpinButton(long ID, int col, long row, long msg, l
 	cell.SetText(str);
 	SetCell(col, row, &cell);
 
-	SharedSystem sys = _SystemMap[row];
-	sys->SeungSu((int)num);
+	auto sys = _SystemMap[row];
+	sys->seung_su((int)num);
 
 	return TRUE;
 }
@@ -843,7 +841,7 @@ int VtSignalConnectionGrid::OnButton(long ID, int col, long row, long msg, long 
 {
 	if (msg != 1)
 		return -1;
-
+	/*
 	CString log;
 	log.Format("OnButton col = %d, row = %d, msg = %d, param = %d \n", col, row, msg, param);
 	TRACE(log);
@@ -862,11 +860,12 @@ int VtSignalConnectionGrid::OnButton(long ID, int col, long row, long msg, long 
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 
 	return 1;
 }

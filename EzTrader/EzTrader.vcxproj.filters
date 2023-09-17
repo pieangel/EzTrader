@@ -2208,6 +2208,9 @@
     <ClInclude Include="OutSystem\VtTotalSignalGrid.h">
       <Filter>OutSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Global\SmConst.h">
+      <Filter>Global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

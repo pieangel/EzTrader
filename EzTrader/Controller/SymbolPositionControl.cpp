@@ -53,45 +53,28 @@ namespace DarkHorse {
 			if (!position) return;
 			//LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl update_position id = %d , account_no = %s, fund_name = %s", id_, position->account_no.c_str(), position->fund_name.c_str());
 			
-			clear_position();
-
 			if (position_type_ == PositionType::SubAccount) {
 				if (!account_ || account_->No() != position->account_no) return;
-				auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(account_->No());
-				auto symbol_position = account_position_manager->find_position(symbol_->SymbolCode());
-				if (!symbol_position) return;
-				account_position_manager->update_position(symbol_position);
+				mainApp.total_position_manager()->get_position_from_account(position->account_no, symbol_->SymbolCode(), position_);
 			}
 			else if (position_type_ == PositionType::MainAccount) {
 				if (!account_) return;
-				if (position->is_group) {
-					auto group_position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_->No());
-					auto group_position = group_position_manager->get_group_position(symbol_->SymbolCode());
-					if (!group_position) return;
-					group_position_manager->update_group_position_by_symbol(group_position);
+				if (position->is_group && account_->No() == position->account_no) {
+					mainApp.total_position_manager()->get_position_from_parent_account(position->account_no, symbol_->SymbolCode(), position_);
 				}
 				else {
 					if (!is_account_exist(position)) return;
-					auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(account_->No());
-					auto symbol_position = account_position_manager->find_position(symbol_->SymbolCode());
-					if (!symbol_position) return;
-					account_position_manager->update_position(symbol_position);
+					mainApp.total_position_manager()->get_position_from_account(position->account_no, symbol_->SymbolCode(), position_);
 				}
 			}
 			else {
 				if (!fund_ ) return;
-				if (position->is_group) {
-					auto group_position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_->Name());
-					auto group_position = group_position_manager->get_group_position(symbol_->SymbolCode());
-					if (!group_position) return;
-					group_position_manager->update_group_position_by_symbol(group_position);
+				if (position->is_group && fund_->Name() == position->fund_name) {
+					mainApp.total_position_manager()->get_position_from_fund(position->fund_name, symbol_->SymbolCode(), position_);
 				}
 				else {
 					if (!is_account_exist(position)) return;
-					auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(account_->No());
-					auto symbol_position = account_position_manager->find_position(symbol_->SymbolCode());
-					if (!symbol_position) return;
-					account_position_manager->update_position(symbol_position);
+					mainApp.total_position_manager()->get_position_from_account(position->account_no, symbol_->SymbolCode(), position_);
 				}
 			}
 
