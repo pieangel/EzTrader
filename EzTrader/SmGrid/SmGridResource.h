@@ -24,7 +24,7 @@ struct SmOrderGridResource {
 	CBCGPColor BuyHogaTextColor_Black = RGB(0xff, 0xa5, 0x00);
 	// 종가 텍스트 색상
 	CBCGPColor CloseTextColor_Black = RGB(255, 255, 255);
-	CBCGPColor CloseTextColor = RGB(255, 255, 255);
+	CBCGPColor CloseTextColor = RGB(0, 0, 0);
 	// 종가 배경 색상
 	CBCGPColor CloseBackColor = RGB(0xf0, 0x70, 0x00);
 	// 일반 텍스트 색상
@@ -66,7 +66,7 @@ struct SmOrderGridResource {
 	CBCGPColor QuoteLowColor = RGB(0, 0, 255);
 	CBCGPColor QuoteCloseColor = RGB(0, 0, 0);
 	CBCGPColor QuotePreCloseColor = RGB(0, 0, 0);
-	CBCGPColor QuoteOpenColor = RGB(0, 0, 0);
+	CBCGPColor QuoteOpenColor = RGB(0x6c, 0x6c, 0x6c);
 
 	CBCGPColor BuyTextColor = RGB(0xfe, 0x2f, 0x19);
 	CBCGPColor SellPositionBackColor = RGB(0, 0, 255);

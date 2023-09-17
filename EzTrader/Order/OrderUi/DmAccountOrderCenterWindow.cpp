@@ -233,13 +233,13 @@ void DmAccountOrderCenterWindow::arrange_children()
 	symbol_order_view_.MoveWindow(rcGrid, TRUE);
 	if (show_symbol_tick_view_) {
 		symbol_tick_view_.ShowWindow(SW_SHOW);
-		window_size = symbol_order_view_.get_entire_width() + rcTick.Width();
+		window_width = symbol_order_view_.get_entire_width() + rcTick.Width();
 		if (symbol_tick_view_.GetSafeHwnd())
 			symbol_tick_view_.MoveWindow(rcTick);
 	}
 	else {
 		symbol_tick_view_.ShowWindow(SW_HIDE);
-		window_size = symbol_order_view_.get_entire_width();
+		window_width = symbol_order_view_.get_entire_width();
 	}
 	symbol_order_view_.Invalidate();
 }
@@ -333,11 +333,11 @@ void DmAccountOrderCenterWindow::recal_window_size()
 
 	if (show_symbol_tick_view_) {
 		symbol_tick_view_.ShowWindow(SW_SHOW);
-		window_size = symbol_order_view_.get_entire_width() + rcTick.Width();
+		window_width = symbol_order_view_.get_entire_width() + rcTick.Width();
 	}
 	else {
 		symbol_tick_view_.ShowWindow(SW_HIDE);
-		window_size = symbol_order_view_.get_entire_width();
+		window_width = symbol_order_view_.get_entire_width();
 	}
 }
 
@@ -383,13 +383,13 @@ void DmAccountOrderCenterWindow::on_resize_event_from_order_view()
 	symbol_order_view_.MoveWindow(rcGrid, TRUE);
 	if (show_symbol_tick_view_) {
 		symbol_tick_view_.ShowWindow(SW_SHOW);
-		window_size = symbol_order_view_.get_entire_width() + rcTick.Width();
+		window_width = symbol_order_view_.get_entire_width() + rcTick.Width();
 		if (symbol_tick_view_.GetSafeHwnd())
 			symbol_tick_view_.MoveWindow(rcTick);
 	}
 	else {
 		symbol_tick_view_.ShowWindow(SW_HIDE);
-		window_size = symbol_order_view_.get_entire_width();
+		window_width = symbol_order_view_.get_entire_width();
 	}
 
 	//symbol_order_view_.MoveWindow(rcGrid, TRUE);

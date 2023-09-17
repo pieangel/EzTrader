@@ -66,7 +66,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	int window_size = 0;
+	int window_width = 0;
+	int window_height = 0;
 	void arrange_children();
 	void ArrangeCenterValue();
 	void CreateResource();
