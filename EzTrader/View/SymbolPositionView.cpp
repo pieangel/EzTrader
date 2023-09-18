@@ -255,9 +255,12 @@ void SymbolPositionView::update_position()
 
 	const VmPosition& position = position_control_->get_position();
 
-	if (position.open_quantity == 0) return Clear();
+	if (position.open_quantity == 0) {
+		Clear(); 
+		return;
+	}
 	std::shared_ptr<SmCell> cell = _Grid->FindCell(1, 0);
-	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	//position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 	cell->Text(symbol_->SymbolCode());
 	/*
 	cell = _Grid->FindCell(1, 4);
@@ -266,30 +269,52 @@ void SymbolPositionView::update_position()
 		value_string.insert(value_string.length() - _Symbol->Decimal(), 1, '.');
 	cell->Text(value_string);
 	*/
-	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	//position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 
 	cell = _Grid->FindCell(1, 1);
-	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	if (position.open_quantity > 0)
+	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_SP_POS_BUY) : cell->CellType(SmCellType::CT_SP_POS_SELL);
+	if (position.open_quantity > 0) {
 		cell->Text("매수");
-	else if (position.open_quantity < 0)
+		cell->CellType(SmCellType::CT_SP_POS_BUY);
+	}
+	else if (position.open_quantity < 0) {
 		cell->Text("매도");
+		cell->CellType(SmCellType::CT_SP_POS_SELL);
+	}
+	else {
+		cell->Text("");
+		cell->CellType(SmCellType::CT_SP_POS_NONE);
+	}
 	cell = _Grid->FindCell(1, 2);
 	cell->Text(std::to_string(position.open_quantity));
-	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	cell = _Grid->FindCell(1, 3);
-	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
+	if (position.open_quantity > 0) {
+		cell->CellType(SmCellType::CT_SP_RM_BUY);
+	}
+	else if (position.open_quantity < 0) {
+		cell->CellType(SmCellType::CT_SP_RM_SELL);
+	}
+	else {
+		cell->Text("0");
+		cell->CellType(SmCellType::CT_SP_RM_NONE);
+	}
 
+	cell = _Grid->FindCell(1, 3);
 	const int decimal = symbol_type_ == DarkHorse::SymbolType::Abroad ? 2 : 0;
 	std::string value_string = VtStringUtil::get_format_value(position.average_price / pow(10, symbol_->decimal()), symbol_->decimal(), true);
 	//if (symbol_->decimal() > 0 && value_string.length() > (size_t)symbol_->decimal())
 	//	value_string.insert(value_string.length() - symbol_->decimal(), 1, '.');
 	cell->Text(value_string);
 	cell = _Grid->FindCell(1, 4);
-	if (position.open_profit_loss != 0)
-		position.open_profit_loss > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
-	else
+	if (position.open_profit_loss > 0) {
+		cell->CellType(SmCellType::CT_SP_PROFIT);
+	}
+	else if (position.open_profit_loss < 0) {
+		cell->CellType(SmCellType::CT_SP_LOSS);
+	}
+	else {
+		cell->Text("0");
 		cell->CellType(SmCellType::CT_NORMAL);
+	}
 
 	value_string = VtStringUtil::get_format_value(position.open_profit_loss, decimal, true);
 	cell->Text(value_string);

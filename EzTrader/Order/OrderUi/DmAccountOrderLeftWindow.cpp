@@ -117,6 +117,8 @@ BOOL DmAccountOrderLeftWindow::OnInitDialog()
 	init_option_market();
 	set_option_view();
 
+	combo_option_market_.SetDroppedWidth(150);
+	combo_option_month_.SetDroppedWidth(150);
 	radio_close_.SetCheck(BST_CHECKED);
 	SetTimer(1, 100, NULL);
 

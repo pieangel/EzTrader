@@ -253,7 +253,7 @@ namespace DarkHorse {
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextBrush);
 			break;
 		case SmCellType::CT_QUOTE_CLOSE:
-			pGM->FillRectangle(rect, res.SelectedBrush);
+			pGM->FillRectangle(rect, res.QuotCloseBackBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.CloseTextBrush);
 			break;
 		case SmCellType::CT_QUOTE_PRECLOSE:
@@ -374,6 +374,10 @@ namespace DarkHorse {
 			//pGM->FillRectangle(right_pos_rect, res.QMHighLowBrush);
 			pGM->FillRectangle(rect, res.HiLoSiseBackBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
+			break;
+		default:
+			pGM->FillRectangle(rect, res.DefaultBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.DefaultTextColor);
 			break;
 		}
 

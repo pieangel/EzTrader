@@ -65,6 +65,7 @@ struct SmOrderGridResource {
 	CBCGPColor QuoteHighColor = RGB(255, 0, 0);
 	CBCGPColor QuoteLowColor = RGB(0, 0, 255);
 	CBCGPColor QuoteCloseColor = RGB(0, 0, 0);
+	CBCGPColor QuoteCloseBackColor = RGB(0xff, 0xff, 0x00);
 	CBCGPColor QuotePreCloseColor = RGB(0, 0, 0);
 	CBCGPColor QuoteOpenColor = RGB(0x6c, 0x6c, 0x6c);
 
@@ -94,6 +95,29 @@ struct SmOrderGridResource {
 	CBCGPColor BuyHogaColor5 = RGB(0xff, 0xe8, 0xe8);
 	CBCGPColor BuyHogaTextColor = RGB(0xff, 0, 0);
 	CBCGPColor SellHogaTextColor = RGB(0, 0, 0xff);
+
+	CBCGPColor PositionSellTextColor = RGB(0, 0, 0xff);
+	CBCGPColor PositionBuyTextColor = RGB(0xff, 0, 0);
+	CBCGPColor RemainSellTextColor = RGB(0, 0, 255);
+	CBCGPColor RemainBuyTextColor = RGB(255, 0, 0);
+	CBCGPColor SymbolProfitTextColor = RGB(255, 0, 0);
+	CBCGPColor SymbolLossTextColor = RGB(0, 0, 255);
+	CBCGPColor RemainBackColor = RGB(255, 255, 255);
+	CBCGPColor DefaultBackColor = RGB(255, 255, 255);
+	CBCGPColor DefaultTextColor = RGB(0, 0, 0);
+
+
+	CBCGPBrush PositionSellBrush = CBCGPBrush(PositionSellTextColor);
+	CBCGPBrush PositionBuyBrush = CBCGPBrush(PositionBuyTextColor);
+	CBCGPBrush RemainSellBrush = CBCGPBrush(RemainSellTextColor);
+	CBCGPBrush RemainBuyBrush = CBCGPBrush(RemainBuyTextColor);
+	CBCGPBrush SymbolProfitBrush = CBCGPBrush(SymbolProfitTextColor);
+	CBCGPBrush SymbolLossBrush = CBCGPBrush(SymbolLossTextColor);
+	CBCGPBrush RemainBackBrush = CBCGPBrush(RemainBackColor);
+
+	CBCGPBrush DefaultBackBrush = CBCGPBrush(DefaultBackColor);
+	CBCGPBrush DefaultTextBrush = CBCGPBrush(DefaultTextColor);
+
 
 	CBCGPBrush SellOrderBrush = CBCGPBrush(SellOrderColor);
 	CBCGPBrush BuyOrderBrush = CBCGPBrush(BuyOrderColor);
@@ -132,6 +156,7 @@ struct SmOrderGridResource {
 
 	CBCGPBrush SelectedValueBrush = CBCGPBrush(SelectedValueColor);
 	CBCGPBrush SelectedBrush = CBCGPBrush(SelectedColor);
+	CBCGPBrush QuotCloseBackBrush = CBCGPBrush(QuoteCloseBackColor);
 
 	CBCGPBrush GridNormalBrush = CBCGPBrush(GridNormalColor);
 	CBCGPBrush GridNormalAlterBrush = CBCGPBrush(GridNormalAlterColor);

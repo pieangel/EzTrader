@@ -142,6 +142,10 @@ void AccountPositionManager::update_position(position_p position, VmPosition& de
 	dest_position.open_profit_loss = position->open_profit_loss;
 	dest_position.trade_fee = position->trade_fee;
 	dest_position.pure_trade_profit_loss = position->pure_trade_profit_loss;
+	dest_position.average_price = position->average_price;
+	dest_position.open_quantity = position->open_quantity;
+	if (position->open_quantity == 0)
+		dest_position.average_price = 0.0f;
 
 	update_account_profit_loss();
 }

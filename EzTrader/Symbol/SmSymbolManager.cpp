@@ -680,14 +680,16 @@ void SmSymbolManager::MakeDomesticMarket()
 	product->MarketName(market_name);
 	_DomesticOptionVec.push_back(option);
 
-	option.option_name = "内胶乔困努府可记";
+	option.option_name = "内胶乔困努府可记[T]";
 	product = market->AddProduct("209");
 	option.call_product = product;
 	product->MarketName(market_name);
 	product = market->AddProduct("309");
 	option.put_product = product;
 	product->MarketName(market_name);
+	_DomesticOptionVec.push_back(option);
 
+	option.option_name = "内胶乔困努府可记[M]";
 	product = market->AddProduct("2AF");
 	option.call_product = product;
 	product->MarketName(market_name);
