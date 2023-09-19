@@ -39,6 +39,7 @@ AccountPositionControl::~AccountPositionControl()
 
 void AccountPositionControl::load_position_from_account(const std::string& account_no)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	account_no_set_.clear();
 	account_no_set_.insert(account_no);
 	position_map_.clear();
@@ -52,6 +53,7 @@ void AccountPositionControl::load_position_from_account(const std::string& accou
 
 void AccountPositionControl::load_position_from_parent_account(const std::string& account_no)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	account_no_set_.clear();
 	account_no_set_.insert(account_no);
 	if (account_) {
@@ -72,6 +74,7 @@ void AccountPositionControl::load_position_from_parent_account(const std::string
 
 void AccountPositionControl::load_position_from_fund(const std::string& fund_name)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	account_no_set_.clear();
 	if (fund_) {
 		auto sub_accounts = fund_->GetAccountVector();
@@ -91,6 +94,7 @@ void AccountPositionControl::load_position_from_fund(const std::string& fund_nam
 
 void AccountPositionControl::update_position(position_p position)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	if (!position) return;
 	auto found = account_no_set_.find(position->account_no);
 	if (found == account_no_set_.end()) return;

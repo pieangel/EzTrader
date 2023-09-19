@@ -795,7 +795,7 @@ void SymbolOrderView::set_quote_cell(const int row, const bool show_mark, const 
 			cell->CellType(CT_MARK_HILO);
 			break;
 		default: 
-			cell->CellType(CT_NORMAL);
+			cell->CellType(CT_MARK_NORMAL);
 			break;
 		}
 	}
@@ -888,7 +888,8 @@ void SymbolOrderView::DrawHogaLine(const CRect& rect)
 			pCell->Y() + pCell->Height() + 1, 
 			rect.Width(), 
 			pCell->Y() + pCell->Height() + 1, 
-			_Resource.SelectedBrush
+			_Resource.DefaultTextBrush,
+			2.0f
 		);
 }
 
@@ -1126,9 +1127,14 @@ void SymbolOrderView::CancelSellOrder(std::shared_ptr<DarkHorse::SmAccount> acco
 	if (!account || !symbol_) return;
 	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account->No());
 	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
-	const std::map<std::string, order_p>& order_map = symbol_order_manager->get_accepted_order_map();
-	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
-		const auto& order = it->second;
+	//const std::map<std::string, order_p>& order_map = symbol_order_manager->get_accepted_order_map();
+
+	std::vector<order_p> order_vec;
+	symbol_order_manager->get_accepted_order_vector(order_vec);
+	if (order_vec.empty()) return;
+
+	for (auto it = order_vec.begin(); it != order_vec.end(); ++it) {
+		const auto& order = *it;
 		if (order->position == SmPositionType::Buy) continue;
 		auto order_req = OrderRequestManager::make_cancel_order_request(
 			order->account_no,
@@ -1180,9 +1186,14 @@ void SymbolOrderView::CancelBuyOrder(std::shared_ptr<DarkHorse::SmAccount> accou
 	if (!account || !symbol_) return;
 	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account->No());
 	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
-	const std::map<std::string, order_p>& order_map = symbol_order_manager->get_accepted_order_map();
-	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
-		const auto& order = it->second;
+	//const std::map<std::string, order_p>& order_map = symbol_order_manager->get_accepted_order_map();
+
+	std::vector<order_p> order_vec;
+	symbol_order_manager->get_accepted_order_vector(order_vec);
+	if (order_vec.empty()) return;
+
+	for (auto it = order_vec.begin(); it != order_vec.end(); ++it) {
+		const auto& order = *it;
 		if (order->position == SmPositionType::Sell) continue;
 		auto order_req = OrderRequestManager::make_cancel_order_request(
 			order->account_no,

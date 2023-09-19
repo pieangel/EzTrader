@@ -93,8 +93,10 @@ struct SmOrderGridResource {
 	CBCGPColor BuyHogaColor3 = RGB(0xff, 0xd6, 0xd4);
 	CBCGPColor BuyHogaColor4 = RGB(0xff, 0xe0, 0xe1);
 	CBCGPColor BuyHogaColor5 = RGB(0xff, 0xe8, 0xe8);
-	CBCGPColor BuyHogaTextColor = RGB(0xff, 0, 0);
-	CBCGPColor SellHogaTextColor = RGB(0, 0, 0xff);
+	//CBCGPColor BuyHogaTextColor_Black = RGB(0xff, 0, 0);
+	//CBCGPColor SellHogaTextColor_Black = RGB(0, 0, 0xff);
+	CBCGPColor BuyHogaTextColor = RGB(0, 0, 0);
+	CBCGPColor SellHogaTextColor = RGB(0, 0, 0);
 
 	CBCGPColor PositionSellTextColor = RGB(0, 0, 0xff);
 	CBCGPColor PositionBuyTextColor = RGB(0xff, 0, 0);
@@ -105,8 +107,9 @@ struct SmOrderGridResource {
 	CBCGPColor RemainBackColor = RGB(255, 255, 255);
 	CBCGPColor DefaultBackColor = RGB(255, 255, 255);
 	CBCGPColor DefaultTextColor = RGB(0, 0, 0);
+	CBCGPColor NormalMarkColor = RGB(0xf2, 0xf2, 0xf2);
 
-
+	CBCGPBrush NormalMarkBrush = CBCGPBrush(NormalMarkColor);
 	CBCGPBrush PositionSellBrush = CBCGPBrush(PositionSellTextColor);
 	CBCGPBrush PositionBuyBrush = CBCGPBrush(PositionBuyTextColor);
 	CBCGPBrush RemainSellBrush = CBCGPBrush(RemainSellTextColor);

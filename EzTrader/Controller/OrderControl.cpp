@@ -85,9 +85,24 @@ namespace DarkHorse {
 	void OrderControl::add_order(const std::string& account_no, const std::string& symbol_code)
 	{
 		auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
-		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
-		const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
-		add_order(accepted_order_map);
+		//auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
+		//const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
+
+		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
+		//const std::map<std::string, order_p>& order_map = symbol_order_manager->get_accepted_order_map();
+
+		std::vector<order_p> order_vec;
+		symbol_order_manager->get_accepted_order_vector(order_vec);
+		if (order_vec.empty()) return;
+
+		add_order(order_vec);
+	}
+
+	void OrderControl::add_order(const std::vector<std::shared_ptr<Order>>& accepted_order_vector)
+	{
+		for (const auto& order : accepted_order_vector) {
+			add_order(order);
+		}
 	}
 
 	void OrderControl::set_symbol(std::shared_ptr<SmSymbol> symbol)

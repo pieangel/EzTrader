@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <mutex>
 #include "../../Json/json.hpp"
 #include "../SmOrderConst.h"
 namespace DarkHorse {
@@ -15,8 +16,16 @@ class SymbolOrderManager
 public:
     void dispatch_order(const OrderEvent order_event, order_p order);
 	const std::map<std::string, order_p>& get_accepted_order_map() {
+		std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 		return accepted_order_map_;
 	}
+	void get_accepted_order_vector(std::vector<order_p> order_vec) {
+		std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+		for (auto& order : accepted_order_map_) {
+			order_vec.push_back(order.second);
+		}
+	}
+
 	void set_ordered_before(bool ordered_before) {
 		ordered_before_ = ordered_before;
 	}
@@ -25,6 +34,7 @@ public:
 	}
 	OrderBackGround get_order_background(const int position_open_qty);
 private:
+	std::mutex mutex_; // Mutex for thread synchronization
 	// 이전에 주문이 나갔는지 여부. 한번이라도 나갔다면 true, 아니면 false.
 	bool ordered_before_{ false };
 	void on_order_accepted(order_p order, OrderEvent order_event);

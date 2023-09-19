@@ -217,12 +217,12 @@ void AccountOrderView::update_order()
 	if (!account_order_control_ ) return;
 	if (updating_) return;
 	updating_ = true;
-	const std::map<std::string, order_p>& order_map = account_order_control_->get_accepted_order_map();
-	//if (order_map.empty()) return;
-
+	std::vector<order_p> order_vec;
+	account_order_control_->get_accepted_order_vector(order_vec);
+	if (order_vec.empty()) return;
 	int row = 0;
-	for (auto it2 = order_map.begin(); it2 != order_map.end(); it2++) {
-		auto order = it2->second;
+	for (auto it2 = order_vec.begin(); it2 != order_vec.end(); it2++) {
+		auto order = *it2;
 		CBCGPGridRow* pRow = GetRow(row);
 		if (!pRow) continue;
 		pRow->GetItem(0)->SetValue(order->symbol_code.c_str());

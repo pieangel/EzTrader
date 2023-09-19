@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <mutex>
 #include "../Json/json.hpp"
 #include "../ViewModel/VmPosition.h"
 namespace DarkHorse {
@@ -63,6 +64,7 @@ public:
 	group_position_manager_p find_account_group_position_manager(const std::string& account_no);
 
 private:
+	std::mutex mutex_; // Mutex for thread synchronization
 	group_position_manager_p find_add_account_group_position_manager(const std::string& account_no);
 	group_position_manager_p create_account_group_position_manager(const std::string& account_no);
 	group_position_manager_p find_add_fund_group_position_manager(const std::string& fund_name);

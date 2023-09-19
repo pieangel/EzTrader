@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <mutex>
 #include "../ViewModel/VmOrder.h"
 #include "../Order/SmOrderConst.h"
 #include "../Order/Order.h"
@@ -49,8 +50,10 @@ namespace DarkHorse {
 		size_t total_count_{ 0 };
 		// key : price as integer, value : order list on the price. 
 		std::map<int, std::shared_ptr<PriceOrderMap>> order_map_;
+		std::mutex mutex_; // Mutex for thread synchronization
 	public:
 		void clear() {
+			std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 			for (auto& it : order_map_) {
 				it.second->clear();
 			}
@@ -62,9 +65,11 @@ namespace DarkHorse {
 		}
 		int total_count() const { return total_count_; }
 		const std::map<int, std::shared_ptr<PriceOrderMap>>& get_order_map() {
+			std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 			return order_map_;
 		}
 		void add_order(const int order_price, std::shared_ptr<Order> order) {
+			std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 			auto it = order_map_.find(order_price);
 			if (it == order_map_.end()) {
 				std::shared_ptr<PriceOrderMap> price_order_map_p = std::make_shared<PriceOrderMap>();;
@@ -80,6 +85,7 @@ namespace DarkHorse {
 		}
 
 		void remove_order(const int order_price, const std::string& order_no) {
+			std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 			auto it = order_map_.find(order_price);
 			if (it == order_map_.end()) return;
 			std::shared_ptr<PriceOrderMap> price_order_map = it->second;

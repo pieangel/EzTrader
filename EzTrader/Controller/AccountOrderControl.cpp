@@ -120,6 +120,7 @@ void AccountOrderControl::on_order_accepted(std::shared_ptr<Order> order)
 
 void AccountOrderControl::add_accepted_order(const std::map<std::string, order_p>& accepted_order_map)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	if (accepted_order_map.empty()) return;
 	for (auto it = accepted_order_map.begin(); it != accepted_order_map.end(); it++) {
 		add_order(it->second);
@@ -128,6 +129,7 @@ void AccountOrderControl::add_accepted_order(const std::map<std::string, order_p
 
 DarkHorse::order_p AccountOrderControl::get_order(const std::string& order_no)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto it = accepted_order_map_.find(order_no);
 	if (it == accepted_order_map_.end()) return nullptr;
 	return it->second;
@@ -135,6 +137,7 @@ DarkHorse::order_p AccountOrderControl::get_order(const std::string& order_no)
 
 void AccountOrderControl::add_order(order_p order)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	if (!order) return;
 	auto it = accepted_order_map_.find(order->order_no);
 	if (it != accepted_order_map_.end()) return;
@@ -143,6 +146,7 @@ void AccountOrderControl::add_order(order_p order)
 
 void AccountOrderControl::remove_order(order_p order)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	if (!order) return;
 	auto it = accepted_order_map_.find(order->order_no);
 	if (it == accepted_order_map_.end()) return;

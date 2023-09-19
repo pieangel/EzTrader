@@ -38,6 +38,7 @@ namespace DarkHorse {
 		void load_from_fund(const std::string& fund_name, const std::string& symbol_code);
 	private:
 		void add_order(const std::map<std::string, std::shared_ptr<Order>>& accepted_order_map);
+		void add_order(const std::vector<std::shared_ptr<Order>>& accepted_order_vector);
 		void add_order(const std::string& account_no, const std::string& symbol_code);
 		void add_order(std::shared_ptr<Order> order);
 		void on_order_unfilled(std::shared_ptr<Order> order);

@@ -73,6 +73,7 @@ void SymbolOrderManager::on_order_filled(order_p order, OrderEvent order_event)
 
 void SymbolOrderManager::add_accepted_order(order_p order)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto it = accepted_order_map_.find(order->order_no);
 	if (it != accepted_order_map_.end()) return;
 	accepted_order_map_[order->order_no] = order;
@@ -99,6 +100,7 @@ void SymbolOrderManager::update_accepted_order(order_p order)
 
 void SymbolOrderManager::remove_accepted_order(order_p order)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto it = accepted_order_map_.find(order->order_no);
 	if (it == accepted_order_map_.end()) return;
 	accepted_order_map_.erase(it);

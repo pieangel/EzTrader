@@ -343,11 +343,11 @@ namespace DarkHorse {
 			break;
 		case SmCellType::CT_TICK_BUY:
 			pGM->FillRectangle(rect, res.GridNormalBrush);
-			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.BuyHogaTextBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.PositionBuyBrush);
 			break;
 		case SmCellType::CT_TICK_SELL:
 			pGM->FillRectangle(rect, res.GridNormalBrush);
-			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.SellHogaTextBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.PositionSellBrush);
 			break;
 		case SmCellType::CT_REMAIN_BUY:
 			pGM->FillRectangle(rect, res.BuyPositionBrush);
@@ -373,6 +373,10 @@ namespace DarkHorse {
 			//pGM->FillRectangle(left_pos_rect, res.QMHighLowBrush);
 			//pGM->FillRectangle(right_pos_rect, res.QMHighLowBrush);
 			pGM->FillRectangle(rect, res.HiLoSiseBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
+			break;
+		case SmCellType::CT_MARK_NORMAL:
+			pGM->FillRectangle(rect, res.NormalMarkBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
 		default:

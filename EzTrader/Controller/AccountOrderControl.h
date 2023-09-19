@@ -5,6 +5,8 @@
 #include <set>
 #include <functional>
 #include "../Order/SmOrderConst.h"
+#include <mutex>
+#include <vector>
 namespace DarkHorse {
 struct Order;
 class SmAccount;
@@ -22,11 +24,19 @@ public:
 		event_handler_ = event_handler;
 	}
 	const std::map<std::string, order_p>& get_accepted_order_map() {
+		std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 		return accepted_order_map_;
+	}
+	void get_accepted_order_vector(std::vector<order_p> order_vec) {
+		std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+		for (auto& order : accepted_order_map_) {
+			order_vec.push_back(order.second);
+		}
 	}
 	void set_account(account_p account);
 	void set_fund(std::shared_ptr<SmFund> fund);
 private:
+	std::mutex mutex_; // Mutex for thread synchronization
 	void load_order_from_account(account_p account);
 	void load_order_from_fund(std::shared_ptr<SmFund> fund);
 	void load_order_from_account(const std::string& account_no);

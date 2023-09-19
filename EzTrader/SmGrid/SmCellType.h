@@ -55,6 +55,7 @@ namespace DarkHorse {
 		CT_SP_RM_NONE,
 		CT_SP_PROFIT,
 		CT_SP_LOSS,
+		CT_MARK_NORMAL
 
 	};
 }
