@@ -187,12 +187,12 @@ namespace DarkHorse {
 			return get_order_count(sell_order_control_, price);
 	}
 
-	std::pair<int, int> OrderControl::get_order_count(DarkHorse::SubOrderControl& order_control, const int price)
+	std::pair<int, int> OrderControl::get_order_count(SubOrderControl& order_control, const int price)
 	{
 		const std::map<int, std::shared_ptr<PriceOrderMap>>& order_map = order_control.get_order_map();
 		auto it_price = order_map.find(price);
 		if (it_price == order_map.end()) return std::make_pair(0, 0);
-		const std::shared_ptr<DarkHorse::PriceOrderMap>& price_order_map = it_price->second;
+		const std::shared_ptr<PriceOrderMap>& price_order_map = it_price->second;
 		return std::make_pair(it_price->first, price_order_map->count());
 	}
 
@@ -214,20 +214,20 @@ namespace DarkHorse {
 			sell_order_control_.remove_order(order->order_price, order->order_no);
 	}
 
-	std::shared_ptr<PriceOrderMap> OrderControl::get_order_map(const SmPositionType& position, const int price)
+	void OrderControl::get_order(const SmPositionType& position, const int& price, std::vector<std::shared_ptr<Order>>& order_vector)
 	{
 		if (position == SmPositionType::Buy)
-			return get_order_map(buy_order_control_, price);
+			buy_order_control_.get_order(price, order_vector);
 		else
-			return get_order_map(sell_order_control_, price);
+			sell_order_control_.get_order(price, order_vector);
 	}
 
-	std::shared_ptr<DarkHorse::PriceOrderMap> OrderControl::get_order_map(DarkHorse::SubOrderControl& order_control, const int price)
+	void OrderControl::clear_order(const SmPositionType& position, const int& price)
 	{
-		const std::map<int, std::shared_ptr<PriceOrderMap>>& order_map = order_control.get_order_map();
-		auto it_price = order_map.find(price);
-		if (it_price == order_map.end()) return nullptr;
-		return it_price->second;
+		if (position == SmPositionType::Buy)
+			buy_order_control_.clear_order(price);
+		else
+			sell_order_control_.clear_order(price);
 	}
 
 }

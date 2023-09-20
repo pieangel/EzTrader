@@ -41,6 +41,7 @@ namespace DarkHorse {
 	class StopOrderControl;
 	class PriceOrderRequestMap;
 	class SmFund;
+    struct Order;
 }
 
 using order_request_p = std::shared_ptr<DarkHorse::OrderRequest>;
@@ -398,10 +399,10 @@ private:
 	void add_moving_rect(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void CancelOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
 	void cancel_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell);
-	void cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map);
+	void cancel_order(const std::vector<std::shared_ptr<DarkHorse::Order>> order_vec);
 	void ChangeOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& tgt_price);
 	void change_order(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& target_price);
-	void change_order(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map, const int& target_price);
+	void change_order(const std::vector<std::shared_ptr<DarkHorse::Order>>& order_vec, const int& target_price);
 	void change_stop
 	(
 		const std::shared_ptr<DarkHorse::SmCell>& src_cell, 

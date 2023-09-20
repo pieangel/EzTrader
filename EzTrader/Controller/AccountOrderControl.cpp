@@ -43,10 +43,8 @@ void AccountOrderControl::load_order_from_account(account_p account)
 	if (!account) return;
 	account_set_.clear();
 	if (account->is_subaccount()) {
-		if (account->parent_account().lock()) {
-			load_order_from_account(account->parent_account().lock()->No());
-			account_set_.insert(account->No());
-		}
+		load_order_from_account(account->No());
+		account_set_.insert(account->No());
 	}
 	else {
 		load_order_from_account(account->No());

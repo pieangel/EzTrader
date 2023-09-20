@@ -27,7 +27,7 @@ public:
 		std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 		return accepted_order_map_;
 	}
-	void get_accepted_order_vector(std::vector<order_p> order_vec) {
+	void get_accepted_order_vector(std::vector<order_p>& order_vec) {
 		std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 		for (auto& order : accepted_order_map_) {
 			order_vec.push_back(order.second);

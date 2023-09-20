@@ -2115,21 +2115,26 @@ void SymbolOrderView::cancel_order(const std::shared_ptr<DarkHorse::SmCell>& src
 	if (!src_cell) return;
 	auto it_row = row_to_price_.find(src_cell->Row());
 	if (it_row == row_to_price_.end()) return;
-	std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map = nullptr;
-	if (src_cell->Col() == DarkHorse::OrderHeader::SELL_ORDER)
-		price_order_map = order_control_->get_order_map(SmPositionType::Sell, it_row->second);
-	else
-		price_order_map = order_control_->get_order_map(SmPositionType::Buy, it_row->second);
-	if (!price_order_map) return;
-	cancel_order(price_order_map);
+	std::vector<std::shared_ptr<Order>> order_vec;
+	if (src_cell->Col() == DarkHorse::OrderHeader::SELL_ORDER) {
+		order_control_->get_order(SmPositionType::Sell, it_row->second, order_vec);
+		if (order_vec.empty()) return;
+		cancel_order(order_vec);
+		order_control_->clear_order(SmPositionType::Sell, it_row->second);
+	}
+	else {
+		order_control_->get_order(SmPositionType::Buy, it_row->second, order_vec);
+		if (order_vec.empty()) return;
+		cancel_order(order_vec);
+		order_control_->clear_order(SmPositionType::Buy, it_row->second);
+	}
 	_EnableOrderShow = true;
 }
 
-void SymbolOrderView::cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map)
+void SymbolOrderView::cancel_order(std::vector<std::shared_ptr<DarkHorse::Order>> order_vec)
 {
-	const std::map<std::string, std::shared_ptr<Order>>& order_map = price_order_map->get_order_map();
-	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
-		const auto& order = it->second;
+	for (auto it = order_vec.begin(); it != order_vec.end(); ++it) {
+		const auto& order = *it;
 		auto parent_account = mainApp.AcntMgr()->get_parent_account(order->account_no);
 		auto order_req = OrderRequestManager::make_cancel_order_request(
 			mainApp.AcntMgr()->get_account_no(order->account_no),
@@ -2160,9 +2165,7 @@ void SymbolOrderView::cancel_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 		order_req->order_context.order_control_id = id_;
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
-	price_order_map->clear();
 }
-
 
 void SymbolOrderView::ChangeOrder(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const int& tgt_price)
 {
@@ -2188,21 +2191,26 @@ void SymbolOrderView::change_order(const std::shared_ptr<DarkHorse::SmCell>& src
 	if (!src_cell) return;
 	auto it_row = row_to_price_.find(src_cell->Row());
 	if (it_row == row_to_price_.end()) return;
-	std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map = nullptr;
-	if (src_cell->Col() == DarkHorse::OrderHeader::SELL_ORDER)
-		price_order_map = order_control_->get_order_map(SmPositionType::Sell, it_row->second);
-	else
-		price_order_map = order_control_->get_order_map(SmPositionType::Buy, it_row->second);
-	if (!price_order_map) return;
-	change_order(price_order_map, target_price);
+	std::vector<std::shared_ptr<Order>> order_vec;
+	if (src_cell->Col() == DarkHorse::OrderHeader::SELL_ORDER) {
+		order_control_->get_order(SmPositionType::Sell, it_row->second, order_vec);
+		if (order_vec.empty()) return;
+		change_order(order_vec, target_price);
+		order_control_->clear_order(SmPositionType::Sell, it_row->second);
+	}
+	else {
+		order_control_->get_order(SmPositionType::Buy, it_row->second, order_vec);
+		if (order_vec.empty()) return;
+		change_order(order_vec, target_price);
+		order_control_->clear_order(SmPositionType::Buy, it_row->second);
+	}
 	_EnableOrderShow = true;
 }
 
-void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> price_order_map, const int& target_price)
+void SymbolOrderView::change_order(const std::vector<std::shared_ptr<DarkHorse::Order>>& order_vec, const int& target_price)
 {
-	const std::map<std::string, std::shared_ptr<Order>>& order_map = price_order_map->get_order_map();
-	for (auto it = order_map.begin(); it != order_map.end(); ++it) {
-		const auto& order = it->second;
+	for (auto it = order_vec.begin(); it != order_vec.end(); ++it) {
+		const auto& order = *it;
 		// 잔량이 설정되지 않으면 주문 정정을 못하게 막는다. 
 		if (order->remain_count == 0) continue;
 		auto parent_account = mainApp.AcntMgr()->get_parent_account(order->account_no);
@@ -2238,7 +2246,6 @@ void SymbolOrderView::change_order(std::shared_ptr<DarkHorse::PriceOrderMap> pri
 		//set_virtual_filled_value(order_req);
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
-	price_order_map->clear();
 }
 
 void SymbolOrderView::change_stop(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const std::shared_ptr<DarkHorse::SmCell>& tgt_cell, const int& src_price, const int& target_price)

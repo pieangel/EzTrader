@@ -215,11 +215,12 @@ void AccountOrderView::OnDestroy()
 void AccountOrderView::update_order()
 {
 	if (!account_order_control_ ) return;
-	if (updating_) return;
-	updating_ = true;
 	std::vector<order_p> order_vec;
 	account_order_control_->get_accepted_order_vector(order_vec);
-	if (order_vec.empty()) return;
+	if (order_vec.empty()) {
+		ClearOldContents(0);
+		return;
+	}
 	int row = 0;
 	for (auto it2 = order_vec.begin(); it2 != order_vec.end(); it2++) {
 		auto order = *it2;
@@ -269,7 +270,6 @@ void AccountOrderView::update_order()
 	ClearOldContents(row);
 	_OldMaxRow = row;
 	enable_order_show_ = true;
-	updating_ = false;
 }
 
 void AccountOrderView::ClearCheck()

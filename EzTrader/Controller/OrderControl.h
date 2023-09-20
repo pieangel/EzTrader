@@ -33,7 +33,9 @@ namespace DarkHorse {
 		void set_fund(std::shared_ptr<SmFund> fund);
 		void set_symbol(std::shared_ptr<SmSymbol> symbol);
 		std::pair<int, int> get_order_count(const SmPositionType& position, const int price);
-		std::shared_ptr<PriceOrderMap> get_order_map(const SmPositionType& position, const int price);
+		//std::shared_ptr<PriceOrderMap> get_order_map(const SmPositionType& position, const int price);
+		void get_order(const SmPositionType& position, const int& price, std::vector<std::shared_ptr<Order>>& order_vector);
+		void clear_order(const SmPositionType& position, const int& price);
 		void load_from_account(const bool is_sub_account, const std::string& account_no, const std::string& symbol_code);
 		void load_from_fund(const std::string& fund_name, const std::string& symbol_code);
 	private:
@@ -44,8 +46,7 @@ namespace DarkHorse {
 		void on_order_unfilled(std::shared_ptr<Order> order);
 		void on_order_accepted(std::shared_ptr<Order> order);
 		void remove_order(std::shared_ptr<Order> order);
-		std::shared_ptr<PriceOrderMap> get_order_map(DarkHorse::SubOrderControl& order_control, const int price);
-		std::pair<int, int> get_order_count(DarkHorse::SubOrderControl& order_control, const int price);
+		std::pair<int, int> get_order_count(SubOrderControl& order_control, const int price);
 		SubOrderControl buy_order_control_;
 		SubOrderControl sell_order_control_;
 		//int symbol_id_{ 0 };
