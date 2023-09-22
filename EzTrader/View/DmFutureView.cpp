@@ -85,7 +85,65 @@ DmFutureView::~DmFutureView()
 		delete m_pGM;
 }
 
-void DmFutureView::set_position(DarkHorse::VmFuture& future_info)
+std::string DmFutureView::get_position_text(const DarkHorse::VmFuture& future_info)
+{
+	if (future_info.position != 0)
+		return std::to_string(future_info.position);
+	else if (future_info.accepted_count > 0 ||
+		future_info.ordered)
+		return "0";
+	else return "";
+}
+
+void DmFutureView::get_future_info(DarkHorse::VmFuture& future_info)
+{
+	get_init_accepted_order_count(future_info);
+	if (order_type_ == OrderType::None) return;
+	if (order_type_ == OrderType::MainAccount) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_parent_account(future_info.account_no, future_info.symbol_code, position);
+		future_info.position = position.open_quantity;
+	}
+	else if (order_type_ == OrderType::SubAccount) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_account(future_info.account_no, future_info.symbol_code, position);
+		future_info.position = position.open_quantity;
+	}
+	else if (order_type_ == OrderType::Fund) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_fund(future_info.fund_name, future_info.symbol_code, position);
+		future_info.position = position.open_quantity;
+	}
+}
+
+void DmFutureView::get_init_accepted_order_count(DarkHorse::VmFuture& future_info)
+{
+	if (order_type_ == OrderType::None) return;
+	if (order_type_ == OrderType::MainAccount) {
+		if (!_Account) return;
+		future_info.account_no = _Account->No();
+		future_info.fund_name = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_parent_account(future_info.account_no, future_info.symbol_code);
+		future_info.ordered = init_and_count.first;
+		future_info.accepted_count = init_and_count.second;
+	}
+	else if (order_type_ == OrderType::SubAccount) {
+		if (!_Account) return;
+		future_info.account_no = _Account->No();
+		future_info.fund_name = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_account(future_info.account_no, future_info.symbol_code);
+		future_info.ordered = init_and_count.first;
+		future_info.accepted_count = init_and_count.second;
+	}
+	else if (order_type_ == OrderType::Fund) {
+		if (!_Fund) return;
+		future_info.fund_name = _Fund->Name();
+		future_info.account_no = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_fund(future_info.fund_name, future_info.symbol_code);
+		future_info.ordered = init_and_count.first;
+		future_info.accepted_count = init_and_count.second;
+	}
+}void DmFutureView::set_position(DarkHorse::VmFuture& future_info)
 {
 	if (!_Account || !future_info.symbol_p) return;
 
@@ -162,6 +220,7 @@ void DmFutureView::update_order(order_p order, OrderEvent order_event)
 	auto found = symbol_row_index_map_.find(order->symbol_code);
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	get_init_accepted_order_count(future_info);
 	show_value(found->second, 2, future_info);
 	enable_show_ = true;
 }
@@ -170,8 +229,14 @@ void DmFutureView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	_Account = val;
 	position_control_->set_account(_Account);
+
+	if (_Account->is_subaccount())
+		order_type_ = OrderType::SubAccount;
+	else
+		order_type_ = OrderType::MainAccount;
+
 	for (auto& future_info : symbol_vec_) {
-		set_position(future_info);
+		get_future_info(future_info);
 		if (!future_info.symbol_p) continue;
 		auto found = symbol_row_index_map_.find(future_info.symbol_p->SymbolCode());
 		if (found == symbol_row_index_map_.end()) continue;
@@ -288,9 +353,10 @@ void DmFutureView::update_expected(std::shared_ptr<SmQuote> quote)
 void DmFutureView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 {
 	_Fund = val;
+	order_type_ = OrderType::Fund;
 	position_control_->set_fund(_Fund);
 	for (auto& future_info : symbol_vec_) {
-		set_position(future_info);
+		get_future_info(future_info);
 		if (!future_info.symbol_p) continue;
 		auto found = symbol_row_index_map_.find(future_info.symbol_p->SymbolCode());
 		if (found == symbol_row_index_map_.end()) continue;
@@ -332,7 +398,7 @@ void DmFutureView::show_value(const int row, const int col, const DarkHorse::VmF
 		SmUtil::insert_decimal(value, future_info.decimal);
 	}
 	else {
-		value = std::to_string(future_info.position);
+		value = get_position_text(future_info);
 	}
 	set_background_color(cell, future_info);
 	cell->Text(value);
@@ -340,23 +406,14 @@ void DmFutureView::show_value(const int row, const int col, const DarkHorse::VmF
 
 void DmFutureView::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmFuture& future_info)
 {
-	if (!_Account || !future_info.symbol_p) return;
-
-	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(_Account->No());
-
-	auto symbol_order_manager = account_order_manager->find_symbol_order_manager(future_info.symbol_p->SymbolCode());
-	if (!symbol_order_manager) {
-		cell->CellType(CT_NORMAL);
-		return;
-	}
-
-	auto order_background = symbol_order_manager->get_order_background(future_info.position);
-	if (order_background == OrderBackGround::OB_HAS_BEEN)
-		cell->CellType(CT_ORDER_HAS_BEEN);
-	else if (order_background == OrderBackGround::OB_PRESENT)
-		cell->CellType(CT_ORDER_PRESENT);
+	if (future_info.accepted_count > 0)
+		cell->CellType(CT_OE);
+	else if (future_info.position != 0)
+		cell->CellType(CT_PE);
+	else if (future_info.ordered)
+		cell->CellType(CT_EE);
 	else
-		cell->CellType(CT_NORMAL);
+		cell->CellType(CT_DEFAULT);
 }
 
 void DmFutureView::register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol)
@@ -394,7 +451,8 @@ void DmFutureView::init_dm_future()
 				future_info.position = 0;
 				future_info.symbol_id = symbol->Id();
 				future_info.symbol_p = symbol;
-				set_position(future_info);
+				future_info.symbol_code = symbol->SymbolCode();
+				get_future_info(future_info);
 				symbol_vec_.push_back(future_info);
 				symbol_row_index_map_[symbol->SymbolCode()] = i;
 			}

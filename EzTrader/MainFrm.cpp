@@ -854,6 +854,7 @@ void CMainFrame::OnClose()
 		mainApp.HogaMgr()->StopProcess();
 		mainApp.QuoteMgr()->StopAllQuoteProcess();
 		mainApp.QuoteMgr()->StopProcess();
+		mainApp.order_request_manager()->stop_handle_order_request();
 
 		mainApp.SaveMgr()->WriteSettings();
 

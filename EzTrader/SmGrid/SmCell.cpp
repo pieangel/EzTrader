@@ -399,6 +399,18 @@ namespace DarkHorse {
 			pGM->FillRectangle(rect, res.PutDefaultBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.QuoteTextColor);
 			break;
+		case SmCellType::CT_DEFAULT:
+			pGM->FillRectangle(rect, res.DefaultBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.DefaultTextColor);
+			break;
+		case SmCellType::CT_SP_PROFIT:
+			pGM->FillRectangle(rect, res.DefaultBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.SymbolPositionProfit);
+			break;
+		case SmCellType::CT_SP_LOSS:
+			pGM->FillRectangle(rect, res.DefaultBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.SymbolPositionLoss);
+			break;
 		default:
 			pGM->FillRectangle(rect, res.DefaultBackBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.DefaultTextColor);

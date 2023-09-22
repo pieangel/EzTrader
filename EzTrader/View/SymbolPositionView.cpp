@@ -147,7 +147,7 @@ void SymbolPositionView::Clear()
 	for (int i = 0; i < _Grid->ColCount(); i++) {
 		auto cell = _Grid->FindCell(1, i);
 		if (!cell) continue;
-		cell->CellType(SmCellType::CT_NORMAL);
+		cell->CellType(SmCellType::CT_DEFAULT);
 		cell->clear();
 	}
 	Invalidate();
@@ -163,11 +163,11 @@ void SymbolPositionView::update_quote()
 	SmUtil::insert_decimal(value, symbol_->decimal());
 	auto cell = _Grid->FindCell(1, 5);
 	if (position.open_quantity == 0)
-		cell->CellType(SmCellType::CT_NORMAL);
+		cell->CellType(SmCellType::CT_DEFAULT);
 	else
 		position.open_quantity > 0 ? 
-		cell->CellType(SmCellType::CT_REMAIN_BUY) :
-		cell->CellType(SmCellType::CT_REMAIN_SELL);
+		cell->CellType(SmCellType::CT_DEFAULT) :
+		cell->CellType(SmCellType::CT_DEFAULT);
 	cell->Text(value);
 }
 
@@ -261,30 +261,30 @@ void SymbolPositionView::update_position()
 	//position.open_quantity > 0 ? cell->CellType(SmCellType::CT_REMAIN_BUY) : cell->CellType(SmCellType::CT_REMAIN_SELL);
 
 	cell = _Grid->FindCell(1, 1);
-	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_SP_POS_BUY) : cell->CellType(SmCellType::CT_SP_POS_SELL);
+	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_DEFAULT) : cell->CellType(SmCellType::CT_DEFAULT);
 	if (position.open_quantity > 0) {
 		cell->Text("매수");
-		cell->CellType(SmCellType::CT_SP_POS_BUY);
+		cell->CellType(SmCellType::CT_DEFAULT);
 	}
 	else if (position.open_quantity < 0) {
 		cell->Text("매도");
-		cell->CellType(SmCellType::CT_SP_POS_SELL);
+		cell->CellType(SmCellType::CT_DEFAULT);
 	}
 	else {
 		cell->Text("");
-		cell->CellType(SmCellType::CT_SP_POS_NONE);
+		cell->CellType(SmCellType::CT_DEFAULT);
 	}
 	cell = _Grid->FindCell(1, 2);
 	cell->Text(std::to_string(position.open_quantity));
 	if (position.open_quantity > 0) {
-		cell->CellType(SmCellType::CT_SP_RM_BUY);
+		cell->CellType(SmCellType::CT_DEFAULT);
 	}
 	else if (position.open_quantity < 0) {
-		cell->CellType(SmCellType::CT_SP_RM_SELL);
+		cell->CellType(SmCellType::CT_DEFAULT);
 	}
 	else {
 		cell->Text("0");
-		cell->CellType(SmCellType::CT_SP_RM_NONE);
+		cell->CellType(SmCellType::CT_DEFAULT);
 	}
 
 	cell = _Grid->FindCell(1, 3);
@@ -302,7 +302,7 @@ void SymbolPositionView::update_position()
 	}
 	else {
 		cell->Text("0");
-		cell->CellType(SmCellType::CT_NORMAL);
+		cell->CellType(SmCellType::CT_DEFAULT);
 	}
 
 	value_string = VtStringUtil::get_format_value(position.open_profit_loss, decimal, true);

@@ -58,6 +58,10 @@ public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	std::string get_position_text(const DarkHorse::VmFuture& future_info);
+	void get_future_info(DarkHorse::VmFuture& future_info);
+	void get_init_accepted_order_count(DarkHorse::VmFuture& future_info);
+	DarkHorse::OrderType order_type_{ DarkHorse::OrderType::None };
 	int order_window_id_ = 0;
 	void set_position(DarkHorse::VmFuture& future_info);
 	void update_position();
