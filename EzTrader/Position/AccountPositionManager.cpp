@@ -87,7 +87,11 @@ void AccountPositionManager::update_position(order_p order)
 	set_account_id(position, order->account_no);
 	position->fund_name = order->order_context.fund_name;
 	position->fund_id = order->order_context.fund_id;
-	position->order_source_type = order->order_context.order_source_type;
+	// 펀드 일때는 서브 계좌들을 먼저 처리하고 펀드는 그룹 포지션에서 처리하도록 한다. 
+	if (order->order_context.order_source_type == OrderType::Fund)
+		position->order_source_type = OrderType::SubAccount;
+	else
+		position->order_source_type = order->order_context.order_source_type;
 	position->parent_account_no = order->order_context.parent_account_no;
 	auto symbol = mainApp.SymMgr()->FindSymbol(order->symbol_code);
 	if (!symbol) return;

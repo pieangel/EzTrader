@@ -67,8 +67,14 @@ namespace DarkHorse {
 			}
 
 			if (event_handler_) event_handler_();
-			//if (fund_option_event_handler_) fund_option_event_handler_(position);
-			if (vm_fund_option_event_handler_) vm_fund_option_event_handler_(position_);
+			// For the option view and future view
+			if (vm_fund_option_event_handler_) {
+				position_.symbol_code = position->symbol_code;
+				position_.symbol_id = mainApp.SymMgr()->get_symbol_id(position->symbol_code);
+				position_.account_no = position->account_no;
+				position_.account_id = mainApp.AcntMgr()->get_account_id(position->account_no);
+				vm_fund_option_event_handler_(position_);
+			}
 			if (out_system_event_handler_) out_system_event_handler_(out_system_id_);
 		}
 		catch (const std::exception& e) {

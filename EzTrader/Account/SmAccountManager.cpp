@@ -206,4 +206,11 @@ namespace DarkHorse {
 			return found->second;
 	}
 
+	int SmAccountManager::get_account_id(const std::string& account_no)
+	{
+		auto found = _AccountMap.find(account_no);
+		if (found == _AccountMap.end()) return -1;
+		return found->second->id();
+	}
+
 }

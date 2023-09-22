@@ -539,6 +539,15 @@ std::shared_ptr<SmSymbol> SmSymbolManager::FindSymbol(const std::string& symbol_
 		return nullptr;
 }
 
+int SmSymbolManager::get_symbol_id(const std::string& symbol_code)
+{
+	auto found = SymbolMap_.find(symbol_code);
+	if (found != SymbolMap_.end()) {
+		return found->second->Id();
+	}
+	return -1;
+}
+
 void SmSymbolManager::GetRecentSymbolVector(std::vector<std::shared_ptr<SmSymbol>>& symbol_list)
 {
 	for (auto it = _MarketMap.begin(); it != _MarketMap.end(); ++it) {
