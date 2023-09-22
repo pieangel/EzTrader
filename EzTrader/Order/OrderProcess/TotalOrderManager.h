@@ -23,6 +23,9 @@ public:
 	const std::map<std::string, account_order_manager_p>& get_account_order_manager_map() {
 		return account_order_manager_map_;
 	}
+	std::pair<bool, int> get_init_and_acpt_order_count_from_account(const std::string& account_no, const std::string& symbol_code);
+	std::pair<bool, int> get_init_and_acpt_order_count_from_fund(const std::string& fund_name, const std::string& symbol_code);
+	std::pair<bool, int> get_init_and_acpt_order_count_from_parent_account(const std::string& account_no, const std::string& symbol_code);
 private:
 	void write_order_history(const OrderEvent order_event, order_p order) ;
 	void dispatch_order(const OrderEvent order_event, order_p order) ;

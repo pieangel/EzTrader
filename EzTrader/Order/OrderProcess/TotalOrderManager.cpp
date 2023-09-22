@@ -6,6 +6,11 @@
 #include "../OrderRequest/OrderRequest.h"
 #include "../../Global/SmTotalManager.h"
 #include "../Order.h"
+#include "../../Account/SmAccount.h"
+#include "../../Account/SmAccountManager.h"
+#include "SymbolOrderManager.h"
+#include "../../Fund/SmFund.h"
+#include "../../Fund/SmFundManager.h"
 namespace DarkHorse 
 {
 using account_order_manager_p = std::shared_ptr<AccountOrderManager>;
@@ -51,6 +56,58 @@ account_order_manager_p TotalOrderManager::get_account_order_manager(const std::
 	if (order_manager) return order_manager;
 	return create_account_order_manager(account_no);
 }
+
+std::pair<bool, int> TotalOrderManager::get_init_and_acpt_order_count_from_account(const std::string& account_no, const std::string& symbol_code)
+{
+	std::pair<bool, int> result(false, 0);
+	auto account = mainApp.AcntMgr()->FindAccount(account_no);
+	if (!account) return result;
+	auto account_order_manager = get_account_order_manager(account_no);
+	if (!account_order_manager) return result;
+	auto symbol_order_manager = account_order_manager->find_symbol_order_manager(symbol_code);
+	if (!symbol_order_manager) return result;
+	result.first = symbol_order_manager->get_ordered_before();
+	result.second = symbol_order_manager->get_accepted_count();
+	return result;
+}
+
+std::pair<bool, int> TotalOrderManager::get_init_and_acpt_order_count_from_fund(const std::string& fund_name, const std::string& symbol_code)
+{
+	std::pair<bool, int> result(false, 0);
+	auto fund = mainApp.FundMgr()->FindFund(fund_name);
+	if (!fund) return result;
+	const std::vector<std::shared_ptr<SmAccount>>& sub_accounts = fund->GetAccountVector();
+	for (auto it = sub_accounts.begin(); it != sub_accounts.end(); ++it) {
+		auto account_order_manager = get_account_order_manager((*it)->No());
+		if (!account_order_manager) continue;
+		auto symbol_order_manager = account_order_manager->find_symbol_order_manager(symbol_code);
+		if (!symbol_order_manager) continue;
+		// Only if the current symbol order manager is not ordered before, we set the result.first to the next value.
+		if (!result.first) result.first = symbol_order_manager->get_ordered_before();
+		result.second += symbol_order_manager->get_accepted_count();
+	}
+	return result;
+}
+
+std::pair<bool, int> TotalOrderManager::get_init_and_acpt_order_count_from_parent_account(const std::string& account_no, const std::string& symbol_code)
+{
+	std::pair<bool, int> result(false, 0);
+	auto account = mainApp.AcntMgr()->FindAccount(account_no);
+	if (!account) return result;
+	result = get_init_and_acpt_order_count_from_account(account_no, symbol_code);
+	const std::vector<std::shared_ptr<SmAccount>>& sub_accounts = account->get_sub_accounts();
+	for (auto it = sub_accounts.begin(); it != sub_accounts.end(); ++it) {
+		auto account_order_manager = get_account_order_manager((*it)->No());
+		if (!account_order_manager) continue;
+		auto symbol_order_manager = account_order_manager->find_symbol_order_manager(symbol_code);
+		if (!symbol_order_manager) continue;
+		// Only if the current symbol order manager is not ordered before, we set the result.first to the next value.
+		if (!result.first) result.first = symbol_order_manager->get_ordered_before();
+		result.second += symbol_order_manager->get_accepted_count();
+	}
+	return result;
+}
+
 order_p TotalOrderManager::make_order(const order_event& order_info)
 {
 	try {

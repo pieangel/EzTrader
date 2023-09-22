@@ -10,5 +10,6 @@ namespace DarkHorse {
 		int position{ 0 };
 		bool ordered{ false };
 		int decimal{ 0 };
+		int accepted_count{ 0 };
 	};
 }

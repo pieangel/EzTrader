@@ -4,6 +4,9 @@
 namespace DarkHorse {
 	class SmSymbol;
 	struct VmOption {
+		std::string account_no;
+		std::string fund_name;
+		std::string symbol_code;
 		std::shared_ptr<SmSymbol> symbol_p{ nullptr };
 		// 0 : none, 1 : call, 2 : put
 		int call_put{ 0 };
@@ -14,6 +17,7 @@ namespace DarkHorse {
 		int atm{ 0 };
 		bool ordered{ false };
 		std::string strike;
-		int decimal;
+		int decimal{ 0 };
+		int accepted_count{ 0 };
 	};
 }

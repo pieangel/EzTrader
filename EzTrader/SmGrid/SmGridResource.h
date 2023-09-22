@@ -109,6 +109,18 @@ struct SmOrderGridResource {
 	CBCGPColor DefaultTextColor = RGB(0, 0, 0);
 	CBCGPColor NormalMarkColor = RGB(0xf2, 0xf2, 0xf2);
 
+	CBCGPColor OrderExistColor = RGB(212, 186, 188);
+	CBCGPColor PositionExistColor = RGB(255, 255, 255);
+	CBCGPColor ExperienceExistColor = RGB(255, 255, 255);
+	CBCGPColor CallDefaultColor = RGB(252, 226, 228);
+	CBCGPColor PutDefaultColor = RGB(218, 226, 245);
+
+	CBCGPBrush OrderExistBrush = CBCGPBrush(OrderExistColor);
+	CBCGPBrush PositionExistBrush = CBCGPBrush(PositionExistColor);
+	CBCGPBrush ExperienceExistBrush = CBCGPBrush(ExperienceExistColor);
+	CBCGPBrush CallDefaultBrush = CBCGPBrush(CallDefaultColor);
+	CBCGPBrush PutDefaultBrush = CBCGPBrush(PutDefaultColor);
+
 	CBCGPBrush NormalMarkBrush = CBCGPBrush(NormalMarkColor);
 	CBCGPBrush PositionSellBrush = CBCGPBrush(PositionSellTextColor);
 	CBCGPBrush PositionBuyBrush = CBCGPBrush(PositionBuyTextColor);

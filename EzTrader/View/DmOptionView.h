@@ -59,14 +59,15 @@ public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	std::string get_position_text(const DarkHorse::VmOption& option_info);
+	void get_option_info(DarkHorse::VmOption& option_info);
+	void get_init_accepted_order_count(DarkHorse::VmOption& option_info);
 	void set_call_put_area();
 	int order_window_id_ = 0;
 	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
 	void update_quote();
 	void update_close(const DarkHorse::VmQuote& quote);
 	void update_position();
-	//void on_update_position();
-	void on_update_position(std::shared_ptr<DarkHorse::Position> position);
 	void on_update_position_vm(const VmPosition& position);
 	void update_value_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
 	void on_update_quote();
@@ -74,7 +75,6 @@ private:
 	void register_symbol(const std::string symbol_code);
 	void show_value(const int row, const int col, const DarkHorse::VmOption& option_info);
 	void set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmOption& option_info);
-	void set_position(DarkHorse::VmOption& option_info);
 	void show_strike(const int row, const int col, const DarkHorse::VmOption& option_info);
 	void show_values();
 	ViewMode view_mode_{ ViewMode::VM_Close };
@@ -93,6 +93,7 @@ private:
 	void set_strike();
 	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
+	DarkHorse::OrderType order_type_{ DarkHorse::OrderType::None };
 	int atm_index_{ 0 };
 	// 0 : account, 1 : fund
 	int _Mode = 0;

@@ -32,6 +32,12 @@ public:
 	void set_symbol_code(const std::string& symbol_code) {
 		symbol_code_ = symbol_code;
 	}
+	int get_accepted_count() {
+		return (int)accepted_order_map_.size();
+	}
+	bool get_ordered_before() {
+		return ordered_before_;
+	}
 	OrderBackGround get_order_background(const int position_open_qty);
 private:
 	std::mutex mutex_; // Mutex for thread synchronization

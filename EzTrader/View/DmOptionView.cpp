@@ -119,16 +119,76 @@ void DmOptionView::update_quote()
 
 }
 
+std::string DmOptionView::get_position_text(const DarkHorse::VmOption& option_info)
+{
+	if (option_info.position != 0)
+		return std::to_string(option_info.position);
+	else if (option_info.accepted_count > 0 ||
+		option_info.ordered)
+		return "0";
+	else return "";
+}
+
+void DmOptionView::get_option_info(DarkHorse::VmOption& option_info)
+{
+	get_init_accepted_order_count(option_info);
+	if (order_type_ == OrderType::None) return;
+	if (order_type_ == OrderType::MainAccount) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_parent_account(option_info.account_no, option_info.symbol_code, position);
+		option_info.position = position.open_quantity;
+	}
+	else if (order_type_ == OrderType::SubAccount) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_account(option_info.account_no, option_info.symbol_code, position);
+		option_info.position = position.open_quantity;
+	}
+	else if (order_type_ == OrderType::Fund) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_fund(option_info.fund_name, option_info.symbol_code, position);
+		option_info.position = position.open_quantity;
+	}
+}
+
+void DmOptionView::get_init_accepted_order_count(DarkHorse::VmOption& option_info)
+{
+	if (order_type_ == OrderType::None) return;
+	if (order_type_ == OrderType::MainAccount) {
+		if (!_Account) return;
+		option_info.account_no = _Account->No();
+		option_info.fund_name = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_parent_account(option_info.account_no, option_info.symbol_code);
+		option_info.ordered = init_and_count.first;
+		option_info.accepted_count = init_and_count.second;
+	}
+	else if (order_type_ == OrderType::SubAccount) {
+		if (!_Account) return;
+		option_info.account_no = _Account->No();
+		option_info.fund_name = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_account(option_info.account_no, option_info.symbol_code);
+		option_info.ordered = init_and_count.first;
+		option_info.accepted_count = init_and_count.second;
+	}
+	else if (order_type_ == OrderType::Fund) {
+		if (!_Fund) return;
+		option_info.fund_name = _Fund->Name();
+		option_info.account_no = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_fund(option_info.fund_name, option_info.symbol_code);
+		option_info.ordered = init_and_count.first;
+		option_info.accepted_count = init_and_count.second;
+	}
+}
+
 void DmOptionView::set_call_put_area()
 {
 	for (int i = 1; i < _Grid->RowCount(); i++) {
 		auto cell = _Grid->FindCell(i, 0);
 		if (cell) {
-			cell->CellType(SmCellType::CT_ORDER_SELL_BACK);
+			cell->CellType(SmCellType::CT_PD);
 		}
 		cell = _Grid->FindCell(i, 2);
 		if (cell) {
-			cell->CellType(SmCellType::CT_ORDER_BUY_BACK);
+			cell->CellType(SmCellType::CT_CD);
 		}
 	}
 }
@@ -227,42 +287,9 @@ void DmOptionView::update_position()
 	}
 }
 
-// void DmOptionView::on_update_position()
-// {
-// 	enable_show_ = true;
-// }
-
-void DmOptionView::on_update_position(std::shared_ptr<DarkHorse::Position> position)
-{
-	if (!position) return;
-	try {
-		if (position_control_->Position_type() != position->order_source_type) return;
-		if (position->symbol_code.empty()) return;
-
-		const std::string option_code = position->symbol_code.substr(1, position->symbol_code.length() - 1);
-		auto found = symbol_vector_index_map_.find(option_code);
-		if (found == symbol_vector_index_map_.end()) return;
-		if (position->symbol_code.at(0) == '2') {
-			DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
-			option_info.position = position->open_quantity;
-			update_value_cell(position->symbol_id, option_info);
-		}
-		else {
-			DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
-			option_info.position = position->open_quantity;
-			update_value_cell(position->symbol_id, option_info);
-		}
-	}
-	catch (const std::exception& e) {
-		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
-	}
-}
-
 void DmOptionView::on_update_position_vm(const VmPosition& position)
 {
-	if (!position_control_) return;
-	if (position_control_ && position_control_->Position_type() != position.position_type) return;
+	if (order_type_ != position.position_type) return;
 	try {
 		if (position.symbol_code.empty()) return;
 
@@ -343,7 +370,7 @@ void DmOptionView::OnPaint()
 
 	if (!m_pGM->BeginDraw())
 		return;
-	set_call_put_area();
+	//set_call_put_area();
 	m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
 	rect.right -= 1;
 	rect.bottom -= 1;
@@ -388,10 +415,12 @@ void DmOptionView::update_order(order_p order, OrderEvent order_event)
 		if (found == symbol_vector_index_map_.end()) return;
 		if (symbol_code.at(0) == '2') {
 			DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+			get_init_accepted_order_count(option_info);
 			update_value_cell(symbol->Id(), option_info);
 		}
 		else {
 			DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+			get_init_accepted_order_count(option_info);
 			update_value_cell(symbol->Id(), option_info);
 		}
 
@@ -406,13 +435,14 @@ void DmOptionView::update_order(order_p order, OrderEvent order_event)
 void DmOptionView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 {
 	_Fund = val;
+	order_type_ = OrderType::Fund;
 	position_control_->set_fund(_Fund);
 	for (auto& option_info : call_symbol_vector_) {
-		set_position(option_info);
+		get_option_info(option_info);
 		update_value_cell(option_info.symbol_id, option_info);
 	}
 	for (auto& option_info : put_symbol_vector_) {
-		set_position(option_info);
+		get_option_info(option_info);
 		update_value_cell(option_info.symbol_id, option_info);
 	}
 	enable_show_ = true;
@@ -422,12 +452,17 @@ void DmOptionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	_Account = val;
 	position_control_->set_account(_Account);
+	if (_Account->is_subaccount())
+		order_type_ = OrderType::SubAccount;
+	else
+		order_type_ = OrderType::MainAccount;
+
 	for (auto& option_info : call_symbol_vector_) {
-		set_position(option_info);
+		get_option_info(option_info);
 		update_value_cell(option_info.symbol_id, option_info);
 	}
 	for (auto& option_info : put_symbol_vector_) {
-		set_position(option_info);
+		get_option_info(option_info);
 		update_value_cell(option_info.symbol_id, option_info);
 	}
 	enable_show_ = true;
@@ -528,7 +563,7 @@ void DmOptionView::show_value(const int row, const int col, const DarkHorse::VmO
 		SmUtil::insert_decimal(value, option_info.decimal);
 	}
 	else {
-		value = std::to_string(option_info.position);
+		value = get_position_text(option_info);
 	}
 	set_background_color(cell, option_info);
 	cell->Text(value);
@@ -537,32 +572,16 @@ void DmOptionView::show_value(const int row, const int col, const DarkHorse::VmO
 // set the background color of the cell according to the order status
 void DmOptionView::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmOption& option_info)
 {
-	if (!_Account || !option_info.symbol_p) return;
-
-	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(_Account->No());
-	auto symbol_order_manager = account_order_manager->find_symbol_order_manager(option_info.symbol_p->SymbolCode());
-	if (!symbol_order_manager) {
-		cell->CellType(CT_NORMAL);
-		return;
-	}
-	auto order_background = symbol_order_manager->get_order_background(option_info.position);
-	if (order_background == OrderBackGround::OB_HAS_BEEN)
-		cell->CellType(CT_ORDER_HAS_BEEN);
-	else if (order_background == OrderBackGround::OB_PRESENT)
-		cell->CellType(CT_ORDER_PRESENT);
+	if (option_info.accepted_count > 0)
+		cell->CellType(CT_OE);
+	else if (option_info.position != 0)
+		cell->CellType(CT_PE);
+	else if (option_info.ordered)
+		cell->CellType(CT_EE);
+	else if (option_info.call_put == 1)
+		cell->CellType(CT_CD);
 	else
-		cell->CellType(CT_NORMAL);
-}
-
-void DmOptionView::set_position(DarkHorse::VmOption& option_info)
-{
-	if (!_Account || !option_info.symbol_p) return;
-
-	auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(_Account->No());
-
-	auto position = account_position_manager->find_position(option_info.symbol_p->SymbolCode());
-	if (!position) return;
-	option_info.position = position->open_quantity;
+		cell->CellType(CT_PD);
 }
 
 void DmOptionView::show_strike(const int row, const int col, const DarkHorse::VmOption& option_info)
@@ -630,11 +649,12 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		option_info.position = 0;
 		option_info.symbol_id = symbol->Id();
 		option_info.symbol_p = symbol;
+		option_info.symbol_code = symbol->SymbolCode();
 		const std::string& symbol_code = symbol->SymbolCode();
 		const std::string option_code = symbol_code.substr(1, symbol_code.length() - 1);
 		symbol_vector_index_map_[option_code] = i;
 		option_info.call_put = call_side ? 1 : 2;
-		set_position(option_info);
+		get_option_info(option_info);
 		if (call_side) call_symbol_vector_.push_back(option_info);
 		else put_symbol_vector_.push_back(option_info);
 	}

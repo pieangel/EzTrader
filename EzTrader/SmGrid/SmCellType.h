@@ -55,7 +55,12 @@ namespace DarkHorse {
 		CT_SP_RM_NONE,
 		CT_SP_PROFIT,
 		CT_SP_LOSS,
-		CT_MARK_NORMAL
-
+		CT_MARK_NORMAL,
+		CT_OE, // Order Exist
+		CT_PE, // Position Exist
+		CT_EE, // Experience Exist
+		CT_PD, // Put Default
+		CT_CD , // Call Default
+		COUNT
 	};
 }
