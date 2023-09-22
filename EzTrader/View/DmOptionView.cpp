@@ -62,7 +62,7 @@ DmOptionView::DmOptionView()
 	quote_control_->set_event_handler(std::bind(&DmOptionView::on_update_quote, this));
 
 	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
-	position_control_->set_event_handler(std::bind(&DmOptionView::on_update_position, this));
+	position_control_->set_vm_fund_option_event_handler(std::bind(&DmOptionView::on_update_position_vm, this, _1));
 
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
@@ -227,9 +227,62 @@ void DmOptionView::update_position()
 	}
 }
 
-void DmOptionView::on_update_position()
+// void DmOptionView::on_update_position()
+// {
+// 	enable_show_ = true;
+// }
+
+void DmOptionView::on_update_position(std::shared_ptr<DarkHorse::Position> position)
 {
-	enable_show_ = true;
+	if (!position) return;
+	try {
+		if (position_control_->Position_type() != position->order_source_type) return;
+		if (position->symbol_code.empty()) return;
+
+		const std::string option_code = position->symbol_code.substr(1, position->symbol_code.length() - 1);
+		auto found = symbol_vector_index_map_.find(option_code);
+		if (found == symbol_vector_index_map_.end()) return;
+		if (position->symbol_code.at(0) == '2') {
+			DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+			option_info.position = position->open_quantity;
+			update_value_cell(position->symbol_id, option_info);
+		}
+		else {
+			DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+			option_info.position = position->open_quantity;
+			update_value_cell(position->symbol_id, option_info);
+		}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
+}
+
+void DmOptionView::on_update_position_vm(const VmPosition& position)
+{
+	if (!position_control_) return;
+	try {
+		if (position.symbol_code.empty()) return;
+
+		const std::string option_code = position.symbol_code.substr(1, position.symbol_code.length() - 1);
+		auto found = symbol_vector_index_map_.find(option_code);
+		if (found == symbol_vector_index_map_.end()) return;
+		if (position.symbol_code.at(0) == '2') {
+			DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+			option_info.position = position.open_quantity;
+			update_value_cell(position.symbol_id, option_info);
+		}
+		else {
+			DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+			option_info.position = position.open_quantity;
+			update_value_cell(position.symbol_id, option_info);
+		}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
 }
 
 void DmOptionView::update_value_cell(const int symbol_id, const DarkHorse::VmOption& option_info)
@@ -349,9 +402,25 @@ void DmOptionView::update_order(order_p order, OrderEvent order_event)
 	}
 }
 
+void DmOptionView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	_Fund = val;
+	position_control_->set_fund(_Fund);
+	for (auto& option_info : call_symbol_vector_) {
+		set_position(option_info);
+		update_value_cell(option_info.symbol_id, option_info);
+	}
+	for (auto& option_info : put_symbol_vector_) {
+		set_position(option_info);
+		update_value_cell(option_info.symbol_id, option_info);
+	}
+	enable_show_ = true;
+}
+
 void DmOptionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	_Account = val;
+	position_control_->set_account(_Account);
 	for (auto& option_info : call_symbol_vector_) {
 		set_position(option_info);
 		update_value_cell(option_info.symbol_id, option_info);

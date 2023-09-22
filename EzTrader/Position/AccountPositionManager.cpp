@@ -153,18 +153,6 @@ void AccountPositionManager::update_position(position_p position, VmPosition& de
 	update_account_profit_loss();
 }
 
-/*
-std::shared_ptr<GroupPosition> AccountPositionManager::create_group_position(const std::string& account_no, const std::string& symbol_code)
-{
-	auto group_position = std::make_shared<GroupPosition>();
-	group_position->account_no = account_no;
-	group_position->symbol_code = symbol_code;
-	group_position_map_[symbol_code] = group_position;
-
-	return group_position;
-}
-*/
-
 void AccountPositionManager::set_symbol_id(position_p position, const std::string& symbol_code)
 {
 	if (!position || position->symbol_id != 0) return;

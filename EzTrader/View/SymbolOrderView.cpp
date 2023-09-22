@@ -1442,18 +1442,7 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 /// </summary>
 void SymbolOrderView::set_position() {
 	if (!position_control_ || !symbol_) return;
-	if (position_type_ == PositionType::SubAccount) {
-		if (!account_) return;
-		position_control_->update_position_from_account(account_, symbol_);
-	}
-	else if (position_type_ == PositionType::MainAccount) {
-		if (!account_) return;
-		position_control_->update_position_from_account(account_, symbol_);
-	}
-	else if (position_type_ == PositionType::Fund) {
-		if (!fund_) return;
-		position_control_->update_position_from_fund(fund_, symbol_);
-	}
+	position_control_->reset_position();
 }
 
 void SymbolOrderView::set_order() {

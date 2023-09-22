@@ -235,18 +235,7 @@ void SymbolPositionView::OnOrderEvent(const std::string& account_no, const std::
 void SymbolPositionView::set_position()
 {
 	if (!position_control_ || !symbol_) return;
-	if (position_type_ == PositionType::SubAccount) {
-		if (!account_) return;
-		position_control_->update_position_from_account(account_, symbol_);
-	}
-	else if (position_type_ == PositionType::MainAccount) {
-		if (!account_) return;
-		position_control_->update_position_from_account(account_, symbol_);
-	}
-	else if (position_type_ == PositionType::Fund) {
-		if (!fund_) return;
-		position_control_->update_position_from_fund(fund_, symbol_);
-	}
+	position_control_->reset_position();
 }
 
 void SymbolPositionView::update_position()

@@ -21,18 +21,10 @@ class TotalPositionManager
 {
 public:
 	position_p get_position(const std::string& account_no, const std::string& symbol_code);
-	
-	void get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map);
-	void get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map);
-	void get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map);
 
 	void get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position);
 	void get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
 	void get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position);
-
-	void get_position_from_fund(const std::string& fund_name, std::map<std::string, std::shared_ptr<Position>>& position_map);
-	void get_position_from_account(const std::string& account_no, std::map<std::string, std::shared_ptr<Position>>& position_map);
-	void get_position_from_parent_account(const std::string& account_no, std::map<std::string, std::shared_ptr<Position>>& position_map);
 
 	std::shared_ptr<Position> get_position_from_account(const std::string& account_no, const std::string& symbol_code);
 	account_position_manager_p get_account_position_manager(const std::string& account_no);
@@ -58,6 +50,8 @@ public:
 	);
 	static void calculate_symbol_open_profit_loss(const std::shared_ptr<Position>& position);
 	static void calculate_symbol_open_profit_loss(VmPosition& position);
+	static void set_symbol_id(position_p position, const std::string& symbol_code);
+	static void set_account_id(position_p position, const std::string& account_no);
 	void update_account_profit_loss(const std::string& account_no);
 	position_p find_position_by_id(const int& position_id);
 	void update_group_position(std::shared_ptr<Position> position);

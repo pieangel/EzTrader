@@ -153,36 +153,6 @@ position_p TotalPositionManager::get_position(const std::string& account_no, con
 	return position;
 }
 
-void TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
-{
-	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
-	auto fund = mainApp.FundMgr()->FindAddFund(fund_name);
-	const std::vector<std::shared_ptr<SmAccount>>& subAcntVector = fund->GetAccountVector();
-	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it)
-	{
-		auto sub_account = *it;
-		auto account_position_manager_p = get_account_position_manager(sub_account->No());
-		auto sub_account_position = account_position_manager_p->get_position(symbol_code);
-		if (sub_account_position->open_quantity != 0)
-		{
-			get_position_from_account(sub_account->No(), symbol_code, position, position_map);
-		}
-	}
-
-	if (position.open_quantity != 0)
-		position.average_price = std::abs(position.average_price) / std::abs(position.open_quantity);
-}
-
-
-
-void TotalPositionManager::get_position_from_fund(const std::string& fund_name, std::map<std::string, std::shared_ptr<Position>>& position_map)
-{
-	position_map.clear();
-	auto group_position_manager = find_fund_group_position_manager(fund_name);
-	if (!group_position_manager) return;
-	const auto& source_position_map = group_position_manager->get_group_position_map();
-	std::copy(source_position_map.begin(), source_position_map.end(), std::inserter(position_map, position_map.end()));
-}
 
 void TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position)
 {
@@ -193,31 +163,10 @@ void TotalPositionManager::get_position_from_fund(const std::string& fund_name, 
 	group_position_manager->update_group_position_by_symbol(group_position, position);
 }
 
-void TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
-{
-	account_position_manager_p position_manager = get_account_position_manager(account_no);
-	const auto& symbol_position = position_manager->get_position(symbol_code);
-	position.open_quantity += symbol_position->open_quantity;
-	position.average_price += symbol_position->average_price;
-	position.open_profit_loss += symbol_position->open_profit_loss;
-	position.trade_profit_loss += symbol_position->trade_profit_loss;
-
-	position_map[symbol_position->account_no] = symbol_position;
-}
-
 std::shared_ptr<Position> TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code)
 {
 	account_position_manager_p position_manager = get_account_position_manager(account_no);
 	return position_manager->get_position(symbol_code);
-}
-
-void TotalPositionManager::get_position_from_account(const std::string& account_no, std::map<std::string, std::shared_ptr<Position>>& position_map)
-{
-	position_map.clear();
-	auto account_position_manager = get_account_position_manager(account_no);
-	if (!account_position_manager) return;
-	const auto& source_position_map = account_position_manager->get_position_map();
-	std::copy(source_position_map.begin(), source_position_map.end(), std::inserter(position_map, position_map.end()));
 }
 
 void TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position)
@@ -227,36 +176,6 @@ void TotalPositionManager::get_position_from_account(const std::string& account_
 	auto symbol_position = account_position_manager->find_position(symbol_code);
 	if (!symbol_position) return;
 	account_position_manager->update_position(symbol_position, position);
-}
-
-void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
-{
-	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
-	get_position_from_account(account_no, symbol_code, position, position_map);
-	auto parent_account = mainApp.AcntMgr()->FindAccount(account_no);
-	const std::vector<std::shared_ptr<SmAccount>>& subAcntVector = parent_account->get_sub_accounts();
-	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it)
-	{
-		auto sub_account = *it;
-		auto account_position_manager_p = get_account_position_manager(sub_account->No());
-		auto sub_account_position = account_position_manager_p->get_position(symbol_code);
-		if (sub_account_position->open_quantity != 0)
-		{
-			get_position_from_account(sub_account->No(), symbol_code, position, position_map);
-		}
-	}
-
-	if (position.open_quantity != 0)
-		position.average_price = std::abs(position.average_price) / std::abs(position.open_quantity);
-}
-
-void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, std::map<std::string, std::shared_ptr<Position>>& position_map)
-{
-	position_map.clear();
-	auto group_position_manager = find_account_group_position_manager(account_no);
-	if (!group_position_manager) return;
-	const auto& source_position_map = group_position_manager->get_group_position_map();
-	std::copy(source_position_map.begin(), source_position_map.end(), std::inserter(position_map, position_map.end()));
 }
 
 void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position)
@@ -375,6 +294,25 @@ void TotalPositionManager::calculate_symbol_open_profit_loss(VmPosition& positio
 	double open_profit_loss = 0.0;
 	open_profit_loss = position.open_quantity * (quote->close - position.average_price) * symbol->seung_su();
 	position.open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
+}
+
+void TotalPositionManager::set_symbol_id(position_p position, const std::string& symbol_code)
+{
+	if (!position || position->symbol_id != 0) return;
+
+	auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+	if (!symbol) return;
+	position->symbol_id = symbol->Id();
+}
+
+void TotalPositionManager::set_account_id(position_p position, const std::string& account_no)
+{
+	if (!position || position->account_id != 0) return;
+
+	auto account = mainApp.AcntMgr()->FindAccount(account_no);
+	if (!account) return;
+
+	position->account_id = account->id();
 }
 
 void TotalPositionManager::update_account_profit_loss(const std::string& account_no)

@@ -70,7 +70,7 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 		pure_trade_profit_loss += position->pure_trade_profit_loss;
 
 		open_quantity += position->open_quantity;
-		average_price += position->open_quantity * position->average_price;
+		average_price += abs(position->open_quantity) * abs(position->average_price);
 	}
 	dest_position.trade_profit_loss = trade_profit_loss;
 	dest_position.open_profit_loss = open_profit_loss;
@@ -80,7 +80,7 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 	if (open_quantity == 0)
 		dest_position.average_price = 0.0f;
 	else
-		dest_position.average_price = average_price / dest_position.open_quantity;
+		dest_position.average_price = average_price / abs(dest_position.open_quantity);
 
 	update_whole_group_position();
 }
@@ -144,6 +144,7 @@ std::shared_ptr<Position> GroupPositionManager::create_account_group_position(co
 		group_position->symbol_code = symbol_code;
 		group_position->order_source_type = OrderType::MainAccount;
 		group_position->is_group = true;
+		TotalPositionManager::set_symbol_id(group_position, symbol_code);
 		group_position_map_[symbol_code] = group_position;
 	}
 	else {
@@ -162,6 +163,7 @@ std::shared_ptr<Position> GroupPositionManager::create_fund_group_position(const
 		group_position->symbol_code = symbol_code;
 		group_position->order_source_type = OrderType::Fund;
 		group_position->is_group = true;
+		TotalPositionManager::set_symbol_id(group_position, symbol_code);
 		group_position_map_[symbol_code] = group_position;
 	}
 	else {

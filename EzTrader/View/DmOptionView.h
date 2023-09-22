@@ -11,6 +11,7 @@
 #include "../Order/OrderUi/DmDefine.h"
 #include "../ViewModel/VmQuote.h"
 #include "../Order/SmOrderConst.h"
+#include "../ViewModel/VmPosition.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -21,6 +22,7 @@ namespace DarkHorse {
 	struct SmQuote;
 	class SymbolPositionControl;
 	struct Order;
+	struct Position;
 }
 
 using order_p = std::shared_ptr<DarkHorse::Order>;
@@ -42,7 +44,7 @@ public:
 public:
 	void update_order(order_p order, DarkHorse::OrderEvent order_event);
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
-	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
@@ -63,7 +65,9 @@ private:
 	void update_quote();
 	void update_close(const DarkHorse::VmQuote& quote);
 	void update_position();
-	void on_update_position();
+	//void on_update_position();
+	void on_update_position(std::shared_ptr<DarkHorse::Position> position);
+	void on_update_position_vm(const VmPosition& position);
 	void update_value_cell(const int symbol_id, const DarkHorse::VmOption& option_info);
 	void on_update_quote();
 	void register_symbols(const int option_market_index);
