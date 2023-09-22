@@ -46,6 +46,7 @@ position_p AccountPositionManager::find_position(const std::string& symbol_code)
 
 position_p AccountPositionManager::create_position(const std::string& symbol_code)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	position_p position = std::make_shared<Position>();
 	position->symbol_code = symbol_code;
 	position->account_no = account_no_;
@@ -155,6 +156,16 @@ void AccountPositionManager::update_position(position_p position, VmPosition& de
 		dest_position.average_price = 0.0f;
 
 	update_account_profit_loss();
+}
+
+void AccountPositionManager::get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector)
+{
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	for (auto it = position_map_.begin(); it != position_map_.end(); it++) {
+		auto position = it->second;
+		if (position->open_quantity != 0)
+			position_vector.push_back(position);
+	}
 }
 
 void AccountPositionManager::set_symbol_id(position_p position, const std::string& symbol_code)

@@ -309,7 +309,7 @@ BOOL DmFundOrderWindow::OnInitDialog()
 
 	SetFund();
 	SetFundForOrderWnd();
-	_ComboFund.SetDroppedWidth(150);
+	_ComboFund.SetDroppedWidth(250);
 
 	GetWindowRect(rcWnd);
 

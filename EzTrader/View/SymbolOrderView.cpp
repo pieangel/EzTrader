@@ -1398,7 +1398,7 @@ void SymbolOrderView::reset_col_widths(const DarkHorse::OrderSetEvent& order_set
 int SymbolOrderView::get_entire_width()
 {
 	int width_sum = 0;
-	width_sum += 1;
+	width_sum += 2;
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width;
 	width_sum += 1;
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].width;
@@ -1416,7 +1416,7 @@ int SymbolOrderView::get_entire_width()
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_ORDER].width;
 	width_sum += 1;
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width;
-	width_sum += 1;
+	width_sum += 2;
 
 	return width_sum;
 }

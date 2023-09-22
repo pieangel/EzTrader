@@ -55,17 +55,30 @@ int DmAccountOrderWindow::_Id = 0;
 
 void DmAccountOrderWindow::SetAccount()
 {
-	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
-	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
-		auto account = it->second;
-		if (account->Type() != "9") continue;
+	std::vector<std::shared_ptr<SmAccount>> main_account_vector;
+	mainApp.AcntMgr()->get_main_account_vector("9", main_account_vector);
+	if (main_account_vector.empty()) return;
+	for (auto ita = main_account_vector.begin(); ita != main_account_vector.end(); ++ita) {
+		auto main_acnt = *ita;
 		std::string account_info;
-		account_info.append(account->Name());
+		account_info.append(main_acnt->Name());
 		account_info.append(" : ");
-		account_info.append(account->No());
+		account_info.append(main_acnt->No());
 		const int index = _ComboAccount.AddString(account_info.c_str());
-		_ComboAccountMap[index] = account;
-		_AccountComboMap[account->No()] = index;
+		_ComboAccountMap[index] = main_acnt;
+		_AccountComboMap[main_acnt->No()] = index;
+
+		const std::vector<std::shared_ptr<SmAccount>>& sub_account_vector = main_acnt->get_sub_accounts();
+		for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); it++) {
+			auto account = *it;
+			account_info = "";
+			account_info.append(account->Name());
+			account_info.append(" : ");
+			account_info.append(account->No());
+			const int index = _ComboAccount.AddString(account_info.c_str());
+			_ComboAccountMap[index] = account;
+			_AccountComboMap[account->No()] = index;
+		}
 	}
 
 	if (!_ComboAccountMap.empty()) {
@@ -322,6 +335,8 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 	CenterWindow();
 
 	_StaticMsg.SetUp();
+
+	_ComboAccount.SetDroppedWidth(250);
 
 	mainApp.CallbackMgr()->SubscribeOrderUpdateCallback(GetSafeHwnd());
 	mainApp.CallbackMgr()->SubscribeServerMsgCallback(GetSafeHwnd());

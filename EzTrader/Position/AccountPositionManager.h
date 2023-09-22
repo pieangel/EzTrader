@@ -2,6 +2,8 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <vector>
+#include <mutex>
 #include "../ViewModel/VmPosition.h"
 namespace DarkHorse {
 	struct Position;
@@ -34,7 +36,9 @@ public:
 	position_p find_position(const std::string& symbol_code);
 	void update_position(position_p position);
 	void update_position(position_p position, VmPosition& dest_position);
+	void get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector);
 private:
+	std::mutex mutex_; // Mutex for thread synchronization
 	//std::shared_ptr<GroupPosition> create_group_position(const std::string& account_no, const std::string& symbol_code);
 	void set_symbol_id(position_p position, const std::string& symbol_code);
 	void set_account_id(position_p position, const std::string& account_no);
@@ -51,8 +55,6 @@ private:
 	int id_{ 0 };
 	std::string account_no_;
 	TotalPositionManager& total_position_manager_;
-	// key : symbol code, value : group position object.
-	std::map<std::string, std::shared_ptr<GroupPosition>> group_position_map_;
 };
 }
 

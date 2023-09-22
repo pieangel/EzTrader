@@ -92,6 +92,16 @@ std::shared_ptr<DarkHorse::Position> GroupPositionManager::get_group_position(co
 	else return found->second;
 }
 
+void GroupPositionManager::get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector)
+{
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	for (auto it = group_position_map_.begin(); it != group_position_map_.end(); it++) {
+		auto position = it->second;
+		if (position->open_quantity != 0)
+			position_vector.push_back(position);
+	}
+}
+
 void GroupPositionManager::update_group_position(const std::shared_ptr<Position>& group_position, const std::shared_ptr<Position>& position)
 {
 	if (!group_position || !position) return;
@@ -136,6 +146,7 @@ void GroupPositionManager::update_whole_group_position()
 
 std::shared_ptr<Position> GroupPositionManager::create_account_group_position(const std::string& account_no, const std::string symbol_code)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	std::shared_ptr<Position> group_position = nullptr;
 	auto found = group_position_map_.find(symbol_code);
 	if (found == group_position_map_.end()) {
@@ -155,6 +166,7 @@ std::shared_ptr<Position> GroupPositionManager::create_account_group_position(co
 
 std::shared_ptr<Position> GroupPositionManager::create_fund_group_position(const std::string& fund_name, const std::string& symbol_code)
 {
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	std::shared_ptr<Position> group_position = nullptr;
 	auto found = group_position_map_.find(symbol_code);
 	if (found == group_position_map_.end()) {

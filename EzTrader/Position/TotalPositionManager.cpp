@@ -156,7 +156,6 @@ position_p TotalPositionManager::get_position(const std::string& account_no, con
 
 void TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position)
 {
-	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto group_position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
 	if (!group_position_manager) return;
 	auto group_position = group_position_manager->get_group_position(symbol_code);
@@ -172,7 +171,6 @@ std::shared_ptr<Position> TotalPositionManager::get_position_from_account(const 
 
 void TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position)
 {
-	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(account_no);
 	auto symbol_position = account_position_manager->find_position(symbol_code);
 	if (!symbol_position) return;
@@ -181,7 +179,6 @@ void TotalPositionManager::get_position_from_account(const std::string& account_
 
 void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position)
 {
-	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto group_position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
 	if (!group_position_manager) return;
 	auto group_position = group_position_manager->get_group_position(symbol_code);
@@ -191,7 +188,6 @@ void TotalPositionManager::get_position_from_parent_account(const std::string& a
 
 void TotalPositionManager::update_position(order_p order)
 {
-	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	account_position_manager_p position_manager = get_account_position_manager(order->account_no);
 	position_manager->update_position(order);
 }

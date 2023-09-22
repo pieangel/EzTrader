@@ -2,6 +2,8 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <mutex>
+#include <vector>
 #include "../Order/SmOrderConst.h"
 #include "../ViewModel/VmPosition.h"
 namespace DarkHorse {
@@ -35,7 +37,9 @@ namespace DarkHorse {
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position);
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position, VmPosition& dest_position);
 		std::shared_ptr<Position> get_group_position(const std::string& symbol_code);
+		void get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector);
 	private:
+		std::mutex mutex_; // Mutex for thread synchronization
 		account_profit_loss_p whole_profit_loss_{ nullptr };
 		std::string fund_name_;
 		std::string account_no_;

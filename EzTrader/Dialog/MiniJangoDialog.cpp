@@ -82,6 +82,8 @@ BOOL MiniJangoDialog::OnInitDialog()
 	column_width_vector.push_back(40);
 	//account_position_view_.set_column_widths(column_width_vector);
 
+	_ComboAccount.SetDroppedWidth(250);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -94,6 +96,7 @@ void MiniJangoDialog::OnTimer(UINT_PTR nIDEvent)
 void MiniJangoDialog::SetAccount()
 {
 	_StaticCombo.SetWindowText("°èÁÂ");
+	/*
 	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
 	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
 		auto account = it->second;
@@ -106,6 +109,34 @@ void MiniJangoDialog::SetAccount()
 		const int index = _ComboAccount.AddString(account_info.c_str());
 		_ComboAccountMap[index] = account->No();
 
+	}
+	*/
+
+
+	std::vector<std::shared_ptr<SmAccount>> main_account_vector;
+	mainApp.AcntMgr()->get_main_account_vector(main_account_vector);
+	if (main_account_vector.empty()) return;
+	for (auto ita = main_account_vector.begin(); ita != main_account_vector.end(); ++ita) {
+		auto main_acnt = *ita;
+		std::string account_info;
+		account_info.append(main_acnt->Name());
+		account_info.append(" : ");
+		account_info.append(main_acnt->No());
+		const int index = _ComboAccount.AddString(account_info.c_str());
+		_ComboAccountMap[index] = main_acnt->No();
+		//_AccountComboMap[main_acnt->No()] = index;
+
+		const std::vector<std::shared_ptr<SmAccount>>& sub_account_vector = main_acnt->get_sub_accounts();
+		for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); it++) {
+			auto account = *it;
+			account_info = "";
+			account_info.append(account->Name());
+			account_info.append(" : ");
+			account_info.append(account->No());
+			const int index = _ComboAccount.AddString(account_info.c_str());
+			_ComboAccountMap[index] = account->No();
+			//_AccountComboMap[account->No()] = index;
+		}
 	}
 
 	if (!_ComboAccountMap.empty()) {

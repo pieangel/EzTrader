@@ -73,7 +73,7 @@ void SymbolPositionView::SetUp()
 	//InitHeader();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 2, 6);
-	int colWidth[6] = { 60, 35, 40, 60, 90, 90 };
+	int colWidth[6] = { 60, 35, 40, 60, 90, 88 };
 	int width_sum = 0;
 	for (int i = 0; i < 6; i++) {
 		_Grid->SetColWidth(i, colWidth[i]);
