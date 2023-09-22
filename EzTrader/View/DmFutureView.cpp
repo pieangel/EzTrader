@@ -34,6 +34,7 @@
 #include "../Position/TotalPositionManager.h"
 #include "../Position/AccountPositionManager.h"
 #include "../Position/Position.h"
+#include "../Log/MyLogger.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -55,7 +56,11 @@ DmFutureView::DmFutureView()
 	quote_control_->set_event_handler(std::bind(&DmFutureView::on_update_quote, this));
 
 	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
-	position_control_->set_event_handler(std::bind(&DmFutureView::on_update_position, this));
+	position_control_->set_vm_fund_event_handler(std::bind(&DmFutureView::on_update_position_vm_future, this, _1));
+
+	CString strLog;
+	strLog.Format("DmFutureView futur_view id = [%d], position_control_id = [%d]", id_, position_control_->get_id());
+	LOGINFO(CMyLogger::getInstance(), (const char*)strLog);
 
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
@@ -106,6 +111,16 @@ void DmFutureView::update_position()
 
 void DmFutureView::on_update_position()
 {
+	if (!position_control_) return;
+
+	const VmPosition& position = position_control_->get_position();
+
+	auto found = symbol_row_index_map_.find(position.symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.position = position.open_quantity;
+	show_value(found->second, 2, future_info);
+
 	enable_show_ = true;
 }
 
@@ -131,6 +146,17 @@ void DmFutureView::set_view_mode(ViewMode view_mode)
 	Invalidate();
 }
 
+void DmFutureView::on_update_position_vm_future(const VmPosition& position)
+{
+	if (!position_control_) return;
+	if (position_control_ && position_control_->Position_type() != position.position_type) return;
+	auto found = symbol_row_index_map_.find(position.symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.position = position.open_quantity;
+	show_value(found->second, 2, future_info);
+}
+
 void DmFutureView::update_order(order_p order, OrderEvent order_event)
 {
 	auto found = symbol_row_index_map_.find(order->symbol_code);
@@ -143,6 +169,7 @@ void DmFutureView::update_order(order_p order, OrderEvent order_event)
 void DmFutureView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	_Account = val;
+	position_control_->set_account(_Account);
 	for (auto& future_info : symbol_vec_) {
 		set_position(future_info);
 		if (!future_info.symbol_p) continue;
@@ -255,6 +282,21 @@ void DmFutureView::update_expected(std::shared_ptr<SmQuote> quote)
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.expected = quote->expected;
 	show_value(found->second, 2, future_info);
+	enable_show_ = true;
+}
+
+void DmFutureView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	_Fund = val;
+	position_control_->set_fund(_Fund);
+	for (auto& future_info : symbol_vec_) {
+		set_position(future_info);
+		if (!future_info.symbol_p) continue;
+		auto found = symbol_row_index_map_.find(future_info.symbol_p->SymbolCode());
+		if (found == symbol_row_index_map_.end()) continue;
+		show_value(found->second, 2, future_info);
+	}
+
 	enable_show_ = true;
 }
 

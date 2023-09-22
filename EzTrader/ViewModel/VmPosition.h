@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "../Order/SmOrderConst.h"
 struct VmPosition {
 	// 계좌 번호
 	std::string account_no;
@@ -18,4 +19,5 @@ struct VmPosition {
 	double open_profit_loss{ 0.0f };		/*평가손익*/
 	double pure_trade_profit_loss{ 0.0f }; // 청산 순손익
 	double trade_fee{ 0.0f }; // 청산 수수료
+	DarkHorse::OrderType position_type{ DarkHorse::OrderType::MainAccount };
 };

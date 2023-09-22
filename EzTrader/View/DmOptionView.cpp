@@ -62,7 +62,7 @@ DmOptionView::DmOptionView()
 	quote_control_->set_event_handler(std::bind(&DmOptionView::on_update_quote, this));
 
 	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
-	position_control_->set_vm_fund_option_event_handler(std::bind(&DmOptionView::on_update_position_vm, this, _1));
+	position_control_->set_vm_option_event_handler(std::bind(&DmOptionView::on_update_position_vm, this, _1));
 
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
@@ -262,6 +262,7 @@ void DmOptionView::on_update_position(std::shared_ptr<DarkHorse::Position> posit
 void DmOptionView::on_update_position_vm(const VmPosition& position)
 {
 	if (!position_control_) return;
+	if (position_control_ && position_control_->Position_type() != position.position_type) return;
 	try {
 		if (position.symbol_code.empty()) return;
 

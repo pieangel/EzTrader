@@ -49,9 +49,9 @@ namespace DarkHorse {
 	void SymbolPositionControl::update_position(std::shared_ptr<Position> position)
 	{
 		try {
+			LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl update_position id = %d , account_no = %s, fund_name = %s", id_, position->account_no.c_str(), position->fund_name.c_str());
 			if (!position || position->order_source_type != position_type_) return;
 			if (symbol_ && symbol_->SymbolCode() != position->symbol_code) return;
-			//LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl update_position id = %d , account_no = %s, fund_name = %s", id_, position->account_no.c_str(), position->fund_name.c_str());
 			
 			if (position_type_ == OrderType::SubAccount) {
 				if (!account_  || account_->No() != position->account_no) return;
@@ -68,12 +68,13 @@ namespace DarkHorse {
 
 			if (event_handler_) event_handler_();
 			// For the option view and future view
-			if (vm_fund_option_event_handler_) {
+			if (vm_option_event_handler_ || vm_fund_event_handler_) {
 				position_.symbol_code = position->symbol_code;
 				position_.symbol_id = mainApp.SymMgr()->get_symbol_id(position->symbol_code);
 				position_.account_no = position->account_no;
 				position_.account_id = mainApp.AcntMgr()->get_account_id(position->account_no);
-				vm_fund_option_event_handler_(position_);
+				position_.position_type = position_type_;
+				vm_option_event_handler_(position_);
 			}
 			if (out_system_event_handler_) out_system_event_handler_(out_system_id_);
 		}
@@ -82,56 +83,6 @@ namespace DarkHorse {
 			LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 		}
 	}
-
-// 	void SymbolPositionControl::update_position_from_account(const bool is_sub_account, const std::string& account_no, const std::string& symbol_code)
-// 	{
-// 		if (is_sub_account)
-// 			mainApp.total_position_manager()->get_position_from_account(account_no, symbol_code, position_, position_map_);
-// 		else
-// 			mainApp.total_position_manager()->get_position_from_parent_account(account_no, symbol_code, position_, position_map_);
-// 	}
-// 
-// 	void SymbolPositionControl::update_position_from_account(std::shared_ptr<SmAccount> account, std::shared_ptr<SmSymbol> symbol)
-// 	{
-// 		if (!account || !symbol) return;
-// 		clear_position();
-// 		account_ = account;
-// 		//symbol_ = symbol;
-// 		position_.account_id = account->id();
-// 		position_.symbol_id = symbol->Id();
-// 		position_.account_no = account->No();
-// 		position_.symbol_code = symbol->SymbolCode();
-// 		if (account->is_subaccount()) {
-// 			mainApp.total_position_manager()->get_position_from_account(account->No(), symbol->SymbolCode(), position_, position_map_);
-// 			position_type_ = OrderType::SubAccount;
-// 		}
-// 		else {
-// 			mainApp.total_position_manager()->get_position_from_parent_account(account->No(), symbol->SymbolCode(), position_, position_map_);
-// 			position_type_ = OrderType::MainAccount;
-// 		}
-// 		if (event_handler_) event_handler_();
-// 	}
-// 
-// 	void SymbolPositionControl::update_position_from_fund(const std::string& fund_name, const std::string& symbol_code)
-// 	{
-// 		mainApp.total_position_manager()->get_position_from_fund(fund_name, symbol_code, position_, position_map_);
-// 		position_type_ = OrderType::Fund;
-// 	}
-// 
-// 	void SymbolPositionControl::update_position_from_fund(std::shared_ptr<SmFund> fund, std::shared_ptr<SmSymbol> symbol)
-// 	{
-// 		if (!fund || !symbol) return;
-// 		clear_position();
-// 		fund_ = fund;
-// 		//symbol_ = symbol;
-// 		position_.fund_id = fund->Id();
-// 		position_.symbol_id = symbol->Id();
-// 		position_.fund_name = fund->Name();
-// 		position_.symbol_code = symbol->SymbolCode();
-// 		position_type_ = OrderType::Fund;
-// 		mainApp.total_position_manager()->get_position_from_fund(fund->Name(), symbol->SymbolCode(), position_, position_map_);
-// 		if (event_handler_) event_handler_();
-// 	}
 
 	void SymbolPositionControl::set_symbol(std::shared_ptr<SmSymbol> symbol)
 	{
@@ -194,7 +145,7 @@ namespace DarkHorse {
 		}
 
 		if (event_handler_) event_handler_();
-		if (vm_fund_option_event_handler_) vm_fund_option_event_handler_(position_);
+		if (vm_option_event_handler_) vm_option_event_handler_(position_);
 		if (out_system_event_handler_) out_system_event_handler_(out_system_id_);
 	}
 

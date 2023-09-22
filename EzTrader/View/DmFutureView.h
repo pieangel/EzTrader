@@ -12,6 +12,7 @@
 #include "../ViewModel/VmQuote.h"
 #include "../ViewModel/VmFuture.h"
 #include "../Order/SmOrderConst.h"
+#include "../ViewModel/VmPosition.h"
 
 namespace DarkHorse {
 	class SmGrid;
@@ -37,12 +38,13 @@ public:
 public:
 	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
-	void Fund(std::shared_ptr<DarkHorse::SmFund> val) { _Fund = val; }
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
 	void init_dm_future();
 	void update_quote();
 	void set_view_mode(ViewMode view_mode);
+	void on_update_position_vm_future(const VmPosition& position);
 public:
 	void update_order(order_p order, DarkHorse::OrderEvent order_event);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
