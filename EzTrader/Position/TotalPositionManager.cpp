@@ -18,6 +18,8 @@
 #include "../Quote/SmQuote.h"
 #include "../Quote/SmQuoteManager.h"
 #include "GroupPositionManager.h"
+#include "../ViewModel/VmPosition.h"
+#include "../Event/SmCallbackManager.h"
 #include <algorithm>
 
 namespace DarkHorse {
@@ -153,7 +155,7 @@ position_p TotalPositionManager::get_position(const std::string& account_no, con
 
 void TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
 {
-	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto fund = mainApp.FundMgr()->FindAddFund(fund_name);
 	const std::vector<std::shared_ptr<SmAccount>>& subAcntVector = fund->GetAccountVector();
 	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it)
@@ -184,7 +186,7 @@ void TotalPositionManager::get_position_from_fund(const std::string& fund_name, 
 
 void TotalPositionManager::get_position_from_fund(const std::string& fund_name, const std::string& symbol_code, VmPosition& position)
 {
-	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto group_position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
 	auto group_position = group_position_manager->get_group_position(symbol_code);
 	if (!group_position) return;
@@ -220,7 +222,7 @@ void TotalPositionManager::get_position_from_account(const std::string& account_
 
 void TotalPositionManager::get_position_from_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position)
 {
-	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(account_no);
 	auto symbol_position = account_position_manager->find_position(symbol_code);
 	if (!symbol_position) return;
@@ -229,7 +231,7 @@ void TotalPositionManager::get_position_from_account(const std::string& account_
 
 void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position, std::map<std::string, std::shared_ptr<Position>>& position_map)
 {
-	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	get_position_from_account(account_no, symbol_code, position, position_map);
 	auto parent_account = mainApp.AcntMgr()->FindAccount(account_no);
 	const std::vector<std::shared_ptr<SmAccount>>& subAcntVector = parent_account->get_sub_accounts();
@@ -259,7 +261,7 @@ void TotalPositionManager::get_position_from_parent_account(const std::string& a
 
 void TotalPositionManager::get_position_from_parent_account(const std::string& account_no, const std::string& symbol_code, VmPosition& position)
 {
-	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	auto group_position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
 	auto group_position = group_position_manager->get_group_position(symbol_code);
 	if (!group_position) return;
@@ -268,7 +270,7 @@ void TotalPositionManager::get_position_from_parent_account(const std::string& a
 
 void TotalPositionManager::update_position(order_p order)
 {
-	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	account_position_manager_p position_manager = get_account_position_manager(order->account_no);
 	position_manager->update_position(order);
 }
@@ -330,7 +332,7 @@ void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
 			position->open_profit_loss = arg["open_profit_loss"];
 			//position-> = arg["unsettled_fee"];
 			//position-> = arg["pure_unsettled_profit_loss"];
-			mainApp.event_hub()->process_position_event(position);
+			mainApp.CallbackMgr()->process_position_event(position);
 		}
 	}
 	catch (const std::exception& e) {
@@ -364,6 +366,17 @@ void TotalPositionManager::calculate_symbol_open_profit_loss(const std::shared_p
 	position->open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
 }
 
+void TotalPositionManager::calculate_symbol_open_profit_loss(VmPosition& position)
+{
+	std::shared_ptr<SmQuote> quote = mainApp.QuoteMgr()->get_quote(position.symbol_code);
+	std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(position.symbol_code);
+	if (!quote || !symbol) return;
+
+	double open_profit_loss = 0.0;
+	open_profit_loss = position.open_quantity * (quote->close - position.average_price) * symbol->seung_su();
+	position.open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
+}
+
 void TotalPositionManager::update_account_profit_loss(const std::string& account_no)
 {
 	account_position_manager_p position_manager = get_account_position_manager(account_no);
@@ -387,27 +400,30 @@ void TotalPositionManager::update_group_position(std::shared_ptr<Position> posit
 		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->parent_account_no);
 		auto account_group_position = group_position_manager->create_account_group_position(position->parent_account_no, position->symbol_code);
 		group_position_manager->update_group_position(account_group_position, position);
+		mainApp.CallbackMgr()->process_position_event(account_group_position);
 		auto sub_account = mainApp.AcntMgr()->FindAccount(position->account_no);
 		if (!sub_account || sub_account->fund_name().empty()) return;
 		group_position_manager = find_add_fund_group_position_manager(sub_account->fund_name());
 		auto fund_group_position = group_position_manager->create_fund_group_position(position->fund_name, position->symbol_code);
 		group_position_manager->update_group_position(fund_group_position, position);
-	}
-	else if (position->order_source_type == OrderType::MainAccount) {
-		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->account_no);
-		auto account_group_position = group_position_manager->create_account_group_position(position->account_no, position->symbol_code);
-		group_position_manager->update_group_position(account_group_position, position);
+		mainApp.CallbackMgr()->process_position_event(fund_group_position);
 	}
 	else if (position->order_source_type == OrderType::Fund) {
 		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->parent_account_no);
 		auto account_group_position = group_position_manager->create_account_group_position(position->parent_account_no, position->symbol_code);
 		group_position_manager->update_group_position(account_group_position, position);
-
+		mainApp.CallbackMgr()->process_position_event(account_group_position);
 		group_position_manager = find_add_fund_group_position_manager(position->fund_name);
 		auto fund_group_position = group_position_manager->create_fund_group_position(position->fund_name, position->symbol_code);
 		group_position_manager->update_group_position(fund_group_position, position);
+		mainApp.CallbackMgr()->process_position_event(fund_group_position);
 	}
-	else return;
+	else {
+		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->account_no);
+		auto account_group_position = group_position_manager->create_account_group_position(position->account_no, position->symbol_code);
+		group_position_manager->update_group_position(account_group_position, position);
+		mainApp.CallbackMgr()->process_position_event(account_group_position);
+	}
 }
 
 }

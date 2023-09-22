@@ -12,12 +12,13 @@
 #include "../Account/SmAccount.h"
 #include "../Fund/SmFund.h"
 #include "../Position/GroupPositionManager.h"
+#include "../Event/SmCallbackManager.h"
 namespace DarkHorse {
 
 AccountProfitLossControl::AccountProfitLossControl()
 	: id_(IdGenerator::get_id())
 {
-	mainApp.event_hub()->subscribe_position_event_handler
+	mainApp.CallbackMgr()->subscribe_position_event_handler
 	(
 		id_,
 		std::bind(&AccountProfitLossControl::update_position, this, std::placeholders::_1)
@@ -38,7 +39,7 @@ AccountProfitLossControl::AccountProfitLossControl()
 
 AccountProfitLossControl::~AccountProfitLossControl()
 {
-	mainApp.event_hub()->unsubscribe_position_event_handler(id_);
+	mainApp.CallbackMgr()->unsubscribe_position_event_handler(id_);
 	mainApp.event_hub()->unsubscribe_quote_event_handler(id_);
 	mainApp.event_hub()->unsubscribe_account_profit_loss_event_handler(id_);
 }

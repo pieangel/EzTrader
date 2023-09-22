@@ -1506,7 +1506,7 @@ void SymbolOrderView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
 	hoga_control_->update_hoga(hoga);
 	product_control_->update_product(symbol_);
 
-	position_control_->set_symbol_id(val->Id());
+	position_control_->set_symbol(val);
 	order_control_->set_symbol(val);
 	set_position();
 	//set_order();

@@ -57,6 +57,7 @@ public:
 		const int& symbol_decimal
 	);
 	static void calculate_symbol_open_profit_loss(const std::shared_ptr<Position>& position);
+	static void calculate_symbol_open_profit_loss(VmPosition& position);
 	void update_account_profit_loss(const std::string& account_no);
 	position_p find_position_by_id(const int& position_id);
 	void update_group_position(std::shared_ptr<Position> position);
@@ -64,7 +65,7 @@ public:
 	group_position_manager_p find_account_group_position_manager(const std::string& account_no);
 
 private:
-	std::mutex mutex_; // Mutex for thread synchronization
+	//std::mutex mutex_; // Mutex for thread synchronization
 	group_position_manager_p find_add_account_group_position_manager(const std::string& account_no);
 	group_position_manager_p create_account_group_position_manager(const std::string& account_no);
 	group_position_manager_p find_add_fund_group_position_manager(const std::string& fund_name);

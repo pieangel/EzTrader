@@ -12,12 +12,12 @@
 #include "../Fund/SmFund.h"
 #include "../Position/GroupPositionManager.h"
 #include "../Position/AccountPositionManager.h"
-
+#include "../Event/SmCallbackManager.h"
 namespace DarkHorse {
 	SymbolPositionControl::SymbolPositionControl()
 		: id_(IdGenerator::get_id())
 	{
-		mainApp.event_hub()->subscribe_position_event_handler
+		mainApp.CallbackMgr()->subscribe_position_event_handler
 		(
 			id_,
 			std::bind(&SymbolPositionControl::update_position, this, std::placeholders::_1)
@@ -34,7 +34,7 @@ namespace DarkHorse {
 	SymbolPositionControl::~SymbolPositionControl()
 	{
 		mainApp.event_hub()->unsubscribe_quote_event_handler(id_);
-		mainApp.event_hub()->unsubscribe_position_event_handler(id_);
+		mainApp.CallbackMgr()->unsubscribe_position_event_handler(id_);
 
 		//LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl destructor id = %d", id_);
 	}
@@ -42,7 +42,7 @@ namespace DarkHorse {
 	void SymbolPositionControl::update_profit_loss(std::shared_ptr<SmQuote> quote)
 	{
 		if (symbol_id_ != 0 && quote->symbol_id != symbol_id_) return;
-		position_.open_profit_loss = TotalPositionManager::calculate_symbol_open_profit_loss(position_.open_quantity, quote->close, position_.average_price, symbol_seung_su_, symbol_decimal_);
+		TotalPositionManager::calculate_symbol_open_profit_loss(position_);
 		if (event_handler_) event_handler_();
 	}
 
@@ -51,31 +51,21 @@ namespace DarkHorse {
 		try {
 			if (!symbol_) return;
 			if (!position) return;
+			if (symbol_->SymbolCode() != position->symbol_code) return;
+			if (position->order_source_type != position_type_) return;
 			//LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl update_position id = %d , account_no = %s, fund_name = %s", id_, position->account_no.c_str(), position->fund_name.c_str());
 			
-			if (position_type_ == PositionType::SubAccount) {
-				if (!account_ || account_->No() != position->account_no) return;
+			if (position_type_ == OrderType::SubAccount) {
+				if (!account_  || account_->No() != position->account_no) return;
 				mainApp.total_position_manager()->get_position_from_account(position->account_no, symbol_->SymbolCode(), position_);
 			}
-			else if (position_type_ == PositionType::MainAccount) {
-				if (!account_) return;
-				if (position->is_group && account_->No() == position->account_no) {
-					mainApp.total_position_manager()->get_position_from_parent_account(position->account_no, symbol_->SymbolCode(), position_);
-				}
-				else {
-					if (!is_account_exist(position)) return;
-					mainApp.total_position_manager()->get_position_from_account(position->account_no, symbol_->SymbolCode(), position_);
-				}
+			else if (position_type_ == OrderType::MainAccount) {
+				if (!account_ || account_->No() != position->account_no) return;
+				mainApp.total_position_manager()->get_position_from_parent_account(position->account_no, symbol_->SymbolCode(), position_);
 			}
 			else {
-				if (!fund_ ) return;
-				if (position->is_group && fund_->Name() == position->fund_name) {
-					mainApp.total_position_manager()->get_position_from_fund(position->fund_name, symbol_->SymbolCode(), position_);
-				}
-				else {
-					if (!is_account_exist(position)) return;
-					mainApp.total_position_manager()->get_position_from_account(position->account_no, symbol_->SymbolCode(), position_);
-				}
+				if (!fund_ && fund_->Name() != position->fund_name) return;
+				mainApp.total_position_manager()->get_position_from_account(position->account_no, symbol_->SymbolCode(), position_);
 			}
 
 			if (event_handler_) event_handler_();
@@ -100,18 +90,18 @@ namespace DarkHorse {
 		if (!account || !symbol) return;
 		clear_position();
 		account_ = account;
-		symbol_ = symbol;
+		//symbol_ = symbol;
 		position_.account_id = account->id();
 		position_.symbol_id = symbol->Id();
 		position_.account_no = account->No();
 		position_.symbol_code = symbol->SymbolCode();
 		if (account->is_subaccount()) {
 			mainApp.total_position_manager()->get_position_from_account(account->No(), symbol->SymbolCode(), position_, position_map_);
-			position_type_ = PositionType::SubAccount;
+			position_type_ = OrderType::SubAccount;
 		}
 		else {
 			mainApp.total_position_manager()->get_position_from_parent_account(account->No(), symbol->SymbolCode(), position_, position_map_);
-			position_type_ = PositionType::MainAccount;
+			position_type_ = OrderType::MainAccount;
 		}
 		if (event_handler_) event_handler_();
 	}
@@ -119,7 +109,7 @@ namespace DarkHorse {
 	void SymbolPositionControl::update_position_from_fund(const std::string& fund_name, const std::string& symbol_code)
 	{
 		mainApp.total_position_manager()->get_position_from_fund(fund_name, symbol_code, position_, position_map_);
-		position_type_ = PositionType::Fund;
+		position_type_ = OrderType::Fund;
 	}
 
 	void SymbolPositionControl::update_position_from_fund(std::shared_ptr<SmFund> fund, std::shared_ptr<SmSymbol> symbol)
@@ -127,21 +117,21 @@ namespace DarkHorse {
 		if (!fund || !symbol) return;
 		clear_position();
 		fund_ = fund;
-		symbol_ = symbol;
-		position_.account_id = fund->Id();
+		//symbol_ = symbol;
+		position_.fund_id = fund->Id();
 		position_.symbol_id = symbol->Id();
 		position_.fund_name = fund->Name();
 		position_.symbol_code = symbol->SymbolCode();
-		position_type_ = PositionType::Fund;
+		position_type_ = OrderType::Fund;
 		mainApp.total_position_manager()->get_position_from_fund(fund->Name(), symbol->SymbolCode(), position_, position_map_);
 		if (event_handler_) event_handler_();
 	}
 
-	void SymbolPositionControl::set_symbol_id(const int symbol_id)
+	void SymbolPositionControl::set_symbol(std::shared_ptr<SmSymbol> symbol)
 	{
-		symbol_id_ = symbol_id;
-		auto symbol = mainApp.SymMgr()->FindSymbolById(symbol_id_);
 		if (!symbol) return;
+		symbol_ = symbol;
+		symbol_id_ = symbol->Id();
 		symbol_decimal_ = symbol->decimal();
 		symbol_seung_su_ = symbol->seung_su();
 		reset_position();
@@ -155,6 +145,7 @@ namespace DarkHorse {
 		if (account_->is_subaccount()) {
 			account_map_.clear();
 			account_map_[account_->No()] = account_;
+			position_type_ = OrderType::SubAccount;
 		}
 		else {
 			account_map_.clear();
@@ -164,6 +155,7 @@ namespace DarkHorse {
 				auto sub_account = *it;
 				account_map_[sub_account->No()] = sub_account;
 			}
+			position_type_ = OrderType::MainAccount;
 		}
 	}
 
@@ -177,6 +169,7 @@ namespace DarkHorse {
 			auto sub_account = *it;
 			account_map_[sub_account->No()] = sub_account;
 		}
+		position_type_ = OrderType::Fund;
 	}
 
 	bool SymbolPositionControl::is_account_exist(const std::shared_ptr<Position>& position)
@@ -203,7 +196,7 @@ namespace DarkHorse {
 
 	void SymbolPositionControl::subscribe_position_control()
 	{
-		mainApp.event_hub()->subscribe_position_event_handler
+		mainApp.CallbackMgr()->subscribe_position_event_handler
 		(
 			id_,
 			std::bind(&SymbolPositionControl::update_position, this, std::placeholders::_1)

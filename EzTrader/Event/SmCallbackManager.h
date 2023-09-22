@@ -5,6 +5,7 @@
 #include <memory>
 #include <windows.h>
 #include <string>
+#include <mutex>
 #include "../MessageDefine.h"
 //#include "../Global/TemplateSingleton.h"
 // WM_USER + 3
@@ -17,6 +18,7 @@ namespace DarkHorse {
 	class SmOrder;
 	class SmChartData;
 	class SmAccount;
+	struct Position;
 	class SmCallbackManager // : public TemplateSingleton<SmCallbackManager>
 	{
 	public:
@@ -189,7 +191,31 @@ namespace DarkHorse {
 
 		void OnFundChanged();
 
+		void subscribe_position_event_handler(const int position_control_id, std::function<void(std::shared_ptr<Position> position)>&& handler)
+		{
+			std::lock_guard<std::mutex> lock(symbol_position_mutex_); // Lock the mutex
+			position_cb_handle_map_[position_control_id] = handler;
+		}
+		void unsubscribe_position_event_handler(const int position_control_id)
+		{
+			std::lock_guard<std::mutex> lock(symbol_position_mutex_); // Lock the mutex
+			auto found = position_cb_handle_map_.find(position_control_id);
+			if (found == position_cb_handle_map_.end()) return;
+			position_cb_handle_map_.erase(found);
+		}
+
+		void process_position_event(std::shared_ptr<Position> position)
+		{
+			std::lock_guard<std::mutex> lock(symbol_position_mutex_); // Lock the mutex
+			for (auto& var : position_cb_handle_map_) { 
+				var.second(position); 
+			}
+		}
+
 	private:
+		// key : control id , value : callback function
+		std::map<int, std::function<void(std::shared_ptr<Position> position)>> position_cb_handle_map_;
+		std::mutex symbol_position_mutex_; // Mutex for thread synchronization
 		std::map<long, std::function<void(const std::string& symbol_code)>> _QuoteMap;
 		std::map<long, std::function<void(const std::string& symbol_code)>> _HogaMap;
 		std::map<int, std::function<void(const std::string& account_no, const std::string& symbol_code)>> _OrderMap;

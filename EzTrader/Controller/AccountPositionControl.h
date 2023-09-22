@@ -23,13 +23,13 @@ public:
 		event_handler_ = event_handler;
 	}
 	const std::map<std::string, position_p>& get_position_map() {
-		std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+		//std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 		return position_map_;
 	}
 	void set_account(std::shared_ptr<SmAccount> account);
 	void set_fund(std::shared_ptr<SmFund> fund);
 private:
-	std::mutex mutex_; // Mutex for thread synchronization
+	//std::mutex mutex_; // Mutex for thread synchronization
 	void load_position_from_account(const std::string& account_no);
 	void load_position_from_parent_account(const std::string& account_no);
 	void load_position_from_fund(const std::string& fund_name);

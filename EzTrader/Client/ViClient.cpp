@@ -38,6 +38,7 @@
 #include "../Position/Position.h"
 #include "ClientConst.h"
 #include "../Quote/SmQuoteManager.h"
+#include "../Order/OrderProcess/TotalOrderManager.h"
 #include <format>
 
 #define ROUNDING(x, dig)	( floor((x) * pow(float(10), dig) + 0.5f) / pow(float(10), dig) )
@@ -292,7 +293,8 @@ void ViClient::on_ab_accepted_order(const CString& server_trade_code, const LONG
 		//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
 
 
-		mainApp.order_processor()->add_order_event(std::move(order_info));
+		//mainApp.order_processor()->add_order_event(std::move(order_info));
+		handle_order_event(std::move(order_info));
 	}
 
 	on_task_complete(server_request_id);
@@ -380,7 +382,8 @@ void ViClient::on_dm_accepted_order(const CString& server_trade_code, const LONG
 		//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
 
 
-		mainApp.order_processor()->add_order_event(std::move(order_info));
+		//mainApp.order_processor()->add_order_event(std::move(order_info));
+		handle_order_event(std::move(order_info));
 
 		
 		
@@ -1670,6 +1673,11 @@ int ViClient::dm_symbol_master(DhTaskArg arg)
 	return 1;
 }
 
+
+void ViClient::handle_order_event(order_event&& order_info_item)
+{
+	mainApp.total_order_manager()->on_order_event(std::move(order_info_item));
+}
 
 void DarkHorse::ViClient::ab_new_order(task_arg&& arg)
 {
@@ -5336,7 +5344,8 @@ void DarkHorse::ViClient::on_ab_order_accepted(const CString& strKey, const LONG
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::on_ab_order_unfilled(const CString& strKey, const LONG& nRealType)
@@ -5420,7 +5429,8 @@ void DarkHorse::ViClient::on_ab_order_unfilled(const CString& strKey, const LONG
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& nRealType)
@@ -5495,7 +5505,8 @@ void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& 
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG& nRealType)
@@ -5555,7 +5566,8 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
 }
 
 
@@ -5639,7 +5651,8 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
 }
 
 
@@ -5714,7 +5727,8 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::on_ab_future_quote(const CString& strKey, const LONG& nRealType)

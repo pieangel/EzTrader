@@ -11,6 +11,7 @@
 #include "../Json/json.hpp"
 #include "../Task/SmTaskArg.h"
 #include "../Task/SmTaskDefine.h"
+using order_event = nlohmann::json;
 // ViClient dialog
 namespace DarkHorse {
 	/// <summary>
@@ -143,6 +144,7 @@ namespace DarkHorse {
 		bool Enable() const { return _Enable; }
 		void Enable(bool val) { _Enable = val; }
 	private:
+		void handle_order_event(order_event&& order_info_item);
 		void dm_new_order(order_request_p order_req);
 		void dm_change_order(order_request_p order_req);
 		void dm_cancel_order(order_request_p order_req);

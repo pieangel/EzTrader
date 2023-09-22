@@ -45,6 +45,7 @@ public:
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
 private:
+	bool destroyed_{ false };
 	std::shared_ptr<AbAccountOrderLeftWindow> _LeftWnd = nullptr;
 	std::shared_ptr<AbAccountOrderRightWindow> _RightWnd = nullptr;
 	std::map<int, std::shared_ptr<AbAccountOrderCenterWindow>> center_window_map_;

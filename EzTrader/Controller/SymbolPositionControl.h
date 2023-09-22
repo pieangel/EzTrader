@@ -2,6 +2,8 @@
 #include "../ViewModel/VmPosition.h"
 #include "../Util/IdGenerator.h"
 #include "../Position/PositionConst.h"
+#include "../Order/SmOrderConst.h"
+#include "../Symbol/SmSymbol.h"
 #include <memory>
 #include <functional>
 #include <map>
@@ -32,13 +34,13 @@ namespace DarkHorse {
 		{
 			return id_;
 		}
-		void set_symbol_id(const int symbol_id);
+		void set_symbol(std::shared_ptr<SmSymbol> symbol);
 		//void set_account_id(const int account_id);
 		void set_event_handler(std::function<void()> event_handler) {
 			event_handler_ = event_handler;
 		}
-		PositionType Position_type() const { return position_type_; }
-		void Position_type(PositionType val) { position_type_ = val; }
+		OrderType Position_type() const { return position_type_; }
+		void Position_type(OrderType val) { position_type_ = val; }
 		void set_account(std::shared_ptr<SmAccount> account);
 		void set_fund(std::shared_ptr<SmFund> fund);
 		void set_out_system_event_handler(std::function<void(const int)> out_system_event_handler) {
@@ -49,7 +51,7 @@ namespace DarkHorse {
 		};
 	private:
 		bool is_account_exist(const std::shared_ptr<Position>& position);
-		PositionType position_type_{ PositionType::None };
+		OrderType position_type_{ OrderType::None };
 		// key : account no, value : position object.
 		std::map<std::string, std::shared_ptr<Position>> position_map_;
 		// key : account no, value : account object

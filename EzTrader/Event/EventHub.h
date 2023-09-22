@@ -232,7 +232,7 @@ public:
 	{
 		symbol_master_cb_list_(symbol);
 	}
-
+	/*
 	void subscribe_position_event_handler(const int position_control_id, std::function<void(std::shared_ptr<Position> position)>&& handler)
 	{
 		PositionCBH handle = position_cb_list_.append(handler);
@@ -249,6 +249,7 @@ public:
 	{
 		position_cb_list_(position);
 	}
+	*/
 
 	void subscribe_order_event_handler(const int order_control_id, std::function<void(std::shared_ptr<Order> order, OrderEvent order_event)>&& handler)
 	{

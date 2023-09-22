@@ -17,6 +17,7 @@
 #include "../Util/IdGenerator.h"
 #include "../Log/MyLogger.h"
 #include "TotalPositionManager.h"
+#include "../Event/SmCallbackManager.h"
 namespace DarkHorse {
 
 AccountPositionManager::AccountPositionManager(TotalPositionManager& total_position_manager, const std::string& account_no)
@@ -110,8 +111,10 @@ void AccountPositionManager::update_position(order_p order)
 	else
 		mainApp.event_hub()->process_stop_order_event(order);
 	update_account_profit_loss();
-	mainApp.event_hub()->process_position_event(position);
+	mainApp.CallbackMgr()->process_position_event(position);
+
 	total_position_manager_.update_group_position(position);
+	
 }
 
 void AccountPositionManager::update_position(quote_p quote)

@@ -70,7 +70,7 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 		pure_trade_profit_loss += position->pure_trade_profit_loss;
 
 		open_quantity += position->open_quantity;
-		average_price += position->average_price;
+		average_price += position->open_quantity * position->average_price;
 	}
 	dest_position.trade_profit_loss = trade_profit_loss;
 	dest_position.open_profit_loss = open_profit_loss;
@@ -116,12 +116,22 @@ void GroupPositionManager::update_whole_group_position()
 		pure_trade_profit_loss += position->pure_trade_profit_loss;
 
 		open_quantity += position->open_quantity;
-		average_price += position->average_price;
+		average_price += position->open_quantity * position->average_price;
 	}
 	whole_profit_loss_->trade_profit_loss = trade_profit_loss;
 	whole_profit_loss_->open_profit_loss = open_profit_loss;
 	whole_profit_loss_->trade_fee = trade_fee;
 	whole_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
+
+	whole_profit_loss_->trade_profit_loss = trade_profit_loss;
+	whole_profit_loss_->open_profit_loss = open_profit_loss;
+	whole_profit_loss_->trade_fee = trade_fee;
+	whole_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
+	whole_profit_loss_->open_quantity = open_quantity;
+	if (open_quantity == 0)
+		whole_profit_loss_->average_price = 0.0f;
+	else
+		whole_profit_loss_->average_price = average_price / whole_profit_loss_->open_quantity;
 }
 
 std::shared_ptr<Position> GroupPositionManager::create_account_group_position(const std::string& account_no, const std::string symbol_code)

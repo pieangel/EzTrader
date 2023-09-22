@@ -178,7 +178,7 @@ void SymbolPositionView::Symbol(std::shared_ptr<SmSymbol> val)
 	quote->symbol_id = symbol_->Id();
 	quote_control_->set_symbol_id(symbol_->Id());
 	quote_control_->update_quote(quote);
-	position_control_->set_symbol_id(symbol_->Id());
+	position_control_->set_symbol(symbol_);
 	update_quote();
 	set_position();
 	update_position();

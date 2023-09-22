@@ -1,0 +1,22 @@
+[2023-09-22 02:56:15.298] 1  DarkHorse::ViClient::ab_new_order  2173 req_id[221], code[g12003.AO0401%], order_info[0003201234    NQZ23                           1101498200        1         1                                  0000000013kE0-D5-5E-AB-5B-70m0000000000000000000000000000000]
+[2023-09-22 02:56:15.357] 1  DarkHorse::ViClient::OnGetMsg  228 정상처리되었습니다.
+[2023-09-22 02:56:15.357] 1  DarkHorse::ViClient::OnGetMsgWithRqId  397 RQID[221], Code[00000], Message[정상처리되었습니다.]
+
+[2023-09-22 02:56:15.359] 1  DarkHorse::ViClient::OnDataRecv  93 RQID[221], Code[g12003.AO0401]
+
+[2023-09-22 02:56:15.467] 1  DarkHorse::ViClient::on_ab_order_accepted  5303 OnOrderAcceptedHd 종목[NQZ23                           ]주문번호[23UU002937], 주문구분[1], 주문수량[1         ]
+
+[2023-09-22 02:56:15.467] 1  DarkHorse::TotalOrderManager::set_order_request_info  142 set_order_request_info 계좌[000320],[서브계좌번호[], [부모계좌번호[], 펀드이름[], 종목[NQZ23], 주문번호[23UU002937], 주문구분[1], 주문수량[1], 체결수량[0], 잔량[0]
+
+[2023-09-22 02:56:15.468] 1  DarkHorse::ViClient::on_ab_order_unfilled  5363 OnOrderUnfilled 종목[NQZ23                           ] 주문번호[23UU002937][원주문번호[0000000000], 최초 원주문 번호[23UU002937], 주문구분[], 주문수량[         1], 체결수량[         0], 잔량[         1]
+
+[2023-09-22 02:56:15.469] 1  DarkHorse::TotalOrderManager::set_order_request_info  142 set_order_request_info 계좌[000320],[서브계좌번호[], [부모계좌번호[], 펀드이름[], 종목[NQZ23], 주문번호[23UU002937], 주문구분[1], 주문수량[1], 체결수량[0], 잔량[1]
+
+[2023-09-22 02:56:15.470] 1  DarkHorse::ViClient::on_ab_order_filled  5491 on_ab_order_filled order_no = 23UU002937, account_no = 000320, symbol_code = NQZ23, filled_amount = 1
+[2023-09-22 02:56:15.470] 1  DarkHorse::TotalOrderManager::set_order_request_info  142 set_order_request_info 계좌[000320],[서브계좌번호[], [부모계좌번호[], 펀드이름[], 종목[NQZ23], 주문번호[23UU002937], 주문구분[1], 주문수량[1], 체결수량[1], 잔량[1]
+
+[2023-09-22 02:56:15.470] 1  DarkHorse::AccountPositionManager::update_position  100 position_count = [0], unsettled_count = [0], trade_profit_loss = [0.00], average_price = [0.00]
+[2023-09-22 02:56:15.471] 1  DarkHorse::ViClient::on_ab_order_unfilled  5363 OnOrderUnfilled 종목[NQZ23                           ] 주문번호[23UU002937][원주문번호[0000000000], 최초 원주문 번호[23UU002937], 주문구분[], 주문수량[         1], 체결수량[         1], 잔량[         0]
+
+[2023-09-22 02:56:15.471] 1  DarkHorse::TotalOrderManager::set_order_request_info  142 set_order_request_info 계좌[000320],[서브계좌번호[], [부모계좌번호[], 펀드이름[], 종목[NQZ23], 주문번호[23UU002937], 주문구분[1], 주문수량[1], 체결수량[1], 잔량[0]
+

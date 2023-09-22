@@ -829,7 +829,7 @@ void DmFundOrderWindow::ChangedCenterWindow(const int& center_wnd_id)
 void DmFundOrderWindow::OnClose()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	pFrame->remove_dm_account_order_window(GetSafeHwnd());
+	pFrame->remove_dm_fund_order_window(GetSafeHwnd());
 	//mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
 	//mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
 

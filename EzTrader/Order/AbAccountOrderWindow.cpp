@@ -700,15 +700,6 @@ void AbAccountOrderWindow::ChangedCenterWindow(const int& center_wnd_id)
 }
 
 
-void AbAccountOrderWindow::OnClose()
-{
-	mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
-	mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
-
-	
-
-	CBCGPDialog::OnClose();
-}
 
 
 void AbAccountOrderWindow::OnBnClickedBtnLiqAll()
@@ -763,16 +754,23 @@ void AbAccountOrderWindow::OnSysCommand(UINT nID, LPARAM lParam)
 
 void AbAccountOrderWindow::OnDestroy()
 {
-	CBCGPDialog::OnDestroy();
-
-	
+	if (!destroyed_) CBCGPDialog::OnDestroy();
 }
 
 
-void AbAccountOrderWindow::PostNcDestroy()
+void AbAccountOrderWindow::OnClose()
 {
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->RemoveOrderWnd(GetSafeHwnd());
-	delete this;
+	//mainApp.CallbackMgr()->UnsubscribeOrderUpdateCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr()->UnsubscribeServerMsgCallback(GetSafeHwnd());
+
+	if (!destroyed_) CBCGPDialog::OnClose();
+}
+
+void AbAccountOrderWindow::PostNcDestroy()
+{
 	CBCGPDialog::PostNcDestroy();
+	destroyed_ = true;
+	delete this;
 }
