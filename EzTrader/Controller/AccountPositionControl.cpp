@@ -38,89 +38,31 @@ AccountPositionControl::~AccountPositionControl()
 	mainApp.event_hub()->unsubscribe_quote_event_handler(id_);
 }
 
-void AccountPositionControl::load_position_from_account(const std::string& account_no)
-{
-	account_no_set_.clear();
-	account_no_set_.insert(account_no);
-	position_map_.clear();
-	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_no);
-	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
-	for (auto it = position_map.begin(); it != position_map.end(); it++) {
-		if (it->second->open_quantity == 0) continue;
-		position_map_[it->second->symbol_code] = it->second;
-	}
-}
-
-void AccountPositionControl::load_position_from_parent_account(const std::string& account_no)
-{
-	account_no_set_.clear();
-	account_no_set_.insert(account_no);
-	if (account_) {
-		auto sub_accounts = account_->get_sub_accounts();
-		for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
-			account_no_set_.insert((*it)->No());
-		}
-	}
-	position_map_.clear();
-	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
-	if (!group_position_mgr) return;
-	const std::map<std::string, position_p>& position_map = group_position_mgr->get_group_position_map();
-	for (auto it = position_map.begin(); it != position_map.end(); it++) {
-		if (it->second->open_quantity == 0) continue;
-		position_map_[it->second->symbol_code] = it->second;
-	}
-}
-
-void AccountPositionControl::load_position_from_fund(const std::string& fund_name)
-{
-	account_no_set_.clear();
-	if (fund_) {
-		auto sub_accounts = fund_->GetAccountVector();
-		for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
-			account_no_set_.insert((*it)->No());
-		}
-	}
-	position_map_.clear();
-	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
-	if (!group_position_mgr) return;
-	const std::map<std::string, position_p>& position_map = group_position_mgr->get_group_position_map();
-	for (auto it = position_map.begin(); it != position_map.end(); it++) {
-		if (it->second->open_quantity == 0) continue;
-		position_map_[it->second->symbol_code] = it->second;
-	}
-}
-
 void AccountPositionControl::update_position(position_p position)
 {
 	if (!position) return;
-	auto found = account_no_set_.find(position->account_no);
-	if (found == account_no_set_.end()) return;
-
-	if (position->order_source_type == DarkHorse::OrderType::SubAccount) {
-		if (account_) {
-			if (account_->is_subaccount())
-				load_position_from_account(account_->No());
-			else
-				load_position_from_parent_account(account_->No());
-		}
-		if (fund_)
-			load_position_from_fund(fund_->Name());
+	if (position_type_ == OrderType::None) return;
+	if (position_type_ == OrderType::SubAccount) {
+		if (!account_ || account_->No() != position->account_no) return;
+		auto position_manager = mainApp.total_position_manager()->find_position_manager(position->account_no);
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
 	}
-	else if (position->order_source_type == DarkHorse::OrderType::MainAccount) {
-		if (account_ && !account_->is_subaccount())
-			load_position_from_parent_account(account_->No());
+	else if (position_type_ == OrderType::Fund) {
+		if (!fund_ || fund_->Name() != position->fund_name) return;
+		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(position->account_no);
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
 	}
-	else if (position->order_source_type == DarkHorse::OrderType::Fund) {
-		if (account_) {
-			if (account_->is_subaccount())
-				load_position_from_account(account_->No());
-			else
-				load_position_from_parent_account(account_->No());
-		}
-		if (fund_)
-			load_position_from_fund(fund_->Name());
+	else{
+		if (!account_ || account_->No() != position->account_no) return;
+		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(position->account_no);
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
 	}
-	else return;
 	
 	if (event_handler_) event_handler_();
 }
@@ -141,21 +83,57 @@ void AccountPositionControl::update_profit_loss(quote_p quote)
 	if (event_handler_) event_handler_();
 }
 
+const std::vector<position_p>& AccountPositionControl::get_active_position_vector()
+{
+	load_position();
+	return active_position_vector_;
+}
+
 void AccountPositionControl::set_account(std::shared_ptr<SmAccount> account)
 {
 	if (!account) return;
 	account_ = account;
-	if (account_->is_subaccount())
-		load_position_from_account(account_->No());
-	else
-		load_position_from_parent_account(account_->No());
+	if (account_->is_subaccount()) {
+		position_type_ = OrderType::SubAccount;
+	}
+	else {
+		position_type_ = OrderType::MainAccount;
+	}
 }
 
 void AccountPositionControl::set_fund(std::shared_ptr<SmFund> fund)
 {
 	if (!fund) return;
 	fund_ = fund;
-	load_position_from_fund(fund_->Name());
+	position_type_ = OrderType::Fund;
+}
+
+void AccountPositionControl::load_position()
+{
+	if (position_type_ == OrderType::None) return;
+	if (position_type_ == OrderType::SubAccount) {
+		if (!account_ ) return;
+		auto position_manager = mainApp.total_position_manager()->find_position_manager(account_->No());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+	else if (position_type_ == OrderType::Fund) {
+		if (!fund_ ) return;
+		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_->Name());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+	else {
+		if (!account_ ) return;
+		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_->No());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+
+	if (event_handler_) event_handler_();
 }
 
 position_p AccountPositionControl::get_position(const std::string& symbol_code)

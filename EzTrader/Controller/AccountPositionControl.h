@@ -5,6 +5,8 @@
 #include <functional>
 #include <set>
 #include <mutex>
+#include <vector>
+#include "../Order/SmOrderConst.h"
 namespace DarkHorse {
 struct Position;
 struct SmQuote;
@@ -22,23 +24,24 @@ public:
 	void set_event_handler(std::function<void()> event_handler) {
 		event_handler_ = event_handler;
 	}
-	const std::map<std::string, position_p>& get_position_map() {
-		return position_map_;
-	}
+// 	const std::map<std::string, position_p>& get_position_map() {
+// 		return position_map_;
+// 	}
+	const std::vector<position_p>& get_active_position_vector();
 	void set_account(std::shared_ptr<SmAccount> account);
 	void set_fund(std::shared_ptr<SmFund> fund);
 private:
-	void load_position_from_account(const std::string& account_no);
-	void load_position_from_parent_account(const std::string& account_no);
-	void load_position_from_fund(const std::string& fund_name);
+	void load_position();
 	position_p get_position(const std::string& symbol_code);
 	// key : symbol code, value : position object.
 	std::map<std::string, position_p> position_map_;
+	std::vector<position_p> active_position_vector_;
 	std::function<void()> event_handler_;
 	int id_{ 0 };
 	std::string account_no_;
 	std::set<std::string> account_no_set_;
 	std::shared_ptr<SmAccount> account_;
 	std::shared_ptr<SmFund> fund_;
+	OrderType position_type_{ OrderType::None };
 };
 }

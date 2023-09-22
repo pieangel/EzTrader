@@ -57,7 +57,7 @@ public:
 	void update_group_position(std::shared_ptr<Position> position);
 	group_position_manager_p find_fund_group_position_manager(const std::string& fund_name);
 	group_position_manager_p find_account_group_position_manager(const std::string& account_no);
-
+	account_position_manager_p find_position_manager(const std::string& account_no);
 private:
 	//std::mutex mutex_; // Mutex for thread synchronization
 	group_position_manager_p find_add_account_group_position_manager(const std::string& account_no);
@@ -68,7 +68,7 @@ private:
 	group_position_manager_p create_group_position_manager(std::shared_ptr<Position> position);
 	// key : position id, value : position object.
 	std::map<int, position_p> position_map_;
-	account_position_manager_p find_position_manager(const std::string& account_no);
+	
 	account_position_manager_p create_position_manager(const std::string& account_no);
 	// key : account_no, value : account position manager object.
 	std::map<std::string, account_position_manager_p> account_position_manager_map_;

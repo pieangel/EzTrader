@@ -102,7 +102,6 @@ public:
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
 
-	void UpdateAcceptedOrder();
 	void UpdatePositionInfo();
 	void LiqSelPositions();
 	void LiqAll();
