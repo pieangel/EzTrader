@@ -5,6 +5,7 @@
 #include <vector>
 #include <mutex>
 #include "../ViewModel/VmPosition.h"
+#include "../ViewModel/VmAccountProfitLoss.h"
 namespace DarkHorse {
 	struct Position;
 	struct SmQuote;
@@ -29,9 +30,7 @@ public:
 	const std::map<std::string, position_p>& get_position_map() {
 		return position_map_;
 	}
-	account_profit_loss_p get_account_profit_loss() {
-		return account_profit_loss_;
-	}
+	void get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss);
 	void update_account_profit_loss();
 	position_p find_position(const std::string& symbol_code);
 	void update_position(position_p position);
@@ -39,7 +38,6 @@ public:
 	void get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector);
 private:
 	std::mutex mutex_; // Mutex for thread synchronization
-	//std::shared_ptr<GroupPosition> create_group_position(const std::string& account_no, const std::string& symbol_code);
 	void set_symbol_id(position_p position, const std::string& symbol_code);
 	void set_account_id(position_p position, const std::string& account_no);
 	int calculate_position_count(order_p order, position_p position);

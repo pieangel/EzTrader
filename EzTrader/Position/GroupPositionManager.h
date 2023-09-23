@@ -6,6 +6,7 @@
 #include <vector>
 #include "../Order/SmOrderConst.h"
 #include "../ViewModel/VmPosition.h"
+#include "../ViewModel/VmAccountProfitLoss.h"
 namespace DarkHorse {
 	class TotalPositionManager;
 	struct GroupPosition;
@@ -28,10 +29,9 @@ namespace DarkHorse {
 		const std::map<std::string, std::shared_ptr<Position>>& get_group_position_map() {
 			return group_position_map_;
 		}
+
 		void update_whole_group_position();
-		account_profit_loss_p get_whole_profit_loss() {
-			return whole_profit_loss_;
-		}
+		void get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss);
 		std::shared_ptr<Position> create_account_group_position(const std::string& account_no, const std::string symbol_code);
 		std::shared_ptr<Position> create_fund_group_position(const std::string& func_name, const std::string& symbol_code);
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position);
@@ -40,7 +40,7 @@ namespace DarkHorse {
 		void get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector);
 	private:
 		std::mutex mutex_; // Mutex for thread synchronization
-		account_profit_loss_p whole_profit_loss_{ nullptr };
+		account_profit_loss_p total_profit_loss_{ nullptr };
 		std::string fund_name_;
 		std::string account_no_;
 		const TotalPositionManager& total_position_manager_;

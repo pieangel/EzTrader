@@ -6,7 +6,7 @@ namespace DarkHorse {
 GroupPositionManager::GroupPositionManager(TotalPositionManager& total_position_manager)
 	: total_position_manager_(total_position_manager)
 {
-	whole_profit_loss_ = std::make_shared<AccountProfitLoss>();
+	total_profit_loss_ = std::make_shared<AccountProfitLoss>();
 }
 
 GroupPositionManager::~GroupPositionManager()
@@ -128,20 +128,29 @@ void GroupPositionManager::update_whole_group_position()
 		open_quantity += position->open_quantity;
 		average_price += position->open_quantity * position->average_price;
 	}
-	whole_profit_loss_->trade_profit_loss = trade_profit_loss;
-	whole_profit_loss_->open_profit_loss = open_profit_loss;
-	whole_profit_loss_->trade_fee = trade_fee;
-	whole_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
+	total_profit_loss_->trade_profit_loss = trade_profit_loss;
+	total_profit_loss_->open_profit_loss = open_profit_loss;
+	total_profit_loss_->trade_fee = trade_fee;
+	total_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
 
-	whole_profit_loss_->trade_profit_loss = trade_profit_loss;
-	whole_profit_loss_->open_profit_loss = open_profit_loss;
-	whole_profit_loss_->trade_fee = trade_fee;
-	whole_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
-	whole_profit_loss_->open_quantity = open_quantity;
+	total_profit_loss_->trade_profit_loss = trade_profit_loss;
+	total_profit_loss_->open_profit_loss = open_profit_loss;
+	total_profit_loss_->trade_fee = trade_fee;
+	total_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
+	total_profit_loss_->open_quantity = open_quantity;
 	if (open_quantity == 0)
-		whole_profit_loss_->average_price = 0.0f;
+		total_profit_loss_->average_price = 0.0f;
 	else
-		whole_profit_loss_->average_price = average_price / whole_profit_loss_->open_quantity;
+		total_profit_loss_->average_price = average_price / total_profit_loss_->open_quantity;
+}
+
+void GroupPositionManager::get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss)
+{
+	if (!total_profit_loss_) return;
+	dest_account_profit_loss.open_profit_loss = total_profit_loss_->open_profit_loss;
+	dest_account_profit_loss.pure_trade_profit_loss = total_profit_loss_->pure_trade_profit_loss;
+	dest_account_profit_loss.trade_fee = total_profit_loss_->trade_fee;
+	dest_account_profit_loss.trade_profit_loss = total_profit_loss_->trade_profit_loss;
 }
 
 std::shared_ptr<Position> GroupPositionManager::create_account_group_position(const std::string& account_no, const std::string symbol_code)

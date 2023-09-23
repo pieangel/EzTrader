@@ -55,6 +55,15 @@ position_p AccountPositionManager::create_position(const std::string& symbol_cod
 	return position;
 }
 
+void AccountPositionManager::get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss)
+{
+	if (!account_profit_loss_) return;
+	dest_account_profit_loss.open_profit_loss = account_profit_loss_->open_profit_loss;
+	dest_account_profit_loss.pure_trade_profit_loss = account_profit_loss_->pure_trade_profit_loss;
+	dest_account_profit_loss.trade_fee = account_profit_loss_->trade_fee;
+	dest_account_profit_loss.trade_profit_loss = account_profit_loss_->trade_profit_loss;
+}
+
 void AccountPositionManager::update_account_profit_loss()
 {
 	double trade_profit_loss{ 0.0f };       //매매(청산)손익

@@ -51,7 +51,7 @@ void AccountPositionControl::update_position(position_p position)
 	}
 	else if (position_type_ == OrderType::Fund) {
 		if (!fund_ || fund_->Name() != position->fund_name) return;
-		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(position->account_no);
+		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(position->fund_name);
 		if (!position_manager) return;
 		active_position_vector_.clear();
 		position_manager->get_active_positions(active_position_vector_);
@@ -99,6 +99,7 @@ void AccountPositionControl::set_account(std::shared_ptr<SmAccount> account)
 	else {
 		position_type_ = OrderType::MainAccount;
 	}
+	load_position();
 }
 
 void AccountPositionControl::set_fund(std::shared_ptr<SmFund> fund)
@@ -106,6 +107,7 @@ void AccountPositionControl::set_fund(std::shared_ptr<SmFund> fund)
 	if (!fund) return;
 	fund_ = fund;
 	position_type_ = OrderType::Fund;
+	load_position();
 }
 
 void AccountPositionControl::load_position()

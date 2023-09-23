@@ -448,6 +448,7 @@ void AccountPositionView::update_account_position()
 void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)
 {
 	pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
+	pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255));
 	pRow->GetItem(0)->SetTextColor(RGB(0, 0, 0));
 	if (position->open_quantity > 0) {
 		//pRow->GetItem(0)->SetBackgroundColor(RGB(255, 0, 0));
@@ -479,7 +480,8 @@ void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, positio
 
 	std::string open_quantity = VtStringUtil::get_format_value(position->open_quantity, 0, true);
 	pRow->GetItem(1)->SetValue(open_quantity.c_str(), TRUE);
-
+	pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
+	pRow->GetItem(1)->SetTextColor(RGB(0, 0, 0));
 	std::string value_string = VtStringUtil::get_format_value(position->average_price / pow(10, 2), 2, true);
 	pRow->GetItem(2)->SetValue(value_string.c_str(), TRUE);
 	pRow->GetItem(2)->SetBackgroundColor(RGB(255, 255, 255));
@@ -510,7 +512,8 @@ void AccountPositionView::update_dm_account_position(CBCGPGridRow* pRow, positio
 void AccountPositionView::update_ab_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)
 {
 	pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
-	
+	pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255));
+	pRow->GetItem(0)->SetTextColor(RGB(0, 0, 0));
 	if (position->open_quantity > 0) {
 		pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255));
 		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
@@ -538,6 +541,8 @@ void AccountPositionView::update_ab_account_position(CBCGPGridRow* pRow, positio
 	}
 	std::string open_quantity = VtStringUtil::get_format_value(position->open_quantity, 0, true);
 	pRow->GetItem(3)->SetValue(open_quantity.c_str(), TRUE);
+	pRow->GetItem(3)->SetBackgroundColor(RGB(255, 255, 255));
+	pRow->GetItem(3)->SetTextColor(RGB(0, 0, 0));
 	//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
 	const int decimal = format_type == "1" ? 2 : 0;
 	std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);

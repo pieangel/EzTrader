@@ -54,10 +54,8 @@ END_MESSAGE_MAP()
 BOOL MiniJangoDialog::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
-	account_profit_loss_view_.Mode(_Mode);
 	account_profit_loss_view_.SetUp();
 	//account_position_view_.SetUp();
-	account_profit_loss_view_.Mode(_Mode);
 	account_position_view_.Mode(_Mode);
 	_Mode == 0 ? SetAccount() : SetFund();
 

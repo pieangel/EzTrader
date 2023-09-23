@@ -177,10 +177,6 @@ void AbAccountOrderLeftWindow::OnTimer(UINT_PTR nIDEvent)
 	account_order_view_.on_timer();
 	account_position_view_.on_timer();
 	favorite_symbol_view_.Update();
-	//_AcceptedGrid.UpdateAcceptedOrder();
-	//_PositionGrid.UpdatePositionInfo();
-	//_AccountArea.UpdateAssetInfo();
-	//_FavoriteGrid.SetFavorite();
 }
 
 void AbAccountOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> account)
@@ -188,9 +184,7 @@ void AbAccountOrderLeftWindow::SetAccount(std::shared_ptr<DarkHorse::SmAccount> 
 	account_order_view_.Account(account);
 	account_position_view_.Account(account);
 	account_profit_loss_view_.Account(account);
-	account_profit_loss_view_.UpdateAssetInfo();
-	//_FilledArea.Account(account);
-	//_AcceptedArea.Account(account);
+	account_profit_loss_view_.update_account_profit_loss();
 }
 
 void AbAccountOrderLeftWindow::SetFund(std::shared_ptr<DarkHorse::SmFund> fund)

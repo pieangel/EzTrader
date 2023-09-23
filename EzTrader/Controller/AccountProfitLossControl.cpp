@@ -51,83 +51,52 @@ position_p AccountProfitLossControl::get_position(const std::string& symbol_code
 	return it->second;
 }
 
-void AccountProfitLossControl::load_position_from_account(const std::string& account_no)
+void AccountProfitLossControl::load_profit_loss()
 {
-	account_no_set_.clear();
-	account_no_set_.insert(account_no);
-	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_no);
-	account_profit_loss_p account_profit_loss = acnt_position_mgr->get_account_profit_loss();
-	refresh_account_profit_loss(account_profit_loss);
-
-	if (event_handler_) event_handler_();
-}
-
-void AccountProfitLossControl::load_position_from_parent_account(const std::string& account_no)
-{
-	account_no_set_.clear();
-	account_no_set_.insert(account_no);
-	if (account_) {
-		auto sub_accounts = account_->get_sub_accounts();
-		for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
-			account_no_set_.insert((*it)->No());
-		}
+	if (position_type_ == OrderType::None) return;
+	if (position_type_ == OrderType::SubAccount) {
+		if (!account_) return;
+		auto position_manager = mainApp.total_position_manager()->find_position_manager(account_->No());
+		if (!position_manager) return;
+		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
-	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
-	if (!group_position_mgr) { reset_account_profit_loss();  return; }
-	account_profit_loss_p account_profit_loss = group_position_mgr->get_whole_profit_loss();
-	refresh_account_profit_loss(account_profit_loss);
-
-	if (event_handler_) event_handler_();
-}
-
-void AccountProfitLossControl::load_position_from_fund(const std::string& fund_name)
-{
-	account_no_set_.clear();
-	if (fund_) {
-		auto sub_accounts = fund_->GetAccountVector();
-		for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
-			account_no_set_.insert((*it)->No());
-		}
+	else if (position_type_ == OrderType::Fund) {
+		if (!fund_) return;
+		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_->Name());
+		if (!position_manager) return;
+		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
-	group_position_manager_p group_position_mgr = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
-	if (!group_position_mgr) { reset_account_profit_loss();  return; }
-	account_profit_loss_p fund_profit_loss = group_position_mgr->get_whole_profit_loss();
-	refresh_account_profit_loss(fund_profit_loss);
-
+	else {
+		if (!account_) return;
+		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_->No());
+		if (!position_manager) return;
+		position_manager->get_account_profit_loss(account_profit_loss_);
+	}
 	if (event_handler_) event_handler_();
 }
 
 void AccountProfitLossControl::update_position(position_p position)
 {
 	if (!position) return;
-	auto found = account_no_set_.find(position->account_no);
-	if (found == account_no_set_.end()) return;
-
-	if (position->order_source_type == DarkHorse::OrderType::SubAccount) {
-		if (account_) {
-			if (account_->is_subaccount())
-				load_position_from_account(account_->No());
-			else
-				load_position_from_parent_account(account_->No());
-		}
-		if (fund_)
-			load_position_from_fund(fund_->Name());
+	if (position_type_ == OrderType::None) return;
+	if (position_type_ == OrderType::SubAccount) {
+		if (!account_ || account_->No() != position->account_no) return;
+		auto position_manager = mainApp.total_position_manager()->find_position_manager(position->account_no);
+		if (!position_manager) return;
+		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
-	else if (position->order_source_type == DarkHorse::OrderType::MainAccount) {
-		if (account_ && !account_->is_subaccount())
-			load_position_from_parent_account(account_->No());
+	else if (position_type_ == OrderType::Fund) {
+		if (!fund_ || fund_->Name() != position->fund_name) return;
+		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(position->fund_name);
+		if (!position_manager) return;
+		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
-	else if (position->order_source_type == DarkHorse::OrderType::Fund) {
-		if (account_) {
-			if (account_->is_subaccount())
-				load_position_from_account(account_->No());
-			else
-				load_position_from_parent_account(account_->No());
-		}
-		if (fund_)
-			load_position_from_fund(fund_->Name());
+	else {
+		if (!account_ || account_->No() != position->account_no) return;
+		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(position->account_no);
+		if (!position_manager) return;
+		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
-	else return;
 
 	if (event_handler_) event_handler_();
 }
@@ -153,34 +122,21 @@ void AccountProfitLossControl::set_account(std::shared_ptr<DarkHorse::SmAccount>
 	if (!account) return;
 	account_ = account;
 	account_id_ = account->id();
-	if (account_->is_subaccount())
-		load_position_from_account(account_->No());
-	else
-		load_position_from_parent_account(account_->No());
+	if (account_->is_subaccount()) {
+		position_type_ = OrderType::SubAccount;
+	}
+	else {
+		position_type_ = OrderType::MainAccount;
+	}
+	load_profit_loss();
 }
 
 void AccountProfitLossControl::set_fund(std::shared_ptr<SmFund> fund)
 {
 	if (!fund) return;
 	fund_ = fund;
-	load_position_from_fund(fund_->Name());
-}
-
-void AccountProfitLossControl::refresh_account_profit_loss(account_profit_loss_p account_profit_loss)
-{
-	if (!account_profit_loss) return;
-	account_profit_loss_.trade_profit_loss = account_profit_loss->trade_profit_loss;
-	account_profit_loss_.open_profit_loss = account_profit_loss->open_profit_loss;
-	account_profit_loss_.trade_fee = account_profit_loss->trade_fee;
-	account_profit_loss_.pure_trade_profit_loss = account_profit_loss->pure_trade_profit_loss;
-}
-
-void AccountProfitLossControl::reset_account_profit_loss()
-{
-	account_profit_loss_.trade_profit_loss = 0;
-	account_profit_loss_.open_profit_loss = 0;
-	account_profit_loss_.trade_fee = 0;
-	account_profit_loss_.pure_trade_profit_loss = 0;
+	position_type_ = OrderType::Fund;
+	load_profit_loss();
 }
 
 void AccountProfitLossControl::update_account_profit_loss()

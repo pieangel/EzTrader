@@ -6,6 +6,7 @@
 #include <functional>
 #include "../ViewModel/VmAccountProfitLoss.h"
 #include "../Account/SmAccount.h"
+#include "../Order/SmOrderConst.h"
 namespace DarkHorse {
 
 	struct AccountProfitLoss;
@@ -34,14 +35,9 @@ namespace DarkHorse {
 
 		void set_account(std::shared_ptr<DarkHorse::SmAccount> account);
 		void set_fund(std::shared_ptr<SmFund> fund);
-		void load_position_from_account(const std::string& account_no);
-		void load_position_from_parent_account(const std::string& account_no);
-		void load_position_from_fund(const std::string& fund_name);
-
+		void load_profit_loss();
 	private:
 		position_p get_position(const std::string& symbol_code);
-		void refresh_account_profit_loss(account_profit_loss_p account_profit_loss);
-		void reset_account_profit_loss();
 		void update_account_profit_loss();
 		std::set<std::string> account_no_set_;
 		std::function<void()> event_handler_;
@@ -52,5 +48,6 @@ namespace DarkHorse {
 		std::shared_ptr<SmFund> fund_;
 		// key : symbol code, value : position object.
 		std::map<std::string, position_p> position_map_;
+		OrderType position_type_{ OrderType::None };
 	};
 }

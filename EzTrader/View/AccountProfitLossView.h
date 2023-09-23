@@ -33,8 +33,6 @@ public:
 public:
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return fund_; }
 	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
-	int Mode() const { return _Mode; }
-	void Mode(int val) { _Mode = val; }
 public:
 	void on_update_account_profit_loss();
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
@@ -42,20 +40,16 @@ public:
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
 	void UpdateSymbolInfo();
-	void UpdateAssetInfo();
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
+	void update_account_profit_loss();
 private:
 	bool updating_ = false;
 	int order_window_id_ = 0;
 	std::string get_format_price(const double& value);
-	void update_account_profit_loss();
-	void UpdateAccountAssetInfo();
 	void UpdateFundAssetInfo();
-	// 0 : account, 1 : fund
-	int _Mode = 0;
 	bool enable_account_profit_loss_show_ = false;
 	bool _EnableQuoteShow = false;
 	SmOrderGridResource _Resource;

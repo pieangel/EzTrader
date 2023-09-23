@@ -146,10 +146,7 @@ void AccountProfitLossView::UpdateSymbolInfo()
 	Invalidate();
 }
 
-void AccountProfitLossView::UpdateAssetInfo()
-{
-	_Mode == 0 ? UpdateAccountAssetInfo() : UpdateFundAssetInfo();
-}
+
 
 void AccountProfitLossView::OnQuoteEvent(const std::string& symbol_code)
 {
@@ -200,26 +197,6 @@ void AccountProfitLossView::update_account_profit_loss()
 
 	updating_ = false;
 	enable_account_profit_loss_show_ = true;
-}
-
-void AccountProfitLossView::UpdateAccountAssetInfo()
-{
-	if (!account_) return;
-
-	auto cell = _Grid->FindCell(0, 1);
-	std::string value;
-	value = std::format("{0:.2f}", account_->Asset.OpenProfitLoss);
-	if (cell) cell->Text(value);
-	cell = _Grid->FindCell(1, 1);
-	value = std::format("{0:.2f}", account_->Asset.TradeProfitLoss);
-	if (cell) cell->Text(value);
-	cell = _Grid->FindCell(2, 1);
-	value = std::format("{0:.2f}", account_->Asset.Fee);
-	if (cell) cell->Text(value);
-	cell = _Grid->FindCell(3, 1);
-	const double pure_profit = account_->Asset.OpenProfitLoss + account_->Asset.TradeProfitLoss - abs(account_->Asset.Fee);
-	value = std::format("{0:.2f}", pure_profit);
-	if (cell) cell->Text(value);
 }
 
 void AccountProfitLossView::UpdateFundAssetInfo()

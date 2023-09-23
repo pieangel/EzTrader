@@ -24,9 +24,6 @@ public:
 	void set_event_handler(std::function<void()> event_handler) {
 		event_handler_ = event_handler;
 	}
-// 	const std::map<std::string, position_p>& get_position_map() {
-// 		return position_map_;
-// 	}
 	const std::vector<position_p>& get_active_position_vector();
 	void set_account(std::shared_ptr<SmAccount> account);
 	void set_fund(std::shared_ptr<SmFund> fund);
