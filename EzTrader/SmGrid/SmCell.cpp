@@ -238,11 +238,11 @@ namespace DarkHorse {
 			break;
 		case SmCellType::CT_BUTTON_BUY:
 			pGM->DrawBeveledRectangle(rect, res.BuyButtonColor, 1, FALSE);
-			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.CloseTextBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.OrderButtonTextColor);
 			break;
 		case SmCellType::CT_BUTTON_SELL:
 			pGM->DrawBeveledRectangle(rect, res.SellButtonColor, 1, FALSE);
-			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.CloseTextBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.OrderButtonTextColor);
 			break;
 		case SmCellType::CT_ORDER_BUY_BACK:
 			pGM->FillRectangle(rect, res.BuyOrderBrush);
@@ -350,12 +350,12 @@ namespace DarkHorse {
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.PositionSellBrush);
 			break;
 		case SmCellType::CT_REMAIN_BUY:
-			pGM->FillRectangle(rect, res.BuyPositionBrush);
-			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.CloseTextColor);
+			pGM->FillRectangle(rect, res.DefaultBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.BuyPositionBrush);
 			break;
 		case SmCellType::CT_REMAIN_SELL:
-			pGM->FillRectangle(rect, res.SellPositionBrush);
-			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.CloseTextColor);
+			pGM->FillRectangle(rect, res.DefaultBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.SellPositionBrush);
 			break;
 		case SmCellType::CT_MARK_BUY:
 			//pGM->FillRectangle(left_pos_rect, res.QMBuyBrush);
@@ -410,6 +410,22 @@ namespace DarkHorse {
 		case SmCellType::CT_SP_LOSS:
 			pGM->FillRectangle(rect, res.DefaultBackBrush);
 			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.SymbolPositionLoss);
+			break;
+		case SmCellType::CT_FUTURE:
+			pGM->FillRectangle(rect, res.HeaderBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.DefaultTextColor);
+			break;
+		case SmCellType::CT_OP_HEADER_CALL:
+			pGM->FillRectangle(rect, res.OptionHeadCallBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.OptionHeadTextColosr);
+			break;
+		case SmCellType::CT_OP_HEADER_PUT:
+			pGM->FillRectangle(rect, res.OptionHeadPutBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.OptionHeadTextColosr);
+			break;
+		case SmCellType::CT_OP_HEADER_CENTER:
+			pGM->FillRectangle(rect, res.OptionHeadCenterBackBrush);
+			pGM->DrawText(_Text.c_str(), rect, res.TextFormat, res.OptionHeadTextColosr);
 			break;
 		default:
 			pGM->FillRectangle(rect, res.DefaultBackBrush);

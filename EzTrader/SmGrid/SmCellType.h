@@ -62,6 +62,10 @@ namespace DarkHorse {
 		CT_DEFAULT,
 		CT_SP_PROFIT,
 		CT_SP_LOSS,
+		CT_FUTURE,
+		CT_OP_HEADER_CALL,
+		CT_OP_HEADER_PUT,
+		CT_OP_HEADER_CENTER,
 		COUNT
 	};
 }

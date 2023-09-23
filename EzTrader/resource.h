@@ -629,13 +629,18 @@
 #define ID_SUB_ACCOUNT                  32937
 #define ID_32938                        32938
 #define ID_OUT_SYSTEM                   32939
+#define ID_32940                        32940
+#define ID_THEME_DARKGRAY               32941
+#define ID_THEME_BLUE                   32942
+#define ID_THEME_DARK                   32943
+#define ID_THEME_COLORFUL               32944
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        236
-#define _APS_NEXT_COMMAND_VALUE         32940
+#define _APS_NEXT_COMMAND_VALUE         32945
 #define _APS_NEXT_CONTROL_VALUE         1172
 #define _APS_NEXT_SYMED_VALUE           119
 #endif

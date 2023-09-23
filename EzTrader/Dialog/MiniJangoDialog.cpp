@@ -44,6 +44,7 @@ void MiniJangoDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(MiniJangoDialog, CBCGPDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &MiniJangoDialog::OnCbnSelchangeComboAccount)
 	ON_WM_TIMER()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -222,4 +223,57 @@ void MiniJangoDialog::PostNcDestroy()
 	pFrame->RemoveJangoWnd(GetSafeHwnd());
 
 	CBCGPDialog::PostNcDestroy();
+}
+
+
+void MiniJangoDialog::OnSize(UINT nType, int cx, int cy)
+{
+	CBCGPDialog::OnSize(nType, cx, cy);
+
+	CRect rcDlg;
+	this->GetClientRect(rcDlg);
+	
+	int horizontal_position = rcDlg.Height() / 2;
+	int vertical_position = rcDlg.Width() * 77 / 96;
+	int controlHeight = 32;
+
+	// 위쪽 타이틀
+	CRect rcCtrlAccount, rcPosition, rcButton;
+	CWnd* pWnd = this->GetDlgItem(IDC_STATIC_ACCOUNT);
+	if (!pWnd->GetSafeHwnd())
+		return;
+	pWnd->GetWindowRect(rcCtrlAccount);
+	ScreenToClient(rcCtrlAccount);
+
+// 	rcCtrl.left = rcDlg.left + STD_GAP;
+// 	rcCtrl.right = rcCtrl.left + 100;
+// 	rcCtrl.top = rcDlg.top + STD_GAP + 7;
+// 	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+// 	pWnd->MoveWindow(rcCtrl, TRUE);
+	// IDC_STATIC_ACCOUNT
+	// IDC_STATIC_POSITION
+	// 주문설정 버튼
+	pWnd = this->GetDlgItem(IDC_STATIC_POSITION);
+	if (!pWnd->GetSafeHwnd())
+		return;
+	pWnd->GetWindowRect(rcPosition);
+	ScreenToClient(rcPosition);
+
+	
+
+	pWnd = this->GetDlgItem(IDOK);
+	if (!pWnd->GetSafeHwnd())
+		return;
+
+	pWnd->GetWindowRect(rcButton);
+	ScreenToClient(rcButton);
+
+	rcPosition.bottom = rcDlg.bottom - rcButton.Height() - 2;
+	if (account_position_view_.GetSafeHwnd())
+		account_position_view_.MoveWindow(rcPosition, TRUE);
+
+	rcButton.top = rcDlg.bottom - rcButton.Height();
+	rcButton.bottom = rcDlg.bottom - 1;
+
+	pWnd->MoveWindow(rcButton, TRUE);
 }

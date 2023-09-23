@@ -341,13 +341,16 @@ void DmOptionView::SetUp()
 	_Grid->MakeRowHeightMap();
 	_Grid->MakeColWidthMap();
 	_Grid->RecalRowCount(rect.Height(), true);
-
+	std::vector<SmCellType> header_cell_types;
 	_Grid->CreateGrids();
 	{
 		_HeaderTitles.push_back("CALL");
 		_HeaderTitles.push_back("Çà»ç°¡");
 		_HeaderTitles.push_back("PUT");
-		_Grid->SetColHeaderTitles(_HeaderTitles);
+		header_cell_types.push_back(CT_OP_HEADER_CALL);
+		header_cell_types.push_back(CT_OP_HEADER_CENTER);
+		header_cell_types.push_back(CT_OP_HEADER_PUT);
+		_Grid->SetColHeaderTitles(_HeaderTitles, header_cell_types);
 	}
 	set_call_put_area();
 	SetTimer(1, 40, NULL);

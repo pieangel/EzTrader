@@ -280,6 +280,13 @@ void DmFutureView::SetUp()
 
 	_Grid->HeaderMode(SmHeaderMode::None);
 
+	
+	for (int i = 0; i < 5; i++) {
+		std::shared_ptr<SmCell> cell = _Grid->FindCell(i, 0);
+		if (cell) cell->CellType(CT_FUTURE);
+	}
+	
+
 	SetTimer(1, 40, NULL);
 }
 

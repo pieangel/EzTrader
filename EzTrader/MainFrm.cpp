@@ -78,6 +78,7 @@ using namespace hmdf;
 #include "DataFrame/Utils/FixedSizeString.h"
 #include "Dialog/SmAutoSignalManagerDialog.h"
 #include "OutSystem/VtAutoSignalManagerDialog.h"
+#include "BCGPWorkspace.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -316,6 +317,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_DM_FUND_ORDER, &CMainFrame::OnDmFundOrder)
 	ON_COMMAND(ID_SUB_ACCOUNT, &CMainFrame::OnSubAccount)
 	ON_COMMAND(ID_OUT_SYSTEM, &CMainFrame::OnOutSystem)
+	ON_COMMAND(ID_THEME_DARKGRAY, &CMainFrame::OnThemeDarkgray)
+	ON_COMMAND(ID_THEME_BLUE, &CMainFrame::OnThemeBlue)
+	ON_COMMAND(ID_THEME_DARK, &CMainFrame::OnThemeDark)
+	ON_COMMAND(ID_THEME_COLORFUL, &CMainFrame::OnThemeColorful)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -481,7 +486,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Failed to create status bar\n");
 		return -1;      // fail to create
 	}
-
+	
 	// Load control bar icons:
 	CBCGPToolBarImages imagesWorkspace;
 	imagesWorkspace.SetImageSize(CSize(16, 16));
@@ -1413,4 +1418,28 @@ void CMainFrame::OnOutSystem()
 
 	VtAutoSignalManagerDialog auto_signal_dialog;
 	auto_signal_dialog.DoModal();
+}
+
+
+void CMainFrame::OnThemeDarkgray()
+{
+	theApp.SetVisualTheme(CBCGPWinApp::BCGP_VISUAL_THEME_OFFICE_2013_DARK_GRAY);
+}
+
+
+void CMainFrame::OnThemeBlue()
+{
+	theApp.SetVisualTheme(CBCGPWinApp::BCGP_VISUAL_THEME_VS_2013_BLUE);
+}
+
+
+void CMainFrame::OnThemeDark()
+{
+	theApp.SetVisualTheme(CBCGPWinApp::BCGP_VISUAL_THEME_VS_2013_DARK);
+}
+
+
+void CMainFrame::OnThemeColorful()
+{
+	theApp.SetVisualTheme(CBCGPWinApp::BCGP_VISUAL_THEME_OFFICE_2019_COLORFUL);
 }

@@ -11,6 +11,7 @@
 #include "../Event/EventHub.h"
 #include "../Event/EventHubArg.h"
 #include "../Global/SmTotalManager.h"
+#include "OrderUI/DmAccountOrderCenterWindow.h"
 #include <vector>
 
 // SmOrderSetDialog dialog
@@ -69,6 +70,8 @@ BEGIN_MESSAGE_MAP(SmOrderSetDialog, CBCGPDialog)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_STOP_COL, &SmOrderSetDialog::OnBnClickedCheckShowStopCol)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_COUNT_COL, &SmOrderSetDialog::OnBnClickedCheckShowCountCol)
 	ON_BN_CLICKED(IDC_BTN_APPLY, &SmOrderSetDialog::OnBnClickedBtnApply)
+	ON_BN_CLICKED(IDC_BTN_CLOSE, &SmOrderSetDialog::OnBnClickedBtnClose)
+	ON_BN_CLICKED(IDC_CHECK_SHOW_SYMBOL_TICK, &SmOrderSetDialog::OnBnClickedCheckShowSymbolTick)
 END_MESSAGE_MAP()
 
 
@@ -142,6 +145,10 @@ BOOL SmOrderSetDialog::OnInitDialog()
 		check_stop_by_real_.SetCheck(BST_CHECKED);
 	else
 		check_stop_by_real_.SetCheck(BST_UNCHECKED);
+	if (order_set_event_.show_symbol_tick)
+		check_show_symbol_tick_.SetCheck(BST_CHECKED);
+	else
+		check_show_symbol_tick_.SetCheck(BST_UNCHECKED);
 
 	edit_row_height_.SetWindowText(std::to_string(order_set_event_.grid_height).c_str());
 	edit_stop_width_.SetWindowText(std::to_string(order_set_event_.stop_width).c_str());
@@ -209,4 +216,18 @@ void SmOrderSetDialog::OnBnClickedCheckShowCountCol()
 void SmOrderSetDialog::OnBnClickedBtnApply()
 {
 	apply_change();
+}
+
+
+void SmOrderSetDialog::OnBnClickedBtnClose()
+{
+	CBCGPDialog::OnOK();
+}
+
+
+void SmOrderSetDialog::OnBnClickedCheckShowSymbolTick()
+{
+	if (_DmAccountOrderCenterWindow) {
+		_DmAccountOrderCenterWindow->OnBnClickedCheckShowRealQuote();
+	}
 }

@@ -117,6 +117,16 @@ struct SmOrderGridResource {
 	CBCGPColor SymbolPositionProfit = RGB(255, 0, 0);
 	CBCGPColor SymbolPositionLoss = RGB(0, 0, 255);
 
+	CBCGPColor OptionHeadTextColosr = RGB(255, 255, 255);
+	CBCGPColor OptionHeadCallBackColor = RGB(240, 51, 58);
+	CBCGPColor OptionHeadPutBackColor = RGB(19, 137, 255);
+	CBCGPColor OptionHeadCenterBackColor = RGB(0, 0, 0);
+	CBCGPColor OrderButtonTextColor = RGB(255, 255, 255);
+
+	CBCGPBrush OptionHeadCallBackBrush = CBCGPBrush(OptionHeadCallBackColor);
+	CBCGPBrush OptionHeadPutBackBrush = CBCGPBrush(OptionHeadPutBackColor);
+	CBCGPBrush OptionHeadCenterBackBrush = CBCGPBrush(OptionHeadCenterBackColor);
+
 	CBCGPBrush SymbolPositionProfitBrush = CBCGPBrush(SymbolPositionProfit);
 	CBCGPBrush SymbolPositionLossBrush = CBCGPBrush(SymbolPositionLoss);
 

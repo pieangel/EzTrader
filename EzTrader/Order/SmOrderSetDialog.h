@@ -4,6 +4,7 @@
 // SmOrderSetDialog dialog
 class AbAccountOrderCenterWindow;
 class SmFundOrderCenterWnd;
+class DmAccountOrderCenterWindow;
 class SmOrderSetDialog : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(SmOrderSetDialog)
@@ -20,6 +21,7 @@ public:
 
 	void OrderWnd(AbAccountOrderCenterWindow* val) { _OrderWnd = val; }
 	void FundWnd(SmFundOrderCenterWnd* val) { _FundWnd = val; }
+	void SetDmAccountWnd(DmAccountOrderCenterWindow* val) { _DmAccountOrderCenterWindow = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -37,6 +39,7 @@ private:
 	SmFundOrderCenterWnd* _FundWnd = nullptr;
 	bool stop_as_real_order_{ false };
 	void apply_change();
+	DmAccountOrderCenterWindow* _DmAccountOrderCenterWindow = nullptr;
 public:
 	CBCGPButton check_show_symbol_tick_;
 	CBCGPButton check_align_by_alt_;
@@ -64,4 +67,6 @@ public:
 	afx_msg void OnBnClickedCheckShowStopCol();
 	afx_msg void OnBnClickedCheckShowCountCol();
 	afx_msg void OnBnClickedBtnApply();
+	afx_msg void OnBnClickedBtnClose();
+	afx_msg void OnBnClickedCheckShowSymbolTick();
 };

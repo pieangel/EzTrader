@@ -443,6 +443,18 @@ void DarkHorse::SmGrid::SetColHeaderTitles(const std::vector<std::string>& col_t
 	}
 }
 
+void DarkHorse::SmGrid::SetColHeaderTitles(const std::vector<std::string>& col_titles, const std::vector< SmCellType>& cell_types)
+{
+	for (size_t i = 0; i < col_titles.size(); i++) {
+		if (i == 0 && _HeaderMode == SmHeaderMode::HeaderBoth && _HeaderPriority == SmHeaderPriority::RowFirst) continue;
+		auto cell = FindCell(0, i);
+		if (cell) {
+			cell->Text(col_titles[i].c_str());
+			cell->CellType(cell_types[i]);
+		}
+	}
+}
+
 // void DarkHorse::SmGrid::ReleaseOrderButtons()
 // {
 // 	for (auto it = _ButtonSet.begin(); it != _ButtonSet.end(); ++it) {

@@ -264,11 +264,11 @@ void SymbolPositionView::update_position()
 	position.open_quantity > 0 ? cell->CellType(SmCellType::CT_DEFAULT) : cell->CellType(SmCellType::CT_DEFAULT);
 	if (position.open_quantity > 0) {
 		cell->Text("매수");
-		cell->CellType(SmCellType::CT_DEFAULT);
+		cell->CellType(SmCellType::CT_REMAIN_BUY);
 	}
 	else if (position.open_quantity < 0) {
 		cell->Text("매도");
-		cell->CellType(SmCellType::CT_DEFAULT);
+		cell->CellType(SmCellType::CT_REMAIN_SELL);
 	}
 	else {
 		cell->Text("");

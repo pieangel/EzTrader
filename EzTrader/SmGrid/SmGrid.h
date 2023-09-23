@@ -125,6 +125,7 @@ namespace DarkHorse {
 		void SetColCellType(const int& col, const SmCellType& cell_type);
 		void SetRowHeaderTitles(const std::vector<std::string>& row_titles);
 		void SetColHeaderTitles(const std::vector<std::string>& col_titles);
+		void SetColHeaderTitles(const std::vector<std::string>& col_titles, const std::vector< SmCellType>& cell_types);
 		//void ReleaseOrderButtons();
 		void ReleaseOrderButtons(const std::map<std::shared_ptr<DarkHorse::SmCell>, BUTTON_ID>& order_button_map);
 		

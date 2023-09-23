@@ -1045,8 +1045,8 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSet()
 {
 	reset_order_set();
 	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
+	order_set_dialog_->SetDmAccountWnd(this);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
-	//_OrderSetDlg->OrderWnd(this);
 	order_set_dialog_->ShowWindow(SW_SHOW);
 }
 

@@ -222,4 +222,8 @@ public:
 	afx_msg void OnDmFundOrder();
 	afx_msg void OnSubAccount();
 	afx_msg void OnOutSystem();
+	afx_msg void OnThemeDarkgray();
+	afx_msg void OnThemeBlue();
+	afx_msg void OnThemeDark();
+	afx_msg void OnThemeColorful();
 };

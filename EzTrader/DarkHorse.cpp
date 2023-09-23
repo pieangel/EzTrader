@@ -55,7 +55,7 @@ CDarkHorseApp::CDarkHorseApp()
 	if (mainApp.use_dark_theme())
 		SetVisualTheme(BCGP_VISUAL_THEME_VS_2019_DARK);
 	else
-		SetVisualTheme(BCGP_VISUAL_THEME_OFFICE_2016_WHITE);
+		SetVisualTheme(/*BCGP_VISUAL_THEME_VS_2013_DARK */BCGP_VISUAL_THEME_OFFICE_2013_DARK_GRAY);
 
 	CBCGPToolbarOptions toolbarOptions;
 
