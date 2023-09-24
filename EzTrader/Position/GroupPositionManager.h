@@ -13,6 +13,8 @@ namespace DarkHorse {
 	struct Position;
 	struct AccountProfitLoss;
 	using account_profit_loss_p = std::shared_ptr<AccountProfitLoss>;
+	struct SmQuote;
+	using quote_p = std::shared_ptr<SmQuote>;
 	class GroupPositionManager
 	{
 	public:
@@ -29,16 +31,17 @@ namespace DarkHorse {
 		const std::map<std::string, std::shared_ptr<Position>>& get_group_position_map() {
 			return group_position_map_;
 		}
-
+		void update_position(quote_p quote);
 		void update_whole_group_position();
 		void get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss);
 		std::shared_ptr<Position> create_account_group_position(const std::string& account_no, const std::string symbol_code);
 		std::shared_ptr<Position> create_fund_group_position(const std::string& func_name, const std::string& symbol_code);
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position);
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position, VmPosition& dest_position);
-		std::shared_ptr<Position> get_group_position(const std::string& symbol_code);
+		std::shared_ptr<Position> find_group_position(const std::string& symbol_code);
 		void get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector);
 	private:
+
 		std::mutex mutex_; // Mutex for thread synchronization
 		account_profit_loss_p total_profit_loss_{ nullptr };
 		std::string fund_name_;

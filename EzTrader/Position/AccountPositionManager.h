@@ -27,9 +27,9 @@ public:
 	position_p get_position(const std::string& symbol_code);
 	void update_position(order_p order);
 	void update_position(quote_p quote);
-	const std::map<std::string, position_p>& get_position_map() {
-		return position_map_;
-	}
+// 	const std::map<std::string, position_p>& get_position_map() {
+// 		return position_map_;
+// 	}
 	void get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss);
 	void update_account_profit_loss();
 	position_p find_position(const std::string& symbol_code);

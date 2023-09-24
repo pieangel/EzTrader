@@ -158,7 +158,7 @@ void TotalPositionManager::get_position_from_fund(const std::string& fund_name, 
 {
 	auto group_position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_name);
 	if (!group_position_manager) return;
-	auto group_position = group_position_manager->get_group_position(symbol_code);
+	auto group_position = group_position_manager->find_group_position(symbol_code);
 	if (!group_position) return;
 	group_position_manager->update_group_position_by_symbol(group_position, position);
 }
@@ -181,7 +181,7 @@ void TotalPositionManager::get_position_from_parent_account(const std::string& a
 {
 	auto group_position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_no);
 	if (!group_position_manager) return;
-	auto group_position = group_position_manager->get_group_position(symbol_code);
+	auto group_position = group_position_manager->find_group_position(symbol_code);
 	if (!group_position) return;
 	group_position_manager->update_group_position_by_symbol(group_position, position);
 }
@@ -194,8 +194,15 @@ void TotalPositionManager::update_position(order_p order)
 
 void TotalPositionManager::update_position(quote_p quote)
 {
-	for (auto& position_manager : account_position_manager_map_)
-	{
+	for (auto& position_manager : account_position_manager_map_) {
+		position_manager.second->update_position(quote);
+	}
+
+	for (auto& position_manager : account_group_position_manager_map_) {
+		position_manager.second->update_position(quote);
+	}
+
+	for (auto& position_manager : fund_group_position_manager_map_) {
 		position_manager.second->update_position(quote);
 	}
 }

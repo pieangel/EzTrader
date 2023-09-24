@@ -75,7 +75,7 @@ namespace DarkHorse {
 		// 그리드 보이기/감추기
 		bool _ShowGrid = true;
 		// 행 그리드 선 굵기
-		int _RowGridHeight = 1;
+		int _RowGridLineHeight = 1;
 		// 열 그리드 선 굵기
 		int _ColGridWidth = 1;
 		int _GridHeight = 0;
@@ -172,8 +172,8 @@ namespace DarkHorse {
 		void Width(int val) { _Width = val; }
 		int Height() const { return _Height; }
 		void Height(int val) { _Height = val; }
-		int RowGridHeight() const { return _RowGridHeight; }
-		void RowGridHeight(int val) { _RowGridHeight = val; }
+		int RowGridHeight() const { return _RowGridLineHeight; }
+		void RowGridHeight(int val) { _RowGridLineHeight = val; }
 	};
 }
 

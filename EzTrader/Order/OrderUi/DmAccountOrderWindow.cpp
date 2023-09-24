@@ -404,14 +404,15 @@ void DmAccountOrderWindow::RecalcChildren(CmdMode mode)
 
 
 		//center_wnd->ShowWindow(SW_HIDE);
-		int center_window_size = center_wnd->window_width;
-		center_wnd->MoveWindow(start_x, CtrlHeight + top_gap, center_window_size, rcWnd.Height());
+		int center_window_width = center_wnd->window_width;
+		int center_window_height = rcWnd.Height() - center_wnd->RecalcOrderAreaHeight(this);
+		center_wnd->MoveWindow(start_x, CtrlHeight + top_gap, center_window_width, rcWnd.Height());
 		center_wnd->arrange_children();
 		center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
-		start_x += center_window_size;
+		start_x += center_window_width;
 		width_total += rcWnd.Width();
 
-		center_wnd->RecalcOrderAreaHeight(this);
+		
 
 		wnd_set.insert(center_wnd.get());
 

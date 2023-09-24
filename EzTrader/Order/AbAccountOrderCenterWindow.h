@@ -55,6 +55,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 private:
+	DarkHorse::OrderType position_type_{ DarkHorse::OrderType::None };
 	//CBCGPGridCtrl m_wndPositionGrid;
 	//CBCGPGridCtrl m_wndOrderGrid;
 	void on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable);

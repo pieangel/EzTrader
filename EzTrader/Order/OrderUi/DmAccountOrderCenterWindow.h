@@ -27,6 +27,7 @@ class DmAccountOrderCenterWindow
 #include "../../Event/EventHubArg.h"
 #include "../../Json/json.hpp"
 #include "../../Dialog/SmLayoutManager.h"
+#include "../SmOrderConst.h"
 using json = nlohmann::json;
 // SmOrderWnd dialog
 namespace DarkHorse {
@@ -94,6 +95,7 @@ public:
 	int GetPositionCount();
 	std::string get_symbol_code();
 private:
+	int extra_height_ = 0;
 	std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
 	CRect rcGrid;
 	CRect rcTick;
@@ -156,6 +158,7 @@ private:
 	std::string symbol_code_;
 	int order_window_id_{ 0 };
 	void reset_order_set();
+	DarkHorse::OrderType position_type_{ DarkHorse::OrderType::None };
 public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }

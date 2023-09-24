@@ -44,6 +44,7 @@ void SmOrderSetDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_BAR_COLOR, check_show_bar_color_);
 	DDX_Control(pDX, IDC_CHECK_CANCEL_BY_RIGHT_CLICK, check_cancel_by_right_click_);
 	DDX_Control(pDX, IDC_CHECK_ORDER_BY_SPACE, check_order_by_space_);
+	DDX_Control(pDX, IDC_CHECK_SHOW_SYMBOL_TICK, check_show_symbol_tick_);
 
 	DDX_Control(pDX, IDC_CHECK_STOP_TO_REAL, check_stop_by_real_);
 	DDX_Control(pDX, IDC_CHECK_SHOW_ORDER_COL, check_show_order_column_);

@@ -41,7 +41,9 @@
 #include "../Order/OrderRequest/OrderRequest.h"
 #include "../Task/SmTaskRequestManager.h"
 #include "../Util/IdGenerator.h"
+#include "../Position/GroupPositionManager.h"
 #include "AbFundOrderWindow.h"
+#include "../Fund/SmFund.h"
 
 // SmOrderWnd dialog
 #define BTN_ORDER_AMOUNT 0x00000001
@@ -83,6 +85,12 @@ AbAccountOrderCenterWindow::~AbAccountOrderCenterWindow()
 void AbAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	account_ = val;
+	if (account_->is_subaccount()) {
+		position_type_ = OrderType::SubAccount;
+	}
+	else {
+		position_type_ = OrderType::MainAccount;
+	}
 	symbol_order_view_.Account(val);
 	symbol_order_view_.Refresh();
 	symbol_position_view_.Account(val);
@@ -92,6 +100,7 @@ void AbAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> v
 void AbAccountOrderCenterWindow::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 {
 	fund_ = val;
+	position_type_ = OrderType::Fund;
 	symbol_order_view_.fund(val);
 	symbol_order_view_.Refresh();
 	symbol_position_view_.fund(val);
@@ -818,15 +827,37 @@ void AbAccountOrderCenterWindow::OnEnChangeEditAmount()
 
 void AbAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 {
-	if (!account_ || !symbol_) return;
-	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_->No());
-	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
-	for (auto it = position_map.begin(); it != position_map.end(); it++) {
-		if (it->second->open_quantity > 0) {
-			symbol_order_view_.put_order(account_, it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
+	if (!symbol_) return;
+	std::vector<std::shared_ptr<Position>> active_position_vector_;
+	if (position_type_ == OrderType::SubAccount) {
+		if (!account_) return;
+		auto position_manager = mainApp.total_position_manager()->find_position_manager(account_->No());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+	else if (position_type_ == OrderType::Fund) {
+		if (!fund_) return;
+		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_->Name());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+	else {
+		if (!account_) return;
+		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_->No());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+
+	for (auto it = active_position_vector_.begin(); it != active_position_vector_.end(); it++) {
+		auto position = *it;
+		if (position->open_quantity > 0) {
+			symbol_order_view_.put_order(account_, position->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(position->open_quantity), SmPriceType::Market);
 		}
-		else if (it->second->open_quantity < 0) {
-			symbol_order_view_.put_order(account_, it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
+		else if (position->open_quantity < 0) {
+			symbol_order_view_.put_order(account_, position->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(position->open_quantity), SmPriceType::Market);
 		}
 	}
 }

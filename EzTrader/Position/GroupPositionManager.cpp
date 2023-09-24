@@ -2,6 +2,7 @@
 #include "GroupPositionManager.h"
 #include "Position.h"
 #include "TotalPositionManager.h"
+#include "../Quote/SmQuote.h"
 namespace DarkHorse {
 GroupPositionManager::GroupPositionManager(TotalPositionManager& total_position_manager)
 	: total_position_manager_(total_position_manager)
@@ -85,7 +86,7 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 	update_whole_group_position();
 }
 
-std::shared_ptr<DarkHorse::Position> GroupPositionManager::get_group_position(const std::string& symbol_code)
+std::shared_ptr<DarkHorse::Position> GroupPositionManager::find_group_position(const std::string& symbol_code)
 {
 	auto found = group_position_map_.find(symbol_code);
 	if (found == group_position_map_.end()) return nullptr;
@@ -107,6 +108,17 @@ void GroupPositionManager::update_group_position(const std::shared_ptr<Position>
 	if (!group_position || !position) return;
 	group_position->sub_positions[position->account_no] = position;
 	update_group_position_by_symbol(group_position);
+}
+
+void GroupPositionManager::update_position(quote_p quote)
+{
+	if (!quote) return;
+	position_p position = find_group_position(quote->symbol_code);
+	if (!position) return;
+	TotalPositionManager::calculate_symbol_open_profit_loss(position);
+	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
+
+	update_whole_group_position();
 }
 
 void GroupPositionManager::update_whole_group_position()

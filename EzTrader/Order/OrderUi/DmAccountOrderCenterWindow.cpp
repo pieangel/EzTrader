@@ -47,6 +47,8 @@
 #include "../../Order/OrderRequest/OrderRequest.h"
 #include "../../Symbol/SymbolConst.h"
 #include "../../Dialog/HdSymbolSelecter.h"
+#include "../../Position/GroupPositionManager.h"
+#include "../../Fund/SmFund.h"
 #include "DmFundOrderWindow.h"
 #include <functional>
 using namespace std::placeholders;
@@ -113,6 +115,12 @@ DmAccountOrderCenterWindow::~DmAccountOrderCenterWindow()
 void DmAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	account_ = val;
+	if (account_->is_subaccount()) {
+		position_type_ = OrderType::SubAccount;
+	}
+	else {
+		position_type_ = OrderType::MainAccount;
+	}
 	symbol_order_view_.Account(val);
 	symbol_order_view_.Refresh();
 	symbol_position_view_.Account(val);
@@ -122,6 +130,7 @@ void DmAccountOrderCenterWindow::Account(std::shared_ptr<DarkHorse::SmAccount> v
 void DmAccountOrderCenterWindow::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 {
 	fund_ = val;
+	position_type_ = OrderType::Fund;
 	symbol_order_view_.fund(val);
 	symbol_order_view_.Refresh();
 	symbol_position_view_.fund(val);
@@ -326,7 +335,7 @@ void DmAccountOrderCenterWindow::recal_window_size()
 	// 주문 그리드 위치 및 크기 설정
 	//rcGrid.left = 0;
 	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
-	rcGrid.bottom = rc_order_view.Height();
+	rcGrid.bottom = rc_order_view.Height() - extra_height_;
 	const int tick_width = rcTick.Width();
 	rcTick.left = rcGrid.right;
 	rcTick.right = rcTick.left + tick_width;
@@ -785,7 +794,7 @@ int DmAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 		//SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOMOVE | SWP_NOREDRAW);
 	}
 
-
+	extra_height_ = extra_height;
 	return extra_height;
 }
 
@@ -972,15 +981,37 @@ void DmAccountOrderCenterWindow::OnEnChangeEditAmount()
 
 void DmAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 {
-	if (!account_ || !symbol_) return;
-	account_position_manager_p acnt_position_mgr = mainApp.total_position_manager()->get_account_position_manager(account_->No());
-	const std::map<std::string, position_p>& position_map = acnt_position_mgr->get_position_map();
-	for (auto it = position_map.begin(); it != position_map.end(); it++) {
-		if (it->second->open_quantity > 0) {
-			symbol_order_view_.put_order(account_, it->second->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(it->second->open_quantity), SmPriceType::Market);
+	if (!symbol_) return;
+	std::vector<std::shared_ptr<Position>> active_position_vector_;
+	if (position_type_ == OrderType::SubAccount) {
+		if (!account_) return;
+		auto position_manager = mainApp.total_position_manager()->find_position_manager(account_->No());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+	else if (position_type_ == OrderType::Fund) {
+		if (!fund_) return;
+		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_->Name());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+	else {
+		if (!account_) return;
+		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_->No());
+		if (!position_manager) return;
+		active_position_vector_.clear();
+		position_manager->get_active_positions(active_position_vector_);
+	}
+
+	for (auto it = active_position_vector_.begin(); it != active_position_vector_.end(); it++) {
+		auto position = *it;
+		if (position->open_quantity > 0) {
+			symbol_order_view_.put_order(account_, position->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(position->open_quantity), SmPriceType::Market);
 		}
-		else if (it->second->open_quantity < 0) {
-			symbol_order_view_.put_order(account_, it->second->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(it->second->open_quantity), SmPriceType::Market);
+		else if (position->open_quantity < 0) {
+			symbol_order_view_.put_order(account_, position->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(position->open_quantity), SmPriceType::Market);
 		}
 	}
 }
@@ -1036,7 +1067,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSearch()
 	reset_order_set();
 	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
-	//_OrderSetDlg->OrderWnd(this);
+	order_set_dialog_->SetDmAccountWnd(this);
 	order_set_dialog_->ShowWindow(SW_SHOW);
 }
 

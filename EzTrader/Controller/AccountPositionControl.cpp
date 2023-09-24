@@ -74,13 +74,8 @@ void AccountPositionControl::update_profit_loss(quote_p quote)
 	if (!symbol) return;
 	position_p position = get_position(quote->symbol_code);
 	if (!position) return;
-
-	double open_profit_loss = 0;
-	open_profit_loss = position->open_quantity * (quote->close - position->average_price) * symbol->seung_su();
-	open_profit_loss = open_profit_loss / pow(10, symbol->decimal());
-	position->open_profit_loss = open_profit_loss;
-
-	if (event_handler_) event_handler_();
+	
+	if (event_handler_) single_position_event_handler_(position->id);
 }
 
 const std::vector<position_p>& AccountPositionControl::get_active_position_vector()

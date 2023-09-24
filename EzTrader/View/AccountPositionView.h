@@ -105,7 +105,8 @@ public:
 	void UpdatePositionInfo();
 	void LiqSelPositions();
 	void LiqAll();
-	void on_update_account_position();
+	void on_update_single_position(const int position_id);
+	void on_update_whole_position();
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
@@ -150,10 +151,11 @@ private:
 	std::set<int> _OldContentRowSet;
 	void ClearOldContents();
 	void ClearOldContents(const int& last_index);
-	// key : row, value : SmPosition Object
-	std::map<int, std::shared_ptr<DarkHorse::Position>> _RowToPositionMap;
 	std::shared_ptr<DarkHorse::AccountPositionControl> account_position_control_;
+	// key : row, value : position object.
 	std::map<int, std::shared_ptr<DarkHorse::Position>> row_to_position_;
+	// key : position object id, value : row.
+	std::map<int, int> position_to_row_;
 	std::vector<int> ab_column_widths_vector_;
 	std::vector<int> dm_column_widths_vector_;
 	int id_{ 0 };

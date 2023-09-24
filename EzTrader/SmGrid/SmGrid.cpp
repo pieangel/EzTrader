@@ -478,7 +478,7 @@ std::pair<int, int> DarkHorse::SmGrid::FindRowCol(const int& x, const int& y)
 	int row = -1, col = -1;
 	int acc_measure = 0;
 	for (auto it_row = _RowHeightMap.begin(); it_row != _RowHeightMap.end(); it_row++) {
-		acc_measure += (it_row->second + _RowGridHeight); 
+		acc_measure += (it_row->second + _RowGridLineHeight); 
 		if (y < 0) break;
 		else if (y <= acc_measure) {	row = it_row->first; break; }
 	}
@@ -506,11 +506,11 @@ void DarkHorse::SmGrid::SetOrderHeaderTitles()
 
 int DarkHorse::SmGrid::RecalRowCount(const int& height, bool change_close_row)
 {
-	_GridHeight = _RowGridHeight;
+	_GridHeight = _RowGridLineHeight;
 	size_t row_count = 0, each_row_height = 0;
 	for (;; row_count++) {
 		if (_RowHeightMap.size() == row_count) break;
-		each_row_height = _RowHeightMap[row_count] + _RowGridHeight;
+		each_row_height = _RowHeightMap[row_count] + _RowGridLineHeight;
 		_GridHeight += each_row_height;
 		if (_GridHeight >= height) { if (_GridHeight == height) row_count++;  break; }
 	}
@@ -646,7 +646,7 @@ void DarkHorse::SmGrid::CreateGrids()
 	//MakeColWidthMap();
 	// 여기서는 행과 열 정보를 이용하여 셀 목록을 만든다.
 	// 위에서 부터 아래로 만들어 간다.
-	int y = _RowGridHeight;
+	int y = _RowGridLineHeight;
 	for (int row = 0; row < _RowCount; row++) {
 		int x = _ColGridWidth;
 		std::shared_ptr<SmRow> row_obj = std::make_shared<SmRow>(row);
@@ -680,9 +680,9 @@ void DarkHorse::SmGrid::CreateGrids()
 				int cell_height = 0;
 				for (int i = row; i < row + cell->RowSpan(); ++i) {
 					cell_height += _RowHeightMap[i];
-					cell_height += _RowGridHeight;
+					cell_height += _RowGridLineHeight;
 				}
-				cell_height -= _RowGridHeight;
+				cell_height -= _RowGridLineHeight;
 				cell->Height(cell_height);
 
 				int cell_width = 0;
@@ -697,7 +697,7 @@ void DarkHorse::SmGrid::CreateGrids()
 			row_obj->AddCell(cell);
 			x += (_ColWidthMap[col] + _ColGridWidth);
 		}
-		y += (_RowHeightMap[row] + _RowGridHeight);
+		y += (_RowHeightMap[row] + _RowGridLineHeight);
 	}
 }
 
@@ -714,7 +714,7 @@ void DarkHorse::SmGrid::DrawGrid(CBCGPGraphicsManager* pGM, CRect& wnd_area)
 			y += (DefaultRowHeight);
 		else
 			y += (it->second);
-		y += _RowGridHeight;
+		y += _RowGridLineHeight;
 	}
 
 	int x = 0;

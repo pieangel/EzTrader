@@ -60,7 +60,8 @@ AccountPositionView::AccountPositionView()
 {
 	m_bExtendedPadding = FALSE;
 	account_position_control_ = std::make_shared<DarkHorse::AccountPositionControl>();
-	account_position_control_->set_event_handler(std::bind(&AccountPositionView::on_update_account_position, this));
+	account_position_control_->set_single_position_event_handler(std::bind(&AccountPositionView::on_update_single_position, this, _1));
+	account_position_control_->set_event_handler(std::bind(&AccountPositionView::on_update_whole_position, this));
 	ab_column_widths_vector_.push_back(70);
 	ab_column_widths_vector_.push_back(35);
 	ab_column_widths_vector_.push_back(70);
@@ -159,7 +160,28 @@ void AccountPositionView::LiqAll()
 	ClearCheck();
 }
 
-void AccountPositionView::on_update_account_position()
+void AccountPositionView::on_update_single_position(const int position_id)
+{
+	auto found = position_to_row_.find(position_id);
+	if (found == position_to_row_.end()) return;
+	std::string format_type;
+	if (account_) format_type = account_->Type();
+	else if (fund_) format_type = fund_->fund_type();
+	else return;
+
+	CBCGPGridRow* pRow = GetRow(found->second);
+	if (!pRow) return;
+	auto found2 = row_to_position_.find(found->second);
+	if (found2 == row_to_position_.end()) return;
+	auto position = found2->second;
+	if (format_type == "1")
+		update_ab_account_position(pRow, position, format_type);
+	else
+		update_dm_account_position(pRow, position, format_type);
+	enable_position_show_ = true;
+}
+
+void AccountPositionView::on_update_whole_position()
 {
 	enable_position_show_ = true;
 }
@@ -344,7 +366,7 @@ void AccountPositionView::LiqSelPositionsForAccount()
 {
 	if (!account_) return;
 
-	for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
+	for (auto it = row_to_position_.begin(); it != row_to_position_.end(); ++it) {
 		CBCGPGridRow* pRow = GetRow(it->first);
 		if (pRow->GetCheck()) {
 			std::shared_ptr<SmOrderRequest> order_req = nullptr;
@@ -364,7 +386,7 @@ void AccountPositionView::LiqSelPositionsForFund()
 	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
 	for (auto it2 = account_vec.begin(); it2 != account_vec.end(); it2++) {
 		auto account = *it2;
-		for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
+		for (auto it = row_to_position_.begin(); it != row_to_position_.end(); ++it) {
 			CBCGPGridRow* pRow = GetRow(it->first);
 			if (pRow->GetCheck()) {
 				std::shared_ptr<SmOrderRequest> order_req = nullptr;
@@ -382,7 +404,7 @@ void AccountPositionView::LiqAllForAccount()
 {
 	if (!account_) return;
 
-	for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
+	for (auto it = row_to_position_.begin(); it != row_to_position_.end(); ++it) {
 		std::shared_ptr<SmOrderRequest> order_req = nullptr;
 		if (it->second->open_quantity > 0)
 			order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account_->No(), account_->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
@@ -399,7 +421,7 @@ void AccountPositionView::LiqAllForFund()
 	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
 	for (auto it2 = account_vec.begin(); it2 != account_vec.end(); it2++) {
 		auto account = *it2;
-		for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
+		for (auto it = row_to_position_.begin(); it != row_to_position_.end(); ++it) {
 			std::shared_ptr<SmOrderRequest> order_req = nullptr;
 			if (it->second->open_quantity > 0)
 				order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account->No(), account->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
@@ -418,6 +440,7 @@ void AccountPositionView::update_account_position()
 	updating_ = true;
 
 	row_to_position_.clear();
+	position_to_row_.clear();
 	
 	std::string format_type;
 	if (account_) format_type = account_->Type();
@@ -437,6 +460,7 @@ void AccountPositionView::update_account_position()
 			
 		_OldContentRowSet.insert(row);
 		row_to_position_[row] = position;
+		position_to_row_[position->id] = row;
 		row++;
 	}
 	ClearOldContents(row);
