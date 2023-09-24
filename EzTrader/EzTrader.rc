@@ -268,15 +268,17 @@ BEGIN
     CONTROL         "",IDC_STATIC_FUND,"Static",SS_BLACKRECT,6,28,129,203
 END
 
-IDD_FUND_NEW DIALOGEX 0, 0, 415, 33
+IDD_FUND_NEW DIALOGEX 0, 0, 300, 63
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "새펀드"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,305,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,358,7,50,14
-    LTEXT           "펀드이름:",IDC_STATIC,9,7,49,8
-    EDITTEXT        IDC_EDIT_FUND_NAME,62,7,241,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,183,43,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,245,43,50,14
+    LTEXT           "펀드이름:",IDC_STATIC,9,8,36,8
+    EDITTEXT        IDC_EDIT_FUND_NAME,52,5,241,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_ACCOUNT_TYPE,52,22,113,147,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "계좌타입:",IDC_STATIC,9,25,39,8
 END
 
 IDD_FUND_EDIT DIALOGEX 0, 0, 425, 260
@@ -1461,10 +1463,6 @@ BEGIN
 
     IDD_FUND_NEW, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 408
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 26
     END
 
     IDD_FUND_EDIT, DIALOG
@@ -2089,6 +2087,15 @@ BEGIN
     0
 END
 
+IDD_FUND_NEW DLGINIT
+BEGIN
+    IDC_COMBO_ACCOUNT_TYPE, 0x403, 5, 0
+0xb9b1, 0xbbb3, "\000" 
+    IDC_COMBO_ACCOUNT_TYPE, 0x403, 5, 0
+0xd8c7, 0xdcbf, "\000" 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2160,11 +2167,12 @@ BEGIN
     END
     POPUP "주문", INACTIVE
     BEGIN
-        MENUITEM "주문창",                         ID_ORDER_WND
-        MENUITEM "복수주문일괄주문창",                   ID_COMPLEX_ORDER
-        MENUITEM "미니잔고",                        ID_ORDER_REMAIN
-        MENUITEM "체결내역",                        ID_FILLED_LIST
         MENUITEM "국내주문",                        ID_DM_ACNT_ORDER
+        MENUITEM "국내미니잔고",                      ID_DOMESTIC_REMAIN
+        MENUITEM "해외주문",                        ID_ORDER_WND
+        MENUITEM "해외미니잔고",                      ID_ABROAD_REMAIN
+        MENUITEM "복수주문일괄주문창",                   ID_COMPLEX_ORDER
+        MENUITEM "체결내역",                        ID_FILLED_LIST
         MENUITEM "SetSimulationMode",           ID_SET_SIMULATION_MODE
         MENUITEM "DomesticAccountPosition",     ID_32928
         MENUITEM "EnableSimulatrionFilledOrder", ID_32934
@@ -2172,12 +2180,12 @@ BEGIN
     POPUP "펀드", INACTIVE
     BEGIN
         MENUITEM "펀드편집",                        ID_EDIT_FUND
-        MENUITEM "펀드주문창",                       ID_FUND_ORDER
-        MENUITEM "펀드미니잔고",                      ID_FUND_REMAIN
+        MENUITEM "국내 펀드주문",                     ID_DM_FUND_ORDER
+        MENUITEM "국내펀드미니잔고",                    ID_DM_FUND_REMAIN
+        MENUITEM "해외펀드주문",                      ID_FUND_ORDER
+        MENUITEM "해외펀드미니잔고",                    ID_AB_FUND_REMAIN
         MENUITEM "펀드손익",                        ID_FUND_PL
         MENUITEM "펀드복수주문일괄주문창",                 ID_FUND_COMPLEX_ORDER
-        MENUITEM "국내 펀드주문",                     ID_DM_FUND_ORDER
-        MENUITEM "DomesticFundPosition",        ID_32930
     END
     POPUP "차트"
     BEGIN
@@ -2202,6 +2210,13 @@ BEGIN
     BEGIN
         MENUITEM "서버메시지",                       ID_SERVER_MSG
         MENUITEM "저장화면열기",                      ID_OPEN_SETTINGS
+        POPUP "Theme"
+        BEGIN
+            MENUITEM "Dark Gray",                   ID_THEME_DARKGRAY
+            MENUITEM "Blue",                        ID_THEME_BLUE
+            MENUITEM "Dark",                        ID_THEME_DARK
+            MENUITEM "Colorful",                    ID_THEME_COLORFUL
+        END
         MENUITEM "끝내기",                         ID_APP_EXIT
     END
     POPUP "계좌", INACTIVE
@@ -2212,22 +2227,24 @@ BEGIN
     END
     POPUP "주문", INACTIVE
     BEGIN
-        MENUITEM "주문창",                         ID_ORDER_WND
-        MENUITEM "복수주문일괄주문창",                   ID_COMPLEX_ORDER
-        MENUITEM "미니잔고",                        ID_ORDER_REMAIN
-        MENUITEM "체결내역",                        ID_FILLED_LIST
         MENUITEM "국내주문",                        ID_DM_ACNT_ORDER
+        MENUITEM "국내미니잔고",                      ID_DOMESTIC_REMAIN
+        MENUITEM "주문창",                         ID_ORDER_WND
+        MENUITEM "해외미니잔고",                      ID_ABROAD_REMAIN
+        MENUITEM "복수주문일괄주문창",                   ID_COMPLEX_ORDER
+        MENUITEM "체결내역",                        ID_FILLED_LIST
         MENUITEM "SetSimulationMode",           ID_SET_SIMULATION_MODE
         MENUITEM "DomesticAccountPosition",     ID_32928
     END
     POPUP "펀드", INACTIVE
     BEGIN
         MENUITEM "펀드편집",                        ID_EDIT_FUND
-        MENUITEM "펀드주문창",                       ID_FUND_ORDER
-        MENUITEM "펀드미니잔고",                      ID_FUND_REMAIN
+        MENUITEM "국내 펀드주문",                     ID_DM_FUND_ORDER
+        MENUITEM "국내펀드미니잔고",                    ID_DM_FUND_REMAIN
+        MENUITEM "해외펀드주문",                      ID_FUND_ORDER
+        MENUITEM "해외펀드미니잔고",                    ID_AB_FUND_REMAIN
         MENUITEM "펀드손익",                        ID_FUND_PL
         MENUITEM "펀드복수주문일괄주문창",                 ID_FUND_COMPLEX_ORDER
-        MENUITEM "국내 펀드주문",                     ID_DM_FUND_ORDER
         MENUITEM "DomesticFundPosition",        ID_32930
     END
     POPUP "차트"

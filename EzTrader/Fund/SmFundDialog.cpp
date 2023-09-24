@@ -65,7 +65,8 @@ void SmFundDialog::OnBnClickedBtnFundNew()
 	int res = dlg.DoModal();
 	if (res == IDOK) {
 		std::string fund_name = static_cast<const char*>( dlg.FundName);
-		auto fund_new = mainApp.FundMgr()->FindAddFund(fund_name);
+		std::string fund_type = dlg.account_type_;
+		auto fund_new = mainApp.FundMgr()->FindAddFund(fund_name, fund_type);
 		AddFund(fund_new);
 	}
 }

@@ -321,6 +321,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_THEME_BLUE, &CMainFrame::OnThemeBlue)
 	ON_COMMAND(ID_THEME_DARK, &CMainFrame::OnThemeDark)
 	ON_COMMAND(ID_THEME_COLORFUL, &CMainFrame::OnThemeColorful)
+	ON_COMMAND(ID_DOMESTIC_REMAIN, &CMainFrame::OnDomesticRemain)
+	ON_COMMAND(ID_ABROAD_REMAIN, &CMainFrame::OnAbroadRemain)
+	ON_COMMAND(ID_DM_FUND_REMAIN, &CMainFrame::OnDmFundRemain)
+	ON_COMMAND(ID_AB_FUND_REMAIN, &CMainFrame::OnAbFundRemain)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1442,4 +1446,44 @@ void CMainFrame::OnThemeDark()
 void CMainFrame::OnThemeColorful()
 {
 	theApp.SetVisualTheme(CBCGPWinApp::BCGP_VISUAL_THEME_OFFICE_2019_COLORFUL);
+}
+
+
+void CMainFrame::OnDomesticRemain()
+{
+	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>(this, "9");
+	accountJangoDialog->Mode(0);
+	accountJangoDialog->Create(IDD_JANGO, this);
+	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+	accountJangoDialog->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnAbroadRemain()
+{
+	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>(this, "1");
+	accountJangoDialog->Mode(0);
+	accountJangoDialog->Create(IDD_JANGO, this);
+	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+	accountJangoDialog->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnDmFundRemain()
+{
+	std::shared_ptr< MiniJangoDialog> fundJangoDialog = std::make_shared<MiniJangoDialog>(this, "9");
+	fundJangoDialog->Mode(1);
+	fundJangoDialog->Create(IDD_JANGO, this);
+	_JangoWndMap[fundJangoDialog->GetSafeHwnd()] = fundJangoDialog;
+	fundJangoDialog->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnAbFundRemain()
+{
+	std::shared_ptr< MiniJangoDialog> fundJangoDialog = std::make_shared<MiniJangoDialog>(this, "1");
+	fundJangoDialog->Mode(1);
+	fundJangoDialog->Create(IDD_JANGO, this);
+	_JangoWndMap[fundJangoDialog->GetSafeHwnd()] = fundJangoDialog;
+	fundJangoDialog->ShowWindow(SW_SHOW);
 }

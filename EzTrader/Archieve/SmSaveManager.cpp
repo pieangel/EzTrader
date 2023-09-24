@@ -1526,10 +1526,11 @@ namespace DarkHorse {
 
 				// Extract and process account-related information
 				const std::string name = SmUtil::Utf8ToMultiByte(fundData["name"]);
-				auto fund = mainApp.FundMgr()->FindAddFund(name);
+				const std::string fund_type = fundData["fund_type"];
+				auto fund = mainApp.FundMgr()->FindAddFund(name, fund_type);
 
-				std::string fund_type = fundData["fund_type"];
-				fund->fund_type(fund_type);
+				//std::string fund_type = fundData["fund_type"];
+				//fund->fund_type(fund_type);
 				// Process sub-accounts if available
 				if (fundData.find("sub_accounts") != fundData.end()) {
 					json subAccounts = fundData["sub_accounts"];

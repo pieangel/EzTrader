@@ -23,8 +23,10 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	CString FundName;
+	std::string account_type_;
 	CBCGPEdit _EditFundName;
-	
+	CBCGPComboBox _ComboAccountType;
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+	afx_msg void OnCbnSelchangeComboAccountType();
 };

@@ -49,7 +49,7 @@ namespace DarkHorse {
 		std::string _Name;
 		int _id{ -1 };
 		/// "1" : abroad, "9" : domestic
-		std::string fund_type_;
+		std::string fund_type_{ "9" };
 		std::set<int> account_id_set_;
 	};
 }

@@ -29,6 +29,7 @@ void SmFundNewDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CBCGPScrollDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_FUND_NAME, _EditFundName);
+	DDX_Control(pDX, IDC_COMBO_ACCOUNT_TYPE, _ComboAccountType);
 }
 
 
@@ -36,6 +37,7 @@ BEGIN_MESSAGE_MAP(SmFundNewDialog, CBCGPScrollDialog)
 	
 	ON_BN_CLICKED(IDOK, &SmFundNewDialog::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &SmFundNewDialog::OnBnClickedCancel)
+	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT_TYPE, &SmFundNewDialog::OnCbnSelchangeComboAccountType)
 END_MESSAGE_MAP()
 
 
@@ -52,7 +54,7 @@ BOOL SmFundNewDialog::OnInitDialog()
 		strFundName.Format("Fund%d", fund_count + 1);
 		_EditFundName.SetWindowTextA(strFundName);
 	}
-
+	_ComboAccountType.SetCurSel(0);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -77,4 +79,15 @@ void SmFundNewDialog::OnBnClickedOk()
 void SmFundNewDialog::OnBnClickedCancel()
 {
 	CBCGPScrollDialog::OnCancel();
+}
+
+
+void SmFundNewDialog::OnCbnSelchangeComboAccountType()
+{
+	if (_ComboAccountType.GetCurSel() < 0) return;
+	int index = _ComboAccountType.GetCurSel();
+	if (index == 0)
+		account_type_ = "9";
+	else
+		account_type_ = "1";
 }

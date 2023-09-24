@@ -27,6 +27,13 @@ MiniJangoDialog::MiniJangoDialog(CWnd* pParent /*=nullptr*/)
 	EnableLayout();
 }
 
+MiniJangoDialog::MiniJangoDialog(CWnd* pParent, const std::string& type)
+	: CBCGPDialog(IDD_JANGO, pParent), type_(type)
+{
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+}
+
 MiniJangoDialog::~MiniJangoDialog()
 {
 }
@@ -95,25 +102,9 @@ void MiniJangoDialog::OnTimer(UINT_PTR nIDEvent)
 void MiniJangoDialog::SetAccount()
 {
 	_StaticCombo.SetWindowText("°èÁÂ");
-	/*
-	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
-	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
-		auto account = it->second;
-		//if (account->is_subaccount()) continue;
-
-		std::string account_info;
-		account_info.append(account->Name());
-		account_info.append(" : ");
-		account_info.append(account->No());
-		const int index = _ComboAccount.AddString(account_info.c_str());
-		_ComboAccountMap[index] = account->No();
-
-	}
-	*/
-
 
 	std::vector<std::shared_ptr<SmAccount>> main_account_vector;
-	mainApp.AcntMgr()->get_main_account_vector(main_account_vector);
+	mainApp.AcntMgr()->get_main_account_vector(type_, main_account_vector);
 	if (main_account_vector.empty()) return;
 	for (auto ita = main_account_vector.begin(); ita != main_account_vector.end(); ++ita) {
 		auto main_acnt = *ita;

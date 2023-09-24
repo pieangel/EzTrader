@@ -14,7 +14,7 @@ namespace DarkHorse {
 
 		SmFundManager();
 		~SmFundManager() {};
-		std::shared_ptr<SmFund> FindAddFund(const std::string& fund_name);
+		std::shared_ptr<SmFund> FindAddFund(const std::string& fund_name, const std::string fund_type);
 		void RemoveFund(const std::string& fund_name);
 		void Clear() {
 			_FundMap.clear();

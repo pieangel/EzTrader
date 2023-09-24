@@ -226,4 +226,8 @@ public:
 	afx_msg void OnThemeBlue();
 	afx_msg void OnThemeDark();
 	afx_msg void OnThemeColorful();
+	afx_msg void OnDomesticRemain();
+	afx_msg void OnAbroadRemain();
+	afx_msg void OnDmFundRemain();
+	afx_msg void OnAbFundRemain();
 };

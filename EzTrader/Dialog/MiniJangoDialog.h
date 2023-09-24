@@ -3,6 +3,7 @@
 #include "../View/AccountProfitLossView.h"
 #include "../View/AccountPositionView.h"
 #include <map>
+#include <string.h>
 // MiniJangoDialog dialog
 
 class MiniJangoDialog : public CBCGPDialog
@@ -11,6 +12,7 @@ class MiniJangoDialog : public CBCGPDialog
 
 public:
 	MiniJangoDialog(CWnd* pParent = nullptr);   // standard constructor
+	MiniJangoDialog(CWnd* pParent, const std::string& type);   // standard constructor
 	virtual ~MiniJangoDialog();
 
 	// Dialog Data
@@ -40,6 +42,8 @@ private:
 	int _CurrentAccountIndex{ 0 };
 	// 0 : account, 1 : fund
 	int _Mode = 0;
+	// "1" : 해외, "9" : 국내 
+	std::string type_;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnCbnSelchangeComboAccount();

@@ -634,13 +634,19 @@
 #define ID_THEME_BLUE                   32942
 #define ID_THEME_DARK                   32943
 #define ID_THEME_COLORFUL               32944
+#define ID_DOMESTIC_REMAIN              32945
+#define ID_32946                        32946
+#define ID_ABROAD_REMAIN                32947
+#define ID_DM_FUND_REMAIN               32948
+#define ID_32949                        32949
+#define ID_AB_FUND_REMAIN               32950
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        236
-#define _APS_NEXT_COMMAND_VALUE         32945
+#define _APS_NEXT_RESOURCE_VALUE        237
+#define _APS_NEXT_COMMAND_VALUE         32951
 #define _APS_NEXT_CONTROL_VALUE         1172
 #define _APS_NEXT_SYMED_VALUE           119
 #endif

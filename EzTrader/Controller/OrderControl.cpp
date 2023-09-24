@@ -65,7 +65,8 @@ namespace DarkHorse {
 	void OrderControl::load_from_fund(const std::string& fund_name, const std::string& symbol_code)
 	{
 		clear();
-		auto fund = mainApp.FundMgr()->FindAddFund(fund_name);
+		auto fund = mainApp.FundMgr()->FindFund(fund_name);
+		if (!fund) return;
 		const std::vector<std::shared_ptr<SmAccount>>& sub_account_vector = fund->GetAccountVector();
 		for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); ++it) {
 			auto sub_account = *it;
