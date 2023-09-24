@@ -860,7 +860,7 @@ namespace DarkHorse {
 			int height = dialog_json["height"].get<int>();
 
 			// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
-			std::shared_ptr<MiniJangoDialog>  totalAssetDialog = std::make_shared<MiniJangoDialog>();
+			std::shared_ptr<MiniJangoDialog>  totalAssetDialog = std::make_shared<MiniJangoDialog>(parent_window, "9");
 			totalAssetDialog->Create(IDD_JANGO, parent_window);
 			map_to_restore[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
 			totalAssetDialog->MoveWindow(x, y, width, height, TRUE);

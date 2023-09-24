@@ -407,10 +407,14 @@ void SmSymbolManager::read_domestic_masterfile()
 			value = line.substr(index, 8);
 			symbol->ExpireDate(value);
 			symbol->symbol_type(SymbolType::Domestic);
+			symbol->StartTime("084500");
+			symbol->EndTime("154500");
+			symbol->Exchange("KRX");
+			symbol->Currency("\\");
 			set_product_info(symbol);
 			set_quote_preday_close(symbol, pre_day_close);
 			AddSymbol(symbol);
-			LOGINFO(CMyLogger::getInstance(), "read symbol %s complete!", symbol->SymbolCode().c_str());
+			//LOGINFO(CMyLogger::getInstance(), "read symbol %s complete!", symbol->SymbolCode().c_str());
 			add_to_yearmonth(symbol);
 		}
 

@@ -5768,6 +5768,7 @@ void DarkHorse::ViClient::on_ab_future_quote(const CString& strKey, const LONG& 
 	quote["cumulative_amount"] = (_ttoi(strCumulativeAmount.Trim()));
 	quote["time"] = static_cast<const char*>(strTime.Trim());
 	quote["volume"] = _ttoi(strVolume.Trim());
+	quote["preday_cmp"] = static_cast<const char*>(strPreDayCmp.Trim());
 	quote["updown_rate"] = static_cast<const char*>(strUpRate.Trim());
 	quote["up_down"] = strUpdown == "+" ? 1 : -1;
 	if (auto wp = _Client.lock()) {
@@ -5908,6 +5909,7 @@ void DarkHorse::ViClient::on_dm_future_quote(const CString& strKey, const LONG& 
 	quote["time"] = static_cast<const char*>(strTime.Trim());
 	quote["volume"] = _ttoi(strVolume.Trim());
 	quote["updown_rate"] = static_cast<const char*>(strUpRate.Trim());
+	quote["preday_cmp"] = static_cast<const char*>(strPreDayCmp.Trim());
 	quote["up_down"] = strUpdown == "+" ? 1 : -1;
 	if (auto wp = _Client.lock()) {
 		wp->OnRealtimeQuote(std::move(quote));

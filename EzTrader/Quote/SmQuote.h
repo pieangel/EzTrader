@@ -11,6 +11,7 @@ namespace DarkHorse {
 		int open{ 0 };
 		int pre_day_close{ 0 };
 		int expected{ 0 };
+		double preday_cmp{ 0.0 };
 	};
 
 	struct SmTick 
