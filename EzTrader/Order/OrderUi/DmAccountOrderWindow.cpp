@@ -158,6 +158,8 @@ void DmAccountOrderWindow::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_LINE9, _Line9);
 	DDX_Control(pDX, IDC_STATIC_LINE10, _Line10);
 	DDX_Control(pDX, IDC_STATIC_MSG, _StaticMsg);
+	DDX_Control(pDX, IDC_BTN_LEFT, _BtnLeft);
+	DDX_Control(pDX, IDC_BTN_RIGHT, _BtnRight);
 }
 
 
@@ -720,6 +722,8 @@ void DmAccountOrderWindow::OnBnClickedBtnRemove()
 void DmAccountOrderWindow::OnBnClickedBtnLeft()
 {
 	_ShowLeft ? _ShowLeft = false : _ShowLeft = true;
+	if (_ShowLeft) _BtnLeft.SetWindowText(">>");
+	else _BtnLeft.SetWindowText("<<");	
 	//LockWindowUpdate();
 	RecalcChildren(_ShowLeft ? CM_SHOW_LEFT : CM_HIDE_LEFT);
 	//UnlockWindowUpdate();
@@ -730,6 +734,8 @@ void DmAccountOrderWindow::OnBnClickedBtnLeft()
 void DmAccountOrderWindow::OnBnClickedBtnRight()
 {
 	_ShowRight ? _ShowRight = false : _ShowRight = true;
+	if (_ShowRight) _BtnRight.SetWindowText("<<");
+	else _BtnRight.SetWindowText(">>");
 	//LockWindowUpdate();
 	RecalcChildren(_ShowRight ? CM_SHOW_RIGHT : CM_HIDE_RIGHT);
 	//UnlockWindowUpdate();

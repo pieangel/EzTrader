@@ -55,6 +55,8 @@ public:
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
 private:
+	CBCGPButton _BtnLeft;
+	CBCGPButton _BtnRight;
 	nlohmann::json center_wnd_prop_;
 	size_t center_window_count_{ 0 };
 	std::string account_no_;

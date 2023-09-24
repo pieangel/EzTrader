@@ -53,6 +53,10 @@ void TotalAssetProfitLossDialog::SetAccount()
 		auto account = it->second;
 		if (account->is_subaccount()) continue;
 		std::string account_info;
+		if (account->Type() == "9")
+			account_info.append("[국내]");
+		else
+			account_info.append("[해외]");
 		account_info.append(account->Name());
 		account_info.append(" : ");
 		account_info.append(account->No());
@@ -75,6 +79,7 @@ BOOL TotalAssetProfitLossDialog::OnInitDialog()
 	total_asset_profit_loss_view_.SetUp();
 	total_asset_profit_loss_view_.SetAssetInfo();
 	total_asset_profit_loss_view_.Invalidate();
+	_ComboAccount.SetDroppedWidth(250);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
