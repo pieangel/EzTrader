@@ -61,7 +61,7 @@ AccountPositionView::AccountPositionView()
 	m_bExtendedPadding = FALSE;
 	account_position_control_ = std::make_shared<DarkHorse::AccountPositionControl>();
 	account_position_control_->set_single_position_event_handler(std::bind(&AccountPositionView::on_update_single_position, this, _1));
-	account_position_control_->set_event_handler(std::bind(&AccountPositionView::on_update_whole_position, this));
+	account_position_control_->set_event_handler(std::bind(&AccountPositionView::on_update_whole_position, this, _1));
 	ab_column_widths_vector_.push_back(70);
 	ab_column_widths_vector_.push_back(35);
 	ab_column_widths_vector_.push_back(70);
@@ -178,11 +178,15 @@ void AccountPositionView::on_update_single_position(const int position_id)
 		update_ab_account_position(pRow, position, format_type);
 	else
 		update_dm_account_position(pRow, position, format_type);
+	Invalidate();
 	enable_position_show_ = true;
 }
 
-void AccountPositionView::on_update_whole_position()
+void AccountPositionView::on_update_whole_position(const int result)
 {
+	if (result == 0) {
+		ClearOldContents(0);
+	}
 	enable_position_show_ = true;
 }
 
@@ -602,6 +606,7 @@ void AccountPositionView::ClearOldContents(const int& last_index)
 		for (int row = last_index; row <= _OldMaxRow; row++) {
 			CBCGPGridRow* pRow = GetRow(row);
 			for (int i = 0; i < GetColumnCount(); i++) {
+				pRow->GetItem(i)->SetValue("");
 				pRow->GetItem(i)->EmptyValue(FALSE);
 				pRow->GetItem(i)->SetBackgroundColor(_DefaultBackColor);
 				pRow->GetItem(i)->SetTextColor(RGB(255, 255, 255));

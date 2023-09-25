@@ -20,12 +20,12 @@
 using namespace DarkHorse;
 IMPLEMENT_DYNAMIC(MiniJangoDialog, CBCGPDialog)
 
-MiniJangoDialog::MiniJangoDialog(CWnd* pParent /*=nullptr*/)
-	: CBCGPDialog(IDD_JANGO, pParent)
-{
-	EnableVisualManagerStyle(TRUE, TRUE);
-	EnableLayout();
-}
+// MiniJangoDialog::MiniJangoDialog(CWnd* pParent /*=nullptr*/)
+// 	: CBCGPDialog(IDD_JANGO, pParent)
+// {
+// 	EnableVisualManagerStyle(TRUE, TRUE);
+// 	EnableLayout();
+// }
 
 MiniJangoDialog::MiniJangoDialog(CWnd* pParent, const std::string& type)
 	: CBCGPDialog(IDD_JANGO, pParent), type_(type)
@@ -87,7 +87,8 @@ BOOL MiniJangoDialog::OnInitDialog()
 	column_width_vector.push_back(75);
 	column_width_vector.push_back(40);
 	//account_position_view_.set_column_widths(column_width_vector);
-
+	account_position_view_.set_column_names(type_);
+	account_position_view_.set_column_widths(type_);
 	_ComboAccount.SetDroppedWidth(250);
 
 	return TRUE;  // return TRUE unless you set the focus to a control

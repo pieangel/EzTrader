@@ -113,7 +113,7 @@ void TotalAssetProfitLossDialog::OnCbnSelchangeComboAccount()
 
 	total_asset_profit_loss_view_.SetAssetInfo();
 	total_asset_profit_loss_view_.Invalidate();
-
+	if (!account) return;
 	DhTaskArg arg;
 	arg.detail_task_description = account->No();
 	arg.task_type = DhTaskType::AccountProfitLoss;

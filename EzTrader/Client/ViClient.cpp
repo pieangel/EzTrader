@@ -4414,7 +4414,7 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
 
-		const int avg_price = convert_to_int(strSymbolCode, strSymbolAvgPrice);
+		const int avg_price = convert_to_int(strSymbolCode, strSymbolUnitPrice);
 		if (avg_price < 0) continue;
 
 		int position = _ttoi(strSymbolPosition.Trim());

@@ -11,7 +11,7 @@ class MiniJangoDialog : public CBCGPDialog
 	DECLARE_DYNAMIC(MiniJangoDialog)
 
 public:
-	MiniJangoDialog(CWnd* pParent = nullptr);   // standard constructor
+	//MiniJangoDialog(CWnd* pParent = nullptr);   // standard constructor
 	MiniJangoDialog(CWnd* pParent, const std::string& type);   // standard constructor
 	virtual ~MiniJangoDialog();
 

@@ -3,6 +3,9 @@
 #include "Position.h"
 #include "TotalPositionManager.h"
 #include "../Quote/SmQuote.h"
+#include "../Log/MyLogger.h"
+#include "../Global/SmTotalManager.h"
+#include "../Event/SmCallbackManager.h"
 namespace DarkHorse {
 GroupPositionManager::GroupPositionManager(TotalPositionManager& total_position_manager)
 	: total_position_manager_(total_position_manager)
@@ -35,7 +38,7 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 		pure_trade_profit_loss += position->pure_trade_profit_loss;
 
 		open_quantity += position->open_quantity;
-		average_price += position->average_price;
+		average_price += position->average_price * abs(position->open_quantity);
 	}
 	group_position->trade_profit_loss = trade_profit_loss;
 	group_position->open_profit_loss = open_profit_loss;
@@ -45,7 +48,10 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 	if (open_quantity == 0)
 		group_position->average_price = 0.0f;
 	else
-		group_position->average_price = average_price / group_position->open_quantity;
+		group_position->average_price = average_price / abs(open_quantity);
+
+	LOGINFO(CMyLogger::getInstance(), "group_position open qty = [%d], average_price = [%.2f], open pl = [%.2f]", group_position->open_quantity, group_position->average_price, group_position->open_profit_loss);
+
 
 	update_whole_group_position();
 }
@@ -81,7 +87,10 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 	if (open_quantity == 0)
 		dest_position.average_price = 0.0f;
 	else
-		dest_position.average_price = average_price / abs(dest_position.open_quantity);
+		dest_position.average_price = average_price / abs(open_quantity);
+
+	LOGINFO(CMyLogger::getInstance(), " dest_position open qty = [%d], average_price = [%.2f], open pl = [%.2f]", dest_position.open_quantity, dest_position.average_price, dest_position.open_profit_loss);
+
 
 	update_whole_group_position();
 }
@@ -117,8 +126,9 @@ void GroupPositionManager::update_position(quote_p quote)
 	if (!position) return;
 	TotalPositionManager::calculate_symbol_open_profit_loss(position);
 	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
-
+	update_group_position_by_symbol(position);
 	update_whole_group_position();
+	mainApp.CallbackMgr()->process_position_event(position);
 }
 
 void GroupPositionManager::update_whole_group_position()
@@ -135,7 +145,8 @@ void GroupPositionManager::update_whole_group_position()
 		trade_profit_loss += position->trade_profit_loss;
 		open_profit_loss += position->open_profit_loss;
 		trade_fee += position->trade_fee;
-		pure_trade_profit_loss += position->pure_trade_profit_loss;
+		double pure_profit_loss = position->trade_profit_loss - position->trade_fee;
+		pure_trade_profit_loss += pure_profit_loss;
 
 		open_quantity += position->open_quantity;
 		average_price += position->open_quantity * position->average_price;
@@ -144,16 +155,11 @@ void GroupPositionManager::update_whole_group_position()
 	total_profit_loss_->open_profit_loss = open_profit_loss;
 	total_profit_loss_->trade_fee = trade_fee;
 	total_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
-
-	total_profit_loss_->trade_profit_loss = trade_profit_loss;
-	total_profit_loss_->open_profit_loss = open_profit_loss;
-	total_profit_loss_->trade_fee = trade_fee;
-	total_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
 	total_profit_loss_->open_quantity = open_quantity;
-	if (open_quantity == 0)
-		total_profit_loss_->average_price = 0.0f;
-	else
-		total_profit_loss_->average_price = average_price / total_profit_loss_->open_quantity;
+// 	if (open_quantity == 0)
+// 		total_profit_loss_->average_price = 0.0f;
+// 	else
+// 		total_profit_loss_->average_price = average_price / total_profit_loss_->open_quantity;
 }
 
 void GroupPositionManager::get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss)

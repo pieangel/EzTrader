@@ -106,7 +106,7 @@ public:
 	void LiqSelPositions();
 	void LiqAll();
 	void on_update_single_position(const int position_id);
-	void on_update_whole_position();
+	void on_update_whole_position(const int result);
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CBasicGridCtrl)
@@ -122,10 +122,10 @@ public:
 	SmFundCompMainDialog* CompFundWnd() const { return _CompFundWnd; }
 	void CompFundWnd(SmFundCompMainDialog* val) { _CompFundWnd = val; }
 	void set_column_widths(std::vector<int> column_width_vector);
-private:
-	bool updating_ = false;
 	void set_column_widths(const std::string& type);
 	void set_column_names(const std::string& type);
+private:
+	bool updating_ = false;
 	void LiqSelPositionsForAccount();
 	void LiqSelPositionsForFund();
 	void LiqAllForAccount();

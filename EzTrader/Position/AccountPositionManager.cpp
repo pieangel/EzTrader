@@ -117,13 +117,17 @@ void AccountPositionManager::update_position(order_p order)
 	position->trade_profit_loss += traded_profit_loss;
 	position->open_quantity = new_position_count;
 	position->average_price = new_average_price;
+
 	update_open_profit_loss(position);
+
 	// update the involved order.
 	order->unsettled_count = unsettled_count;
 	if (order->unsettled_count == 0)
 		order->order_state = SmOrderState::Settled;
 	else
 		mainApp.event_hub()->process_stop_order_event(order);
+	LOGINFO(CMyLogger::getInstance(), "symbol position  open qty = [%d], average_price = [%.2f], open pl = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
+
 	update_account_profit_loss();
 	mainApp.CallbackMgr()->process_position_event(position);
 
@@ -140,6 +144,8 @@ void AccountPositionManager::update_position(quote_p quote)
 	//LOGINFO(CMyLogger::getInstance(), "open_quantity = [%d], position->average_price = [%.2f], open_profit_loss = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
 
 	update_account_profit_loss();
+
+	mainApp.CallbackMgr()->process_position_event(position);
 }
 
 void AccountPositionManager::update_position(position_p position)

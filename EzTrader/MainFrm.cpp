@@ -1146,7 +1146,7 @@ void CMainFrame::OnComplexOrder()
 
 void CMainFrame::OnOrderRemain()
 {
-	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>();
+	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>(this, "1");
 	accountJangoDialog->Mode(0);
 	accountJangoDialog->Create(IDD_JANGO, this);
 	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
@@ -1173,7 +1173,7 @@ void CMainFrame::OnFundOrder()
 
 void CMainFrame::OnFundRemain()
 {
-	std::shared_ptr< MiniJangoDialog> fundJangoDialog = std::make_shared<MiniJangoDialog>();
+	std::shared_ptr< MiniJangoDialog> fundJangoDialog = std::make_shared<MiniJangoDialog>(this, "1");
 	fundJangoDialog->Mode(1);
 	fundJangoDialog->Create(IDD_JANGO, this);
 	_JangoWndMap[fundJangoDialog->GetSafeHwnd()] = fundJangoDialog;
