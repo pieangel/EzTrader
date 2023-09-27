@@ -107,27 +107,69 @@ void SmOrderSetDialog::apply_change()
 	height_and_width_vec.push_back(_ttoi(value));
 	edit_quote_width_.GetWindowText(value);
 	height_and_width_vec.push_back(_ttoi(value));
-
 	DarkHorse::OrderSetEvent order_set_event;
+
+	if (check_align_by_alt_.GetCheck() == BST_CHECKED)
+		order_set_event.align_by_alt = true;
+	else
+		order_set_event.align_by_alt = false;
+
+	if (check_show_bar_color_.GetCheck() == BST_CHECKED)
+		order_set_event.show_bar_color = true;
+	else
+		order_set_event.show_bar_color = false;
+
+	if (check_cancel_by_right_click_.GetCheck() == BST_CHECKED)
+		order_set_event.cancel_by_right_click = true;
+	else
+		order_set_event.cancel_by_right_click = false;
+
+	if (check_order_by_space_.GetCheck() == BST_CHECKED)
+		order_set_event.order_by_space = true;
+	else
+		order_set_event.order_by_space = false;
+
+	/*
+	int stop_width{40};
+		int order_width{ 55 };
+		int count_width{ 35 };
+		int qty_width{ 35 };
+	*/
+
 	order_set_event.window_id = id_;
 	order_set_event.grid_height = height_and_width_vec[0];
-	if (check_show_stop_column_.GetCheck() == BST_UNCHECKED)
+	if (check_show_stop_column_.GetCheck() == BST_UNCHECKED) {
 		order_set_event.stop_width = 0;
-	else
-		order_set_event.stop_width = height_and_width_vec[1];
-	if (check_show_order_column_.GetCheck() == BST_UNCHECKED)
+		order_set_event.show_stop_column = false;
+	}
+	else {
+		order_set_event.stop_width = 40; // height_and_width_vec[1];
+		order_set_event.show_stop_column = true;
+	}
+	if (check_show_order_column_.GetCheck() == BST_UNCHECKED) {
 		order_set_event.order_width = 0;
-	else
-		order_set_event.order_width = height_and_width_vec[2];
-	if (check_show_count_column_.GetCheck() == BST_UNCHECKED)
+		order_set_event.show_order_column = false;
+	}
+	else {
+		order_set_event.order_width = 55; // height_and_width_vec[2];
+		order_set_event.show_order_column = false;
+	}
+	if (check_show_count_column_.GetCheck() == BST_UNCHECKED) {
 		order_set_event.count_width = 0;
-	else
-		order_set_event.count_width = height_and_width_vec[3];
-	order_set_event.qty_width = height_and_width_vec[4];
+		order_set_event.show_count_column = false;
+	}
+	else {
+		order_set_event.count_width = 35; // height_and_width_vec[3];
+		order_set_event.show_count_column = false;
+	}
+	//order_set_event.qty_width = height_and_width_vec[4];
 	order_set_event.quote_width = height_and_width_vec[5];
 	order_set_event.stop_as_real_order = stop_as_real_order_;
 
-	mainApp.event_hub()->trigger_parameter_event(window_id_from_, order_set_event, "test", true);
+	//mainApp.event_hub()->trigger_parameter_event(window_id_from_, order_set_event, "test", true);
+	if (_DmAccountOrderCenterWindow) {
+		_DmAccountOrderCenterWindow->set_order_set(order_set_event);
+	}
 }
 
 BOOL SmOrderSetDialog::OnInitDialog()

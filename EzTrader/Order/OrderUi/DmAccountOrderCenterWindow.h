@@ -160,6 +160,8 @@ private:
 	void reset_order_set();
 	DarkHorse::OrderType position_type_{ DarkHorse::OrderType::None };
 public:
+	void set_order_view(const DarkHorse::OrderSetEvent& order_set);
+	void set_order_set(const DarkHorse::OrderSetEvent& order_set);
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 	const DarkHorse::OrderSetEvent& get_order_set() const { return order_set_; }

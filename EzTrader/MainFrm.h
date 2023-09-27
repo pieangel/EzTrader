@@ -230,4 +230,5 @@ public:
 	afx_msg void OnAbroadRemain();
 	afx_msg void OnDmFundRemain();
 	afx_msg void OnAbFundRemain();
+	afx_msg void OnDestroy();
 };

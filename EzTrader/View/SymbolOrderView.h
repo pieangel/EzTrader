@@ -190,7 +190,10 @@ public:
 	void reset_window_size();
 	const std::vector<DarkHorse::OrderGridHeaderInfo>& grid_header_vector() const { return grid_header_vector_; }
 	void trigger_resize_event();
+	DarkHorse::OrderSetEvent order_set() const { return order_set_; }
+	void order_set(DarkHorse::OrderSetEvent val) { order_set_ = val; }
 private:
+	DarkHorse::OrderSetEvent order_set_;
 	void set_order_area();
 	DarkHorse::OrderType order_type_{ DarkHorse::OrderType::None };
 

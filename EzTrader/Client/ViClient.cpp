@@ -2781,8 +2781,8 @@ void DarkHorse::ViClient::unregister_symbol(const std::string& symbol_code)
 
 void DarkHorse::ViClient::unregister_account(const std::string& account_no)
 {
-	const std::string user_id = mainApp.LoginMgr()->id();
-	int nResult = m_CommAgent.CommRemoveJumunChe(user_id.c_str(), account_no.c_str());
+	//const std::string user_id = mainApp.LoginMgr()->id();
+	//int nResult = m_CommAgent.CommRemoveJumunChe(user_id.c_str(), account_no.c_str());
 }
 
 void ViClient::register_symbol(DhTaskArg&& arg)

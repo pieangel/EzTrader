@@ -325,6 +325,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_ABROAD_REMAIN, &CMainFrame::OnAbroadRemain)
 	ON_COMMAND(ID_DM_FUND_REMAIN, &CMainFrame::OnDmFundRemain)
 	ON_COMMAND(ID_AB_FUND_REMAIN, &CMainFrame::OnAbFundRemain)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -876,7 +877,7 @@ void CMainFrame::OnClose()
 		mainApp.SaveMgr()->save_dm_mini_jango_windows("dm_mini_jango_windows.json", mini_jango_wnd_map_);
 		mainApp.SaveMgr()->save_total_asset_windows("dm_total_asset_windows.json", total_asset_profit_loss_map_);
 
-		
+		total_asset_profit_loss_map_.clear();
 
 		mainApp.TaskReqMgr()->StopProcess();
 
@@ -889,12 +890,16 @@ void CMainFrame::OnClose()
 
 		//SaveMDIState(theApp.GetRegSectionPath());
 		//Sleep(1000);
-		CBCGPMDIFrameWnd::OnClose();
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
+	catch (...) {
+		LOGINFO(CMyLogger::getInstance(), "error = %s", "unknown error");
+	}
+
+	CBCGPMDIFrameWnd::OnClose();
 }
 
 
@@ -1486,4 +1491,12 @@ void CMainFrame::OnAbFundRemain()
 	fundJangoDialog->Create(IDD_JANGO, this);
 	_JangoWndMap[fundJangoDialog->GetSafeHwnd()] = fundJangoDialog;
 	fundJangoDialog->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnDestroy()
+{
+	CBCGPMDIFrameWnd::OnDestroy();
+
+	
 }

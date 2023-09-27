@@ -89,6 +89,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::strin
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent), symbol_code_(symbol_code), order_set_(order_set), layout_manager_(this)
 {
 		id_ = IdGenerator::get_id();
+		symbol_order_view_.order_set(order_set);
 		symbol_order_view_.symbol_type(SymbolType::Domestic);
 		symbol_position_view_.symbol_type(SymbolType::Domestic);
 		symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
@@ -715,6 +716,21 @@ void DmAccountOrderCenterWindow::reset_order_set()
 	order_set_.count_width = grid_header_vector[6].width;
 	order_set_.order_width = grid_header_vector[7].width;
 	order_set_.stop_width = grid_header_vector[8].width;
+}
+
+void DmAccountOrderCenterWindow::set_order_view(const DarkHorse::OrderSetEvent& event)
+{
+	order_set_ = event;
+	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
+	symbol_order_view_.SetAllRowHeight(event.grid_height);
+	symbol_order_view_.reset_col_widths(event);
+}
+
+void DmAccountOrderCenterWindow::set_order_set(const DarkHorse::OrderSetEvent& event)
+{
+	set_order_view(event);
+	recal_window_size();
+	trigger_resize_event();
 }
 
 void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)

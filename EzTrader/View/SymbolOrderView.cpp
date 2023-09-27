@@ -956,6 +956,11 @@ void SymbolOrderView::SetUp()
 
 	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 60, 9);
 
+
+	set_stop_as_real_order(order_set_.stop_as_real_order);
+	SetAllRowHeight(order_set_.grid_height);
+	reset_col_widths(order_set_);
+
 	ResetHeaderWidth(rect.Width());
 	_Grid->HeaderMode(SmHeaderMode::HeaderColOnly);
 	//_Grid->SetOrderHeaderTitles();
