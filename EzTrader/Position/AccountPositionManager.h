@@ -35,7 +35,7 @@ public:
 	position_p find_position(const std::string& symbol_code);
 	void update_position(position_p position);
 	void update_position(position_p position, VmPosition& dest_position);
-	void get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector);
+	void get_active_positions(std::map<std::string, position_p>& position_vector);
 private:
 	std::mutex mutex_; // Mutex for thread synchronization
 	void set_symbol_id(position_p position, const std::string& symbol_code);

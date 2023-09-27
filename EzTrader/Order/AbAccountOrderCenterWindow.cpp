@@ -828,7 +828,7 @@ void AbAccountOrderCenterWindow::OnEnChangeEditAmount()
 void AbAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 {
 	if (!symbol_) return;
-	std::vector<std::shared_ptr<Position>> active_position_vector_;
+	std::map<std::string, std::shared_ptr<Position>> active_position_vector_;
 	if (position_type_ == OrderType::SubAccount) {
 		if (!account_) return;
 		auto position_manager = mainApp.total_position_manager()->find_position_manager(account_->No());
@@ -852,7 +852,7 @@ void AbAccountOrderCenterWindow::OnBnClickedBtnLiqSymbolPosition()
 	}
 
 	for (auto it = active_position_vector_.begin(); it != active_position_vector_.end(); it++) {
-		auto position = *it;
+		auto position = it->second;
 		if (position->open_quantity > 0) {
 			symbol_order_view_.put_order(account_, position->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(position->open_quantity), SmPriceType::Market);
 		}

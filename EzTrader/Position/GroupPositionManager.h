@@ -11,6 +11,7 @@ namespace DarkHorse {
 	class TotalPositionManager;
 	struct GroupPosition;
 	struct Position;
+	using position_p = std::shared_ptr<Position>;
 	struct AccountProfitLoss;
 	using account_profit_loss_p = std::shared_ptr<AccountProfitLoss>;
 	struct SmQuote;
@@ -39,7 +40,7 @@ namespace DarkHorse {
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position);
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position, VmPosition& dest_position);
 		std::shared_ptr<Position> find_group_position(const std::string& symbol_code);
-		void get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector);
+		void get_active_positions(std::map<std::string, position_p>& position_vector);
 	private:
 
 		std::mutex mutex_; // Mutex for thread synchronization

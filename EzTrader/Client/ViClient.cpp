@@ -3734,7 +3734,7 @@ void DarkHorse::ViClient::on_ab_account_profit_loss(const CString& server_trade_
 	std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
 	if (!account) return on_task_complete(server_request_id);
 	account->Asset.EntrustDeposit = _ttoi(strEntrustTotal.TrimRight());
-	account->Asset.OpenTrustTotal = _ttoi(strData6.TrimRight());
+	//account->Asset.OpenTrustTotal = _ttoi(strData6.TrimRight());
 	account->Asset.OrderDeposit = _ttoi(strData3.TrimRight());
 	account->Asset.AdditionalMargin = _ttoi(strData4.TrimRight());
 	account->Asset.MaintenanceMargin = _ttoi(strData4.TrimRight());
@@ -4178,9 +4178,9 @@ void DarkHorse::ViClient::on_dm_account_asset(const CString& sTrCode, const LONG
 	{
 		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "¿¹Å¹ÃÑ¾×");
 		strEntrustTotal.Trim();
-		if (strEntrustTotal.Compare("0") == 0) {
-			continue;
-		}
+		//if (strEntrustTotal.Compare("0") == 0) {
+		//	continue;
+		//}
 		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "°èÁÂ¹øÈ£");
 		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "ÁÖ¹®Áõ°Å±Ý");
 		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "À§Å¹Áõ°Å±Ý");

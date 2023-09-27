@@ -37,6 +37,7 @@ namespace DarkHorse {
 		void set_fund(std::shared_ptr<SmFund> fund);
 		void load_profit_loss();
 	private:
+		void reset_account_profit_loss();
 		position_p get_position(const std::string& symbol_code);
 		void update_account_profit_loss();
 		std::set<std::string> account_no_set_;

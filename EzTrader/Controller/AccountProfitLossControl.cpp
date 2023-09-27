@@ -44,6 +44,14 @@ AccountProfitLossControl::~AccountProfitLossControl()
 	mainApp.event_hub()->unsubscribe_account_profit_loss_event_handler(id_);
 }
 
+void AccountProfitLossControl::reset_account_profit_loss()
+{
+	account_profit_loss_.open_profit_loss = 0;
+	account_profit_loss_.pure_trade_profit_loss = 0;
+	account_profit_loss_.trade_fee = 0;
+	account_profit_loss_.trade_profit_loss = 0;
+}
+
 position_p AccountProfitLossControl::get_position(const std::string& symbol_code)
 {
 	auto it = position_map_.find(symbol_code);
@@ -53,23 +61,23 @@ position_p AccountProfitLossControl::get_position(const std::string& symbol_code
 
 void AccountProfitLossControl::load_profit_loss()
 {
-	if (position_type_ == OrderType::None) return;
+	if (position_type_ == OrderType::None) return ;
 	if (position_type_ == OrderType::SubAccount) {
 		if (!account_) return;
 		auto position_manager = mainApp.total_position_manager()->find_position_manager(account_->No());
-		if (!position_manager) return;
+		if (!position_manager) { reset_account_profit_loss();  return; }
 		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
 	else if (position_type_ == OrderType::Fund) {
 		if (!fund_) return;
 		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_->Name());
-		if (!position_manager) return;
+		if (!position_manager) { reset_account_profit_loss();  return; }
 		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
 	else {
 		if (!account_) return;
 		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_->No());
-		if (!position_manager) return;
+		if (!position_manager) { reset_account_profit_loss();  return; }
 		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
 	if (event_handler_) event_handler_();
@@ -82,19 +90,19 @@ void AccountProfitLossControl::update_position(position_p position)
 	if (position_type_ == OrderType::SubAccount) {
 		if (!account_ || account_->No() != position->account_no) return;
 		auto position_manager = mainApp.total_position_manager()->find_position_manager(position->account_no);
-		if (!position_manager) return;
+		if (!position_manager) { reset_account_profit_loss();  return; }
 		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
 	else if (position_type_ == OrderType::Fund) {
 		if (!fund_ || fund_->Name() != position->fund_name) return;
 		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(position->fund_name);
-		if (!position_manager) return;
+		if (!position_manager) { reset_account_profit_loss();  return; }
 		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
 	else {
 		if (!account_ || account_->No() != position->account_no) return;
 		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(position->account_no);
-		if (!position_manager) return;
+		if (!position_manager) { reset_account_profit_loss();  return; }
 		position_manager->get_account_profit_loss(account_profit_loss_);
 	}
 

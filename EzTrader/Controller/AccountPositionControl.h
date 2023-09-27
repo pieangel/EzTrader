@@ -27,16 +27,19 @@ public:
 	void set_single_position_event_handler(std::function<void(const int)> event_handler) {
 		single_position_event_handler_ = event_handler;
 	}
-	const std::vector<position_p>& get_active_position_vector();
+	const std::map<std::string, position_p>& get_active_position_map();
 	void set_account(std::shared_ptr<SmAccount> account);
 	void set_fund(std::shared_ptr<SmFund> fund);
 private:
+	void reset_account_position();
+	std::mutex mutex_; // Mutex for thread synchronization
+	void add_position(position_p position);
 	void trigger_event(const int result);
 	void load_position();
 	position_p get_position(const std::string& symbol_code);
 	// key : symbol code, value : position object.
 	std::map<std::string, position_p> position_map_;
-	std::vector<position_p> active_position_vector_;
+	//std::vector<position_p> active_position_vector_;
 	std::function<void(const int result)> event_handler_;
 	std::function<void(const int)> single_position_event_handler_;
 	int id_{ 0 };

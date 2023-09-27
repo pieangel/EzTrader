@@ -87,9 +87,12 @@ void AccountAssetControl::load_account_asset(std::shared_ptr<DarkHorse::SmAccoun
 	asset_.order_deposit = account->Asset.OrderDeposit; // 주문증거금
 	asset_.entrust_deposit = account->Asset.EntrustDeposit; // 위탁증거금
 	asset_.maintenance_margin = account->Asset.MaintenanceMargin; // 유지증거금
-	asset_.trade_profit_loss = account->Asset.TradeProfitLoss; // 청산손익
-	asset_.trade_fee = account->Asset.Fee; // 선물옵션수수료
-	asset_.open_profit_loss = account->Asset.OpenProfitLoss; // 평가손익
+
+	//asset_.trade_profit_loss = account->Asset.TradeProfitLoss; // 청산손익
+	//asset_.trade_fee = account->Asset.Fee; // 선물옵션수수료
+	//asset_.open_profit_loss = account->Asset.OpenProfitLoss; // 평가손익
+
+
 	asset_.open_trust_toal = account->Asset.OpenTrustTotal; // 평가예탁총액
 	asset_.additional_margin = account->Asset.AdditionalMargin; // 추가증거금
 	asset_.order_margin = account->Asset.OrderMargin; // 주문가능금액

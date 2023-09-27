@@ -48,9 +48,10 @@ END_MESSAGE_MAP()
 
 void TotalAssetProfitLossDialog::SetAccount()
 {
-	const std::unordered_map<std::string, std::shared_ptr<DarkHorse::SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
-	for (auto it = account_map.begin(); it != account_map.end(); ++it) {
-		auto account = it->second;
+	std::vector<std::shared_ptr<DarkHorse::SmAccount>> account_vector;
+	mainApp.AcntMgr()->get_main_account_vector(account_vector);
+	for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
+		auto account = *it;
 		if (account->is_subaccount()) continue;
 		std::string account_info;
 		if (account->Type() == "9")

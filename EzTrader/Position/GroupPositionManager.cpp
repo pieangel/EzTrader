@@ -102,13 +102,13 @@ std::shared_ptr<DarkHorse::Position> GroupPositionManager::find_group_position(c
 	else return found->second;
 }
 
-void GroupPositionManager::get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector)
+void GroupPositionManager::get_active_positions(std::map<std::string, position_p>& position_vector)
 {
 	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	for (auto it = group_position_map_.begin(); it != group_position_map_.end(); it++) {
 		auto position = it->second;
 		if (position->open_quantity != 0)
-			position_vector.push_back(position);
+			position_vector[it->first] = it->second;
 	}
 }
 

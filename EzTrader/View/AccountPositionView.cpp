@@ -162,6 +162,7 @@ void AccountPositionView::LiqAll()
 
 void AccountPositionView::on_update_single_position(const int position_id)
 {
+	/*
 	auto found = position_to_row_.find(position_id);
 	if (found == position_to_row_.end()) return;
 	std::string format_type;
@@ -179,14 +180,15 @@ void AccountPositionView::on_update_single_position(const int position_id)
 	else
 		update_dm_account_position(pRow, position, format_type);
 	Invalidate();
+	*/
 	enable_position_show_ = true;
 }
 
 void AccountPositionView::on_update_whole_position(const int result)
 {
-	if (result == 0) {
-		ClearOldContents(0);
-	}
+// 	if (result == 0) {
+// 		ClearOldContents(0);
+// 	}
 	enable_position_show_ = true;
 }
 
@@ -451,12 +453,12 @@ void AccountPositionView::update_account_position()
 	else if (fund_) format_type = fund_->fund_type();
 	else return;
 
-	const std::vector<position_p>& active_positions = account_position_control_->get_active_position_vector();
+	const std::map<std::string, position_p>& active_positions = account_position_control_->get_active_position_map();
 	int row = 0;
 	for (auto it = active_positions.begin(); it != active_positions.end(); ++it) {
-		const auto& position = *it;
+		const auto& position = it->second;
 		CBCGPGridRow* pRow = GetRow(row);
-		if (!pRow) continue;
+		if (position->open_quantity == 0 || !pRow) continue;
 		if (format_type == "1")
 			update_ab_account_position(pRow, position, format_type);
 		else

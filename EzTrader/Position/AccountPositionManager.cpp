@@ -173,13 +173,13 @@ void AccountPositionManager::update_position(position_p position, VmPosition& de
 	update_account_profit_loss();
 }
 
-void AccountPositionManager::get_active_positions(std::vector<std::shared_ptr<Position>>& position_vector)
+void AccountPositionManager::get_active_positions(std::map<std::string, position_p>& position_vector)
 {
 	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	for (auto it = position_map_.begin(); it != position_map_.end(); it++) {
 		auto position = it->second;
 		if (position->open_quantity != 0)
-			position_vector.push_back(position);
+			position_vector[it->first] = it->second;
 	}
 }
 

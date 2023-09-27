@@ -68,13 +68,21 @@ namespace DarkHorse {
 
 			if (event_handler_) event_handler_();
 			// For the option view and future view
-			if (vm_option_event_handler_ || vm_fund_event_handler_) {
+			if (vm_option_event_handler_) {
 				position_.symbol_code = position->symbol_code;
 				position_.symbol_id = mainApp.SymMgr()->get_symbol_id(position->symbol_code);
 				position_.account_no = position->account_no;
 				position_.account_id = mainApp.AcntMgr()->get_account_id(position->account_no);
 				position_.position_type = position_type_;
 				vm_option_event_handler_(position_);
+			}
+			if (vm_fund_event_handler_) {
+				position_.symbol_code = position->symbol_code;
+				position_.symbol_id = mainApp.SymMgr()->get_symbol_id(position->symbol_code);
+				position_.account_no = position->account_no;
+				position_.account_id = mainApp.AcntMgr()->get_account_id(position->account_no);
+				position_.position_type = position_type_;
+				vm_fund_event_handler_(position_);
 			}
 			if (out_system_event_handler_) out_system_event_handler_(out_system_id_);
 		}
