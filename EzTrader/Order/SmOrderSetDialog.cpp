@@ -131,9 +131,9 @@ void SmOrderSetDialog::apply_change()
 
 	/*
 	int stop_width{40};
-		int order_width{ 55 };
-		int count_width{ 35 };
-		int qty_width{ 35 };
+	int order_width{ 55 };
+	int count_width{ 35 };
+	int qty_width{ 35 };
 	*/
 
 	order_set_event.window_id = id_;
@@ -152,7 +152,7 @@ void SmOrderSetDialog::apply_change()
 	}
 	else {
 		order_set_event.order_width = 55; // height_and_width_vec[2];
-		order_set_event.show_order_column = false;
+		order_set_event.show_order_column = true;
 	}
 	if (check_show_count_column_.GetCheck() == BST_UNCHECKED) {
 		order_set_event.count_width = 0;
@@ -160,12 +160,11 @@ void SmOrderSetDialog::apply_change()
 	}
 	else {
 		order_set_event.count_width = 35; // height_and_width_vec[3];
-		order_set_event.show_count_column = false;
+		order_set_event.show_count_column = true;
 	}
 	//order_set_event.qty_width = height_and_width_vec[4];
 	order_set_event.quote_width = height_and_width_vec[5];
-	order_set_event.stop_as_real_order = stop_as_real_order_;
-
+	
 	//mainApp.event_hub()->trigger_parameter_event(window_id_from_, order_set_event, "test", true);
 	if (_DmAccountOrderCenterWindow) {
 		_DmAccountOrderCenterWindow->set_order_set(order_set_event);
@@ -175,15 +174,35 @@ void SmOrderSetDialog::apply_change()
 BOOL SmOrderSetDialog::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
+	if (order_set_event_.align_by_alt)
+		check_align_by_alt_.SetCheck(BST_CHECKED);
+	else
+		check_align_by_alt_.SetCheck(BST_UNCHECKED);
+	if (order_set_event_.show_bar_color)
+		check_show_bar_color_.SetCheck(BST_CHECKED);
+	else
+		check_show_bar_color_.SetCheck(BST_UNCHECKED);
+	if (order_set_event_.cancel_by_right_click)
+		check_cancel_by_right_click_.SetCheck(BST_CHECKED);
+	else
+		check_cancel_by_right_click_.SetCheck(BST_UNCHECKED);
+	if (order_set_event_.order_by_space)
+		check_order_by_space_.SetCheck(BST_CHECKED);
+	else
+		check_order_by_space_.SetCheck(BST_UNCHECKED);
 
-	check_align_by_alt_.SetCheck(BST_CHECKED);
-	check_show_bar_color_.SetCheck(BST_CHECKED);
-	check_cancel_by_right_click_.SetCheck(BST_CHECKED);
-	check_order_by_space_.SetCheck(BST_CHECKED);
-
-	check_show_order_column_.SetCheck(BST_CHECKED);
-	check_show_stop_column_.SetCheck(BST_CHECKED);
-	check_show_count_column_.SetCheck(BST_CHECKED);
+	if (order_set_event_.show_order_column)
+		check_show_order_column_.SetCheck(BST_CHECKED);
+	else
+		check_show_order_column_.SetCheck(BST_UNCHECKED);
+	if (order_set_event_.show_stop_column)
+		check_show_stop_column_.SetCheck(BST_CHECKED);
+	else
+		check_show_stop_column_.SetCheck(BST_UNCHECKED);
+	if (order_set_event_.show_count_column)
+		check_show_count_column_.SetCheck(BST_CHECKED);
+	else
+		check_show_count_column_.SetCheck(BST_UNCHECKED);
 	if (order_set_event_.stop_as_real_order)
 		check_stop_by_real_.SetCheck(BST_CHECKED);
 	else
@@ -207,34 +226,46 @@ BOOL SmOrderSetDialog::OnInitDialog()
 
 void SmOrderSetDialog::OnBnClickedCheckBarColor()
 {
-	// TODO: Add your control notification handler code here
+	if (check_show_bar_color_.GetCheck() == BST_CHECKED)
+		order_set_event_.show_bar_color = true;
+	else
+		order_set_event_.show_bar_color = false;
 }
 
 
 void SmOrderSetDialog::OnBnClickedCheckAlignByAlt()
 {
-	// TODO: Add your control notification handler code here
+	if (check_align_by_alt_.GetCheck() == BST_CHECKED)
+		order_set_event_.align_by_alt = true;
+	else
+		order_set_event_.align_by_alt = false;
 }
 
 
 void SmOrderSetDialog::OnBnClickedCheckOrderBySpace()
 {
-	// TODO: Add your control notification handler code here
+	if (check_order_by_space_.GetCheck() == BST_CHECKED)
+		order_set_event_.order_by_space = true;
+	else
+		order_set_event_.order_by_space = false;
 }
 
 
 void SmOrderSetDialog::OnBnClickedCheckCancelByRightClick()
 {
-	// TODO: Add your control notification handler code here
+	if (check_cancel_by_right_click_.GetCheck() == BST_CHECKED)
+		order_set_event_.cancel_by_right_click = true;
+	else
+		order_set_event_.cancel_by_right_click = false;
 }
 
 void SmOrderSetDialog::OnBnClickedCheckStopToReal()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (check_stop_by_real_.GetCheck() == BST_CHECKED)
-		stop_as_real_order_ = true;
+		order_set_event_.stop_as_real_order = true;
 	else
-		stop_as_real_order_ = false;
+		order_set_event_.stop_as_real_order = false;
 }
 
 
@@ -271,6 +302,14 @@ void SmOrderSetDialog::OnBnClickedBtnClose()
 void SmOrderSetDialog::OnBnClickedCheckShowSymbolTick()
 {
 	if (_DmAccountOrderCenterWindow) {
-		_DmAccountOrderCenterWindow->OnBnClickedCheckShowRealQuote();
+		if (check_show_symbol_tick_.GetCheck() == BST_CHECKED) {
+			_DmAccountOrderCenterWindow->show_symbol_tick_view(true);
+			order_set_event_.show_symbol_tick = true;
+		}
+		else {
+			_DmAccountOrderCenterWindow->show_symbol_tick_view(false);
+			order_set_event_.show_symbol_tick = false;
+		}
+		_DmAccountOrderCenterWindow->refresh_tick_view();
 	}
 }

@@ -37,7 +37,6 @@ private:
 	int window_id_from_{ 0 };
 	AbAccountOrderCenterWindow* _OrderWnd = nullptr;
 	SmFundOrderCenterWnd* _FundWnd = nullptr;
-	bool stop_as_real_order_{ false };
 	void apply_change();
 	DmAccountOrderCenterWindow* _DmAccountOrderCenterWindow = nullptr;
 public:

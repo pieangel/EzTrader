@@ -11,8 +11,9 @@ class MiniJangoDialog : public CBCGPDialog
 	DECLARE_DYNAMIC(MiniJangoDialog)
 
 public:
-	//MiniJangoDialog(CWnd* pParent = nullptr);   // standard constructor
+	MiniJangoDialog(CWnd* pParent = nullptr);   // standard constructor
 	MiniJangoDialog(CWnd* pParent, const std::string& type);   // standard constructor
+	MiniJangoDialog(CWnd* pParent, const std::string& type, const int mode, const std::string& target);
 	virtual ~MiniJangoDialog();
 
 	// Dialog Data
@@ -22,6 +23,12 @@ public:
 
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
+	std::string account_no() const { return account_no_; }
+	void account_no(std::string val) { account_no_ = val; }
+	std::string fund_name() const { return fund_name_; }
+	void fund_name(std::string val) { fund_name_ = val; }
+	std::string Type() const { return type_; }
+	void Type(std::string val) { type_ = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -36,6 +43,8 @@ public:
 private:
 	void SetAccount();
 	void SetFund();
+	std::string account_no_;
+	std::string fund_name_;
 	// key : combo index, value : account object.
 	std::map<int, std::string> _ComboAccountMap;
 	std::map<int, std::string> _ComboFundMap;

@@ -150,31 +150,19 @@ void AbAccountOrderCenterWindow::DoDataExchange(CDataExchange* pDX)
 void AbAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)
 {
 	//symbol_order_view_.on_paramter_event(event, event_message, enable);
+// 	order_set_ = event;
+// 	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
+// 	symbol_order_view_.SetAllRowHeight(event.grid_height);
+// 	RecalcOrderAreaHeight(this);
+// 	symbol_order_view_.Invalidate();
+
+
 	order_set_ = event;
 	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
 	symbol_order_view_.SetAllRowHeight(event.grid_height);
-	/*
 	symbol_order_view_.reset_col_widths(event);
-	{
-		CRect rc_order_view, rc_tick_view, rc_window;
-		symbol_order_view_.GetWindowRect(&rc_order_view);
-
-		symbol_tick_view_.GetWindowRect(&rc_tick_view);
-		ScreenToClient(rc_order_view);
-		ScreenToClient(rc_tick_view);
-		const int window_width = rc_order_view.Width() + rc_tick_view.Width();
-		symbol_tick_view_.SetWindowPos(this, rc_order_view.right, rc_tick_view.top, rc_tick_view.Width(), rc_tick_view.Height(), SWP_NOSIZE | SWP_NOZORDER);
-
-		CWnd* parent = GetParent();
-		GetWindowRect(rc_window);
-		parent->ScreenToClient(rc_window);
-		rc_window.right = rc_order_view.Width() + rc_tick_view.Width();
-		SetWindowPos(parent, rc_window.right, rc_window.top, rc_window.Width(), rc_window.Height(), SWP_NOMOVE | SWP_NOZORDER);
-
-	}
-	*/
-	RecalcOrderAreaHeight(this);
-	symbol_order_view_.Invalidate();
+	recal_window_size();
+	trigger_resize_event();
 }
 
 void AbAccountOrderCenterWindow::on_symbol_event(std::shared_ptr<DarkHorse::SmSymbol> symbol)
@@ -360,6 +348,45 @@ void AbAccountOrderCenterWindow::OnTimer(UINT_PTR nIDEvent)
 	}
 }
 
+
+void AbAccountOrderCenterWindow::trigger_resize_event()
+{
+	CWnd* parent = GetParent();
+
+	if (account_)
+		((AbAccountOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+	if (fund_)
+		((AbFundOrderWindow*)parent)->RecalcChildren(show_symbol_tick_view_ ? CM_SHOW_TICK : CM_HIDE_TICK);
+}
+
+void AbAccountOrderCenterWindow::recal_window_size()
+{
+	CRect rc_order_view, rc_tick_view, rc_window;
+	symbol_order_view_.GetWindowRect(&rc_order_view);
+
+
+	// 주문그리드 위치를 가져온다.
+	//CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
+	// 주문설정 보기 옵션에 따라 주문 그리드 하단을 설정한다.
+	//int orderGridBottom = _ShowRemainConfig ? availableHeight - rcGrid.top - ConfigHeight : availableHeight - rcGrid.top;
+	//CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
+	// 주문 그리드 위치 및 크기 설정
+	//rcGrid.left = 0;
+	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
+	rcGrid.bottom = rc_order_view.Height() - extra_height_;
+	const int tick_width = rcTick.Width();
+	rcTick.left = rcGrid.right;
+	rcTick.right = rcTick.left + tick_width;
+
+	if (show_symbol_tick_view_) {
+		symbol_tick_view_.ShowWindow(SW_SHOW);
+		window_width = symbol_order_view_.get_entire_width() + rcTick.Width();
+	}
+	else {
+		symbol_tick_view_.ShowWindow(SW_HIDE);
+		window_width = symbol_order_view_.get_entire_width();
+	}
+}
 
 void AbAccountOrderCenterWindow::request_symbol_quote(const std::string& symbol_code)
 {

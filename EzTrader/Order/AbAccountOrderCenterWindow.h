@@ -86,6 +86,14 @@ public:
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
 private:
+	int window_width = 0;
+	int window_height = 0;
+	CRect rcGrid;
+	CRect rcTick;
+	int extra_height_ = 0;
+	bool show_symbol_tick_view_ = false;
+	void trigger_resize_event();
+	void recal_window_size();
 	void request_symbol_quote(const std::string& symbol_code);
 	void request_symbol_hoga(const std::string& symbol_code);
 	void init_control();

@@ -840,10 +840,41 @@ namespace DarkHorse {
 
 	void SmSaveManager::restore_dm_mini_jango_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_restore)
 	{
-		std::string full_file_name;
-		full_file_name = SmConfigManager::GetApplicationPath();
-		full_file_name.append(_T("\\user\\"));
-		full_file_name.append(filename);
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+		appPath.append(filename);
+		std::string full_file_name = appPath;
+
+// 		std::string full_file_name;
+// 		full_file_name = SmConfigManager::GetApplicationPath();
+// 		full_file_name.append(_T("\\user\\"));
+// 		full_file_name.append(filename);
 
 		if (!fs::exists(full_file_name))
 			return;
@@ -854,13 +885,28 @@ namespace DarkHorse {
 		file.close();
 
 		for (const auto& dialog_json : dialog_data) {
-			int x = dialog_json["x"].get<int>();
-			int y = dialog_json["y"].get<int>();
-			int width = dialog_json["width"].get<int>();
-			int height = dialog_json["height"].get<int>();
+			const int x = dialog_json["x"].get<int>();
+			const int y = dialog_json["y"].get<int>();
+			const int width = dialog_json["width"].get<int>();
+			const int height = dialog_json["height"].get<int>();
+			bool old_version = true;
+			if (dialog_json.contains("type"))
+				old_version = false;
+
+			const int mode = dialog_json["mode"].get<int>();
+			const std::string type = dialog_json["type"].get<std::string>();
+			std::string target;
+			if (mode == 0)
+				target = dialog_json["accoount_no"].get<std::string>();
+			else
+				target = dialog_json["fund_name"].get<std::string>();
 
 			// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
-			std::shared_ptr<MiniJangoDialog>  totalAssetDialog = std::make_shared<MiniJangoDialog>(parent_window, "9");
+			std::shared_ptr<MiniJangoDialog>  totalAssetDialog;
+			if (!old_version)
+				totalAssetDialog = std::make_shared<MiniJangoDialog>(parent_window, "9", mode, target);
+			else
+				totalAssetDialog = std::make_shared<MiniJangoDialog>(parent_window);
 			totalAssetDialog->Create(IDD_JANGO, parent_window);
 			map_to_restore[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
 			totalAssetDialog->MoveWindow(x, y, width, height, TRUE);
@@ -871,11 +917,41 @@ namespace DarkHorse {
 
 	void SmSaveManager::restore_total_asset_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_restore)
 	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
 
-		std::string full_file_name;
-		full_file_name = SmConfigManager::GetApplicationPath();
-		full_file_name.append(_T("\\user\\"));
-		full_file_name.append(filename);
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+		appPath.append(filename);
+		std::string full_file_name = appPath;
+
+//		std::string full_file_name;
+// 		full_file_name = SmConfigManager::GetApplicationPath();
+// 		full_file_name.append(_T("\\user\\"));
+// 		full_file_name.append(filename);
 
 		if (!fs::exists(full_file_name))
 			return;
@@ -890,9 +966,18 @@ namespace DarkHorse {
 			int y = dialog_json["y"].get<int>();
 			int width = dialog_json["width"].get<int>();
 			int height = dialog_json["height"].get<int>();
+			bool old_version = true;
+			if (dialog_json.contains("type"))
+				old_version = false;
+			const std::string type = dialog_json["type"].get<std::string>();
+			const std::string account_no = dialog_json["account_no"].get<std::string>();
 
 			// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
-			std::shared_ptr< TotalAssetProfitLossDialog>  totalAssetDialog = std::make_shared<TotalAssetProfitLossDialog>();
+			std::shared_ptr< TotalAssetProfitLossDialog>  totalAssetDialog = nullptr;
+			if (!old_version)
+				totalAssetDialog = std::make_shared<TotalAssetProfitLossDialog>(parent_window, type, account_no);
+			else
+				totalAssetDialog = std::make_shared<TotalAssetProfitLossDialog>(parent_window);
 			totalAssetDialog->Create(IDD_TOTAL_ASSET, parent_window);
 			map_to_restore[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
 			totalAssetDialog->MoveWindow(x, y, width, height, TRUE);
@@ -903,10 +988,41 @@ namespace DarkHorse {
 	void SmSaveManager::save_total_asset_windows(const std::string& filename, const std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_save)
 	{
 
-		std::string full_file_name;
-		full_file_name = SmConfigManager::GetApplicationPath();
-		full_file_name.append(_T("\\user\\"));
-		full_file_name.append(filename);
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+		appPath.append(filename);
+		std::string full_file_name = appPath;
+
+// 		std::string full_file_name;
+// 		full_file_name = SmConfigManager::GetApplicationPath();
+// 		full_file_name.append(_T("\\user\\"));
+// 		full_file_name.append(filename);
 
 		json dialog_data;
 
@@ -921,6 +1037,8 @@ namespace DarkHorse {
 			dialog_json["y"] = rect.top;
 			dialog_json["width"] = rect.right - rect.left;
 			dialog_json["height"] = rect.bottom - rect.top;
+			dialog_json["type"] = pair.second->type();
+			dialog_json["account_no"] = pair.second->account_no();
 
 			dialog_data.push_back(dialog_json);
 		}
@@ -934,10 +1052,41 @@ namespace DarkHorse {
 	{
 		if (map_to_save.empty()) return;
 
-		std::string full_file_name;
-		full_file_name = SmConfigManager::GetApplicationPath();
-		full_file_name.append(_T("\\user\\"));
-		full_file_name.append(filename);
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+		appPath.append(filename);
+		std::string full_file_name = appPath;
+
+// 		std::string full_file_name;
+// 		full_file_name = SmConfigManager::GetApplicationPath();
+// 		full_file_name.append(_T("\\user\\"));
+// 		full_file_name.append(filename);
 
 		json dialog_data;
 
@@ -952,6 +1101,12 @@ namespace DarkHorse {
 			dialog_json["y"] = rect.top;
 			dialog_json["width"] = rect.right - rect.left;
 			dialog_json["height"] = rect.bottom - rect.top;
+			dialog_json["mode"] = pair.second->Mode();
+			dialog_json["type"] = pair.second->Type();
+			if (pair.second->Mode() == 0) // for account
+				dialog_json["accoount_no"] = pair.second->account_no();
+			else
+				dialog_json["fund_name"] = pair.second->fund_name();
 
 			dialog_data.push_back(dialog_json);
 		}
@@ -960,42 +1115,6 @@ namespace DarkHorse {
 		file << dialog_data.dump(4);
 		file.close();
 	}
-	/*
-	void SmSaveManager::restore_dm_account_order_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore)
-	{
-
-		std::string full_file_name;
-		full_file_name = SmConfigManager::GetApplicationPath();
-		full_file_name.append(_T("\\user\\"));
-		full_file_name.append(filename);
-
-		if (!fs::exists(full_file_name))
-			return;
-
-		std::ifstream file(full_file_name);
-		json dialog_data;
-		file >> dialog_data;
-		file.close();
-
-		for (const auto& dialog_json : dialog_data) {
-			int x = dialog_json["x"].get<int>();
-			int y = dialog_json["y"].get<int>();
-			int width = dialog_json["width"].get<int>();
-			int height = dialog_json["height"].get<int>();
-
-			size_t center_window_count = dialog_json["center_window_count"].get<size_t>();
-			std::string account_no = dialog_json["account_no"].get<std::string>();
-			// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
-			DmAccountOrderWindow* account_order_window = new DmAccountOrderWindow(parent_window, center_window_count, account_no);
-			account_order_window->loadFromJson(dialog_data);
-
-			account_order_window->Create(IDD_DM_ACNT_ORDER_MAIN, parent_window);
-			map_to_restore[account_order_window->GetSafeHwnd()] = account_order_window;
-			account_order_window->MoveWindow(x, y, width, height, TRUE);
-			account_order_window->ShowWindow(SW_SHOW);
-		}
-	}
-	*/
 
 	std::string SmSaveManager::find_latestfile_with_prefix(const std::string& directory, const std::string& prefix) {
 		std::string latestFile;

@@ -90,6 +90,10 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::strin
 {
 		id_ = IdGenerator::get_id();
 		symbol_order_view_.order_set(order_set);
+		if (order_set_.show_symbol_tick)
+			show_symbol_tick_view_ = true;
+		else
+			show_symbol_tick_view_ = false;
 		symbol_order_view_.symbol_type(SymbolType::Domestic);
 		symbol_position_view_.symbol_type(SymbolType::Domestic);
 		symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
@@ -718,6 +722,12 @@ void DmAccountOrderCenterWindow::reset_order_set()
 	order_set_.stop_width = grid_header_vector[8].width;
 }
 
+void DmAccountOrderCenterWindow::refresh_tick_view()
+{
+	recal_window_size();
+	trigger_resize_event();
+}
+
 void DmAccountOrderCenterWindow::set_order_view(const DarkHorse::OrderSetEvent& event)
 {
 	order_set_ = event;
@@ -871,6 +881,7 @@ void DmAccountOrderCenterWindow::OnSize(UINT nType, int cx, int cy)
 void DmAccountOrderCenterWindow::OnBnClickedCheckShowRealQuote()
 {
 	show_symbol_tick_view_ ? show_symbol_tick_view_ = false : show_symbol_tick_view_ = true;
+	order_set_.show_symbol_tick = show_symbol_tick_view_;
 	recal_window_size();
 	trigger_resize_event();
 }
@@ -1080,7 +1091,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSearch()
 	//symbol_table_dialog_->Create(IDD_SYMBOL_TABLE, this);
 	//_SymbolTableDlg->OrderWnd = this;
 	//symbol_table_dialog_->ShowWindow(SW_SHOW);
-	reset_order_set();
+	//reset_order_set();
 	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);
 	order_set_dialog_->SetDmAccountWnd(this);
@@ -1090,7 +1101,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnSearch()
 
 void DmAccountOrderCenterWindow::OnBnClickedBtnSet()
 {
-	reset_order_set();
+	//reset_order_set();
 	order_set_dialog_ = std::make_shared<SmOrderSetDialog>(this, symbol_order_view_.get_id(), order_set_);
 	order_set_dialog_->SetDmAccountWnd(this);
 	order_set_dialog_->Create(IDD_ORDER_SET, this);

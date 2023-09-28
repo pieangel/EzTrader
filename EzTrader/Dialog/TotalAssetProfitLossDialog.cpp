@@ -25,6 +25,14 @@ TotalAssetProfitLossDialog::TotalAssetProfitLossDialog(CWnd* pParent /*=nullptr*
 	EnableLayout();
 }
 
+TotalAssetProfitLossDialog::TotalAssetProfitLossDialog(CWnd* pParent, const std::string& type, const std::string& account_no)
+	: CBCGPDialog(IDD_TOTAL_ASSET, pParent), type_(type), account_no_(account_no)
+{
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+}
+
+
 TotalAssetProfitLossDialog::~TotalAssetProfitLossDialog()
 {
 }
@@ -50,6 +58,7 @@ void TotalAssetProfitLossDialog::SetAccount()
 {
 	std::vector<std::shared_ptr<DarkHorse::SmAccount>> account_vector;
 	mainApp.AcntMgr()->get_main_account_vector(account_vector);
+	int selected_index = 0;
 	for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
 		auto account = *it;
 		if (account->is_subaccount()) continue;
@@ -63,11 +72,13 @@ void TotalAssetProfitLossDialog::SetAccount()
 		account_info.append(account->No());
 		const int index = _ComboAccount.AddString(account_info.c_str());
 		_ComboAccountMap[index] = account;
-
+		if (account_no_ == account->No()) {
+			selected_index = index;
+		}
 	}
 
 	if (!_ComboAccountMap.empty()) {
-		_CurrentAccountIndex = 0;
+		_CurrentAccountIndex = selected_index;
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
 		total_asset_profit_loss_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
 	}
@@ -110,11 +121,13 @@ void TotalAssetProfitLossDialog::OnCbnSelchangeComboAccount()
 
 	_CurrentAccountIndex = cur_sel;
 	auto account = _ComboAccountMap[_CurrentAccountIndex];
+	if (!account) return;
+	account_no_ = account->No();
+	type_ = account->Type();
 	total_asset_profit_loss_view_.Account(account);
 
 	total_asset_profit_loss_view_.SetAssetInfo();
 	total_asset_profit_loss_view_.Invalidate();
-	if (!account) return;
 	DhTaskArg arg;
 	arg.detail_task_description = account->No();
 	arg.task_type = DhTaskType::AccountProfitLoss;

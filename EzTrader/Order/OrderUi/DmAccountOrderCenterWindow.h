@@ -55,6 +55,8 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DM_ACNT_ORDER_CENTER};
 #endif
+	bool show_symbol_tick_view() const { return show_symbol_tick_view_; }
+	void show_symbol_tick_view(bool val) { show_symbol_tick_view_ = val; }
 public:
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
@@ -160,6 +162,7 @@ private:
 	void reset_order_set();
 	DarkHorse::OrderType position_type_{ DarkHorse::OrderType::None };
 public:
+	void refresh_tick_view();
 	void set_order_view(const DarkHorse::OrderSetEvent& order_set);
 	void set_order_set(const DarkHorse::OrderSetEvent& order_set);
 	int order_window_id() const { return order_window_id_; }

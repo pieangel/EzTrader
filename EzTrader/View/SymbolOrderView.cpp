@@ -519,6 +519,7 @@ void SymbolOrderView::update_quote()
 	set_quote_value(quote.open, SmCellType::CT_QUOTE_OPEN);
 	set_quote_value(quote.high, SmCellType::CT_QUOTE_HIGH);
 	set_quote_value(quote.low, SmCellType::CT_QUOTE_LOW);
+	set_quote_value(quote.pre_day_close, SmCellType::CT_QUOTE_PRECLOSE);
 	//update_position();
 	//Invalidate();
 	//_EnableQuoteShow = true;
@@ -811,7 +812,7 @@ void SymbolOrderView::set_quote_color()
 		int highRow = find_row(quote.high);
 		int closeRow = find_row(quote.close);
 		int openRow = find_row(quote.open);
-
+		
 		if (quote.close > quote.open) { // ¾çºÀ
 			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
 				if (it->second < highRow) set_quote_cell(it->second, true, SmMarkType::MT_NONE);

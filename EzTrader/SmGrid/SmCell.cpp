@@ -168,6 +168,9 @@ namespace DarkHorse {
 			pGM->DrawText("O", text_rect, res.QuoteTextFormat, res.QuoteOpenBrush);
 			break;
 		case CT_QUOTE_CLOSE:
+			//pGM->DrawText("", text_rect, res.QuoteTextFormat, res.QuoteCloseBrush);
+			break;
+		case CT_QUOTE_PRECLOSE:
 			pGM->DrawText("C", text_rect, res.QuoteTextFormat, res.QuoteCloseBrush);
 			break;
 		}

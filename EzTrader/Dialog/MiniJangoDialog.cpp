@@ -20,16 +20,31 @@
 using namespace DarkHorse;
 IMPLEMENT_DYNAMIC(MiniJangoDialog, CBCGPDialog)
 
-// MiniJangoDialog::MiniJangoDialog(CWnd* pParent /*=nullptr*/)
-// 	: CBCGPDialog(IDD_JANGO, pParent)
-// {
-// 	EnableVisualManagerStyle(TRUE, TRUE);
-// 	EnableLayout();
-// }
+MiniJangoDialog::MiniJangoDialog(CWnd* pParent /*=nullptr*/)
+	: CBCGPDialog(IDD_JANGO, pParent)
+{
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+}
 
 MiniJangoDialog::MiniJangoDialog(CWnd* pParent, const std::string& type)
 	: CBCGPDialog(IDD_JANGO, pParent), type_(type)
 {
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+}
+
+
+MiniJangoDialog::MiniJangoDialog(CWnd* pParent, const std::string& type, const int mode, const std::string& target)
+	: CBCGPDialog(IDD_JANGO, pParent), type_(type), _Mode(mode)
+{
+	if (mode == 0)
+	{
+		account_no_ = target;
+	}
+	else {
+		fund_name_ = target;
+	}
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }
@@ -107,6 +122,7 @@ void MiniJangoDialog::SetAccount()
 	std::vector<std::shared_ptr<SmAccount>> main_account_vector;
 	mainApp.AcntMgr()->get_main_account_vector(type_, main_account_vector);
 	if (main_account_vector.empty()) return;
+	int selected_index = 0;
 	for (auto ita = main_account_vector.begin(); ita != main_account_vector.end(); ++ita) {
 		auto main_acnt = *ita;
 		std::string account_info;
@@ -116,6 +132,8 @@ void MiniJangoDialog::SetAccount()
 		const int index = _ComboAccount.AddString(account_info.c_str());
 		_ComboAccountMap[index] = main_acnt->No();
 		//_AccountComboMap[main_acnt->No()] = index;
+		if (account_no_ == main_acnt->No())
+			selected_index = index;
 
 		const std::vector<std::shared_ptr<SmAccount>>& sub_account_vector = main_acnt->get_sub_accounts();
 		for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); it++) {
@@ -127,11 +145,13 @@ void MiniJangoDialog::SetAccount()
 			const int index = _ComboAccount.AddString(account_info.c_str());
 			_ComboAccountMap[index] = account->No();
 			//_AccountComboMap[account->No()] = index;
+			if (account_no_ == account->No())
+				selected_index = index;
 		}
 	}
 
 	if (!_ComboAccountMap.empty()) {
-		_CurrentAccountIndex = 0;
+		_CurrentAccountIndex = selected_index;
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
 		const std::string account_no = _ComboAccountMap[_CurrentAccountIndex];
 		auto account = mainApp.AcntMgr()->FindAccount(account_no);
@@ -146,18 +166,19 @@ void MiniJangoDialog::SetFund()
 {
 	_StaticCombo.SetWindowText("ÆÝµå");
 	const std::map<std::string, std::shared_ptr<SmFund>>& fund_map = mainApp.FundMgr()->GetFundMap();
-
+	int selected_index = 0;
 	for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
 		auto fund = it->second;
 		std::string account_info;
 		account_info.append(fund->Name());
 		const int index = _ComboAccount.AddString(account_info.c_str());
 		_ComboFundMap[index] = fund->Name();
-
+		if (fund_name_ == fund->Name())
+			selected_index = index;
 	}
 
 	if (!_ComboFundMap.empty()) {
-		_CurrentAccountIndex = 0;
+		_CurrentAccountIndex = selected_index;
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
 		const std::string cur_fund_name = _ComboFundMap[_CurrentAccountIndex];
 		auto fund = mainApp.FundMgr()->FindFund(cur_fund_name);
@@ -177,6 +198,7 @@ void MiniJangoDialog::OnCbnSelchangeComboAccount()
 		const std::string& account_no = _ComboAccountMap[_CurrentAccountIndex];
 		auto account = mainApp.AcntMgr()->FindAccount(account_no);
 		if (account == nullptr) return;
+		account_no_ = account_no;
 		account_profit_loss_view_.Account(account);
 		account_position_view_.Account(account);
 		account_profit_loss_view_.Invalidate();
@@ -197,6 +219,7 @@ void MiniJangoDialog::OnCbnSelchangeComboAccount()
 		const std::string cur_fund_name = _ComboFundMap[_CurrentAccountIndex];
 		auto fund = mainApp.FundMgr()->FindFund(cur_fund_name);
 		if (fund == nullptr) return;
+		fund_name_ = cur_fund_name;
 		account_profit_loss_view_.Fund(fund);
 		account_position_view_.Fund(fund);
 		//account_profit_loss_view_.UpdateFundAssetInfo();

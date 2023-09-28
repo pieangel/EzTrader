@@ -4,7 +4,8 @@ namespace DarkHorse {
 		MT_NONE,
 		MT_BUY,
 		MT_SELL,
-		MT_HILO
+		MT_HILO,
+		MT_PRECLOSE
 	};
 	enum SmCellType {
 		CT_NORMAL,
@@ -35,6 +36,7 @@ namespace DarkHorse {
 		CT_MARK_HILO,
 		CT_MARK_BUY,
 		CT_MARK_SELL,
+		CT_MARK_PRECLOSE,
 		CT_ORDER_PRESENT,
 		CT_ORDER_HAS_BEEN,
 		CT_BUY_HOGA1,
