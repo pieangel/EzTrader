@@ -86,12 +86,7 @@ namespace DarkHorse {
 	void OrderControl::add_order(const std::string& account_no, const std::string& symbol_code)
 	{
 		auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
-		//auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
-		//const std::map<std::string, order_p>& accepted_order_map = symbol_order_manager->get_accepted_order_map();
-
 		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_->SymbolCode());
-		//const std::map<std::string, order_p>& order_map = symbol_order_manager->get_accepted_order_map();
-
 		std::vector<order_p> order_vec;
 		symbol_order_manager->get_accepted_order_vector(order_vec);
 		if (order_vec.empty()) return;
@@ -123,6 +118,7 @@ namespace DarkHorse {
 			account_map_[account_->No()] = account_;
 		}
 		else {
+			account_map_.clear();
 			account_map_[account_->No()] = account_;
 			const auto& account_vector = account_->get_sub_accounts();
 			for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
@@ -138,6 +134,7 @@ namespace DarkHorse {
 	{
 		if (!fund) return;
 		fund_ = fund;
+		account_map_.clear();
 		const auto& account_vector = fund->GetAccountVector();
 		for (auto it = account_vector.begin(); it != account_vector.end(); ++it) {
 			auto sub_account = *it;
@@ -174,11 +171,6 @@ namespace DarkHorse {
 	{
 		add_order(order);
 	}
-
-// 	void OrderControl::add_account_id(const int account_id)
-// 	{
-// 		account_id_set_.insert(account_id);
-// 	}
 
 	std::pair<int, int> OrderControl::get_order_count(const SmPositionType& position, const int price)
 	{

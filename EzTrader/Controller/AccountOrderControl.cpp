@@ -48,6 +48,7 @@ void AccountOrderControl::load_order_from_account(account_p account)
 	}
 	else {
 		load_order_from_account(account->No());
+		account_set_.insert(account->No());
 		const std::vector<std::shared_ptr<SmAccount>>& sub_accounts = account->get_sub_accounts();
 		for (auto it = sub_accounts.begin(); it != sub_accounts.end(); it++) {
 			load_order_from_account((*it)->No());
@@ -118,7 +119,6 @@ void AccountOrderControl::on_order_accepted(std::shared_ptr<Order> order)
 
 void AccountOrderControl::add_accepted_order(const std::map<std::string, order_p>& accepted_order_map)
 {
-	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	if (accepted_order_map.empty()) return;
 	for (auto it = accepted_order_map.begin(); it != accepted_order_map.end(); it++) {
 		add_order(it->second);
