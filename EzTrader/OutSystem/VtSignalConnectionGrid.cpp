@@ -24,10 +24,17 @@
 #include "../Controller/QuoteControl.h"
 #include "../Quote/SmQuoteManager.h"
 #include "../Global/SmConst.h"
+#include "../Util/IdGenerator.h"
+#include "../Dialog/SmAccountFundSelector.h"
 
 using namespace DarkHorse;
 VtSignalConnectionGrid::VtSignalConnectionGrid()
+	:id_(IdGenerator::get_id())
 {
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&VtSignalConnectionGrid::set_symbol_from_out, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_account_event_handler(id_, std::bind(&VtSignalConnectionGrid::set_account_from_out, this, std::placeholders::_1, std::placeholders::_2));
+	mainApp.event_hub()->subscribe_fund_event_handler(id_, std::bind(&VtSignalConnectionGrid::set_fund_from_out, this, std::placeholders::_1, std::placeholders::_2));
+
 }
 
 
@@ -78,11 +85,11 @@ void VtSignalConnectionGrid::OnDClicked(int col, long row, RECT *rect, POINT *po
 
 void VtSignalConnectionGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
-	if (_ClickedRow == row)
-		return;
+	//if (_ClickedRow == row)
+	//	return;
 
 	if (_ClickedRow >= 0) {
-		for (int i = 0; i < _ColCount; ++i) {
+		for (int i = 0; i < _ColCount - 1; ++i) {
 			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
 			QuickRedrawCell(i, _ClickedRow);
 		}
@@ -99,16 +106,16 @@ void VtSignalConnectionGrid::OnLClicked(int col, long row, int updn, RECT *rect,
 
 void VtSignalConnectionGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
-	if (_ClickedRow == row)
-		return;
+	//if (_ClickedRow == row)
+	//	return;
 
 	if (_ClickedRow >= 0) {
-		for (int i = 0; i < _ColCount; ++i) {
+		for (int i = 0; i < _ColCount - 1; ++i) {
 			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
 			QuickRedrawCell(i, _ClickedRow);
 		}
 	}
-	for (int i = 0; i < _ColCount; ++i) {
+	for (int i = 0; i < _ColCount - 1; ++i) {
 		QuickSetBackColor(i, row, _ClickedColor);
 		QuickRedrawCell(i, row);
 	}
@@ -121,20 +128,20 @@ void VtSignalConnectionGrid::OnMouseMove(int col, long row, POINT *point, UINT n
 		return;
 
 	if (_OldSelRow != _ClickedRow && _OldSelRow >= 0) {
-		for (int i = 0; i < _ColCount; ++i) {
+		for (int i = 0; i < _ColCount - 1; ++i) {
 			QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
 			QuickRedrawCell(i, _OldSelRow);
 		}
 	}
 
 	if (row != _ClickedRow) {
-		for (int i = 0; i < _ColCount; ++i) {
+		for (int i = 0; i < _ColCount - 1; ++i) {
 			QuickSetBackColor(i, row, _SelColor);
 			QuickRedrawCell(i, row);
 		}
 	}
 	else {
-		for (int i = 0; i < _ColCount; ++i) {
+		for (int i = 0; i < _ColCount - 1; ++i) {
 			QuickSetBackColor(i, row, _ClickedColor);
 			QuickRedrawCell(i, row);
 		}
@@ -174,7 +181,7 @@ void VtSignalConnectionGrid::OnMouseLeaveFromMainGrid()
 	if (_OldSelRow == _ClickedRow)
 		return;
 
-	for (int i = 0; i < _ColCount; ++i) {
+	for (int i = 0; i < _ColCount - 1; ++i) {
 		QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
 		QuickRedrawCell(i, _OldSelRow);
 	}
@@ -331,7 +338,8 @@ void VtSignalConnectionGrid::InitGrid()
 				cell.SetAlignment(UG_ALIGNCENTER | UG_ALIGNVCENTER);
 				cell.SetFont(&_titleFont);
 				cell.SetTextColor(RGB(0, 0, 0));
-				cell.SetBackColor(RGB(218, 226, 245));
+				//cell.SetBackColor(RGB(218, 226, 245));
+				cell.SetBackColor(_ClickedColor);
 				cell.SetText("로그보기");
 				SetCell(xIndex, yIndex, &cell);
 			}
@@ -683,20 +691,126 @@ void VtSignalConnectionGrid::ClearCheck(std::shared_ptr<SmOutSystem> sys)
 	}
 }
 
+void VtSignalConnectionGrid::set_symbol_from_out(const int window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (window_id != id_ || !symbol || _ButtonCol == -2 || _ButtonRow == -2) return;
+
+	try {
+		auto sys = _SystemMap[_ButtonRow];
+		if (!sys)
+			return;
+
+		auto outSysOrderMgr = mainApp.out_system_manager();
+		if (sys->enable())
+			outSysOrderMgr->remove_active_out_system(sys);
+
+		if (sys) {
+			CUGCell cell;
+			GetCell(_ButtonCol, _ButtonRow, &cell);
+			cell.SetText(symbol->SymbolCode().c_str());
+			//cell.Tag(sym);
+			SetCell(_ButtonCol, _ButtonRow, &cell);
+			sys->symbol(symbol);
+			QuickRedrawCell(_ButtonCol, _ButtonRow);
+			if (sys->enable())
+				outSysOrderMgr->add_active_out_system(sys);
+		}
+
+	}
+	catch (std::exception& e) {
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
+	}
+}
+
+void VtSignalConnectionGrid::set_account_from_out(const int window_id, std::shared_ptr<DarkHorse::SmAccount> account)
+{
+	if (window_id != id_ || !account || _ButtonCol == -2 || _ButtonRow == -2) return;
+
+	try {
+		auto sys = _SystemMap[_ButtonRow];
+		if (!sys)
+			return;
+
+		auto outSysOrderMgr = mainApp.out_system_manager();
+		if (sys->enable())
+			outSysOrderMgr->remove_active_out_system(sys);
+
+		if (sys) {
+			CUGCell cell;
+			GetCell(_ButtonCol, _ButtonRow, &cell);
+			cell.SetText(account->No().c_str());
+			//cell.Tag(sym);
+			SetCell(_ButtonCol, _ButtonRow, &cell);
+			sys->account(account);
+			if (account->is_subaccount()) {
+				sys->order_type(OrderType::SubAccount);
+			}
+			else {
+				sys->order_type(OrderType::MainAccount);
+			}
+			QuickRedrawCell(_ButtonCol, _ButtonRow);
+			if (sys->enable())
+				outSysOrderMgr->add_active_out_system(sys);
+		}
+
+	}
+	catch (std::exception& e) {
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
+	}
+}
+
+void VtSignalConnectionGrid::set_fund_from_out(const int window_id, std::shared_ptr<DarkHorse::SmFund> fund)
+{
+	if (window_id != id_ || !fund || _ButtonCol == -2 || _ButtonRow == -2) return;
+
+	try {
+		auto sys = _SystemMap[_ButtonRow];
+		if (!sys)
+			return;
+
+		auto outSysOrderMgr = mainApp.out_system_manager();
+		if (sys->enable())
+			outSysOrderMgr->remove_active_out_system(sys);
+
+		if (sys) {
+			CUGCell cell;
+			GetCell(_ButtonCol, _ButtonRow, &cell);
+			cell.SetText(fund->Name().c_str());
+			//cell.Tag(sym);
+			SetCell(_ButtonCol, _ButtonRow, &cell);
+			sys->fund(fund);
+			sys->order_type(OrderType::Fund);
+			QuickRedrawCell(_ButtonCol, _ButtonRow);
+			if (sys->enable())
+				outSysOrderMgr->add_active_out_system(sys);
+		}
+
+	}
+	catch (std::exception& e) {
+		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+	}
+	catch (...) {
+		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
+	}
+}
+
 int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, long param)
 {
 	try {
 	if (msg == UGCT_DROPLISTSTART) {
 		CStringList* pList = (CStringList*)param;
 		pList->RemoveAll();
-		/*
-		VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
-		OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
-		for (size_t loop = 0; loop < sigDefVec.size(); loop++) {
-			SharedOutSigDef sig = sigDefVec[loop];
-			pList->AddTail(sig->SignalName.c_str());
+		auto signal_def_vector = mainApp.out_system_manager()->get_out_system_signal_map();
+		int selIndex = -1;
+		for (size_t i = 0; i < signal_def_vector.size(); i++) {
+			pList->AddTail(signal_def_vector[i]->name.c_str());
 		}
-		*/
 	}
 	if (msg == UGCT_DROPLISTSELECT) {
 		CUGCell cell;
@@ -707,27 +821,20 @@ int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, lon
 		if (!sys)
 			return TRUE;
 
-		//VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+		 auto outSysOrderMgr = mainApp.out_system_manager();
 		// 먼저 기존 시그널을 없애 준다.
-		//if (sys->enable())
-		//	outSysOrderMgr->RemoveSystem(sys);
+		if (sys->enable())
+			outSysOrderMgr->remove_active_out_system(sys);
 
 		// 새로운 시그널을 등록해 준다.
 		CString * pString = (CString*)param;
 		std::string sigName(*pString);
-		//VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
-		//SharedOutSigDef sig = outSigMgr->FindOutSigDef(sigName);
-		/*
-		if (sig) {
-			sys->OutSignal(sig);
-			CUGCell cell;
-			GetCell(col, row, &cell);
-			cell.SetText(sig->SignalName.c_str());
-			QuickRedrawCell(col, row);
-			if (sys->Enable())
-				outSysOrderMgr->AddSystem(sys);
-		}
-		*/
+		sys->name(sigName);
+		GetCell(col, row, &cell);
+		cell.SetText(sigName.c_str());
+		QuickRedrawCell(col, row);
+		if (sys->enable())
+			outSysOrderMgr->add_active_out_system(sys);
 	}
 
 	}
@@ -782,15 +889,17 @@ int VtSignalConnectionGrid::OnEllipsisButton(long ID, int col, long row, long ms
 	if (msg == UGCT_ELLIPSISBUTTONCLICK) {
 		if (nParam == ELLIPSISBUTTON_CLICK_ACNT) {
 			_ButtonRow = row;
-			//VtAccountFundSelector dlg;
-			//dlg.SetSignalConnectionGrid(this);
-			//dlg.DoModal();
+			_ButtonCol = col;
+			SmAccountFundSelector dlg;
+			dlg.set_source_id(id_);
+			dlg.DoModal();
 		}
 		else if (nParam == ELLIPSISBUTTON_CLICK_PRDT) {
 			_ButtonRow = row;
-			//HdSymbolSelecter dlg;
-			//dlg.SetSigConGrid(this);
-			//dlg.DoModal();
+			_ButtonCol = col;
+			HdSymbolSelecter dlg;
+			dlg.set_source_window_id(id_);
+			dlg.DoModal();
 		}
 		else {
 			MessageBox("The button was clicked", "Cell Type Notification");

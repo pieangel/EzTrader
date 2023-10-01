@@ -37,6 +37,7 @@ public:
 	VtSignalConnectionGrid* ConnectGrid() const { return _ConnectGrid; }
 	void ConnectGrid(VtSignalConnectionGrid* val) { _ConnectGrid = val; }
 private:
+	COLORREF _ClickedColor = RGB(216, 234, 253);
 	void on_update_quote();
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	int OnButton(long ID, int col, long row, long msg, long param);

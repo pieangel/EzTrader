@@ -29,6 +29,7 @@ void SmAccountFundSelector::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(SmAccountFundSelector, CBCGPDialog)
 	ON_BN_CLICKED(IDC_RADIO_ACNT, &SmAccountFundSelector::OnBnClickedRadioAcnt)
 	ON_BN_CLICKED(IDC_RADIO_FUND, &SmAccountFundSelector::OnBnClickedRadioFund)
+	ON_BN_CLICKED(IDC_BTN_CLOSE, &SmAccountFundSelector::OnBnClickedBtnClose)
 END_MESSAGE_MAP()
 
 
@@ -64,4 +65,10 @@ void SmAccountFundSelector::OnBnClickedRadioFund()
 {
 	account_fund_view_.mode(1);
 	account_fund_view_.init_grid();
+}
+
+
+void SmAccountFundSelector::OnBnClickedBtnClose()
+{
+	SendMessage(WM_CLOSE, 0, 0);
 }

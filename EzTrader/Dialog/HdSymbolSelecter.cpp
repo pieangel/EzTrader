@@ -36,6 +36,7 @@ void HdSymbolSelecter::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(HdSymbolSelecter, CBCGPDialog)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_FUTOPT, &HdSymbolSelecter::OnTcnSelchangeTabFutopt)
 	ON_WM_SIZE()
+	ON_BN_CLICKED(IDOK, &HdSymbolSelecter::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
@@ -153,4 +154,10 @@ void HdSymbolSelecter::SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar)
 {
 	_FutPage.SetChartTimeToolBar(timeToolBar);
 	_OptPage.SetChartTimeToolBar(timeToolBar);
+}
+
+
+void HdSymbolSelecter::OnBnClickedOk()
+{
+	SendMessage(WM_CLOSE, 0, 0);
 }

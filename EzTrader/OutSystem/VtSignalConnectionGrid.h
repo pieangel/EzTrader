@@ -64,10 +64,13 @@ public:
 	void RefreshOrders();
 	void ClearCheck(std::shared_ptr<DarkHorse::SmOutSystem> sys);
 private:
+	void set_symbol_from_out(const int window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
+	void set_account_from_out(const int window_id, std::shared_ptr<DarkHorse::SmAccount> account);
+	void set_fund_from_out(const int window_id, std::shared_ptr<DarkHorse::SmFund> fund);
+	int id_{ 0 };
 	int _SelRow = -2;
 	int _OldSelRow = -2;
 	int _ClickedRow = -2;
-	int _ButtonRow = -2;
 	int _OccupiedRowCount = 0;
 	COLORREF _SelColor = RGB(255, 227, 132);
 	COLORREF _ClickedColor = RGB(216, 234, 253);
@@ -84,6 +87,8 @@ private:
 	std::map<int, int> _SystemToRowMap;
 	VtTotalSignalGrid* _TotalGrid = nullptr;
 	VtOrderLogDlg* _LogDlg = nullptr;
+	int _ButtonCol = -2;
+	int _ButtonRow = -2;
 };
 
 

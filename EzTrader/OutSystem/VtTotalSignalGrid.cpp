@@ -205,7 +205,7 @@ void VtTotalSignalGrid::RefreshOrders()
 		cell.SetAlignment(UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		cell.SetFont(&_titleFont);
 		cell.SetTextColor(RGB(0, 0, 0));
-		cell.SetBackColor(RGB(218, 226, 245));
+		cell.SetBackColor(_ClickedColor);
 		cell.Tag((void*)out_system.get());
 		cell.SetText("Ã»»ê");
 		SetCell(9, i, &cell);

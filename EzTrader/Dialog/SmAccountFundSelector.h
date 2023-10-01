@@ -37,4 +37,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedRadioAcnt();
 	afx_msg void OnBnClickedRadioFund();
+	afx_msg void OnBnClickedBtnClose();
 };

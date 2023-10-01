@@ -53,6 +53,7 @@ void AccountFundView::OnLButtonDown(UINT nFlags, CPoint point)
 	CString msg;
 	//msg.Format("%d", nColumn);
 	//AfxMessageBox(msg);
+	SetFocus();
 
 	if (mode_ == 0) {
 		auto found = row_to_account_map_.find(id.m_nRow);

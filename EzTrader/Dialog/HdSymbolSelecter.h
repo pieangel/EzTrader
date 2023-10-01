@@ -57,4 +57,6 @@ public:
 	void SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar);
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
+public:
+	afx_msg void OnBnClickedOk();
 };
