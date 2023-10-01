@@ -2,17 +2,20 @@
 //
 
 #include "stdafx.h"
+#include "../resource.h"
 #include "../DarkHorse.h"
 #include "VtAutoSignalManagerDialog.h"
 #include "afxdialogex.h"
 #include "../Global/SmConst.h"
+#include "../Dialog/SmAddConnectSignalDlg.h"
+#include "../Dialog/SmAddOutSigDefDlg.h"
 
 // VtAutoSignalManagerDialog dialog
 
 IMPLEMENT_DYNAMIC(VtAutoSignalManagerDialog, CBCGPDialog)
 
 VtAutoSignalManagerDialog::VtAutoSignalManagerDialog(CWnd* pParent /*=NULL*/)
-	: CBCGPDialog(IDD_SYS_AUTO_CONNECT, pParent)
+	: CBCGPDialog(IDD_SYS_AUTO_CONNECT1, pParent)
 {
 
 }
@@ -257,11 +260,16 @@ void VtAutoSignalManagerDialog::Resize()
 	Invalidate(TRUE);
 }
 
+void VtAutoSignalManagerDialog::add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system)
+{
+	_ConnectGrid.AddSystem(out_system);
+}
+
 void VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect()
 {
-	//VtAddConnectSignalDlg dlg;
-	//dlg.SigConGrid(&_ConnectGrid);
-	//dlg.DoModal();
+	SmAddConnectSignalDlg dlg;
+	dlg.auto_connect_dialog(this);
+	dlg.DoModal();
 }
 
 

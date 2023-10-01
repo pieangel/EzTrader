@@ -19,6 +19,7 @@
 #include "SmAutoSignalManagerDialog.h"
 #include "../Event/EventHub.h"
 #include <functional>
+#include "../OutSystem/VtAutoSignalManagerDialog.h"
 #include "../Util/IdGenerator.h"
 // VtAddConnectSignalDlg dialog
 using namespace DarkHorse;
@@ -261,6 +262,6 @@ void SmAddConnectSignalDlg::OnBnClickedBtnAdd()
 		symbol_
 	);
 
-	if (source_dialog_)
-		source_dialog_->add_out_system(out_system);
+	if (auto_connect_dialog_)
+		auto_connect_dialog_->add_out_system(out_system);
 }

@@ -4,7 +4,9 @@
 #include "VtSignalDefinitionGrid.h"
 #include "afxwin.h"
 #include <BCGCBProInc.h>
-
+namespace DarkHorse {
+	class SmOutSystem;
+}
 class VtAutoSignalManagerDialog : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(VtAutoSignalManagerDialog)
@@ -15,7 +17,7 @@ public:
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_SYS_AUTO_CONNECT };
+	enum { IDD = IDD_SYS_AUTO_CONNECT1 };
 #endif
 
 protected:
@@ -33,6 +35,7 @@ private:
 	void RefreshOrder();
 	void Resize();
 public:
+	void add_out_system(std::shared_ptr<DarkHorse::SmOutSystem> out_system);
 	afx_msg void OnBnClickedBtnAddConnect();
 	afx_msg void OnBnClickedBtnAddSignal();
 	afx_msg void OnBnClickedBtnDelConnect();

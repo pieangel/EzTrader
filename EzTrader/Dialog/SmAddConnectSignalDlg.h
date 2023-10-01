@@ -15,6 +15,7 @@ namespace DarkHorse {
 }
 class SmAutoSignalManagerDialog;
 class HdSymbolSelecter;
+class VtAutoSignalManagerDialog;
 class SmAddConnectSignalDlg : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(SmAddConnectSignalDlg)
@@ -28,9 +29,10 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ADD_SIG_CONNECT };
 #endif
-
 	SmAutoSignalManagerDialog* source_dialog() const { return source_dialog_; }
 	void source_dialog(SmAutoSignalManagerDialog* val) { source_dialog_ = val; }
+	VtAutoSignalManagerDialog* auto_connect_dialog() const { return auto_connect_dialog_; }
+	void auto_connect_dialog(VtAutoSignalManagerDialog* val) { auto_connect_dialog_ = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -55,6 +57,7 @@ public:
 	void InitOutSigDefCombo();
 
 private:
+	VtAutoSignalManagerDialog* auto_connect_dialog_ = nullptr;
 	std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
 	void set_symbol_from_out(const int window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	int id_ = 0;

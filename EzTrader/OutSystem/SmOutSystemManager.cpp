@@ -172,6 +172,22 @@ namespace DarkHorse {
 		return lastLine;
 	}
 
+	void SmOutSystemManager::add_active_out_system(std::shared_ptr<SmOutSystem> out_system)
+	{
+		if (!out_system) return;
+		auto found = active_out_system_map_.find(out_system->id());
+		if (found != active_out_system_map_.end())return;
+		active_out_system_map_.insert(std::make_pair(out_system->id(), out_system));
+	}
+
+	void SmOutSystemManager::remove_active_out_system(std::shared_ptr<SmOutSystem> out_system)
+	{
+		if (!out_system) return;
+		auto found = active_out_system_map_.find(out_system->id());
+		if (found == active_out_system_map_.end())return;
+		active_out_system_map_.erase(found);
+	}
+
 	void SmOutSystemManager::ProcessSignal(nlohmann::json&& signal)
 	{
 		try {

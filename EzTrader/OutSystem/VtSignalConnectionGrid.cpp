@@ -435,8 +435,8 @@ void VtSignalConnectionGrid::AddSystem(std::shared_ptr<SmOutSystem> sys)
 	try {
 	auto out_system_vector = mainApp.out_system_manager()->get_out_system_vector();
 	CUGCell cell;
-	int yIndex = out_system_vector.size();
-	for (int xIndex = 0; xIndex < _ColCount; ++xIndex) {
+	size_t yIndex = out_system_vector.size() - 1;
+	for (size_t xIndex = 0; xIndex < (size_t)_ColCount; ++xIndex) {
 		if (xIndex == 0) {
 			GetCell(xIndex, yIndex, &cell);
 			sys->enable() ? cell.SetNumber(1.0) : cell.SetNumber(0.0);
@@ -519,15 +519,14 @@ void VtSignalConnectionGrid::RemoveSystem()
 		auto  sys = it->second;
 		// 시스템을 정지 시킨다.
 		sys->enable(false);
-		//VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+		auto outSysOrderMgr = mainApp.out_system_manager();
 		// 주문관리자에서 삭제한다.
-		//outSysOrderMgr->RemoveSystem(sys);
+		outSysOrderMgr->remove_active_out_system(sys);
 		// 주문상태 목록을 리프레쉬 한다.
 		if (_TotalGrid) _TotalGrid->Refresh();
 
 		// 시스템 목록에서 삭제한다.
-		//VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
-		//outSysMgr->RemoveSystem(sys->id());
+		outSysOrderMgr->remove_out_system(sys);
 
 		// 모든 셀 정보를 초기화 시킨다.
 		CUGCell cell;
@@ -561,19 +560,19 @@ void VtSignalConnectionGrid::SetCheck(bool flag)
 	_TotalGrid->ClearCells();
 	int row = 0;
 	CUGCell cell;
-	//VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+	auto outSysOrderMgr = mainApp.out_system_manager();
 	for (auto it = _SystemMap.begin(); it != _SystemMap.end(); ++it) {
 		auto sys = _SystemMap[row];
 		GetCell(0, row, &cell);
 		if (flag) {
 			cell.SetNumber(1);
 			sys->enable(true);
-			//outSysOrderMgr->AddSystem(sys);
+			outSysOrderMgr->add_active_out_system(sys);
 		}
 		else {
 			cell.SetNumber(0);
 			sys->enable(false);
-			//outSysOrderMgr->RemoveSystem(sys);
+			outSysOrderMgr->remove_active_out_system(sys);
 		}
 		SetCell(0, row, &cell);
 		QuickRedrawCell(0, row);
@@ -745,7 +744,7 @@ int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, lon
 int VtSignalConnectionGrid::OnCheckbox(long ID, int col, long row, long msg, long param)
 {
 	try {
-		//VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+		auto  outSysOrderMgr = mainApp.out_system_manager();
 		auto sys = _SystemMap[row];
 		if (sys) {
 			CUGCell cell;
@@ -753,11 +752,11 @@ int VtSignalConnectionGrid::OnCheckbox(long ID, int col, long row, long msg, lon
 			double num = cell.GetNumber();
 			if (num == 1.0) {
 				sys->enable(true);
-				//outSysOrderMgr->AddSystem(sys);
+				outSysOrderMgr->add_active_out_system(sys);
 			}
 			else {
 				sys->enable(false);
-				//outSysOrderMgr->RemoveSystem(sys);
+				outSysOrderMgr->remove_active_out_system(sys);
 			}
 			if (_TotalGrid) _TotalGrid->Refresh();
 		}

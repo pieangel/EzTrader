@@ -125,10 +125,10 @@ void VtTotalSignalGrid::Refresh()
 
 void VtTotalSignalGrid::RefreshOrders()
 {
-	auto out_system_vector = mainApp.out_system_manager()->get_out_system_vector();
+	auto out_system_vector = mainApp.out_system_manager()->get_active_out_system_map();
 	int i = 0;
 	for (auto it = out_system_vector.begin(); it != out_system_vector.end(); ++it) {
-		auto out_system = *it;
+		auto out_system = it->second;
 		if (out_system->order_type() == DarkHorse::OrderType::MainAccount || out_system->order_type() == DarkHorse::OrderType::SubAccount) {
 			if (out_system->account()) QuickSetText(0, i, out_system->account()->No().c_str());
 		}

@@ -42,13 +42,17 @@ namespace DarkHorse {
 		std::string GetLastLine(const std::string& filename);
 		bool Enable() const { return _Enable; }
 		void Enable(bool val) { _Enable = val; }
-
+		void add_active_out_system(std::shared_ptr<SmOutSystem> out_system);
+		void remove_active_out_system(std::shared_ptr<SmOutSystem> out_system);
+		const std::map<int, std::shared_ptr<SmOutSystem>>& get_active_out_system_map() const { return active_out_system_map_; }
 	private:
 		void put_order(const std::string& signal_name, int order_kind, int order_amount);
 		void remove_out_system_by_id(const int& system_id);
 		std::vector<std::shared_ptr<SmOutSystem>> out_system_vec_;
 		// key : system name, value : SmOutSystem object.
 		std::map<std::string, SmOutSystemMap> out_system_map_;
+		// key : system id, value : SmOutSystem object.
+		std::map<int, std::shared_ptr<SmOutSystem>> active_out_system_map_;
 		std::vector<std::shared_ptr<SmOutSignalDef>> out_system_signal_vec_;
 
 		void ClearTasks();
