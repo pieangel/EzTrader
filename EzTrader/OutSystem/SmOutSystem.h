@@ -9,6 +9,7 @@ namespace DarkHorse {
 	class SmFund;
 	class SymbolPositionControl;
 	class QuoteControl;
+	struct OrderRequest;
 	class SmOutSystem
 	{
 	public:
@@ -26,7 +27,7 @@ namespace DarkHorse {
 		std::string desc() const { return desc_; }
 		void desc(std::string val) { desc_ = val; }
 		std::shared_ptr<DarkHorse::SmSymbol> symbol() const { return symbol_; }
-		void symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { symbol_ = val; }
+		void symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
 		std::shared_ptr<DarkHorse::SmFund> fund() const { return fund_; }
 		void fund(std::shared_ptr<DarkHorse::SmFund> val);
 		int seung_su() const { return seung_su_; }
@@ -43,6 +44,7 @@ namespace DarkHorse {
 		std::shared_ptr<QuoteControl> quote_control_;
 		std::shared_ptr<SymbolPositionControl> position_control_;
 		void put_order_each(std::shared_ptr<SmAccount> account, const std::string& signal_name, int order_kind, int order_amount);
+		void SetOrderPrice(std::shared_ptr<OrderRequest> order_req);
 		OrderType order_type_{ OrderType::None };
 		int id_{ 0 };
 		// Signal Name. "T1", "T2" for yes.

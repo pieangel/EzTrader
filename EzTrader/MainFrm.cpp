@@ -79,7 +79,8 @@ using namespace hmdf;
 #include "Dialog/SmAutoSignalManagerDialog.h"
 #include "OutSystem/VtAutoSignalManagerDialog.h"
 #include "BCGPWorkspace.h"
-
+#include "Config/SystemConfig.h"
+#include "Config/SmConfigManager.h"
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -865,7 +866,12 @@ void CMainFrame::OnClose()
 		mainApp.QuoteMgr()->StopAllQuoteProcess();
 		mainApp.QuoteMgr()->StopProcess();
 		mainApp.order_request_manager()->stop_handle_order_request();
+		SystemConfig config;
+		config.app_name = "DarkHorse";
+		config.version = 1.0;
+		config.yes_path = "C:\\예스트레이더\\Spot\\Export";
 
+		mainApp.config_manager()->set_system_config(config);
 		mainApp.SaveMgr()->WriteSettings();
 
 		mainApp.SaveMgr()->save_account("account_list.json");
@@ -1422,11 +1428,13 @@ void CMainFrame::OnSubAccount()
 
 void CMainFrame::OnOutSystem()
 {
-	//SmAutoSignalManagerDialog out_system_dialog;
-	//out_system_dialog.DoModal();
-
-	VtAutoSignalManagerDialog auto_signal_dialog;
-	auto_signal_dialog.DoModal();
+	if (auto_signal_manager_dlg_) {
+		auto_signal_manager_dlg_->DestroyWindow();
+		auto_signal_manager_dlg_ = nullptr;
+	}
+	auto_signal_manager_dlg_ = new VtAutoSignalManagerDialog();
+	auto_signal_manager_dlg_->Create(IDD_SYS_AUTO_CONNECT1, this);
+	auto_signal_manager_dlg_->ShowWindow(SW_SHOW);
 }
 
 

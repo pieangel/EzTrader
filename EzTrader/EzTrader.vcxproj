@@ -265,6 +265,7 @@
     <ClInclude Include="CompOrder\SmOrderLeftComp.h" />
     <ClInclude Include="CompOrder\SmOrderRightComp.h" />
     <ClInclude Include="Config\SmConfigManager.h" />
+    <ClInclude Include="Config\SystemConfig.h" />
     <ClInclude Include="Controller\AccountOrderControl.h" />
     <ClInclude Include="Controller\AccountPositionControl.h" />
     <ClInclude Include="Controller\AccountProfitLossControl.h" />

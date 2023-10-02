@@ -250,6 +250,7 @@ void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
 		const std::string& symbol_code = arg["symbol_code"];
 		auto position = get_position(account_no, symbol_code);
 		if (position) {
+			position->order_source_type = OrderType::MainAccount;
 			position->trade_profit_loss = arg["trade_profit_loss"];
 			position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
 			position->trade_fee = arg["trade_fee"];

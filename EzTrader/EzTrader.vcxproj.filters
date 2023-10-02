@@ -2211,6 +2211,9 @@
     <ClInclude Include="Global\SmConst.h">
       <Filter>Global</Filter>
     </ClInclude>
+    <ClInclude Include="Config\SystemConfig.h">
+      <Filter>Config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

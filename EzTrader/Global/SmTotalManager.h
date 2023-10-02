@@ -29,6 +29,8 @@ namespace DarkHorse {
 	class EventHub;
 	class ViServerDataReceiver;
 	class SmOutSystemManager;
+	class VtFileEventMonitor;
+	class SmConfigManager;
 	class SmTotalManager
 	{
 	public:
@@ -61,6 +63,9 @@ namespace DarkHorse {
 		std::shared_ptr<EventHub> event_hub() { return event_hub_; }
 		std::shared_ptr<ViServerDataReceiver> vi_server_data_receiver() { return vi_server_data_receiver_; }
 		std::shared_ptr<SmOutSystemManager> out_system_manager() { return out_system_manager_; }
+		std::shared_ptr<VtFileEventMonitor> file_watch_monitor() { return file_watch_monitor_; }
+		std::shared_ptr<SmConfigManager> config_manager() { return config_manager_; }
+
 		bool use_dark_theme() const { return use_dark_theme_; }
 		void use_dark_theme(bool val) { use_dark_theme_ = val; }
 	private:
@@ -93,6 +98,8 @@ namespace DarkHorse {
 		std::shared_ptr<OrderProcessor> order_processor_ = nullptr;
 		std::shared_ptr<ViServerDataReceiver> vi_server_data_receiver_ = nullptr;
 		std::shared_ptr< SmOutSystemManager> out_system_manager_ = nullptr;
+		std::shared_ptr< VtFileEventMonitor> file_watch_monitor_ = nullptr;
+		std::shared_ptr<SmConfigManager> config_manager_ = nullptr;
 	};
 }
 

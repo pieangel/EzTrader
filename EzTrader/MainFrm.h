@@ -42,6 +42,7 @@ class SmLoginDlg;
 class MiniJangoDialog;
 class TotalAssetProfitLossDialog;
 class AbFundOrderWindow;
+class VtAutoSignalManagerDialog;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -171,7 +172,7 @@ public:
 
 	std::map<HWND, std::shared_ptr<SmTrendChart>> _TrendChartMap;
 
-
+	VtAutoSignalManagerDialog* auto_signal_manager_dlg_ = nullptr;
 	void remove_dm_account_order_window(HWND handle);
 	void remove_dm_fund_order_window(HWND handle);
 	void RemoveOrderWnd(HWND wnd);

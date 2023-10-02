@@ -157,7 +157,7 @@ void VtTotalSignalGrid::RefreshOrders()
 		GetCell(4, i, &cell);
 		auto quote_p = mainApp.QuoteMgr()->find_quote(out_system->symbol()->SymbolCode());
 		if (quote_p) {
-			thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(quote_p->close / std::pow(out_system->symbol()->decimal(), out_system->symbol()->decimal()), out_system->symbol()->decimal());
+			thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(quote_p->close / std::pow(10.0, out_system->symbol()->decimal()), out_system->symbol()->decimal());
 		}
 		else {
 			thVal = "0";
@@ -166,7 +166,7 @@ void VtTotalSignalGrid::RefreshOrders()
 		cell.LongValue(quote_p->close);
 		SetCell(4, i, &cell);
 
-		thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(posi.open_profit_loss, out_system->symbol()->decimal());
+		thVal = DarkHorse::VtStringUtil::format_with_thousand_separator(posi.open_profit_loss, 0);
 		// 평가손익 표시
 		if (posi.open_profit_loss > 0) {
 			QuickSetTextColor(5, i, RGB(255, 0, 0));
