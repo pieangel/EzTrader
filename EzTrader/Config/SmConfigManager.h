@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include "../Util/SmUtil.h"
 using namespace nlohmann;
 namespace DarkHorse {
 	class SmConfigManager
@@ -22,7 +23,7 @@ namespace DarkHorse {
 			nlohmann::json j;
 			j["app_name"] = system_config_.app_name;
 			j["version"] = system_config_.version;
-			j["yes_path"] = system_config_.yes_path;
+			j["yes_path"] = SmUtil::MultiByteToUtf8(system_config_.yes_path);
 
 			std::ofstream file(filePath);
 			file << std::setw(4) << j << std::endl;
@@ -37,7 +38,7 @@ namespace DarkHorse {
 
 				system_config_.app_name = j["app_name"];
 				system_config_.version = j["version"];
-				system_config_.yes_path = j["yes_path"];
+				system_config_.yes_path = SmUtil::Utf8ToMultiByte(j["yes_path"]);
 			}
 			catch (const nlohmann::json::exception& e) {
 				std::cerr << "Error loading JSON: " << e.what() << std::endl;

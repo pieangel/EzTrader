@@ -81,6 +81,7 @@ using namespace hmdf;
 #include "BCGPWorkspace.h"
 #include "Config/SystemConfig.h"
 #include "Config/SmConfigManager.h"
+#include "FileWatch/VtFileEventMonitor.h"
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -858,6 +859,11 @@ void CMainFrame::SetChartData(std::shared_ptr<DarkHorse::SmChartData> chart_data
 void CMainFrame::OnClose()
 {
 	try {
+		if (auto_signal_manager_dlg_) {
+			auto_signal_manager_dlg_->DestroyWindow();
+			delete auto_signal_manager_dlg_;
+			auto_signal_manager_dlg_ = nullptr;
+		}
 		mainApp.Client()->Enable(false);
 		mainApp.Client()->UnRegAll();
 
@@ -866,14 +872,14 @@ void CMainFrame::OnClose()
 		mainApp.QuoteMgr()->StopAllQuoteProcess();
 		mainApp.QuoteMgr()->StopProcess();
 		mainApp.order_request_manager()->stop_handle_order_request();
-		SystemConfig config;
-		config.app_name = "DarkHorse";
-		config.version = 1.0;
-		config.yes_path = "C:\\예스트레이더\\Spot\\Export";
+		//SystemConfig config;
+		//config.app_name = "DarkHorse";
+		//config.version = 1.0;
+		//config.yes_path = "C:\\예스트레이더\\Spot\\Export";
 
-		mainApp.config_manager()->set_system_config(config);
+		//mainApp.config_manager()->set_system_config(config);
 		mainApp.SaveMgr()->WriteSettings();
-
+		mainApp.SaveMgr()->save_system_config("system_config.json");
 		mainApp.SaveMgr()->save_account("account_list.json");
 		mainApp.SaveMgr()->save_fund("fund_list.json");
 		mainApp.SaveMgr()->save_out_system("out_system_list.json");
@@ -886,7 +892,7 @@ void CMainFrame::OnClose()
 		total_asset_profit_loss_map_.clear();
 
 		mainApp.TaskReqMgr()->StopProcess();
-
+		mainApp.file_watch_monitor()->Stop();
 
 		std::vector<int> date_time = SmUtil::GetLocalDateTime();
 
@@ -930,6 +936,12 @@ void CMainFrame::StartLoad()
 		//symbol_code_vec.push_back(it->second->SymbolCode());
 		mainApp.Client()->RegisterSymbol(it->second->SymbolCode());
 	}
+	mainApp.SaveMgr()->restore_system_config("system_config.json");
+
+	mainApp.file_watch_monitor()->AddMonDir(mainApp.config_manager()->system_config().yes_path.c_str(), true);
+	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\YesLang"), true);
+	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
+	mainApp.file_watch_monitor()->Start();
 }
 
 
@@ -1430,6 +1442,7 @@ void CMainFrame::OnOutSystem()
 {
 	if (auto_signal_manager_dlg_) {
 		auto_signal_manager_dlg_->DestroyWindow();
+		delete auto_signal_manager_dlg_;
 		auto_signal_manager_dlg_ = nullptr;
 	}
 	auto_signal_manager_dlg_ = new VtAutoSignalManagerDialog();

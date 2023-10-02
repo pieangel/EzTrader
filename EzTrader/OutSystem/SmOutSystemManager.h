@@ -45,7 +45,7 @@ namespace DarkHorse {
 		void add_active_out_system(std::shared_ptr<SmOutSystem> out_system);
 		void remove_active_out_system(std::shared_ptr<SmOutSystem> out_system);
 		const std::map<int, std::shared_ptr<SmOutSystem>>& get_active_out_system_map() const { return active_out_system_map_; }
-		static int order_slip;
+		static int order_tick;
 		static SmPriceType price_type;
 	private:
 		void put_order(const std::string& signal_name, int order_kind, int order_amount);

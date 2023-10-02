@@ -87,6 +87,8 @@ namespace DarkHorse {
 		void restore_dm_fund_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmFundOrderWindow*>& map_to_restore);
 		void restore_account(const std::string& filename);
 		void restore_out_system(const std::string& filename);
+		void save_system_config(const std::string& filename);
+		void restore_system_config(const std::string& filename);
 	private:
 		bool ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively);
 		

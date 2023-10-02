@@ -21,6 +21,10 @@ public:
 	virtual void OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed);
 	//cell type notifications
 	int OnCellTypeNotify(long ID, int col, long row, long msg, long param);
+	virtual void OnMouseMove(int col, long row, POINT* point, UINT nFlags, BOOL processed = 0);
+	virtual void OnMouseLeaveFromMainGrid();
+	virtual void OnLClicked(int col, long row, int updn, RECT* rect, POINT* point, int processed);
+	virtual void OnRClicked(int col, long row, int updn, RECT* rect, POINT* point, int processed);
 	//Push Button cell type
 	CUGButtonType		m_button;
 	int					m_nButtonIndex;
@@ -37,12 +41,18 @@ public:
 	VtSignalConnectionGrid* ConnectGrid() const { return _ConnectGrid; }
 	void ConnectGrid(VtSignalConnectionGrid* val) { _ConnectGrid = val; }
 private:
-	COLORREF _ClickedColor = RGB(216, 234, 253);
 	void on_update_quote();
 	std::shared_ptr<DarkHorse::QuoteControl> quote_control_;
 	int OnButton(long ID, int col, long row, long msg, long param);
 	void InitGrid();
 	int _RowNumber = 0;
+
+	int _SelRow = -2;
+	int _OldSelRow = -2;
+	int _ClickedRow = -2;
+	int _ButtonRow = -2;
+	COLORREF _SelColor = RGB(255, 227, 132);
+	COLORREF _ClickedColor = RGB(216, 234, 253);
 	// key : row index, value : out system object.
 	std::map<int, std::shared_ptr<DarkHorse::SmOutSystem>> out_system_map_;
 	VtSignalConnectionGrid* _ConnectGrid = nullptr;

@@ -51,7 +51,7 @@ void SmAccountGrid::MoveSelectedAccounts()
 	for (auto it = _RowToAccountMap.begin(); it != _RowToAccountMap.end(); it++) {
 		CBCGPGridRow* pRow = GetRow(it->first);
 		if (pRow->IsSelected()) {
-			if (!it->second->is_subaccount()) continue;
+			//if (!it->second->is_subaccount()) continue;
 			_Fund->AddAccount(it->second);
 			
 		}
@@ -66,7 +66,7 @@ void SmAccountGrid::MoveFirstAccount()
 	if (_RowToAccountMap.empty()) return;
 
 	auto found = _RowToAccountMap.begin();
-	if (!found->second->is_subaccount()) return;
+	//if (!found->second->is_subaccount()) return;
 	_Fund->AddAccount(found->second);
 	FundAccountGrid->InitFund();
 	InitUnregAccount(account_type_);
@@ -77,7 +77,7 @@ void SmAccountGrid::MoveAllAccounts()
 	if (!_Fund) return;
 	int old_size = _RowToAccountMap.size() - 1;
 	for (auto it = _RowToAccountMap.begin(); it != _RowToAccountMap.end(); ++it) {
-		if (!it->second->is_subaccount()) continue;
+		//if (!it->second->is_subaccount()) continue;
 		_Fund->AddAccount(it->second);
 	}
 
@@ -457,7 +457,7 @@ void SmAccountGrid::OnLButtonDblClk(UINT nFlags, CPoint point)
 	//	_FundEditDialog->UnregAccountDoubleClickEvent(found->second);
 	//}
 	if (!_Fund) return;
-	if (!found->second->is_subaccount()) return;
+	//if (!found->second->is_subaccount()) return;
 	_Fund->AddAccount(found->second);
 	FundAccountGrid->InitFund();
 	InitUnregAccount(account_type_);

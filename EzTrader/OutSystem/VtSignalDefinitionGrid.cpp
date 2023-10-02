@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "VtSignalDefinitionGrid.h"
 #include "../Global/SmConst.h"
-
+#include "SmOutSystemManager.h"
+#include "../Global/SmTotalManager.h"
+#include "../OutSystem/SmOutSignalDef.h"
 VtSignalDefinitionGrid::VtSignalDefinitionGrid()
 {
 }
@@ -46,8 +48,8 @@ void VtSignalDefinitionGrid::OnDClicked(int col, long row, RECT *rect, POINT *po
 
 void VtSignalDefinitionGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
-	if (_ClickedRow == row)
-		return;
+	//if (_ClickedRow == row)
+	//	return;
 
 	if (_ClickedRow >= 0) {
 		for (int i = 0; i < _ColCount; ++i) {
@@ -64,8 +66,8 @@ void VtSignalDefinitionGrid::OnLClicked(int col, long row, int updn, RECT *rect,
 
 void VtSignalDefinitionGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
-	if (_ClickedRow == row)
-		return;
+	//if (_ClickedRow == row)
+	//	return;
 
 	if (_ClickedRow >= 0) {
 		for (int i = 0; i < _ColCount; ++i) {
@@ -155,19 +157,17 @@ void VtSignalDefinitionGrid::QuickRedrawCell(int col, long row)
 
 void VtSignalDefinitionGrid::InitGrid()
 {
-	/*
-	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
+	auto outSigDefMgr = mainApp.out_system_manager();
 	int i = 0;
-	OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
+	const std::vector<std::shared_ptr<DarkHorse::SmOutSignalDef>>& sigDefVec = outSigDefMgr->get_out_system_signal_map();
 	for (auto it = sigDefVec.begin(); it != sigDefVec.end(); ++it) {
-		SharedOutSigDef sig = *it;
-		QuickSetText(0, i, sig->SignalName.c_str());
-		QuickSetText(1, i, sig->Desc.c_str());
+		const std::shared_ptr<DarkHorse::SmOutSignalDef>& sig = *it;
+		QuickSetText(0, i, sig->name.c_str());
+		QuickSetText(1, i, sig->desc.c_str());
 		QuickRedrawCell(0, i);
 		QuickRedrawCell(1, i);
 		i++;
 	}
-	*/
 }
 
 void VtSignalDefinitionGrid::ClearCells()

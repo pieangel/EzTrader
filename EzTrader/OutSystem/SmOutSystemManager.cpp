@@ -9,7 +9,7 @@
 #include <filesystem>
 
 namespace DarkHorse {
-	int SmOutSystemManager::order_slip = 0;
+	int SmOutSystemManager::order_tick = 5;
 	SmPriceType SmOutSystemManager::price_type = SmPriceType::Price;
 	SmOutSystemManager::SmOutSystemManager()
 	{

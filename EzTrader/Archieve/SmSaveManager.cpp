@@ -1929,4 +1929,69 @@ namespace DarkHorse {
 		file.close();
 	}
 
+	void SmSaveManager::save_system_config(const std::string& filename)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		appPath.append(_T("\\"));
+
+		std::string full_file_name = filename;
+		//full_file_name.append("_");
+		//full_file_name.append(VtStringUtil::getTimeStr());
+		//full_file_name.append(".json");
+
+		appPath.append(full_file_name);
+
+		mainApp.config_manager()->saveConfig(appPath);
+	}
+
+	void SmSaveManager::restore_system_config(const std::string& filename)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(id);
+
+		appPath.append("\\");
+		appPath.append(filename);
+		std::ifstream file(appPath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file for restore: " << filename << std::endl;
+			return;
+		}
+		file.close();
+
+		mainApp.config_manager()->loadConfig(appPath);
+	}
+
 }

@@ -177,11 +177,11 @@ namespace DarkHorse {
 			price = quote_p->close;
 			if (order_req->position_type == SmPositionType::Buy || order_req->position_type == SmPositionType::ExitSell) {
 				// 매수일 경우 목표가격보다 정해진 틱만큼 위로 주문을 낸다.
-				price = price + int_tick_size * SmOutSystemManager::order_slip;
+				price = price + int_tick_size * SmOutSystemManager::order_tick;
 			}
 			else if (order_req->position_type == SmPositionType::Sell || order_req->position_type == SmPositionType::ExitBuy) {
 				// 매도일 경우 목표가격보다 정해진 틱만큼 아래로 주문을 낸다.
-				price = price - int_tick_size * SmOutSystemManager::order_slip;
+				price = price - int_tick_size * SmOutSystemManager::order_tick;
 			}
 		}
 		order_req->order_price = price;

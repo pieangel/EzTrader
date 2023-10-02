@@ -9,7 +9,8 @@
 #include "../Global/SmConst.h"
 #include "../Dialog/SmAddConnectSignalDlg.h"
 #include "../Dialog/SmAddOutSigDefDlg.h"
-
+#include "../OutSystem/SmOutSystemManager.h"
+#include "../Dialog/SmSystemOrderConfig.h"
 // VtAutoSignalManagerDialog dialog
 
 IMPLEMENT_DYNAMIC(VtAutoSignalManagerDialog, CBCGPDialog)
@@ -311,24 +312,14 @@ void VtAutoSignalManagerDialog::OnClose()
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnOrderConfig()
 {
-	/*
-	VtSystemOrderConfig orderCfgDlg;
-	orderCfgDlg._PriceType = VtOutSystemManager::PriceType;
-	orderCfgDlg._OrderTick = VtOutSystemManager::OrderTick;
+	SmSystemOrderConfig orderCfgDlg;
+	orderCfgDlg._PriceType = DarkHorse::SmOutSystemManager::price_type;
+	orderCfgDlg._OrderTick = DarkHorse::SmOutSystemManager::order_tick;
 	int result = orderCfgDlg.DoModal();
 	if (result == IDOK) {
-		VtOutSystemManager::PriceType = orderCfgDlg._PriceType;
-		VtOutSystemManager::OrderTick = orderCfgDlg._OrderTick;
-
-		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
-		SharedSystemVec& outSysMap = outSysMgr->GetSysMap();
-		for (auto it = outSysMap.begin(); it != outSysMap.end(); ++it) {
-			SharedSystem sys = *it;
-			sys->PriceType(orderCfgDlg._PriceType);
-			sys->OrderTick(orderCfgDlg._OrderTick);
-		}
+		DarkHorse::SmOutSystemManager::price_type = orderCfgDlg._PriceType;
+		DarkHorse::SmOutSystemManager::order_tick = orderCfgDlg._OrderTick;
 	}
-	*/
 }
 
 
