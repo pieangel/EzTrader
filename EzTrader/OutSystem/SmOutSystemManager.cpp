@@ -38,18 +38,7 @@ namespace DarkHorse {
 		out_system->symbol(symbol);
 		out_system_vec_.push_back(out_system);
 
-		auto it = out_system_map_.find(signal_name);
-		if (it != out_system_map_.end())
-		{
-			SmOutSystemMap& system_map = it->second;
-			system_map.insert(std::make_pair(out_system->id(), out_system));
-		}
-		else{
-			SmOutSystemMap system_map;
-			system_map.insert(std::make_pair(out_system->id(), out_system));
-			out_system_map_.insert(std::make_pair(signal_name, system_map));
-
-		}
+		//add_out_system_to_map(out_system);
 
 		return out_system;
 	}
@@ -58,16 +47,39 @@ namespace DarkHorse {
 	{
 		if (!out_system) return;
 
+		//remove_out_system_from_map(out_system);
+		remove_out_system_by_id(out_system->id());
+	}
+
+	void SmOutSystemManager::remove_out_system_from_map(std::shared_ptr<SmOutSystem> out_system)
+	{
+		if (!out_system) return;
+
 		auto found = out_system_map_.find(out_system->name());
 		if (found == out_system_map_.end()) return;
-		const int system_id = out_system->id();
 		SmOutSystemMap& system_map = found->second;
 		auto it = system_map.find(out_system->id());
 		if (it != system_map.end()) {
 			system_map.erase(it);
 		}
+	}
 
-		remove_out_system_by_id(system_id);
+	void SmOutSystemManager::add_out_system_to_map(std::shared_ptr<SmOutSystem> out_system)
+	{
+		if (!out_system) return;
+
+		auto it = out_system_map_.find(out_system->name());
+		if (it != out_system_map_.end())
+		{
+			SmOutSystemMap& system_map = it->second;
+			system_map.insert(std::make_pair(out_system->id(), out_system));
+		}
+		else {
+			SmOutSystemMap system_map;
+			system_map.insert(std::make_pair(out_system->id(), out_system));
+			out_system_map_.insert(std::make_pair(out_system->name(), system_map));
+
+		}
 	}
 
 	void SmOutSystemManager::put_order(const std::string& signal_name, int order_kind, int order_amount)
@@ -143,40 +155,82 @@ namespace DarkHorse {
 
 
 	std::string SmOutSystemManager::GetLastLine(const std::string& filename) {
-		std::ifstream file(filename);
-		if (!file.is_open()) {
-			throw std::runtime_error("Unable to open file");
-		}
-
-		// Move the file pointer to the end of the file
-		file.seekg(0, std::ios::end);
-
-		// Check for an empty file
-		if (file.tellg() <= 0) {
-			return ""; // Return an empty string for an empty file
-		}
-
-		std::string lastLine;
-		char ch = '\0';
-
-		// Start reading characters from the end of the file
-		while (file.tellg() > 0) {
-			file.seekg(-1, std::ios::cur); // Move one character back
-			file.get(ch);
-
-			if (ch == '\n') {
-				break; // Found the end of the last line
+		std::string lastline;
+		try {
+			std::ifstream fs;
+			fs.open(filename.c_str(), std::fstream::in);
+			if (fs.is_open()) {
+				
+				//Got to the last character before EOF
+				fs.seekg(-1, std::ios_base::end);
+				if (fs.peek() == '\n') {
+					//Start searching for \n occurrences
+					fs.seekg(-1, std::ios_base::cur);
+					// Returns the position of the current character in the input stream
+					int i = (int)fs.tellg();
+					for (i; i > 0; i--) {
+						if (fs.peek() == '\n') {
+							//Found
+							// Extracts characters from the stream, as unformatted input :
+							fs.get();
+							break;
+						}
+						//Move one character back
+						fs.seekg(i, std::ios_base::beg);
+					}
+				}
+				getline(fs, lastline);
+				
+				//lastline = getLastLineInFile(fs);
 			}
-
-			lastLine = ch + lastLine; // Prepend the character to the last line
+			else {
+				std::cout << "Could not find end line character" << std::endl;
+				std::string msg = "Could not find end line character";
+				LOGINFO(CMyLogger::getInstance(), _T("OnFileChanged : 파일 읽기 오류 msg = %s, 파일이름 : %s"), msg, filename);
+			}
+			fs.close();
+		}
+		catch (std::exception& e) {
+			LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		}
+		catch (...) {
+			LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
 		}
 
-		return lastLine;
+		return lastline;
+	}
+
+	bool SmOutSystemManager::moveToStartOfLine(std::ifstream& fs)
+	{
+		fs.seekg(-1, std::ios_base::cur);
+		for (long i = (long)fs.tellg(); i > 0; i--)
+		{
+			if (fs.peek() == '\n')
+			{
+				fs.get();
+				return true;
+			}
+			fs.seekg(i, std::ios_base::beg);
+		}
+		return false;
+	}
+
+	std::string SmOutSystemManager::getLastLineInFile(std::ifstream& fs)
+	{
+		// Go to the last character before EOF
+		fs.seekg(-1, std::ios_base::end);
+		if (!moveToStartOfLine(fs))
+			return "";
+
+		std::string lastline = "";
+		getline(fs, lastline);
+		return lastline;
 	}
 
 	void SmOutSystemManager::add_active_out_system(std::shared_ptr<SmOutSystem> out_system)
 	{
 		if (!out_system) return;
+		add_out_system_to_map(out_system);
 		auto found = active_out_system_map_.find(out_system->id());
 		if (found != active_out_system_map_.end())return;
 		active_out_system_map_.insert(std::make_pair(out_system->id(), out_system));
@@ -185,6 +239,7 @@ namespace DarkHorse {
 	void SmOutSystemManager::remove_active_out_system(std::shared_ptr<SmOutSystem> out_system)
 	{
 		if (!out_system) return;
+		remove_out_system_from_map(out_system);
 		auto found = active_out_system_map_.find(out_system->id());
 		if (found == active_out_system_map_.end())return;
 		active_out_system_map_.erase(found);
@@ -192,9 +247,7 @@ namespace DarkHorse {
 
 	void SmOutSystemManager::ProcessSignal(nlohmann::json&& signal)
 	{
-		try {
-			const std::string& symbol_code = signal["symbol_code"];
-			
+		try {			
 			const std::string file_name = signal["file_name"];
 			LOGINFO(CMyLogger::getInstance(), _T("ProcessSignal : 파일이름 : %s"), file_name.c_str());
 

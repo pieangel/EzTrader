@@ -859,11 +859,7 @@ void CMainFrame::SetChartData(std::shared_ptr<DarkHorse::SmChartData> chart_data
 void CMainFrame::OnClose()
 {
 	try {
-		if (auto_signal_manager_dlg_) {
-			auto_signal_manager_dlg_->DestroyWindow();
-			delete auto_signal_manager_dlg_;
-			auto_signal_manager_dlg_ = nullptr;
-		}
+		
 		mainApp.Client()->Enable(false);
 		mainApp.Client()->UnRegAll();
 
@@ -890,9 +886,15 @@ void CMainFrame::OnClose()
 		mainApp.SaveMgr()->save_total_asset_windows("dm_total_asset_windows.json", total_asset_profit_loss_map_);
 
 		total_asset_profit_loss_map_.clear();
+		if (auto_signal_manager_dlg_) {
+			auto_signal_manager_dlg_->DestroyWindow();
+			delete auto_signal_manager_dlg_;
+			auto_signal_manager_dlg_ = nullptr;
+		}
 
 		mainApp.TaskReqMgr()->StopProcess();
 		mainApp.file_watch_monitor()->Stop();
+		mainApp.out_system_manager()->StopProcess();
 
 		std::vector<int> date_time = SmUtil::GetLocalDateTime();
 
@@ -942,6 +944,7 @@ void CMainFrame::StartLoad()
 	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\YesLang"), true);
 	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
 	mainApp.file_watch_monitor()->Start();
+	mainApp.out_system_manager()->StartProcess();
 }
 
 

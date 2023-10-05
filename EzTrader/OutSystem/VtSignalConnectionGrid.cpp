@@ -94,7 +94,7 @@ void VtSignalConnectionGrid::OnLClicked(int col, long row, int updn, RECT *rect,
 			QuickRedrawCell(i, _ClickedRow);
 		}
 	}
-	for (int i = 0; i < _ColCount; ++i) {
+	for (int i = 0; i < _ColCount - 1; ++i) {
 		QuickSetBackColor(i, row, _ClickedColor);
 		QuickRedrawCell(i, row);
 	}

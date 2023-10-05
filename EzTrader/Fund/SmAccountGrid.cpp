@@ -243,8 +243,8 @@ int SmAccountGrid::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetVisualManagerColorTheme(TRUE);
 
 	// Insert columns:
-	InsertColumn(0, _T("계좌번호"), 160);
-	InsertColumn(1, _T("계좌이름"), 80);
+	InsertColumn(0, _T("계좌번호"), 95);
+	InsertColumn(1, _T("계좌이름"), 145);
 
 	FreezeColumns(0);
 

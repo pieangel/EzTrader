@@ -50,7 +50,7 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 	else
 		group_position->average_price = average_price / abs(open_quantity);
 
-	LOGINFO(CMyLogger::getInstance(), "group_position open qty = [%d], average_price = [%.2f], open pl = [%.2f]", group_position->open_quantity, group_position->average_price, group_position->open_profit_loss);
+	//LOGINFO(CMyLogger::getInstance(), "group_position open qty = [%d], average_price = [%.2f], open pl = [%.2f]", group_position->open_quantity, group_position->average_price, group_position->open_profit_loss);
 
 
 	update_whole_group_position();
@@ -89,7 +89,7 @@ void GroupPositionManager::update_group_position_by_symbol(std::shared_ptr<Posit
 	else
 		dest_position.average_price = average_price / abs(open_quantity);
 
-	LOGINFO(CMyLogger::getInstance(), " dest_position open qty = [%d], average_price = [%.2f], open pl = [%.2f]", dest_position.open_quantity, dest_position.average_price, dest_position.open_profit_loss);
+	//LOGINFO(CMyLogger::getInstance(), " dest_position open qty = [%d], average_price = [%.2f], open pl = [%.2f]", dest_position.open_quantity, dest_position.average_price, dest_position.open_profit_loss);
 
 
 	update_whole_group_position();

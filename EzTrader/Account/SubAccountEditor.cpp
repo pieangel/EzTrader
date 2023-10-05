@@ -167,7 +167,7 @@ void SubAccountEditor::OnBnClickedBtnCreate()
 		auto found = selected_account_->find_sub_account_by_no((LPCTSTR)strAcntNo);
 		if (found)
 		{
-			AfxMessageBox(_T("동일한 이름의 서브 계좌가 이미 있습니다. 다른 이름을 사용하십시오.!"));
+			AfxMessageBox(_T("동일한 계좌 번호를 가진 서브 계좌가 이미 있습니다. 다른 계좌 번호를 사용하십시오.!"));
 			return;
 		}
 		auto subAcnt = selected_account_->CreateSubAccount((LPCTSTR)strAcntNo, (LPCTSTR)strAcntName, selected_account_->id(), selected_account_->Type());
@@ -188,10 +188,10 @@ void SubAccountEditor::OnBnClickedBtnModify()
 			return;
 
 		auto anotherSubAcnt = selected_account_->find_sub_account_by_no((LPCTSTR)strAcntNo);
-		if (anotherSubAcnt) {
-			AfxMessageBox(_T("동일한 이름의 서브 계좌가 이미 있습니다. 다른 이름을 사용하십시오.!"));
-			return;
-		}
+// 		if (anotherSubAcnt) {
+// 			AfxMessageBox(_T("동일한 이름의 서브 계좌가 이미 있습니다. 다른 이름을 사용하십시오.!"));
+// 			return;
+// 		}
 		subAcnt->No((LPCTSTR)strAcntNo);
 		subAcnt->Name((LPCTSTR)strAcntName);
 		set_sub_account_grid();

@@ -1364,7 +1364,7 @@ namespace DarkHorse {
 			account_json["seung_su"] = account->SeungSu();
 			account_json["ratio"] = account->Ratio();
 			account_json["is_sub_account"] = account->is_subaccount();
-			account_json["fund_name"] = account->fund_name();
+			account_json["fund_name"] = SmUtil::MultiByteToUtf8(account->fund_name());
 			account_json["parent_account_no"] = "";
 
 			auto sub_accounts = account->get_sub_accounts();
@@ -1379,7 +1379,7 @@ namespace DarkHorse {
 				sub_account_json["seung_su"] = sub_account->SeungSu();
 				sub_account_json["ratio"] = sub_account->Ratio();
 				sub_account_json["is_sub_account"] = sub_account->is_subaccount();
-				sub_account_json["fund_name"] = sub_account->fund_name();
+				sub_account_json["fund_name"] = SmUtil::MultiByteToUtf8(sub_account->fund_name());
 				sub_account_json["parent_account_no"] = account->No();
 				sub_account_vector_json.push_back(sub_account_json);
 			}
@@ -1444,7 +1444,7 @@ namespace DarkHorse {
 				int seung_su = accountData["seung_su"];
 				double ratio = accountData["ratio"];
 				bool is_sub_account = accountData["is_sub_account"];
-				std::string fund_name = accountData["fund_name"];
+				std::string fund_name = SmUtil::Utf8ToMultiByte(accountData["fund_name"]);
 				std::string parent_account_no = accountData["parent_account_no"];
 
 				// Process sub-accounts if available
@@ -1459,7 +1459,7 @@ namespace DarkHorse {
 						int t_seung_su = subAccountData["seung_su"];
 						double t_ratio = subAccountData["ratio"];
 						bool t_is_sub_account = subAccountData["is_sub_account"];
-						std::string t_fund_name = subAccountData["fund_name"];
+						std::string t_fund_name = SmUtil::Utf8ToMultiByte(subAccountData["fund_name"]);
 						std::string t_parent_account_no = subAccountData["parent_account_no"];
 
 						if (t_parent_account_no != account_no) continue;
@@ -1722,22 +1722,26 @@ namespace DarkHorse {
 				auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 				auto account = mainApp.AcntMgr()->FindAccount(account_no);
 				auto fund = mainApp.FundMgr()->FindFund(fund_name);
+				int mode = 0;
 				//if (!account || !symbol || !fund) continue;
 				if (order_type == OrderType::MainAccount || order_type == OrderType::SubAccount) {
 					if (!account) continue;
+					mode = 0;
 				}
 				else if (order_type == OrderType::Fund) {
 					if (!fund) continue;
+					mode = 1;
 				}
 				if (!symbol) {
 					continue;
 				}
+
 				auto out_system = mainApp.out_system_manager()->create_out_system(
 					name,
 					seung_su,
 					order_type,
-					account,
-					fund,
+					mode == 0 ? account : nullptr,
+					mode == 1 ? fund : nullptr,
 					symbol
 				);
 

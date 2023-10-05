@@ -2,7 +2,8 @@
 #include "ReadDirectoryChanges.h"
 #include "CompletionRoutineServer.h"
 #include "IoCompletionPortServer.h"
-
+#include "../Log/MyLogger.h"
+using namespace DarkHorse;
 namespace rdc
 {
 
@@ -67,6 +68,7 @@ bool CReadDirectoryChanges::Pop(DWORD& dwAction, CString& strFilename)
 
 void CReadDirectoryChanges::Push(DWORD dwAction, CString& strFilename)
 {
+    LOGINFO(CMyLogger::getInstance(), _T("CReadDirectoryChanges::Push >> Action : [%d], File Name = [%s]"), dwAction, strFilename);
     TDirectoryChangeNotification dcn(dwAction, strFilename);
     m_queue.push(dcn);
 }

@@ -29,6 +29,8 @@ namespace DarkHorse {
 			std::shared_ptr<SmSymbol> symbol
 		);
 		void remove_out_system(std::shared_ptr<SmOutSystem> out_system);
+		void remove_out_system_from_map(std::shared_ptr<SmOutSystem> out_system);
+		void add_out_system_to_map(std::shared_ptr<SmOutSystem> out_system);
 		void make_out_system_signal_map();
 		const std::vector<std::shared_ptr<SmOutSignalDef>>& get_out_system_signal_map() const { return out_system_signal_vec_; }
 		size_t get_out_system_count() const { return out_system_vec_.size(); }
@@ -40,6 +42,8 @@ namespace DarkHorse {
 		virtual unsigned int ThreadHandlerProc(void);
 		void AddSignal(nlohmann::json&& signal) noexcept;
 		std::string GetLastLine(const std::string& filename);
+		bool moveToStartOfLine(std::ifstream& fs);
+		std::string getLastLineInFile(std::ifstream& fs);
 		bool Enable() const { return _Enable; }
 		void Enable(bool val) { _Enable = val; }
 		void add_active_out_system(std::shared_ptr<SmOutSystem> out_system);

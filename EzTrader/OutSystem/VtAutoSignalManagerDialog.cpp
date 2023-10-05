@@ -120,6 +120,7 @@ void VtAutoSignalManagerDialog::Resize()
 	left = rcCtrl.left;
 
 	// 신호 합계 버튼
+	/*
 	pWnd = this->GetDlgItem(IDC_BUTTON_SUM_SIGNAL);
 
 
@@ -129,7 +130,7 @@ void VtAutoSignalManagerDialog::Resize()
 	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
 	pWnd->MoveWindow(rcCtrl, TRUE);
 	left = rcCtrl.left;
-
+	*/
 	// 상세표시 체크 버튼
 	pWnd = this->GetDlgItem(IDC_CHECK_DETAIL);
 

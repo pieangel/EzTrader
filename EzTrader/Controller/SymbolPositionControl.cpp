@@ -118,6 +118,7 @@ namespace DarkHorse {
 		else {
 			position_type_ = OrderType::MainAccount;
 		}
+		reset_position();
 	}
 
 	void SymbolPositionControl::set_fund(std::shared_ptr<SmFund> fund)
@@ -126,6 +127,7 @@ namespace DarkHorse {
 		fund_ = fund;
 		position_.fund_id = fund_->Id();
 		position_type_ = OrderType::Fund;
+		reset_position();
 	}
 
 	bool SymbolPositionControl::is_account_exist(const std::shared_ptr<Position>& position)
@@ -144,7 +146,7 @@ namespace DarkHorse {
 			mainApp.total_position_manager()->get_position_from_account(account_->No(), symbol_->SymbolCode(), position_);
 		}
 		else if (position_type_ == OrderType::Fund) {
-			if (!fund_ && !symbol_) return;
+			if (!fund_ || !symbol_) return;
 			mainApp.total_position_manager()->get_position_from_fund(fund_->Name(), symbol_->SymbolCode(), position_);
 		}
 		else {

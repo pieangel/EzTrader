@@ -17,7 +17,7 @@
 #include "../Position/Position.h"
 #include "../Position/AccountPositionManager.h"
 #include "../Position/GroupPositionManager.h"
-
+#include "../Account/SmAccountManager.h"
 
 namespace DarkHorse {
 	SmOutSystem::SmOutSystem(const std::string& name)
@@ -111,8 +111,9 @@ namespace DarkHorse {
 
 		std::shared_ptr<OrderRequest> order_req = std::make_shared<OrderRequest>();
 		order_req->request_id = OrderRequestManager::get_id();
-		order_req->account_no = account->No();
-		order_req->password = account->Pwd();
+		auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
+		order_req->account_no = parent_account ? parent_account->No() : account->No();
+		order_req->password = parent_account ? parent_account->Pwd() : account->Pwd();
 		order_req->order_amount = order_amount * seung_su_;
 		order_req->symbol_code = symbol_->SymbolCode();
 
@@ -155,8 +156,8 @@ namespace DarkHorse {
 		default:
 			break;
 		}
-
 		order_req->price_type = SmOutSystemManager::price_type;
+		SetOrderPrice(order_req);
 
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
