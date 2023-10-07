@@ -51,6 +51,7 @@ namespace DarkHorse {
 			static CMyLogger so;
 			return so;
 		};
+		static std::string cur_log_file;
 	public:
 		void	SuspendWorking(void);
 		void	ResumeWorking(void);

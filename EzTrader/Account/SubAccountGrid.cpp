@@ -417,7 +417,6 @@ void SubAccountGrid::update_sub_account(std::shared_ptr<DarkHorse::SmAccount> su
 	CBCGPGridRow* pRow = GetRow(_SelectedIndex);
 	if (!pRow) return;
 	pRow->GetItem(0)->SetValue(sub_account->No().c_str(), TRUE);
-
 	pRow->GetItem(1)->SetValue(sub_account->Name().c_str(), TRUE);
 }
 

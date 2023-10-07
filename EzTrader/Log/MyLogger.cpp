@@ -8,6 +8,9 @@
 #include <iostream>
 #include <cstring>
 using namespace DarkHorse;
+
+std::string CMyLogger::cur_log_file = "";
+
 CMyLogger::CMyLogger()
 {
 	LogFileName = "Logging ";
@@ -315,7 +318,7 @@ void CMyLogger::FileLog()
 
 	makepath = format_string("%s\\%d%02d%02d", LogPath.c_str(), logDay.wYear, logDay.wMonth, logDay.wDay);
 	makeLogDir(makepath);
-	
+	cur_log_file = cstrMessage;
 	writeFile.open(cstrMessage.c_str(), std::ios::out | std::ios::binary | std::ios::app);
 
 	std::ostringstream sIstream;

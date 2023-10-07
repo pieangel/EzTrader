@@ -227,7 +227,7 @@ void DmOptionView::update_close(const DarkHorse::VmQuote& quote)
 	try {
 	//LOGINFO(CMyLogger::getInstance(), "update_close symbol code: %s", quote.symbol_code.c_str());
 	if (quote.symbol_code.empty()) {
-		LOGINFO(CMyLogger::getInstance(), "update_close symbol code is empty");
+		//LOGINFO(CMyLogger::getInstance(), "update_close symbol code is empty");
 		return;
 	}
 	const std::string option_code = quote.symbol_code.substr(1, quote.symbol_code.length() - 1);

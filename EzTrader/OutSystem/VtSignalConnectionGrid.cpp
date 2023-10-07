@@ -963,31 +963,20 @@ int VtSignalConnectionGrid::OnButton(long ID, int col, long row, long msg, long 
 {
 	if (msg != 1)
 		return -1;
-	/*
-	CString log;
-	log.Format("OnButton col = %d, row = %d, msg = %d, param = %d \n", col, row, msg, param);
-	TRACE(log);
-	try {
-	if (VtOutSystemOrderManager::GetInstance()->GetLogMapSize() == 0)
+	// Specify the path to your text file
+	const char* filePath = CMyLogger::cur_log_file.c_str();
+
+	// Use ShellExecute to open the file with Notepad.exe
+	HINSTANCE result = ShellExecute(NULL, "open", "notepad.exe", filePath, NULL, SW_SHOWNORMAL);
+
+	// Check the result
+	if ((int)result <= 32) {
+		// An error occurred
+		// You can handle the error here
+		// The value returned is the HINSTANCE cast to an integer
+		// For more details, you can check the ShellExecute documentation
 		return -1;
-
-	SharedSystem sys = _SystemMap[row];
-	if (sys) {
-		_LogDlg = new VtOrderLogDlg();
-		_LogDlg->Create(IDD_ORDER_LOG, this);
-		std::vector<std::pair<std::string, std::string>>& log_vec = VtOutSystemOrderManager::GetInstance()->GetOrderLog(sys);
-		_LogDlg->UpdateOrderLog2(log_vec);
-		_LogDlg->ShowWindow(SW_SHOW);
 	}
-
-	}
-	catch (std::exception& e) {
-		LOGINFO(CMyLogger::getInstance(), _T(" %s, MSG : %s"), __FUNCTION__, e.what());
-	}
-	catch (...) {
-		LOGINFO(CMyLogger::getInstance(), _T(" %s 알수없는 오류"), __FUNCTION__);
-	}
-	*/
 
 	return 1;
 }

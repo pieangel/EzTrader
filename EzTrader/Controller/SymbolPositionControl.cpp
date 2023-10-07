@@ -28,7 +28,7 @@ namespace DarkHorse {
 			std::bind(&SymbolPositionControl::update_profit_loss, this, std::placeholders::_1)
 		);
 
-		LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl contructor id = %d", id_);
+		//LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl contructor id = %d", id_);
 	}
 
 	SymbolPositionControl::~SymbolPositionControl()

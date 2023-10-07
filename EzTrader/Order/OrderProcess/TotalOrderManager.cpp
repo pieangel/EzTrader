@@ -193,18 +193,18 @@ void TotalOrderManager::set_order_request_info(const std::string& custom_info, o
 	order->order_context.fund_id = order_request->order_context.fund_id;
 	order->order_context.parent_account_id = order_request->order_context.parent_account_id;
 	order->order_context.order_source_type = order_request->order_context.order_source_type;
-	if (order_request->order_context.parent_account_id != -1) {
-		order->account_no = order_request->order_context.sub_account_no;
-		order->order_context.sub_account_no = order_request->order_context.sub_account_no;
-		order->order_context.parent_account_no = order_request->order_context.parent_account_no;
-		order->order_context.fund_name = order_request->order_context.fund_name;
-	}
+	order->account_no = order_request->order_context.sub_account_no;
+	order->order_context.sub_account_no = order_request->order_context.sub_account_no;
+	order->order_context.parent_account_no = order_request->order_context.parent_account_no;
+	order->order_context.fund_name = order_request->order_context.fund_name;
+	order->order_context.signal_name = order_request->order_context.signal_name;
 
-	LOGINFO(CMyLogger::getInstance(), "set_order_request_info 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 종목[%s], 주문번호[%s], 주문구분[%d], 주문수량[%d], 체결수량[%d], 잔량[%d]\n", 
+	LOGINFO(CMyLogger::getInstance(), "set_order_request_info 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문번호[%s], 주문구분[%d], 주문수량[%d], 체결수량[%d], 잔량[%d]", 
 		order_request->account_no.c_str(), 
 		order->order_context.sub_account_no.c_str(),
 		order->order_context.fund_name.c_str(),
 		order->order_context.parent_account_no.c_str(),
+		order->order_context.signal_name.c_str(),
 		order_request->symbol_code.c_str(), 
 		order->order_no.c_str(), 
 		(int)order->order_type, 
