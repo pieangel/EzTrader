@@ -59,6 +59,7 @@ public:
 	//}}AFX_VIRTUAL
 
 // Implementation
+	void update_sub_account(std::shared_ptr<DarkHorse::SmAccount> sub_account);
 public:
 	MainAccountGrid* AccountGrid = nullptr;
 
@@ -92,7 +93,7 @@ private:
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 	std::set<int> _OldContentRowSet;
 	void ClearOldContents(const int& last_index);
-
+	// key : row, value : sub account
 	std::map<int, std::shared_ptr<DarkHorse::SmAccount>> _RowToSubAccountMap;
 	int _MaxAccountRow{ 0 };
 	int _SelectedIndex = -1;

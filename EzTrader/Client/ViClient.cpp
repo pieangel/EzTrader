@@ -4914,7 +4914,7 @@ void DarkHorse::ViClient::on_dm_expected(const CString& strKey, const LONG& nRea
 	CString msg;
 	msg.Format("on_dm_expected = symbol [%s], expected [%s]\n",strSymbolCode, strExpected);
 	TRACE(msg);
-	LOGINFO(CMyLogger::getInstance(), "%s", msg);
+	//LOGINFO(CMyLogger::getInstance(), "%s", msg);
 	nlohmann::json quote;
 
 	quote["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());

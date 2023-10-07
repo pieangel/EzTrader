@@ -890,7 +890,21 @@ int VtSignalConnectionGrid::OnEllipsisButton(long ID, int col, long row, long ms
 		if (nParam == ELLIPSISBUTTON_CLICK_ACNT) {
 			_ButtonRow = row;
 			_ButtonCol = col;
-			SmAccountFundSelector dlg;
+			int mode = 0;
+			auto it = _SystemMap.find(row);
+			if (it != _SystemMap.end()) {
+				auto sys = it->second;
+				if (sys->order_type() == OrderType::MainAccount) {
+					mode = 0;
+				}
+				else if (sys->order_type() == OrderType::SubAccount) {
+					mode = 0;
+				}
+				else {
+					mode = 1;
+				}
+			}
+			SmAccountFundSelector dlg(nullptr, mode);
 			dlg.set_source_id(id_);
 			dlg.DoModal();
 		}

@@ -220,7 +220,20 @@ void TotalAssetProfitLossView::update_account_profit_loss()
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(2, 1);
 	value = VtStringUtil::get_format_value(account_profit_loss.trade_profit_loss, decimal, true);
-	if (cell) cell->Text(value);
+	if (cell) {
+		cell->Text(value);
+
+		if (account_profit_loss.trade_profit_loss > 0) {
+			cell->CellType(SmCellType::CT_SP_PROFIT);
+		}
+		else if (account_profit_loss.trade_profit_loss < 0) {
+			cell->CellType(SmCellType::CT_SP_LOSS);
+		}
+		else {
+			cell->Text("0");
+			cell->CellType(SmCellType::CT_DEFAULT);
+		}
+	}
 
 	cell = _Grid->FindCell(3, 1);
 	value = VtStringUtil::get_format_value(asset.entrust_deposit, decimal, true);

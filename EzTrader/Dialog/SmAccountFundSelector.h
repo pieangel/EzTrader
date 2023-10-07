@@ -10,7 +10,7 @@ class SmAccountFundSelector : public CBCGPDialog
 	DECLARE_DYNAMIC(SmAccountFundSelector)
 
 public:
-	SmAccountFundSelector(CWnd* pParent = nullptr);   // standard constructor
+	SmAccountFundSelector(CWnd* pParent, int mode);   // standard constructor
 	virtual ~SmAccountFundSelector();
 
 // Dialog Data
@@ -25,7 +25,7 @@ protected:
 
 private:
 	AccountFundView account_fund_view_;
-
+	int mode_{ 0 };
 public:
 	void set_mode(int mode) {
 		account_fund_view_.mode(mode);
@@ -33,6 +33,8 @@ public:
 	void set_source_id(const int source_id) {
 		account_fund_view_.set_source_id(source_id);
 	}
+	CBCGPButton radio_acnt_;
+	CBCGPButton radio_fund_;
 	CString m_SelectedCode;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedRadioAcnt();

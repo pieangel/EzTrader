@@ -9,7 +9,7 @@ namespace DarkHorse
 	class SmAccount;
 	class SmFund;
 }
-const int grid_row_count5 = 100;
+const int grid_row_count5 = 300;
 class AccountFundView : public CBCGPGridCtrl
 {
 	DECLARE_DYNAMIC(AccountFundView)

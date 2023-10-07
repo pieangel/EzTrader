@@ -10,8 +10,8 @@
 
 IMPLEMENT_DYNAMIC(SmAccountFundSelector, CBCGPDialog)
 
-SmAccountFundSelector::SmAccountFundSelector(CWnd* pParent)
-	: CBCGPDialog(IDD_ACNT_FUND_SELECTOR, pParent)
+SmAccountFundSelector::SmAccountFundSelector(CWnd* pParent, int mode)
+	: CBCGPDialog(IDD_ACNT_FUND_SELECTOR, pParent), mode_(mode)
 {
 }
 
@@ -39,7 +39,6 @@ END_MESSAGE_MAP()
 BOOL SmAccountFundSelector::OnInitDialog()
 {
 	CBCGPDialog::OnInitDialog();
-	((CButton*)GetDlgItem(IDC_RADIO_ACNT))->SetCheck(BST_CHECKED);
 	CRect rect;
 	CWnd* pWnd = GetDlgItem(IDC_ACNT_FUND_GRID);
 	pWnd->GetWindowRect(&rect);
@@ -47,7 +46,20 @@ BOOL SmAccountFundSelector::OnInitDialog()
 	// Create the Windows control and attach it to the Grid object
 	account_fund_view_.Create(WS_CHILD | WS_VISIBLE | WS_BORDER, rect, this, 0x0023);
 
-	account_fund_view_.mode(0);
+	if (mode_ == 0) {
+		((CButton*)GetDlgItem(IDC_RADIO_ACNT))->SetCheck(BST_CHECKED);
+		((CButton*)GetDlgItem(IDC_RADIO_FUND))->SetCheck(BST_UNCHECKED);
+	}
+	else if (mode_ == 1) {
+		((CButton*)GetDlgItem(IDC_RADIO_ACNT))->SetCheck(BST_UNCHECKED);
+		((CButton*)GetDlgItem(IDC_RADIO_FUND))->SetCheck(BST_CHECKED);
+	}
+	else {
+		((CButton*)GetDlgItem(IDC_RADIO_ACNT))->SetCheck(BST_CHECKED);
+		((CButton*)GetDlgItem(IDC_RADIO_FUND))->SetCheck(BST_UNCHECKED);
+	}
+
+	account_fund_view_.mode(mode_);
 	account_fund_view_.init_grid();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -56,14 +68,16 @@ BOOL SmAccountFundSelector::OnInitDialog()
 
 void SmAccountFundSelector::OnBnClickedRadioAcnt()
 {
-	account_fund_view_.mode(0);
+	mode_ = 0;
+	account_fund_view_.mode(mode_);
 	account_fund_view_.init_grid();
 }
 
 
 void SmAccountFundSelector::OnBnClickedRadioFund()
 {
-	account_fund_view_.mode(1);
+	mode_ = 1;
+	account_fund_view_.mode(mode_);
 	account_fund_view_.init_grid();
 }
 

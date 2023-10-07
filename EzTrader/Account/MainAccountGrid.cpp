@@ -363,6 +363,8 @@ void MainAccountGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	CBCGPGridItem* item = nullptr;
 	CBCGPGridRow* pRow = HitTest(point, id, item);
 
+	if (_SubAccountEditor)_SubAccountEditor->_BtnModify.EnableWindow(FALSE);
+
 	auto found = _RowToAccountMap.find(id.m_nRow);
 	if (found == _RowToAccountMap.end()) return;
 	if (_SubAccountEditor) _SubAccountEditor->set_account(found->second);

@@ -416,21 +416,21 @@ void CAccountItem::OnClickButton(CPoint /*point*/)
 
 	m_bButtonIsDown = TRUE;
 	Redraw();
-	SmAccountFundSelector dlg;
-	dlg.set_source_id(id_);
-	dlg.DoModal();
+	//SmAccountFundSelector dlg;
+	//dlg.set_source_id(id_);
+	//dlg.DoModal();
 
 	m_bButtonIsDown = FALSE;
 
-	if (m_pWndInPlace != NULL)
-	{
-		m_pWndInPlace->SetWindowText(dlg.m_SelectedCode);
-		m_pWndInPlace->SetFocus();
-	}
-	else
-	{
-		pGridCtrl->SetFocus();
-	}
+// 	if (m_pWndInPlace != NULL)
+// 	{
+// 		m_pWndInPlace->SetWindowText(dlg.m_SelectedCode);
+// 		m_pWndInPlace->SetFocus();
+// 	}
+// 	else
+// 	{
+// 		pGridCtrl->SetFocus();
+// 	}
 
 	SetItemChanged();
 	Redraw();

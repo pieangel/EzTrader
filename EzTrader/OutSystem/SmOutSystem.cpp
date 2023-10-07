@@ -159,6 +159,21 @@ namespace DarkHorse {
 		order_req->price_type = SmOutSystemManager::price_type;
 		SetOrderPrice(order_req);
 
+		order_req->request_type = OrderRequestType::Domestic;
+		order_req->order_context.order_control_id = id_;
+		order_req->order_context.order_source_type = OrderType::MainAccount;
+		if (parent_account) {
+			order_req->order_context.parent_account_id = parent_account->id();
+			order_req->order_context.parent_account_no = parent_account->No();
+			order_req->order_context.sub_account_no = account->No();
+			order_req->order_context.order_source_type = OrderType::SubAccount;
+		}
+		if (fund_) {
+			order_req->order_context.order_source_type = OrderType::Fund;
+			order_req->order_context.fund_id = fund_->Id();
+			order_req->order_context.fund_name = fund_->Name();
+		}
+
 		mainApp.order_request_manager()->add_order_request(order_req);
 	}
 

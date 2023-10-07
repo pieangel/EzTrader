@@ -8,6 +8,7 @@
 #include "SmAccount.h"
 #include "SmAccountManager.h"
 #include "../Global/SmTotalManager.h"
+#include "../Archieve/SmSaveManager.h"
 
 #define WND_ID8 0x00000008
 #define WND_ID9 0x00000009
@@ -53,6 +54,7 @@ BOOL SubAccountEditor::OnInitDialog()
 	main_account_grid_.SetWholeRowSel(TRUE);
 	main_account_grid_.SetSubAccountEditor(this);
 	set_default_account();
+	_BtnModify.EnableWindow(FALSE);
 	return TRUE;
 }
 
@@ -64,6 +66,7 @@ void SubAccountEditor::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_SUB_ACCOUNT_NO, _EditSubAcntCode);
 	DDX_Control(pDX, IDC_COMBO_ACCOUNT_TYPE, _ComboAccountType);
 	DDX_Control(pDX, IDC_STATIC_SEL_ACCOUNT, _StaticSelAcntName);
+	DDX_Control(pDX, IDC_BTN_MODIFY, _BtnModify);
 }
 
 
@@ -194,7 +197,8 @@ void SubAccountEditor::OnBnClickedBtnModify()
 // 		}
 		subAcnt->No((LPCTSTR)strAcntNo);
 		subAcnt->Name((LPCTSTR)strAcntName);
-		set_sub_account_grid();
+		//set_sub_account_grid();
+		sub_account_grid_.update_sub_account(subAcnt);
 	}
 }
 
@@ -224,13 +228,13 @@ void SubAccountEditor::OnBnClickedBtnDelete()
 
 void SubAccountEditor::OnBnClickedBtnApply()
 {
-	// TODO: Add your control notification handler code here
+	CBCGPScrollDialog::EndDialog(IDOK);
 }
 
 
 void SubAccountEditor::OnBnClickedBtnSave()
 {
-	// TODO: Add your control notification handler code here
+	mainApp.SaveMgr()->save_account("account_list.json");
 }
 
 

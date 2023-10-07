@@ -183,17 +183,56 @@ void AccountProfitLossView::update_account_profit_loss()
 	auto cell = _Grid->FindCell(0, 1);
 	std::string value;
 	value = VtStringUtil::get_format_value(account_profit_loss.open_profit_loss, decimal, true);
-	if (cell) cell->Text(value);
+	if (cell) {
+		cell->Text(value);
+		if (account_profit_loss.open_profit_loss > 0) {
+			cell->CellType(SmCellType::CT_SP_PROFIT);
+		}
+		else if (account_profit_loss.open_profit_loss < 0) {
+			cell->CellType(SmCellType::CT_SP_LOSS);
+		}
+		else {
+			cell->Text("0");
+			cell->CellType(SmCellType::CT_DEFAULT);
+		}
+	}
+
 	cell = _Grid->FindCell(1, 1);
 	value = VtStringUtil::get_format_value(account_profit_loss.trade_profit_loss, decimal, true);
-	if (cell) cell->Text(value);
+	if (cell) {
+		cell->Text(value);
+
+		if (account_profit_loss.trade_profit_loss > 0) {
+			cell->CellType(SmCellType::CT_SP_PROFIT);
+		}
+		else if (account_profit_loss.trade_profit_loss < 0) {
+			cell->CellType(SmCellType::CT_SP_LOSS);
+		}
+		else {
+			cell->Text("0");
+			cell->CellType(SmCellType::CT_DEFAULT);
+		}
+	}
 	cell = _Grid->FindCell(2, 1);
 	value = VtStringUtil::get_format_value(account_profit_loss.trade_fee, decimal, true);
 	if (cell) cell->Text(value);
 	cell = _Grid->FindCell(3, 1);
 	const double pure_profit = account_profit_loss.open_profit_loss + account_profit_loss.trade_profit_loss - abs(account_profit_loss.trade_fee);
 	value = VtStringUtil::get_format_value(pure_profit, decimal, true);
-	if (cell) cell->Text(value);
+	if (cell) {
+		cell->Text(value);
+
+		if (pure_profit > 0) {
+			cell->CellType(SmCellType::CT_SP_PROFIT);
+		}
+		else if (pure_profit < 0) {
+			cell->CellType(SmCellType::CT_SP_LOSS);
+		}
+		else {
+			cell->Text("0");
+			cell->CellType(SmCellType::CT_DEFAULT);
+		}
+	}
 
 	updating_ = false;
 	enable_account_profit_loss_show_ = true;

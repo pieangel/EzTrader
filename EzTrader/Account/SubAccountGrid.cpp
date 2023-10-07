@@ -405,8 +405,20 @@ void SubAccountGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	if (found == _RowToSubAccountMap.end()) return;
 	_Account = found->second;
 	if (_SubAccountEditor) _SubAccountEditor->set_sub_account(found->second);
+	if (_SubAccountEditor) _SubAccountEditor->_BtnModify.EnableWindow(TRUE);
 
 	CBCGPGridCtrl::OnLButtonDown(nFlags, point);
+}
+
+void SubAccountGrid::update_sub_account(std::shared_ptr<DarkHorse::SmAccount> sub_account)
+{
+	if (!sub_account || _SelectedIndex < 0) return;
+
+	CBCGPGridRow* pRow = GetRow(_SelectedIndex);
+	if (!pRow) return;
+	pRow->GetItem(0)->SetValue(sub_account->No().c_str(), TRUE);
+
+	pRow->GetItem(1)->SetValue(sub_account->Name().c_str(), TRUE);
 }
 
 
@@ -432,10 +444,11 @@ void SubAccountGrid::OnLButtonDblClk(UINT nFlags, CPoint point)
 	auto found = _RowToSubAccountMap.find(id.m_nRow);
 	if (found == _RowToSubAccountMap.end()) return;
 
+	if (_SubAccountEditor) _SubAccountEditor->_BtnModify.EnableWindow(TRUE);
 	
 	//_Account->RemoveAccount(found->second->No());
 
-	InitAccount(_Account);
+	//InitAccount(_Account);
 
 
 	CBCGPGridCtrl::OnLButtonDblClk(nFlags, point);
