@@ -106,11 +106,14 @@
 #define IDD_SYSTEM_USD                  201
 #define IDD_ACNT_FUND_SELECTOR          202
 #define IDD_SYS_AUTO_CONNECT1           203
+#define IDD_DIALOG8                     237
+#define IDD_YA_CLIENT                   237
 #define IDC_STATIC_ID                   1003
 #define IDC_STATIC_PWD                  1004
 #define IDC_BTN_ORDER_HISTORY           1005
 #define IDC_STATIC_CERT                 1006
 #define IDC_POSITION                    1007
+#define IDC_STATIC_CERT2                1007
 #define IDC_BTN_ADD_FAV                 1008
 #define IDC_BTN_CAN                     1009
 #define IDC_COMPANY_URL                 1010
@@ -366,6 +369,7 @@
 #define IDC_BTN_MODIFY                  1260
 #define IDC_EDIT_VK3_NK                 1261
 #define IDC_COMBO1                      1262
+#define IDC_COMBO_LOGIN_SERVER          1262
 #define IDC_COMBO_ACCOUNT_TYPE          1263
 #define IDC_STATIC_FILL_SET             1264
 #define IDC_STATIC_SEL_ACCOUNT          1265
@@ -647,7 +651,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        237
+#define _APS_NEXT_RESOURCE_VALUE        239
 #define _APS_NEXT_COMMAND_VALUE         32951
 #define _APS_NEXT_CONTROL_VALUE         1172
 #define _APS_NEXT_SYMED_VALUE           119

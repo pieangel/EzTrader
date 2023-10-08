@@ -346,12 +346,12 @@ void SmAccountGrid::InitUnregAccount(const std::string& account_type)
 
 		pRow->GetItem(1)->SetValue(account->Name().c_str(), TRUE);
 		if (!account->is_subaccount()) {
-			pRow->GetItem(0)->SetBackgroundColor(RGB(2, 115, 202));
-			pRow->GetItem(1)->SetBackgroundColor(RGB(2, 115, 202));
+			pRow->GetItem(0)->SetBackgroundColor(RGB(2, 115, 202), TRUE);
+			pRow->GetItem(1)->SetBackgroundColor(RGB(2, 115, 202), TRUE);
 		}
 		else {
-			pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255));
-			pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
+			pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255), TRUE);
+			pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255), TRUE);
 		}
 
 

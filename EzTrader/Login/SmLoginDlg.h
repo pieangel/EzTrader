@@ -31,4 +31,5 @@ public:
 	CBCGPButton _CheckSave;
 	CBCGPButton _CheckSimul;
 	virtual BOOL OnInitDialog();
+	CComboBox log_in_server_;
 };

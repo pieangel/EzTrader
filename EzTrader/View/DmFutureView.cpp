@@ -60,7 +60,7 @@ DmFutureView::DmFutureView()
 
 	CString strLog;
 	strLog.Format("DmFutureView futur_view id = [%d], position_control_id = [%d]", id_, position_control_->get_id());
-	LOGINFO(CMyLogger::getInstance(), (const char*)strLog);
+	//LOGINFO(CMyLogger::getInstance(), (const char*)strLog);
 
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(

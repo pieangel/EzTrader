@@ -422,7 +422,8 @@ void SmFundAccountGrid::ClearFundAccountGrid(const int& row)
 		pRow->GetItem(2)->EmptyValue(TRUE);
 		pRow->GetItem(3)->EmptyValue(TRUE);
 
-
+		pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255), TRUE);
+		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255), TRUE);
 
 	}
 
@@ -454,6 +455,14 @@ void SmFundAccountGrid::InitFund()
 		pRow->GetItem(0)->SetValue(account->No().c_str(), TRUE);
 
 		pRow->GetItem(1)->SetValue(account->Name().c_str(), TRUE);
+		if (!account->is_subaccount()) {
+			pRow->GetItem(0)->SetBackgroundColor(RGB(2, 115, 202), TRUE);
+			pRow->GetItem(1)->SetBackgroundColor(RGB(2, 115, 202), TRUE);
+		}
+		else {
+			pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255), TRUE);
+			pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255), TRUE);
+		}
 		std::string seung_su;
 		seung_su = std::to_string(account->SeungSu());
 		((SmEditItem*)pRow->GetItem(2))->Account(account);

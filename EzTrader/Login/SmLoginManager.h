@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "../Xml/pugixml.hpp"
 namespace DarkHorse {
 	class SmLoginManager
@@ -10,7 +11,11 @@ namespace DarkHorse {
 		std::string _pwd;
 		std::string _cert;
 		bool _Save = false;
+		std::vector<std::string> yuanta_server_list_;
 	public:
+		SmLoginManager();
+		~SmLoginManager();
+		const std::vector<std::string>& yuanta_server_list() const { return yuanta_server_list_; }
 		void SaveToXml(pugi::xml_node& node);
 		void LoadFromXml(pugi::xml_node& node);
 
@@ -20,6 +25,7 @@ namespace DarkHorse {
 		bool IsLoggedIn() const { return _IsLoggedIn; }
 		void IsLoggedIn(bool val) { _IsLoggedIn = val; }
 		void SaveUserInfo(const std::string& id, const std::string& pwd, const std::string& cert);
+
 	};
 }
 

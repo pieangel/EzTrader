@@ -967,6 +967,15 @@
     <ClCompile Include="OutSystem\VtTotalSignalGrid.cpp">
       <Filter>OutSystem</Filter>
     </ClCompile>
+    <ClCompile Include="Yuanta\YaClient.cpp">
+      <Filter>Yuanta</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\YaServerDataReceiver.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Yuanta\YaStockClient.cpp">
+      <Filter>Yuanta</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -2214,6 +2223,24 @@
     <ClInclude Include="Config\SystemConfig.h">
       <Filter>Config</Filter>
     </ClInclude>
+    <ClInclude Include="Yuanta\CommDef.h">
+      <Filter>Yuanta</Filter>
+    </ClInclude>
+    <ClInclude Include="Yuanta\IYOA.h">
+      <Filter>Yuanta</Filter>
+    </ClInclude>
+    <ClInclude Include="Yuanta\MessageDef.h">
+      <Filter>Yuanta</Filter>
+    </ClInclude>
+    <ClInclude Include="Yuanta\YaClient.h">
+      <Filter>Yuanta</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\YaServerDataReceiver.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Yuanta\YaStockClient.h">
+      <Filter>Yuanta</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -2490,6 +2517,9 @@
     </Filter>
     <Filter Include="UGrid\EditCtrls">
       <UniqueIdentifier>{ea5a1548-25d6-453e-9a9d-9db2b21dedca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Yuanta">
+      <UniqueIdentifier>{e10b1a03-4e03-40f7-9b44-a534f3e924ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

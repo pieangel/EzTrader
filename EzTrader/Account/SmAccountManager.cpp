@@ -61,7 +61,7 @@ namespace DarkHorse {
 		std::vector<std::shared_ptr<SmAccount>> main_acnt_vector;
 		get_main_account_vector(account_type, main_acnt_vector);
 		for (auto it = main_acnt_vector.begin(); it != main_acnt_vector.end(); it++) {
-			unused_acnt_vector.push_back(*it);
+			if (!(*it)->UsedForFund()) unused_acnt_vector.push_back(*it);
 			auto sub_acnt_vector = (*it)->get_sub_accounts();
 			for (auto it2 = sub_acnt_vector.begin(); it2 != sub_acnt_vector.end(); it2++) {
 				if (!(*it2)->UsedForFund()) {

@@ -99,7 +99,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include;../include/fmt</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include;../include/fmt;../include/magic_enum</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
       <BrowseInformation>false</BrowseInformation>
@@ -163,7 +163,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include;../include/fmt</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Project\BCGControlBarPro\BCGCBPro;../DarkHorseLib;C:\boost_1_78_0;../include;../include/fmt;../include/magic_enum</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <BuildStlModules>false</BuildStlModules>
       <EnableModules>false</EnableModules>
@@ -531,6 +531,7 @@
     <ClInclude Include="Task\SmTaskTypeDef.h" />
     <ClInclude Include="Task\ViServerDataReceiver.h" />
     <ClInclude Include="Task\VtProgressDlg.h" />
+    <ClInclude Include="Task\YaServerDataReceiver.h" />
     <ClInclude Include="TimeData\SmCompData.h" />
     <ClInclude Include="TimeData\SmTimeData.h" />
     <ClInclude Include="TimeData\SmTimeDataManager.h" />
@@ -637,6 +638,11 @@
     <ClInclude Include="Xml\pugiconfig.hpp" />
     <ClInclude Include="Xml\pugixml.hpp" />
     <ClInclude Include="Xml\tinyxml2.h" />
+    <ClInclude Include="Yuanta\CommDef.h" />
+    <ClInclude Include="Yuanta\IYOA.h" />
+    <ClInclude Include="Yuanta\MessageDef.h" />
+    <ClInclude Include="Yuanta\YaClient.h" />
+    <ClInclude Include="Yuanta\YaStockClient.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Account\MainAccountGrid.cpp" />
@@ -897,6 +903,7 @@
     <ClCompile Include="Task\SmTaskRequestManager.cpp" />
     <ClCompile Include="Task\ViServerDataReceiver.cpp" />
     <ClCompile Include="Task\VtProgressDlg.cpp" />
+    <ClCompile Include="Task\YaServerDataReceiver.cpp" />
     <ClCompile Include="TimeData\SmCompData.cpp" />
     <ClCompile Include="TimeData\SmTimeData.cpp" />
     <ClCompile Include="TimeData\SmTimeDataManager.cpp" />
@@ -984,6 +991,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Yuanta\YaClient.cpp" />
+    <ClCompile Include="Yuanta\YaStockClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EzTrader.rc" />

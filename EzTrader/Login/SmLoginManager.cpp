@@ -9,6 +9,19 @@ void SmLoginManager::SaveUserInfo(const std::string& id, const std::string& pwd,
 	_cert = cert;
 }
 
+SmLoginManager::SmLoginManager()
+{
+	yuanta_server_list_.push_back("simul.tradar.api.com");
+	yuanta_server_list_.push_back("real.tradar.api.com");
+	yuanta_server_list_.push_back("simul.tradarglobal.api.com");
+	yuanta_server_list_.push_back("real.tradarglobal.api.com");
+}
+
+SmLoginManager::~SmLoginManager()
+{
+
+}
+
 void DarkHorse::SmLoginManager::SaveToXml(pugi::xml_node& login_info_node)
 {
 	pugi::xml_node login_info_child = login_info_node.append_child("login_id");
