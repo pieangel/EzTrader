@@ -43,6 +43,7 @@ void SmLoginDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(SmLoginDlg, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTN_LOGIN, &SmLoginDlg::OnBnClickedBtnLogin)
 	ON_BN_CLICKED(IDC_BTN_CAN, &SmLoginDlg::OnBnClickedBtnCan)
+	ON_CBN_SELCHANGE(IDC_COMBO_LOGIN_SERVER, &SmLoginDlg::OnCbnSelchangeComboLoginServer)
 END_MESSAGE_MAP()
 
 
@@ -121,4 +122,10 @@ BOOL SmLoginDlg::OnInitDialog()
 	CenterWindow();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+
+void SmLoginDlg::OnCbnSelchangeComboLoginServer()
+{
+	mainApp.LoginMgr()->ya_server_index(log_in_server_.GetCurSel());
 }

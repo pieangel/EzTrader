@@ -26,6 +26,7 @@
 #include "../Order/OrderProcess/OrderProcessor.h"
 #include "../Event/EventHub.h"
 #include "../Task/ViServerDataReceiver.h"
+#include "../Task/YaServerDataReceiver.h"
 #include "../OutSystem/SmOutSystemManager.h"
 #include "../FileWatch/VtFileEventMonitor.h"
 #include "../Config/SmConfigManager.h"
@@ -70,4 +71,5 @@ void SmTotalManager::CreateManagers()
 	out_system_manager_ = std::make_shared<SmOutSystemManager>();
 	file_watch_monitor_ = std::make_shared<VtFileEventMonitor>();
 	config_manager_ = std::make_shared<SmConfigManager>();
+	ya_server_data_receiver_ = std::make_shared<YaServerDataReceiver>();
 }

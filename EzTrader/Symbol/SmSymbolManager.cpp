@@ -250,6 +250,22 @@ void SmSymbolManager::sort_dm_option_symbol_vector()
 	}
 }
 
+void SmSymbolManager::set_domestic_symbol_info(std::shared_ptr<SmSymbol> symbol)
+{
+	if (!symbol) return;
+
+	symbol->symbol_type(SymbolType::Domestic);
+	symbol->StartTime("084500");
+	symbol->EndTime("154500");
+	symbol->Exchange("KRX");
+	symbol->Currency("\\");
+	set_product_info(symbol);
+	//set_quote_preday_close(symbol, pre_day_close);
+	AddSymbol(symbol);
+	//LOGINFO(CMyLogger::getInstance(), "read symbol %s complete!", symbol->SymbolCode().c_str());
+	add_to_yearmonth(symbol);
+}
+
 void SmSymbolManager::get_ab_recent_symbols(std::set<std::shared_ptr<SmSymbol>>& ab_symbol_set)
 {
 	for (auto it = Ab_Market_Set_.begin(); it != Ab_Market_Set_.end(); it++) {

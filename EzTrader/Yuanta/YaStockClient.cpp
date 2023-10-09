@@ -49,7 +49,7 @@ int YaStockClient::ConnectToServer()
 
 int YaStockClient::Login(task_arg&& login_info)
 {
-	return 1; // return _ViCtrol->Login(std::move(login_info));
+	return _ViCtrol->Login(std::move(login_info));
 }
 
 int YaStockClient::GetSymbolMaster(task_arg&& arg)

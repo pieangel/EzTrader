@@ -117,15 +117,16 @@ BOOL SmAccountPwdDlg::OnInitDialog()
 
 	m_wndGrid.FreezeColumns(0);
 	
+	std::vector<std::shared_ptr<SmAccount>> main_acnt_vector;
 	const int nColumns = m_wndGrid.GetColumnCount();
 
-	const std::unordered_map<std::string, std::shared_ptr<SmAccount>>& account_map = mainApp.AcntMgr()->GetAccountMap();
+	mainApp.AcntMgr()->get_main_account_vector(main_acnt_vector);
 
 	mainApp.SaveMgr()->LoadAccountPasswords();
 
 	int row = 0;
-	for (auto it = account_map.begin(); it != account_map.end(); it++) {
-		auto account = it->second;
+	for (auto it = main_acnt_vector.begin(); it != main_acnt_vector.end(); it++) {
+		auto account = *it;
 		if (account->is_subaccount()) continue;
 		// Create new row:
 		CBCGPGridRow* pRow = m_wndGrid.CreateRow(nColumns);

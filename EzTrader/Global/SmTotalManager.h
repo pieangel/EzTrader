@@ -31,6 +31,7 @@ namespace DarkHorse {
 	class SmOutSystemManager;
 	class VtFileEventMonitor;
 	class SmConfigManager;
+	class YaServerDataReceiver;
 	class SmTotalManager
 	{
 	public:
@@ -65,6 +66,7 @@ namespace DarkHorse {
 		std::shared_ptr<SmOutSystemManager> out_system_manager() { return out_system_manager_; }
 		std::shared_ptr<VtFileEventMonitor> file_watch_monitor() { return file_watch_monitor_; }
 		std::shared_ptr<SmConfigManager> config_manager() { return config_manager_; }
+		std::shared_ptr<YaServerDataReceiver> ya_server_data_receiver() { return ya_server_data_receiver_; }
 
 		bool use_dark_theme() const { return use_dark_theme_; }
 		void use_dark_theme(bool val) { use_dark_theme_ = val; }
@@ -100,6 +102,7 @@ namespace DarkHorse {
 		std::shared_ptr< SmOutSystemManager> out_system_manager_ = nullptr;
 		std::shared_ptr< VtFileEventMonitor> file_watch_monitor_ = nullptr;
 		std::shared_ptr<SmConfigManager> config_manager_ = nullptr;
+		std::shared_ptr<YaServerDataReceiver> ya_server_data_receiver_ = nullptr;
 	};
 }
 

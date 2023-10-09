@@ -12,6 +12,7 @@ namespace DarkHorse {
 		std::string _cert;
 		bool _Save = false;
 		std::vector<std::string> yuanta_server_list_;
+		int ya_server_index_ = 0;
 	public:
 		SmLoginManager();
 		~SmLoginManager();
@@ -25,7 +26,8 @@ namespace DarkHorse {
 		bool IsLoggedIn() const { return _IsLoggedIn; }
 		void IsLoggedIn(bool val) { _IsLoggedIn = val; }
 		void SaveUserInfo(const std::string& id, const std::string& pwd, const std::string& cert);
-
+		int ya_server_index() const { return ya_server_index_; }
+		void ya_server_index(int val) { ya_server_index_ = val; }
 	};
 }
 

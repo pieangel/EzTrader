@@ -46,6 +46,7 @@ namespace DarkHorse {
 		void set_product_info(std::shared_ptr<SmSymbol> symbol);
 		void set_quote_preday_close(std::shared_ptr<SmSymbol> symbol, const std::string& pre_day_str);
 	public:
+		void set_domestic_symbol_info(std::shared_ptr<SmSymbol> symbol);
 		void get_ab_recent_symbols(std::set<std::shared_ptr<SmSymbol>>& ab_symbol_set);
 		const std::map<int, std::shared_ptr<SmSymbol>>& get_ab_favorite_map() {
 			return _FavoriteMap;
