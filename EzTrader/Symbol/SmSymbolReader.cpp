@@ -410,9 +410,9 @@ void SmSymbolReader::ReadAbroadSymbolFile(const std::string& fullPath) const
 			std::shared_ptr<SmSymbol> symbol = product->AddSymbol(std::move(symbol_code));
 			if (!symbol) continue;
 
-			//CString msg;
-			//msg.Format(_T("code = %s, name = %s, name_kr = %s\n"), symbol_code.c_str(), symbol_name_en.c_str(), symbol_name_kr.c_str());
-			//TRACE(msg);
+			CString msg;
+			msg.Format(_T("code = %s, name = %s, name_kr = %s, ticksize[%s], tickvalue[%s], contract_size[%s], seung_su[%s]\n"), symbol_code.c_str(), symbol_name_en.c_str(), symbol_name_kr.c_str(), TickSize.c_str(), TickValue.c_str(), CtrtSize.c_str(),  MltiPler.c_str());
+			TRACE(msg);
 
 			//product->AddToYearMonth(sym->ShortCode, sym);
 

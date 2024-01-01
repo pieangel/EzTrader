@@ -43,6 +43,7 @@ class MiniJangoDialog;
 class TotalAssetProfitLossDialog;
 class AbFundOrderWindow;
 class VtAutoSignalManagerDialog;
+class SmUSDSystemDialog;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -173,6 +174,7 @@ public:
 	std::map<HWND, std::shared_ptr<SmTrendChart>> _TrendChartMap;
 
 	VtAutoSignalManagerDialog* auto_signal_manager_dlg_ = nullptr;
+	SmUSDSystemDialog* usd_system_dlg_ = nullptr;
 	void remove_dm_account_order_window(HWND handle);
 	void remove_dm_fund_order_window(HWND handle);
 	void RemoveOrderWnd(HWND wnd);
@@ -232,4 +234,9 @@ public:
 	afx_msg void OnDmFundRemain();
 	afx_msg void OnAbFundRemain();
 	afx_msg void OnDestroy();
+	afx_msg void OnUsdSystem();
+	afx_msg void OnSimulStartsimul();
+	afx_msg void OnSimulStopsimul();
+	afx_msg void OnSimulYestest();
+	void copyLastLineAndAppend(const std::string& filename);
 };

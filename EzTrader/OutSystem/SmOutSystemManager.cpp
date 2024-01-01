@@ -7,13 +7,36 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
+#include "magic_enum/magic_enum.hpp"
+#include "SmUsdSystem.h"
+#include "../Util/SmUtil.h"
+#include <chrono>
+
+using namespace std::chrono;
 
 namespace DarkHorse {
-	int SmOutSystemManager::order_tick = 5;
+	int SmOutSystemManager::order_tick = 10;
 	SmPriceType SmOutSystemManager::price_type = SmPriceType::Price;
+
+	DarkHorse::SmUsdStrategy SmOutSystemManager::get_usd_strategy(const std::string& strategy_type) const
+	{
+		return usd_strategy_map_.at(strategy_type);
+	}
+
+	std::string SmOutSystemManager::get_usd_system_name()
+	{
+		std::string usd_strategy_name;
+		usd_strategy_name = "usd_system_";
+		usd_strategy_name.append(std::to_string(IdGenerator::get_id()));
+		return usd_strategy_name;
+	}
+
 	SmOutSystemManager::SmOutSystemManager()
 	{
 		make_out_system_signal_map();
+		init_usd_strategy();
+		init_usd_strategy_vec();
+		//create_timer_for_usd_system();
 	}
 
 
@@ -43,12 +66,42 @@ namespace DarkHorse {
 		return out_system;
 	}
 
+	std::shared_ptr<DarkHorse::SmUsdSystem> SmOutSystemManager::create_usd_system(
+		const std::string& strategy_type, 
+		const int seung_su, 
+		OrderType order_type, 
+		std::shared_ptr<SmAccount> account, 
+		std::shared_ptr<SmFund> fund, 
+		std::shared_ptr<SmSymbol> symbol)
+	{
+		std::shared_ptr<SmUsdSystem> usd_system = std::make_shared<SmUsdSystem>(strategy_type);
+		usd_system->seung_su(seung_su);
+		usd_system->order_type(order_type);
+		usd_system->account(account);
+		usd_system->fund(fund);
+		usd_system->symbol(symbol);
+		usd_system_vec_.push_back(usd_system);
+		return usd_system;
+	}
+
+	void SmOutSystemManager::update_data(const std::string& symbol_code, int bs, int as, int bc, int ac)
+	{
+		usd_system_data_.update_data(symbol_code, bs, as, bc, ac);
+	}
+
 	void SmOutSystemManager::remove_out_system(std::shared_ptr<SmOutSystem> out_system)
 	{
 		if (!out_system) return;
 
 		//remove_out_system_from_map(out_system);
 		remove_out_system_by_id(out_system->id());
+	}
+
+	void SmOutSystemManager::remove_usd_system(std::shared_ptr<SmUsdSystem> out_system)
+	{
+		if (!out_system) return;
+
+		remove_usd_system_by_id(out_system->id());
 	}
 
 	void SmOutSystemManager::remove_out_system_from_map(std::shared_ptr<SmOutSystem> out_system)
@@ -62,6 +115,15 @@ namespace DarkHorse {
 		if (it != system_map.end()) {
 			system_map.erase(it);
 		}
+	}
+
+	void SmOutSystemManager::remove_usd_system_from_map(std::shared_ptr<SmUsdSystem> usd_system)
+	{
+		if (!usd_system) return;
+
+		auto found = usd_system_map_.find(usd_system->name());
+		if (found == usd_system_map_.end()) return;
+		usd_system_map_.erase(found);
 	}
 
 	void SmOutSystemManager::add_out_system_to_map(std::shared_ptr<SmOutSystem> out_system)
@@ -82,6 +144,36 @@ namespace DarkHorse {
 		}
 	}
 
+	void SmOutSystemManager::add_usd_system_to_map(std::shared_ptr<SmUsdSystem> usd_system)
+	{
+		if (!usd_system) return;
+
+		auto it = usd_system_map_.find(usd_system->name());
+		if (it != usd_system_map_.end())
+		{
+			usd_system_map_.insert(std::make_pair(usd_system->name(), usd_system));
+		}
+	}
+
+	void SmOutSystemManager::OnTimer()
+	{
+		//LOGINFO(CMyLogger::getInstance(), _T("OnTimer::%s"), __FUNCTION__);
+		for (auto& usd_system : usd_system_vec_) {
+			if (!usd_system->enable()) continue;
+			usd_system->on_timer();
+		}
+	}
+
+	void SmOutSystemManager::create_timer_for_usd_system()
+	{
+		std::vector<int> date_time = SmUtil::GetLocalDateTime();
+		int waitTime = 60 - date_time[5];
+		// Add to the timer.
+		auto id = _Timer.add(seconds(waitTime), std::bind(&SmOutSystemManager::OnTimer, this), seconds(60));
+		// Add to the request map.
+		_TimerMap["usd_system"] = id;
+	}
+
 	void SmOutSystemManager::put_order(const std::string& signal_name, int order_kind, int order_amount)
 	{
 		auto found = out_system_map_.find(signal_name);
@@ -96,6 +188,12 @@ namespace DarkHorse {
 	{
 		std::erase_if(out_system_vec_, [&](const std::shared_ptr<SmOutSystem>& out_system) {
 			return out_system->id() == system_id; });
+	}
+
+	void SmOutSystemManager::remove_usd_system_by_id(const int& system_id)
+	{
+		std::erase_if(usd_system_vec_, [&](const std::shared_ptr<SmUsdSystem>& usd_system) {
+			return usd_system->id() == system_id; });
 	}
 
 	void SmOutSystemManager::make_out_system_signal_map()
@@ -245,9 +343,29 @@ namespace DarkHorse {
 		active_out_system_map_.erase(found);
 	}
 
+	void SmOutSystemManager::add_active_usd_system(std::shared_ptr<SmUsdSystem> usd_system)
+	{
+		if (!usd_system) return;
+		add_out_system_to_map(usd_system);
+		auto found = active_usd_system_map_.find(usd_system->id());
+		if (found != active_usd_system_map_.end())return;
+		active_usd_system_map_.insert(std::make_pair(usd_system->id(), usd_system));
+	}
+
+	void SmOutSystemManager::remove_active_usd_system(std::shared_ptr<SmUsdSystem> usd_system)
+	{
+		if (!usd_system) return;
+		remove_usd_system_from_map(usd_system);
+		auto found = active_usd_system_map_.find(usd_system->id());
+		if (found == active_usd_system_map_.end())return;
+		active_usd_system_map_.erase(found);
+	}
+
 	void SmOutSystemManager::ProcessSignal(nlohmann::json&& signal)
 	{
-		try {			
+		try {	
+			if (!signal.contains("file_name")) return;
+
 			const std::string file_name = signal["file_name"];
 			LOGINFO(CMyLogger::getInstance(), _T("ProcessSignal : 파일이름 : %s"), file_name.c_str());
 
@@ -269,7 +387,7 @@ namespace DarkHorse {
 			msg.append(_T(","));
 			msg.append(lastline);
 
-			execute_order(std::move(msg));
+			execute_order(msg);
 		}
 		catch (const std::exception& e) {
 			const std::string error = e.what();
@@ -279,12 +397,12 @@ namespace DarkHorse {
 
 	bool SmOutSystemManager::ProcessSignal(const std::array<nlohmann::json, BulkOutSystemSize2>& arr, const int& taken)
 	{
-
 		return true;
 	}
 
-	void SmOutSystemManager::execute_order(std::string&& order_signal)
+	void SmOutSystemManager::execute_order(std::string order_signal)
 	{
+		try {
 		std::vector<std::string> tokens = split(order_signal, ',');
 		if (tokens.size() > 7 && tokens[0].length() > 0) {
 			std::filesystem::path full_path(tokens[0]);
@@ -298,9 +416,1029 @@ namespace DarkHorse {
 			put_order(signame, order_kind, order_amount);
 		}
 		else {
-			LOGINFO(CMyLogger::getInstance(), _T("OnOutSignal : 신호 파싱 오류 신호 : %s"), order_signal);
+			LOGINFO(CMyLogger::getInstance(), _T("execute_order :: 주문 실행 오류 [%s]"), order_signal);
 		}
-		
+		}
+		catch (const std::exception& e) {
+			const std::string error = e.what();
+			LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
+		}
+	}
+
+	void SmOutSystemManager::init_usd_strategy()
+	{
+		SmUsdStrategy strategy;
+		std::string strategy_name = magic_enum::enum_name(DarkHorse::SmStrategyType::TR_US1).data();
+		strategy.type(strategy_name);
+		GroupArg grp_arg;
+		SysArg arg;
+		grp_arg.sys_args.clear();
+		// 매수 진입 조건 
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.6";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매도 진입 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.6";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매수 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수청산";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+
+		// 매도 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도청산";
+		strategy.group_args.push_back(grp_arg);
+
+		usd_strategy_map_.insert(std::make_pair(strategy_name, strategy));
+
+
+		strategy_name = magic_enum::enum_name(DarkHorse::SmStrategyType::TR_US2).data();
+		strategy.type(strategy_name);
+		strategy.group_args.clear();
+
+		// 매수 진입 조건 
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.66";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매도 진입 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.66";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매수 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수청산";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+
+		// 매도 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도청산";
+		strategy.group_args.push_back(grp_arg);
+
+		usd_strategy_map_.insert(std::make_pair(strategy_name, strategy));
+
+
+		strategy_name = magic_enum::enum_name(DarkHorse::SmStrategyType::TR_US3).data();
+		strategy.type(strategy_name);
+		strategy.group_args.clear();
+		// 매수 진입 조건 
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.8";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매도 진입 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.8";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매수 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.9";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수청산";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+
+		// 매도 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.9";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도청산";
+		strategy.group_args.push_back(grp_arg);
+
+		usd_strategy_map_.insert(std::make_pair(strategy_name, strategy));
+
+
+		strategy_name = magic_enum::enum_name(DarkHorse::SmStrategyType::US_IN1).data();
+		strategy.type(strategy_name);
+		strategy.group_args.clear();
+		// 매수 진입 조건 
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매도 진입 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매수 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.6";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.9";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수청산";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+
+		// 매도 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.6";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.9";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도청산";
+		strategy.group_args.push_back(grp_arg);
+
+		usd_strategy_map_.insert(std::make_pair(strategy_name, strategy));
+
+
+		strategy_name = magic_enum::enum_name(DarkHorse::SmStrategyType::US_IN2).data();
+		strategy.type(strategy_name);
+		strategy.group_args.clear();
+		// 매수 진입 조건 
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.66";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매도 진입 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.66";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매수 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.6";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.7";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.9";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수청산";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+
+		// 매도 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.9";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도청산";
+		strategy.group_args.push_back(grp_arg);
+
+		usd_strategy_map_.insert(std::make_pair(strategy_name, strategy));
+
+		strategy_name = magic_enum::enum_name(DarkHorse::SmStrategyType::US_IN3).data();
+		strategy.type(strategy_name);
+		strategy.group_args.clear();
+		// 매수 진입 조건 
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.6";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매도 진입 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "0.6";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도진입";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+		// 매수 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "uac>ubc";
+		arg.data_source1 = "uac";
+		arg.data_source2 = "ubc";
+		arg.desc = "uac>ubc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "uas>ubs";
+		arg.data_source1 = "uas";
+		arg.data_source2 = "ubs";
+		arg.desc = "uas>ubs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbc>kac";
+		arg.data_source1 = "kbc";
+		arg.data_source2 = "kac";
+		arg.desc = "kbc>kac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kbs>kas";
+		arg.data_source1 = "kbs";
+		arg.data_source2 = "kas";
+		arg.desc = "kbs>kas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매수청산";
+		strategy.group_args.push_back(grp_arg);
+		//////////////////////////////////////////////////////////////////////////
+
+		// 매도 청산 조건
+		grp_arg.sys_args.clear();
+		arg.name = "ubc>uac";
+		arg.data_source1 = "ubc";
+		arg.data_source2 = "uac";
+		arg.desc = "ubc>uac 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "ubs>uas";
+		arg.data_source1 = "ubs";
+		arg.data_source2 = "uas";
+		arg.desc = "ubs>uas 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kac>kbc";
+		arg.data_source1 = "kac";
+		arg.data_source2 = "kbc";
+		arg.desc = "kac>kbc 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+
+		arg.name = "kas>kbs";
+		arg.data_source1 = "kas";
+		arg.data_source2 = "kbs";
+		arg.desc = "kas>kbs 값을 설정 합니다.";
+		arg.enable = false;
+		arg.param = "1.0";
+		arg.result = false;
+		grp_arg.sys_args.push_back(arg);
+		grp_arg.name = "매도청산";
+		strategy.group_args.push_back(grp_arg);
+
+		usd_strategy_map_.insert(std::make_pair(strategy_name, strategy));
+	}
+
+	void SmOutSystemManager::init_usd_strategy_vec()
+	{
+		usd_strategy_vec_.push_back("TR_US1");
+		usd_strategy_vec_.push_back("TR_US2");
+		usd_strategy_vec_.push_back("TR_US3");
+		usd_strategy_vec_.push_back("US_IN1");
+		usd_strategy_vec_.push_back("US_IN2");
+		usd_strategy_vec_.push_back("US_IN3");
 	}
 
 	void SmOutSystemManager::ClearTasks()

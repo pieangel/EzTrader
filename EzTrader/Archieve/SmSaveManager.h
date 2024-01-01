@@ -83,13 +83,17 @@ namespace DarkHorse {
 		void save_fund(const std::string& filename);
 		void restore_fund(const std::string& filename);
 		void save_out_system(const std::string& filename);
+		void save_usd_system(const std::string& filename);
 		void save_dm_fund_order_windows(const std::string& filename, const std::map<HWND, DmFundOrderWindow*>& map_to_save);
 		void restore_dm_fund_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmFundOrderWindow*>& map_to_restore);
 		void restore_account(const std::string& filename);
 		void restore_out_system(const std::string& filename);
+		void restore_usd_system(const std::string& filename);
 		void save_system_config(const std::string& filename);
 		void restore_system_config(const std::string& filename);
+		void create_config_path(const std::string& user_name);
 	private:
+		std::string get_config_path(const std::string& user_name);
 		bool ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively);
 		
 		void GetSymbolMasters();

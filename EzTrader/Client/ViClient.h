@@ -60,6 +60,9 @@ namespace DarkHorse {
 
 		DECLARE_MESSAGE_MAP()
 	public:
+		afx_msg void OnTimer(UINT_PTR nIDEvent);
+		void start_timer();
+		void stop_timer();
 		int ab_symbol_profit_loss(DhTaskArg arg);
 		int dm_symbol_profit_loss(DhTaskArg arg);
 		int dm_symbol_position(DhTaskArg arg);

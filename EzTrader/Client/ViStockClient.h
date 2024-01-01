@@ -19,6 +19,8 @@ namespace DarkHorse {
 	public:
 		ViStockClient() {};
 		virtual ~ViStockClient();
+		void start_timer();
+		void stop_timer();
 		void CreateControl();
 		int ConnectToServer() ;
 		int Login(task_arg&& login_info) ;

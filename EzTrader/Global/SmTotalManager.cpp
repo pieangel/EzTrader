@@ -30,6 +30,7 @@
 #include "../OutSystem/SmOutSystemManager.h"
 #include "../FileWatch/VtFileEventMonitor.h"
 #include "../Config/SmConfigManager.h"
+#include "../Yuanta/YaStockClient.h"
 #include <string>
 
 using namespace DarkHorse;

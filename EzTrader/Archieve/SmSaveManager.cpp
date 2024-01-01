@@ -41,6 +41,7 @@
 #include "../Fund/SmFund.h"
 #include "../OutSystem/SmOutSystemManager.h"
 #include "../OutSystem/SmOutSystem.h"
+#include "../OutSystem/SmUsdSystem.h"
 #include "../Util/SmUtil.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Symbol/SmSymbolManager.h"
@@ -253,12 +254,12 @@ namespace DarkHorse {
 			mainApp.LoginMgr()->SaveToXml(login_info);
 
 			application.remove_child("account_list");
-			pugi::xml_node account_list = application.append_child("account_list");
+			//pugi::xml_node account_list = application.append_child("account_list");
 			//mainApp.AcntMgr().SaveToXml(account_list);
 
 			application.remove_child("fund_list");
-			pugi::xml_node fund_list = application.append_child("fund_list");
-			mainApp.FundMgr()->SaveToXml(fund_list);
+			//pugi::xml_node fund_list = application.append_child("fund_list");
+			//mainApp.FundMgr()->SaveToXml(fund_list);
 
 			/*
 			application.remove_child("external_system_list");
@@ -744,10 +745,10 @@ namespace DarkHorse {
 			//	VtAccountManager::GetInstance()->LoadFromXml(account_list);
 			//}
 
-			pugi::xml_node fund_list = application.child("fund_list");
-			if (fund_list) {
-				mainApp.FundMgr()->LoadFromXml(fund_list);
-			}
+			//pugi::xml_node fund_list = application.child("fund_list");
+			//if (fund_list) {
+			//	mainApp.FundMgr()->LoadFromXml(fund_list);
+			//}
 
 			/*
 			pugi::xml_node order_window_list = application.child("order_window_list");
@@ -845,28 +846,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 		appPath.append(filename);
 		std::string full_file_name = appPath;
@@ -922,36 +902,10 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 		appPath.append(filename);
 		std::string full_file_name = appPath;
-
-//		std::string full_file_name;
-// 		full_file_name = SmConfigManager::GetApplicationPath();
-// 		full_file_name.append(_T("\\user\\"));
-// 		full_file_name.append(filename);
 
 		if (!fs::exists(full_file_name))
 			return;
@@ -993,28 +947,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 		appPath.append(filename);
 		std::string full_file_name = appPath;
@@ -1057,36 +990,10 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 		appPath.append(filename);
 		std::string full_file_name = appPath;
-
-// 		std::string full_file_name;
-// 		full_file_name = SmConfigManager::GetApplicationPath();
-// 		full_file_name.append(_T("\\user\\"));
-// 		full_file_name.append(filename);
 
 		json dialog_data;
 
@@ -1143,28 +1050,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 
 		std::string full_file_name = filename;
@@ -1238,10 +1124,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
+		std::string appPath = get_config_path(id);
 
 		std::string full_file_name = filename;
 		full_file_name.append("_");
@@ -1318,28 +1201,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 
 		std::string full_file_name = filename;
@@ -1401,10 +1263,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
+		std::string appPath = get_config_path(id);
 
 		appPath.append("\\");
 		appPath.append(filename);
@@ -1500,28 +1359,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 
 		appPath.append(filename);
@@ -1561,28 +1399,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 
 		appPath.append(filename);
@@ -1613,12 +1430,8 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-
-		appPath.append("\\");
+		std::string appPath = get_config_path(id);
+		appPath.append(_T("\\"));
 		appPath.append(filename);
 		std::ifstream file(appPath);
 		if (!file.is_open()) {
@@ -1680,12 +1493,8 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-
-		appPath.append("\\");
+		std::string appPath = get_config_path(id);
+		appPath.append(_T("\\"));
 		appPath.append(filename);
 		std::ifstream file(appPath);
 		if (!file.is_open()) {
@@ -1732,9 +1541,9 @@ namespace DarkHorse {
 					if (!fund) continue;
 					mode = 1;
 				}
-				if (!symbol) {
-					continue;
-				}
+				//if (!symbol) {
+				//	continue;
+				//}
 
 				auto out_system = mainApp.out_system_manager()->create_out_system(
 					name,
@@ -1742,7 +1551,7 @@ namespace DarkHorse {
 					order_type,
 					mode == 0 ? account : nullptr,
 					mode == 1 ? fund : nullptr,
-					symbol
+					symbol ? symbol : nullptr
 				);
 
 				// Now you have the account information, you can use it as needed.
@@ -1763,10 +1572,8 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
+		std::string appPath = get_config_path(id);
+		appPath.append(_T("\\"));
 
 		std::string full_file_name = filename;
 		full_file_name.append("_");
@@ -1845,28 +1652,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 
 		std::string full_file_name = filename;
@@ -1940,28 +1726,7 @@ namespace DarkHorse {
 		if (id.length() == 0)
 			return;
 
-		std::string appPath;
-		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
-		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
-		const fs::path directoryPath = appPath;
-
-		// Check if directory exists
-		if (fs::exists(directoryPath)) {
-			std::cout << "Directory already exists." << std::endl;
-		}
-		else {
-			// Create the directory
-			try {
-				fs::create_directory(directoryPath);
-				std::cout << "Directory created successfully." << std::endl;
-			}
-			catch (const fs::filesystem_error& e) {
-				std::cerr << "Failed to create directory: " << e.what() << std::endl;
-			}
-		}
-
+		std::string appPath = get_config_path(id);
 		appPath.append(_T("\\"));
 
 		std::string full_file_name = filename;
@@ -1983,8 +1748,8 @@ namespace DarkHorse {
 
 		std::string appPath;
 		appPath = SmConfigManager::GetApplicationPath();
-		appPath.append(_T("\\user\\"));
-		appPath.append(id);
+		//appPath.append(_T("\\user\\"));
+		//appPath.append(id);
 
 		appPath.append("\\");
 		appPath.append(filename);
@@ -1996,6 +1761,320 @@ namespace DarkHorse {
 		file.close();
 
 		mainApp.config_manager()->loadConfig(appPath);
+	}
+
+	void SmSaveManager::save_usd_system(const std::string& filename)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath = get_config_path(id);
+		appPath.append(_T("\\"));
+
+		appPath.append(filename);
+
+		nlohmann::json jsonData;
+		auto out_system_vec = mainApp.out_system_manager()->get_usd_system_vector();
+		for (auto it = out_system_vec.begin(); it != out_system_vec.end(); ++it) {
+			auto out_system = *it;
+			nlohmann::json out_system_json;
+
+			out_system_json["name"] = SmUtil::MultiByteToUtf8(out_system->name());
+			out_system_json["order_type"] = (int)out_system->order_type();
+			out_system_json["seung_su"] = out_system->seung_su();
+			out_system_json["account_no"] = out_system->account() ? out_system->account()->No() : "";
+			out_system_json["symbol_code"] = out_system->symbol() ? out_system->symbol()->SymbolCode() : "";
+			out_system_json["fund_name"] = out_system->fund() ? SmUtil::MultiByteToUtf8(out_system->fund()->Name()) : "";
+			out_system_json["order_limit_count"] = out_system->order_limit_count();
+			CString time;
+			time.Format("%02d%02d%02d", out_system->start_time_begin().hour, out_system->start_time_begin().min, out_system->start_time_begin().sec);
+			out_system_json["start_time_begin"] = static_cast<const char*>(time);
+			time.Format("%02d%02d%02d", out_system->start_time_end().hour, out_system->start_time_end().min, out_system->start_time_end().sec);
+			out_system_json["start_time_end"] = static_cast<const char*>(time);
+			time.Format("%02d%02d%02d", out_system->end_time().hour, out_system->end_time().min, out_system->end_time().sec);
+			out_system_json["end_time"] = static_cast<const char*>(time);
+
+
+			json jsonStrategy;
+			jsonStrategy["type"] = out_system->strategy().type();
+
+			// Serialize group_args vector
+			for (const auto& group : out_system->strategy().group_args) {
+				json jsonGroup;
+				jsonGroup["name"] = SmUtil::MultiByteToUtf8(group.name);
+
+				// Serialize sys_args vector within the group
+				for (const auto& sysArg : group.sys_args) {
+					json jsonSysArg;
+					jsonSysArg["enable"] = sysArg.enable;
+					jsonSysArg["data_source1"] = sysArg.data_source1;
+					jsonSysArg["data_source2"] = sysArg.data_source2;
+					jsonSysArg["desc"] = SmUtil::MultiByteToUtf8(sysArg.desc);
+					jsonSysArg["param"] = sysArg.param;
+					jsonSysArg["name"] = SmUtil::MultiByteToUtf8(sysArg.name);
+					jsonSysArg["current_value"] = sysArg.current_value;
+					jsonSysArg["result"] = sysArg.result;
+
+					jsonGroup["sys_args"].push_back(jsonSysArg);
+				}
+
+				jsonStrategy["group_args"].push_back(jsonGroup);
+			}
+
+			out_system_json["strategy"] = jsonStrategy;
+			jsonData[std::to_string(out_system->id())] = out_system_json;
+		}
+		std::ofstream file(appPath);
+		file << jsonData.dump(4);
+		file.close();
+	}
+
+	void SmSaveManager::restore_usd_system(const std::string& filename)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath = get_config_path(id);
+		appPath.append(_T("\\"));
+		appPath.append(filename);
+		std::ifstream file(appPath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file for restore: " << filename << std::endl;
+			return;
+		}
+
+		nlohmann::json jsonData;
+		try {
+			// Parse the JSON data from the file
+			file >> jsonData;
+		}
+		catch (const nlohmann::json::parse_error& e) {
+			std::cerr << "Failed to parse JSON file: " << e.what() << std::endl;
+			file.close();
+			return;
+		}
+		file.close();
+
+		try {
+			// Process the JSON data and reconstruct account information
+			for (json::iterator it = jsonData.begin(); it != jsonData.end(); ++it) {
+				std::string out_system_id = it.key();
+				json out_system_data = it.value();
+
+				// Extract and process account-related information
+				const std::string name = mainApp.out_system_manager()->get_usd_system_name(); // SmUtil::Utf8ToMultiByte(out_system_data["name"]);
+				const int t_order_type = out_system_data["order_type"];
+				const int seung_su = out_system_data["seung_su"];
+				DarkHorse::OrderType order_type = (DarkHorse::OrderType)t_order_type;
+				const std::string account_no = out_system_data["account_no"];
+				const std::string symbol_code = out_system_data["symbol_code"];
+				const std::string fund_name = SmUtil::Utf8ToMultiByte(out_system_data["fund_name"]);
+				const int order_limit_count = out_system_data["order_limit_count"];
+				auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+				auto account = mainApp.AcntMgr()->FindAccount(account_no);
+				auto fund = mainApp.FundMgr()->FindFund(fund_name);
+				int mode = 0;
+				//if (!account || !symbol || !fund) continue;
+				if (order_type == OrderType::MainAccount || order_type == OrderType::SubAccount) {
+					if (!account) continue;
+					mode = 0;
+				}
+				else if (order_type == OrderType::Fund) {
+					if (!fund) continue;
+					mode = 1;
+				}
+				//if (!symbol) {
+				//	continue;
+				//}
+
+				std::string start_time_begin = out_system_data["start_time_begin"];
+
+				std::string hours_str = start_time_begin.substr(0, 2);
+				std::string minutes_str = start_time_begin.substr(2, 2);
+				std::string seconds_str = start_time_begin.substr(4, 2);
+
+				// Converting string to integers
+				int hours = std::stoi(hours_str);
+				int minutes = std::stoi(minutes_str);
+				int seconds = std::stoi(seconds_str);
+
+				VtTime start_time_begin_t;
+				start_time_begin_t.hour = hours;
+				start_time_begin_t.min = minutes;
+				start_time_begin_t.sec = seconds;
+
+				std::string start_time_end = out_system_data["start_time_end"];
+
+
+				hours_str = start_time_end.substr(0, 2);
+				minutes_str = start_time_end.substr(2, 2);
+				seconds_str = start_time_end.substr(4, 2);
+
+				// Converting string to integers
+				hours = std::stoi(hours_str);
+				minutes = std::stoi(minutes_str);
+				seconds = std::stoi(seconds_str);
+
+				VtTime start_time_end_t;
+				start_time_end_t.hour = hours;
+				start_time_end_t.min = minutes;
+				start_time_end_t.sec = seconds;
+
+				std::string end_time = out_system_data["end_time"];
+				hours_str = end_time.substr(0, 2);
+				minutes_str = end_time.substr(2, 2);
+				seconds_str = end_time.substr(4, 2);
+
+				// Converting string to integers
+				hours = std::stoi(hours_str);
+				minutes = std::stoi(minutes_str);
+				seconds = std::stoi(seconds_str);
+
+				VtTime end_time_t;
+				end_time_t.hour = hours;
+				end_time_t.min = minutes;
+				end_time_t.sec = seconds;
+
+
+				json jsonStrategy = out_system_data["strategy"];
+				std::string type_ = jsonStrategy["type"];
+				SmUsdStrategy stratege;
+				stratege.type(type_);
+				std::vector<GroupArg> group_args;
+				group_args.clear();
+
+				if (jsonStrategy.contains("group_args") && jsonStrategy["group_args"].is_array()) {
+					for (const auto& groupData : jsonStrategy["group_args"]) {
+						GroupArg group;
+						group.name = SmUtil::Utf8ToMultiByte(groupData["name"]);
+
+						if (groupData.contains("sys_args") && groupData["sys_args"].is_array()) {
+							for (const auto& sysArgData : groupData["sys_args"]) {
+								SysArg sysArg;
+								sysArg.enable = sysArgData["enable"];
+								sysArg.data_source1 = sysArgData["data_source1"];
+								sysArg.data_source2 = sysArgData["data_source2"];
+								sysArg.desc = SmUtil::Utf8ToMultiByte(sysArgData["desc"]);
+								sysArg.param = sysArgData["param"];
+								sysArg.name = SmUtil::Utf8ToMultiByte(sysArgData["name"]);
+								sysArg.current_value = sysArgData["current_value"];
+								sysArg.result = sysArgData["result"];
+
+								group.sys_args.push_back(sysArg);
+							}
+						}
+
+						group_args.push_back(group);
+					}
+					stratege.group_args = group_args;
+				}
+
+				auto out_system = mainApp.out_system_manager()->create_usd_system(
+					name,
+					seung_su,
+					order_type,
+					mode == 0 ? account : nullptr,
+					mode == 1 ? fund : nullptr,
+					symbol ? symbol : nullptr
+				);
+
+				out_system->order_limit_count(order_limit_count);
+				out_system->start_time_begin(start_time_begin_t);
+				out_system->start_time_end(start_time_end_t);
+				out_system->end_time(end_time_t);
+				out_system->strategy(stratege);
+				
+
+				// Now you have the account information, you can use it as needed.
+				// You can create objects or data structures to store this information.
+				// For simplicity, we'll just print it here.
+				std::cout << "out system id: " << out_system->id() << std::endl;
+			}
+		}
+		catch (const json::parse_error& e) {
+			std::cerr << "Failed to parse JSON data: " << e.what() << std::endl;
+		}
+	}
+
+	std::string SmSaveManager::get_config_path(const std::string& user_name)
+	{
+		const int mode = mainApp.mode;
+
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(user_name);
+		/*
+		if (mode == 0) {
+			if (mainApp.is_simul())
+				appPath.append(_T("\\dm\\mock"));
+			else
+				appPath.append(_T("\\dm\\real"));
+		}
+		else
+		{
+			if (mainApp.is_simul())
+				appPath.append(_T("\\ab\\mock"));
+			else
+				appPath.append(_T("\\ab\\real"));
+		}
+		*/
+		return appPath;
+	}
+
+	void SmSaveManager::create_config_path(const std::string& user_name)
+	{
+		std::string appPath;
+		appPath = SmConfigManager::GetApplicationPath();
+		appPath.append(_T("\\user\\"));
+		appPath.append(user_name);
+
+		// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+		const fs::path directoryPath = appPath;
+
+		// Check if directory exists
+		if (fs::exists(directoryPath)) {
+			std::cout << "Directory already exists." << std::endl;
+		}
+		else {
+			// Create the directory
+			try {
+				fs::create_directory(directoryPath);
+				std::cout << "Directory created successfully." << std::endl;
+			}
+			catch (const fs::filesystem_error& e) {
+				std::cerr << "Failed to create directory: " << e.what() << std::endl;
+			}
+		}
+
+		/*
+		// Specify the directory structure
+		std::vector<std::string> directories = { "dm/mock", "dm/real", "ab/mock", "ab/real" };
+
+		// Construct the base directory path
+		fs::path baseDirectory(appPath);
+
+		// Check and create the directories
+		for (const auto& subdirectory : directories) {
+			fs::path currentDirectory = baseDirectory / subdirectory;
+
+			if (!fs::exists(currentDirectory)) {
+				if (fs::create_directories(currentDirectory)) {
+					std::cout << "Created directory: " << currentDirectory.string() << std::endl;
+				}
+				else {
+					std::cerr << "Failed to create directory: " << currentDirectory.string() << std::endl;
+				}
+			}
+			else {
+				std::cout << "Directory already exists: " << currentDirectory.string() << std::endl;
+			}
+		}
+		*/
 	}
 
 }

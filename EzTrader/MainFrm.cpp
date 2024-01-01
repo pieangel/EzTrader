@@ -86,6 +86,7 @@ using namespace hmdf;
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include "OutSystem/SmUSDSystemDialog.h"
 //using namespace hmdf;
 
 using namespace DarkHorse;
@@ -328,6 +329,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_DM_FUND_REMAIN, &CMainFrame::OnDmFundRemain)
 	ON_COMMAND(ID_AB_FUND_REMAIN, &CMainFrame::OnAbFundRemain)
 	ON_WM_DESTROY()
+	ON_COMMAND(ON_USD_SYSTEM, &CMainFrame::OnUsdSystem)
+	ON_COMMAND(ID_SIMUL_STARTSIMUL, &CMainFrame::OnSimulStartsimul)
+	ON_COMMAND(ID_SIMUL_STOPSIMUL, &CMainFrame::OnSimulStopsimul)
+	ON_COMMAND(ID_SIMUL_YESTEST, &CMainFrame::OnSimulYestest)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1523,4 +1528,63 @@ void CMainFrame::OnDestroy()
 	CBCGPMDIFrameWnd::OnDestroy();
 
 	
+}
+
+
+void CMainFrame::OnUsdSystem()
+{
+	if (usd_system_dlg_) {
+		usd_system_dlg_->DestroyWindow();
+		delete usd_system_dlg_;
+		usd_system_dlg_ = nullptr;
+	}
+	usd_system_dlg_ = new SmUSDSystemDialog();
+	usd_system_dlg_->Create(IDD_SYS_AUTO_CONNECT2, this);
+	usd_system_dlg_->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnSimulStartsimul()
+{
+	mainApp.Client()->start_timer();
+}
+
+
+void CMainFrame::OnSimulStopsimul()
+{
+	mainApp.Client()->stop_timer();
+}
+
+
+void CMainFrame::OnSimulYestest()
+{
+	std::string file_name = mainApp.mode == 0 ? mainApp.config_manager()->system_config().yes_path + "\\T1-1.txt" : mainApp.config_manager()->system_config().ab_yes_path + "\\T1-1.txt";
+	LOGINFO(CMyLogger::getInstance(), _T("yes test path[%s]"), file_name.c_str());
+	copyLastLineAndAppend(file_name);
+}
+
+void CMainFrame::copyLastLineAndAppend(const std::string& filename)
+{
+	std::ifstream inputFile(filename);
+	std::string lastLine, line;
+
+	if (inputFile.is_open()) {
+		while (std::getline(inputFile, line)) {
+			lastLine = line;
+		}
+		inputFile.close();
+
+		std::ofstream outputFile(filename, std::ios::app);
+		if (outputFile.is_open()) {
+			outputFile << lastLine << std::endl;
+			outputFile.close();
+			std::cout << "Last line copied and appended successfully." << std::endl;
+		}
+		else {
+			std::cerr << "Unable to open the file for writing." << std::endl;
+		}
+	}
+	else {
+		std::cerr << "Unable to open the file for reading." << std::endl;
+	}
 }

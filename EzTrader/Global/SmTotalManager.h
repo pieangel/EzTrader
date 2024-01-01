@@ -4,6 +4,7 @@
 #include "../Order/SmTotalOrderManager.h"
 namespace DarkHorse {
 	class ViStockClient;
+	class YaStockClient;
 	class SmLoginManager;
 	class SmTaskRequestMaker;
 	class SmServerDataReceiver;
@@ -35,6 +36,8 @@ namespace DarkHorse {
 	class SmTotalManager
 	{
 	public:
+		// 0 : domestic server, 1 : abroad server
+		int mode = 0;
 		void CreateManagers();
 		std::shared_ptr<SmTaskRequestMaker> ReqMkr() const { return _ReqMkr; }
 		std::shared_ptr<SmServerDataReceiver> SvrDataRcvr() const { return _SvrDataRcvr; }
@@ -70,7 +73,10 @@ namespace DarkHorse {
 
 		bool use_dark_theme() const { return use_dark_theme_; }
 		void use_dark_theme(bool val) { use_dark_theme_ = val; }
+		bool is_simul() const { return is_simul_; }
+		void is_simul(bool val) { is_simul_ = val; }
 	private:
+		bool is_simul_ = false;
 		bool use_dark_theme_ = false;
 		std::shared_ptr<SmCallbackManager> _CallbackMgr = nullptr;
 		std::shared_ptr<ViStockClient> _Client = nullptr;

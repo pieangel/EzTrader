@@ -317,6 +317,10 @@
     <ClInclude Include="Dialog\SmAutoSignalManagerDialog.h" />
     <ClInclude Include="Dialog\SmLayoutManager.h" />
     <ClInclude Include="Dialog\SmSystemOrderConfig.h" />
+    <ClInclude Include="Dialog\VtSystemArg.h" />
+    <ClInclude Include="Dialog\VtSystemArgGroup.h" />
+    <ClInclude Include="Dialog\VtUsdEntConfigGrid.h" />
+    <ClInclude Include="Dialog\VtUsdStrategyConfigGrid.h" />
     <ClInclude Include="Drawing\VtBaseTracker.h" />
     <ClInclude Include="Drawing\VtDrawingConstants.h" />
     <ClInclude Include="Drawing\VtElement.h" />
@@ -445,9 +449,17 @@
     <ClInclude Include="Order\SmSymbolOrderManager.h" />
     <ClInclude Include="Order\SmTotalOrderManager.h" />
     <ClInclude Include="OutputBar.h" />
+    <ClInclude Include="OutSystem\SmActiveUsdSystemGrid.h" />
+    <ClInclude Include="OutSystem\SmAddUsdSystemDlg.h" />
     <ClInclude Include="OutSystem\SmOutSignalDef.h" />
     <ClInclude Include="OutSystem\SmOutSystem.h" />
     <ClInclude Include="OutSystem\SmOutSystemManager.h" />
+    <ClInclude Include="OutSystem\SmUsdStrategy.h" />
+    <ClInclude Include="OutSystem\SmUsdSystem.h" />
+    <ClInclude Include="OutSystem\SmUsdSystemData.h" />
+    <ClInclude Include="OutSystem\SmUSDSystemDialog.h" />
+    <ClInclude Include="OutSystem\SmUsdSystemModDialog.h" />
+    <ClInclude Include="OutSystem\UsdSystemDefGrid.h" />
     <ClInclude Include="OutSystem\VtAutoSignalManagerDialog.h" />
     <ClInclude Include="OutSystem\VtSignalConnectionGrid.h" />
     <ClInclude Include="OutSystem\VtSignalDefinitionGrid.h" />
@@ -499,6 +511,8 @@
     <ClInclude Include="StatusBar\extstatuscontrolbar.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SymbolBar.h" />
+    <ClInclude Include="Symbol\AbFavoriteSymbolSelector.h" />
+    <ClInclude Include="Symbol\AbFavoriteSymbolView.h" />
     <ClInclude Include="Symbol\MarketDefine.h" />
     <ClInclude Include="Symbol\SmMarket.h" />
     <ClInclude Include="Symbol\SmMarketConst.h" />
@@ -727,6 +741,9 @@
     <ClCompile Include="Dialog\SmAutoSignalManagerDialog.cpp" />
     <ClCompile Include="Dialog\SmLayoutManager.cpp" />
     <ClCompile Include="Dialog\SmSystemOrderConfig.cpp" />
+    <ClCompile Include="Dialog\VtSystemArgGroup.cpp" />
+    <ClCompile Include="Dialog\VtUsdEntConfigGrid.cpp" />
+    <ClCompile Include="Dialog\VtUsdStrategyConfigGrid.cpp" />
     <ClCompile Include="Drawing\VtBaseTracker.cpp" />
     <ClCompile Include="Drawing\VtElement.cpp" />
     <ClCompile Include="Drawing\VtEllipse.cpp" />
@@ -831,9 +848,17 @@
     <ClCompile Include="Order\SmSymbolOrderManager.cpp" />
     <ClCompile Include="Order\SmTotalOrderManager.cpp" />
     <ClCompile Include="OutputBar.cpp" />
+    <ClCompile Include="OutSystem\SmActiveUsdSystemGrid.cpp" />
+    <ClCompile Include="OutSystem\SmAddUsdSystemDlg.cpp" />
     <ClCompile Include="OutSystem\SmOutSignalDef.cpp" />
     <ClCompile Include="OutSystem\SmOutSystem.cpp" />
     <ClCompile Include="OutSystem\SmOutSystemManager.cpp" />
+    <ClCompile Include="OutSystem\SmUsdStrategy.cpp" />
+    <ClCompile Include="OutSystem\SmUsdSystem.cpp" />
+    <ClCompile Include="OutSystem\SmUsdSystemData.cpp" />
+    <ClCompile Include="OutSystem\SmUSDSystemDialog.cpp" />
+    <ClCompile Include="OutSystem\SmUsdSystemModDialog.cpp" />
+    <ClCompile Include="OutSystem\UsdSystemDefGrid.cpp" />
     <ClCompile Include="OutSystem\VtAutoSignalManagerDialog.cpp" />
     <ClCompile Include="OutSystem\VtSignalConnectionGrid.cpp" />
     <ClCompile Include="OutSystem\VtSignalDefinitionGrid.cpp" />
@@ -881,6 +906,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SymbolBar.cpp" />
+    <ClCompile Include="Symbol\AbFavoriteSymbolSelector.cpp" />
+    <ClCompile Include="Symbol\AbFavoriteSymbolView.cpp" />
     <ClCompile Include="Symbol\SmMarket.cpp" />
     <ClCompile Include="Symbol\SmProduct.cpp" />
     <ClCompile Include="Symbol\SmProductYearMonth.cpp" />
@@ -967,6 +994,7 @@
     <ClCompile Include="Util\SmWndManager.cpp" />
     <ClCompile Include="Util\SmWndRefreshManager.cpp" />
     <ClCompile Include="Util\VtStringUtil.cpp" />
+    <ClCompile Include="Util\VtTime.cpp" />
     <ClCompile Include="View\AccountOrderView.cpp" />
     <ClCompile Include="View\AccountPositionView.cpp" />
     <ClCompile Include="View\AccountProfitLossView.cpp" />
@@ -1005,6 +1033,7 @@
     <Image Include="res\bmp00001.bmp" />
     <Image Include="res\DarkHorse.ico" />
     <Image Include="res\DarkHorseDoc.ico" />
+    <Image Include="res\set.bmp" />
     <Image Include="res\texture1.png" />
     <Image Include="res\texture2.png" />
     <Image Include="res\texture3.png" />

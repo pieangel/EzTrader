@@ -108,6 +108,11 @@
 #define IDD_SYS_AUTO_CONNECT1           203
 #define IDD_DIALOG8                     237
 #define IDD_YA_CLIENT                   237
+#define IDD_SYS_AUTO_CONNECT2           238
+#define IDD_ADD_USD_SYSTEM              239
+#define IDD_MOD_USD_SYSTEM              240
+#define IDD_AB_SYMBOL_SELECTOR          241
+#define IDB_BITMAP_SET                  403
 #define IDC_STATIC_ID                   1003
 #define IDC_STATIC_PWD                  1004
 #define IDC_BTN_ORDER_HISTORY           1005
@@ -279,6 +284,7 @@
 #define IDC_STATIC_GRID_ORDER           1170
 #define IDC_CHECK_SHOW_REAL_QUOTE       1171
 #define IDC_STATIC_LINE1                1172
+#define IDC_BTN_MOD                     1172
 #define IDC_STATIC_LINE2                1173
 #define IDC_COMBO_STRATEGY              1174
 #define IDC_EDIT1                       1175
@@ -646,13 +652,21 @@
 #define ID_DM_FUND_REMAIN               32896
 #define ID_32949                        32897
 #define ID_AB_FUND_REMAIN               32898
+#define ID_USD_SYSTEM                   32951
+#define ID_SIMUL_STARTSIMUL             32952
+#define ID_SIMUL_STOPSIMUL              32953
+#define ID_SIMUL_YESTEST                32954
+#define ON_USD_SYSTEM                   32955
+#define ON_START_SIMUL                  32956
+#define ON_STOP_SIMUL                   32957
+#define ON_YES_TEST                     32958
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        239
-#define _APS_NEXT_COMMAND_VALUE         32951
+#define _APS_NEXT_COMMAND_VALUE         32959
 #define _APS_NEXT_CONTROL_VALUE         1172
 #define _APS_NEXT_SYMED_VALUE           119
 #endif
