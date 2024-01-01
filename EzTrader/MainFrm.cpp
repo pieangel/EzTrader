@@ -329,7 +329,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_DM_FUND_REMAIN, &CMainFrame::OnDmFundRemain)
 	ON_COMMAND(ID_AB_FUND_REMAIN, &CMainFrame::OnAbFundRemain)
 	ON_WM_DESTROY()
-	ON_COMMAND(ON_USD_SYSTEM, &CMainFrame::OnUsdSystem)
+	ON_COMMAND(ID_USD_SYSTEM, &CMainFrame::OnUsdSystem)
 	ON_COMMAND(ID_SIMUL_STARTSIMUL, &CMainFrame::OnSimulStartsimul)
 	ON_COMMAND(ID_SIMUL_STOPSIMUL, &CMainFrame::OnSimulStopsimul)
 	ON_COMMAND(ID_SIMUL_YESTEST, &CMainFrame::OnSimulYestest)
@@ -884,6 +884,7 @@ void CMainFrame::OnClose()
 		mainApp.SaveMgr()->save_account("account_list.json");
 		mainApp.SaveMgr()->save_fund("fund_list.json");
 		mainApp.SaveMgr()->save_out_system("out_system_list.json");
+		mainApp.SaveMgr()->save_usd_system("usd_system_list.json");
 
 		mainApp.SaveMgr()->save_dm_account_order_windows("dm_account_order_windows", dm_account_order_wnd_map_);
 		mainApp.SaveMgr()->save_dm_fund_order_windows("dm_fund_order_windows", dm_fund_order_wnd_map_);
@@ -895,6 +896,12 @@ void CMainFrame::OnClose()
 			auto_signal_manager_dlg_->DestroyWindow();
 			delete auto_signal_manager_dlg_;
 			auto_signal_manager_dlg_ = nullptr;
+		}
+
+		if (usd_system_dlg_) {
+			usd_system_dlg_->DestroyWindow();
+			delete usd_system_dlg_;
+			usd_system_dlg_ = nullptr;
 		}
 
 		mainApp.TaskReqMgr()->StopProcess();
@@ -930,6 +937,7 @@ void CMainFrame::StartLoad()
 	mainApp.SaveMgr()->restore_account("account_list.json");
 	mainApp.SaveMgr()->restore_fund("fund_list.json");
 	mainApp.SaveMgr()->restore_out_system("out_system_list.json");
+	mainApp.SaveMgr()->restore_usd_system("usd_system_list.json");
 	mainApp.SaveMgr()->restore_dm_account_order_windows(this, "dm_account_order_windows", dm_account_order_wnd_map_);
 	mainApp.SaveMgr()->restore_dm_fund_order_windows(this, "dm_fund_order_windows", dm_fund_order_wnd_map_);
 	mainApp.SaveMgr()->restore_dm_mini_jango_windows_from_json(this, "dm_mini_jango_windows.json", mini_jango_wnd_map_);

@@ -2434,7 +2434,7 @@ BEGIN
     BEGIN
         MENUITEM "전략1",                         ID_STRATEGE1
         MENUITEM "OutSystem",                   ID_OUT_SYSTEM
-        MENUITEM "USDSystem",                   ON_USD_SYSTEM
+        MENUITEM "USDSystem",                   ID_USD_SYSTEM
     END
     POPUP "도움말"
     BEGIN
