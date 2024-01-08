@@ -138,6 +138,7 @@ namespace DarkHorse {
 	void SmSaveManager::SaveFundListToXml()
 	{
 		try {
+			
 
 			std::string id = mainApp.LoginMgr()->id();
 			// 아이디가 없으면 그냥 반환한다.
