@@ -188,11 +188,18 @@ void SmAccountPwdDlg::OnBnClickedBtnSave()
 		account_no = static_cast<const char*>(strValue);
 		strValue = pRow->GetItem(2)->GetValue();
 		pwd = static_cast<const char*>(strValue);
-		_ReqQ.push_back(std::make_pair(account_no, pwd));
 
 		std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
 		if (!account) continue;
 		account->Pwd(pwd);
+
+		if (!pRow->GetCheck()) {
+			account->skip_confirm(true);
+			continue;
+		}
+
+		_ReqQ.push_back(std::make_pair(account_no, pwd));
+
 		//task_arg arg = DarkHorse::SmTaskRequestMaker::MakeAccountAssetRequest(account_no, pwd);
 		//mainApp.Client()->CheckAccountPassword(std::move(arg));
 	}
@@ -216,6 +223,10 @@ void SmAccountPwdDlg::OnBnClickedBtnClose()
 		const int row = it->first;
 		CBCGPGridRow* pRow = m_wndGrid.GetRow(row);
 		CString strValue = pRow->GetItem(3)->GetValue();
+
+		if (!pRow->GetCheck()) {
+			continue;
+		}
 
 		if (strValue.GetLength() == 0 || strValue == "X") {
 			AfxMessageBox("계좌 비밀번호를 확인하여 주십시오!");

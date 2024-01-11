@@ -193,7 +193,9 @@ void TotalOrderManager::set_order_request_info(const std::string& custom_info, o
 	order->order_context.fund_id = order_request->order_context.fund_id;
 	order->order_context.parent_account_id = order_request->order_context.parent_account_id;
 	order->order_context.order_source_type = order_request->order_context.order_source_type;
-	order->account_no = order_request->order_context.sub_account_no;
+	if (order_request->order_context.order_source_type == OrderType::SubAccount ||
+		order_request->order_context.order_source_type == OrderType::Fund)
+		order->account_no = order_request->order_context.sub_account_no;
 	order->order_context.sub_account_no = order_request->order_context.sub_account_no;
 	order->order_context.parent_account_no = order_request->order_context.parent_account_no;
 	order->order_context.fund_name = order_request->order_context.fund_name;
