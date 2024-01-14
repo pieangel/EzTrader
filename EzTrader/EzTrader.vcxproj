@@ -615,6 +615,7 @@
     <ClInclude Include="Util\formatstdstring.h" />
     <ClInclude Include="Util\IdGenerator.h" />
     <ClInclude Include="Util\Signal.h" />
+    <ClInclude Include="Util\SimpleTree.h" />
     <ClInclude Include="Util\SmButton.h" />
     <ClInclude Include="Util\SmButtonResource.h" />
     <ClInclude Include="Util\SmNumberFunc.h" />

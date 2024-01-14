@@ -1000,6 +1000,63 @@ void SymbolOrderView::SetUp()
 }
 
 
+void SymbolOrderView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
+{
+	win_info_ = std::make_shared<WinInfo>(parent_win_info, id_, 0, 0, 0, 0);
+	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
+	CRect rect;
+	GetClientRect(rect);
+
+	//rect.right -= 1;
+	rect.bottom -= 1;
+
+	CreateResource();
+
+
+	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 60, 9);
+
+
+	set_stop_as_real_order(order_set_.stop_as_real_order);
+	SetAllRowHeight(order_set_.grid_height);
+	reset_col_widths(order_set_);
+
+	ResetHeaderWidth(rect.Width());
+	_Grid->HeaderMode(SmHeaderMode::HeaderColOnly);
+	//_Grid->SetOrderHeaderTitles();
+	_Grid->MakeRowHeightMap();
+	_Grid->RecalRowCount(rect.Height(), true);
+	// _MergedCellMap[std::make_pair(1, 2)] = std::make_pair(1, 2);
+	//_MergedCellMap[std::make_pair(1, 5)] = std::make_pair(1, 2);
+	_Grid->AddMergeCell(1, 2, 1, 2);
+	_Grid->AddMergeCell(1, 5, 1, 2);
+	_Grid->MakeColWidthMap();
+
+	_Grid->CreateGrids();
+
+	{
+
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].title);
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].title);
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::SELL_CNT].title);
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::SELL_QTY].title);
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::QUOTE].title);
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::BUY_QTY].title);
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::BUY_CNT].title);
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::BUY_ORDER].title);
+		_OrderTableHeader.push_back(grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].title);
+
+		_Grid->SetColHeaderTitles(_OrderTableHeader);
+	}
+
+	_Grid->RegisterOrderButtons(_ButtonMap);
+	set_order_area();
+	index_row_ = get_center_row();
+
+	SetTimer(1, 10, NULL);
+
+	return;
+}
+
 int SymbolOrderView::RecalRowCount(const int& height)
 {
 	CRect rect;

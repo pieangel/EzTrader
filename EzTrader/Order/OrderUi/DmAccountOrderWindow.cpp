@@ -113,6 +113,7 @@ DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent /*=nullptr*/)
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 	id_ = IdGenerator::get_id();
+	win_info_ = std::make_shared<WinInfo>(nullptr, id_, 0, 0, 0, 0);
 	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
@@ -123,6 +124,7 @@ DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent, const size_t center_wi
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 	id_ = IdGenerator::get_id();
+	win_info_ = std::make_shared<WinInfo>(nullptr, id_, 0, 0, 0, 0);
 	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
@@ -133,6 +135,7 @@ DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent, const size_t center_wi
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 	id_ = IdGenerator::get_id();
+	win_info_ = std::make_shared<WinInfo>(nullptr, id_, 0, 0, 0, 0);
 	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
@@ -231,14 +234,14 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 	GetWindowRect(rcWnd);
 
 
-	_LeftWnd = std::make_shared<DmAccountOrderLeftWindow>(this);
+	_LeftWnd = std::make_shared<DmAccountOrderLeftWindow>(this, win_info_);
 	_LeftWnd->order_window_id(id_);
 	_LeftWnd->Create(IDD_DM_ACNT_ORDER_LEFT, this);
 	_LeftWnd->ShowWindow(SW_SHOW);
 	_LeftWnd->SetMainWnd(this);
 
 	if (center_window_count_ == 0) {
-		std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this);
+		std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, win_info_);
 		center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 		center_wnd->ShowWindow(SW_SHOW);
 		center_wnd->SetMainDialog(this);
@@ -290,7 +293,7 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 			// ... Retrieve other properties
 
 			// Create and populate DmAccountOrderCenterWindow object
-			std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, symbolCode, order_set_event);
+			std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, win_info_, symbolCode, order_set_event);
 			center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 			center_wnd->ShowWindow(SW_SHOW);
 			center_wnd->SetMainDialog(this);
@@ -304,7 +307,7 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 	}
 	
 
-	_RightWnd = std::make_shared<DmAccountOrderRightWindow>(this);
+	_RightWnd = std::make_shared<DmAccountOrderRightWindow>(this, win_info_);
 	_RightWnd->order_window_id(id_);
 	_RightWnd->Create(IDD_DM_ACNT_ORDER_RIGHT, this);
 	_RightWnd->ShowWindow(SW_SHOW);
@@ -649,7 +652,7 @@ void DmAccountOrderWindow::OnBnClickedBtnAdd()
 	GetWindowRect(rcWnd);
 	GetClientRect(rcClient);
 
-	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>();
+	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, win_info_);
 	center_wnd->order_window_id(id_);
 	center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_HIDE);
@@ -775,6 +778,20 @@ void DmAccountOrderWindow::OnSize(UINT nType, int cx, int cy)
 	CBCGPDialog::OnSize(nType, cx, cy);
 
 	if (!_Init) return;
+
+	CRect rcMain, rcLeft, rcRight;
+	_LeftWnd->GetWindowRect(rcLeft);
+	ScreenToClient(rcLeft);
+	_RightWnd->GetWindowRect(rcRight);
+	ScreenToClient(rcRight);
+	GetWindowRect(rcMain);
+
+	auto left_win_info = win_info_->children_.front();
+	left_win_info->x_ = rcLeft.left;
+	left_win_info->y_ = rcLeft.top;
+	left_win_info->w_ = rcLeft.Width();
+	left_win_info->h_ = rcLeft.Height();
+	auto right_win_info = win_info_->children_.back();
 
 	//LockWindowUpdate();
 	RecalcChildren(CM_REFRESH);

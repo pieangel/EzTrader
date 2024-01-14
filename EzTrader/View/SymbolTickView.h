@@ -16,14 +16,14 @@ namespace DarkHorse {
 	class SmCell;
 	class SymbolTickControl;
 }
-
+struct WinInfo;
 class SymbolTickView : public CBCGPStatic
 {
 public:
 	SymbolTickView();
 	~SymbolTickView();
 	void SetUp();
-
+	void SetUp(std::shared_ptr<WinInfo> parent_win_info);
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
@@ -40,7 +40,10 @@ public:
 	void set_center_window_id(const int center_window_id) {
 		center_window_id_ = center_window_id;
 	}
+	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
+	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
 private:
+	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	int center_window_id_{0};
 	int id_{0};
 	CWnd* parent_{ nullptr };

@@ -21,17 +21,19 @@ namespace DarkHorse {
 	class QuoteControl;
 	class SymbolPositionControl;
 }
-
+struct WinInfo;
 class SymbolPositionView : public CBCGPStatic
 {
 public:
 	SymbolPositionView();
 	~SymbolPositionView();
 	void SetUp();
-
+	void SetUp(std::shared_ptr<WinInfo> parent_win_info);
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
+	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
+	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
 	void Clear();
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return symbol_; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val);
@@ -55,6 +57,7 @@ public:
 	DarkHorse::SymbolType symbol_type() const { return symbol_type_; }
 	void symbol_type(DarkHorse::SymbolType val) { symbol_type_ = val; }
 private:
+	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	DarkHorse::SymbolType symbol_type_{ DarkHorse::SymbolType::None };
 	void set_position();
 	DarkHorse::PositionType position_type_{ DarkHorse::PositionType::None };

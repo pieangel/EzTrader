@@ -46,12 +46,14 @@ namespace DarkHorse {
 
 using order_request_p = std::shared_ptr<DarkHorse::OrderRequest>;
 using price_order_request_map_p = std::shared_ptr<DarkHorse::PriceOrderRequestMap>;
-
+struct WinInfo;
 class DmAccountOrderWindow;
 class DmFundOrderWindow;
 class SymbolOrderView : public CBCGPStatic
 {
 public:
+	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
+	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
 	void set_stop_as_real_order(bool enable);
 	int get_id() {
 		return id_;
@@ -88,6 +90,7 @@ public:
 	void DrawFixedSelectedCell();
 	void DrawMovingOrder();
 	void SetUp();
+	void SetUp(std::shared_ptr<WinInfo> parent_win_info);
 	//int RecalRowCount();
 	int RecalRowCount(const int& height);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
@@ -193,6 +196,7 @@ public:
 	DarkHorse::OrderSetEvent order_set() const { return order_set_; }
 	void order_set(DarkHorse::OrderSetEvent val) { order_set_ = val; }
 private:
+	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	DarkHorse::OrderSetEvent order_set_;
 	void set_order_area();
 	DarkHorse::OrderType order_type_{ DarkHorse::OrderType::None };

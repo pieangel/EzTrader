@@ -15,6 +15,7 @@
 #include "../../Symbol/SmProductYearMonth.h"
 #include "../../Symbol/SmSymbol.h"
 #include "../../View/AccountAssetView.h"
+#include "../../Util/SimpleTree.h"
 
 #define WND_ID1 0x00000001
 #define WND_ID2 0x00000002
@@ -28,6 +29,15 @@ IMPLEMENT_DYNAMIC(DmAccountOrderLeftWindow, CBCGPDialog)
 DmAccountOrderLeftWindow::DmAccountOrderLeftWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_LEFT, pParent)
 {
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+}
+
+DmAccountOrderLeftWindow::DmAccountOrderLeftWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info)
+	: CBCGPDialog(IDD_ORDER_LEFT, pParent)
+{
+	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
+	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }

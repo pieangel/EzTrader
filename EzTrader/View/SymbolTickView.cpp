@@ -12,6 +12,7 @@
 #include "../Util/SmUtil.h"
 #include "../Util/IdGenerator.h"
 #include "../Event/EventHub.h"
+#include "../Util/SimpleTree.h"
 #include <format>
 
 
@@ -58,6 +59,42 @@ void SymbolTickView::on_update_tick()
 
 void SymbolTickView::SetUp()
 {
+	CRect rect;
+	GetClientRect(rect);
+
+	CreateResource();
+	//InitHeader();
+	m_pGM = CBCGPGraphicsManager::CreateInstance();
+	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 26, 3);
+	int colWidth[3] = { 60, 55, 41 };
+	int width_sum = 0;
+	for (int i = 0; i < 3; i++) {
+		_Grid->SetColWidth(i, colWidth[i]);
+		width_sum += colWidth[i];
+	}
+	width_sum -= colWidth[2];
+	_Grid->SetColWidth(2, rect.Width() - width_sum);
+
+	_Grid->MakeRowHeightMap();
+	_Grid->MakeColWidthMap();
+	_Grid->RecalRowCount(rect.Height(), true);
+
+	_Grid->CreateGrids();
+	{
+		_HeaderTitles.push_back("시각");
+		_HeaderTitles.push_back("체결가");
+		_HeaderTitles.push_back("체결");
+		_Grid->SetColHeaderTitles(_HeaderTitles);
+	}
+
+	SetTimer(1, 40, NULL);
+}
+
+void SymbolTickView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
+{
+	win_info_ = std::make_shared<WinInfo>(parent_win_info, id_, 0, 0, 0, 0);
+	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
+
 	CRect rect;
 	GetClientRect(rect);
 

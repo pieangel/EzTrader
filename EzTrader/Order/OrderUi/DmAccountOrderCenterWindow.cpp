@@ -109,6 +109,53 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::strin
 		mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
+DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info)
+	: CBCGPDialog(IDD_ORDER_CENTER, pParent), layout_manager_(this)
+{
+	id_ = IdGenerator::get_id();
+	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
+	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
+	symbol_order_view_.symbol_type(SymbolType::Domestic);
+	symbol_position_view_.symbol_type(SymbolType::Domestic);
+	symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
+	symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1, std::placeholders::_2));
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+	symbol_order_view_.set_parent(this);
+	symbol_order_view_.set_center_window_id(id_);
+	symbol_order_view_.set_order_window_id(order_window_id_);
+	symbol_tick_view_.set_parent(this);
+	mainApp.event_hub()->add_window_resize_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_resize_event_from_order_view, this));
+	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
+DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info, std::string symbol_code, DarkHorse::OrderSetEvent order_set)
+	: CBCGPDialog(IDD_ORDER_CENTER, pParent), symbol_code_(symbol_code), order_set_(order_set), layout_manager_(this)
+{
+	id_ = IdGenerator::get_id();
+	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
+	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
+	symbol_order_view_.order_set(order_set);
+	if (order_set_.show_symbol_tick)
+		show_symbol_tick_view_ = true;
+	else
+		show_symbol_tick_view_ = false;
+	symbol_order_view_.symbol_type(SymbolType::Domestic);
+	symbol_position_view_.symbol_type(SymbolType::Domestic);
+	symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
+	symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1, std::placeholders::_2));
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+	symbol_order_view_.set_parent(this);
+	symbol_order_view_.set_center_window_id(id_);
+	symbol_order_view_.set_order_window_id(order_window_id_);
+	symbol_tick_view_.set_parent(this);
+	mainApp.event_hub()->add_window_resize_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_resize_event_from_order_view, this));
+	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
 DmAccountOrderCenterWindow::~DmAccountOrderCenterWindow()
 {
 	//KillTimer(1);
@@ -179,6 +226,7 @@ void DmAccountOrderCenterWindow::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_GROUP4, _Group4);
 	DDX_Control(pDX, IDC_STATIC_FILLED_REMAIN, filled_remain_button_);
 	DDX_Control(pDX, IDC_STATIC_REMAIN, remain_button_);
+	DDX_Control(pDX, IDC_BTN_SYMBOL, BtnSymbol_);
 }
 
 
@@ -789,6 +837,7 @@ int DmAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 	CRect rcTopMost;
 	CRect rcOrderArea;
 	CRect rcOrderWnd;
+	CRect rcBtnSymbol;
 	symbol_order_view_.GetWindowRect(rcOrderArea);
 
 	GetWindowRect(rcOrderWnd);
@@ -798,9 +847,13 @@ int DmAccountOrderCenterWindow::RecalcOrderAreaHeight(CWnd* wnd, bool bottom_up)
 	CRect rcSymbol;
 	static_symbol_name_.GetWindowRect(rcSymbol);
 
+	BtnSymbol_.GetWindowRect(rcBtnSymbol);
+
 	int y_del = 0, extra_height = 0;
 	y_del = rcTopMost.bottom - rcOrderArea.top;
 	y_del -= 8;
+
+	ScreenToClient(rcOrderArea);
 
 	extra_height = symbol_order_view_.RecalRowCount(y_del);
 

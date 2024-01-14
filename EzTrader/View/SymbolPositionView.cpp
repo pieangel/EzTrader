@@ -21,6 +21,7 @@
 #include "../ViewModel/VmPosition.h"
 #include "../Account/SmAccountManager.h"
 #include "../Util/VtStringUtil.h"
+#include "../Util/SimpleTree.h"
 #include <format>
 
 #include <functional>
@@ -66,6 +67,46 @@ SymbolPositionView::~SymbolPositionView()
 
 void SymbolPositionView::SetUp()
 {
+	CRect rect;
+	GetClientRect(rect);
+
+	CreateResource();
+	//InitHeader();
+	m_pGM = CBCGPGraphicsManager::CreateInstance();
+	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 2, 6);
+	int colWidth[6] = { 60, 35, 40, 60, 90, 88 };
+	int width_sum = 0;
+	for (int i = 0; i < 6; i++) {
+		_Grid->SetColWidth(i, colWidth[i]);
+		width_sum += colWidth[i];
+	}
+	width_sum -= colWidth[5];
+	_Grid->SetColWidth(5, rect.Width() - width_sum);
+
+	_Grid->MakeRowHeightMap();
+	_Grid->MakeColWidthMap();
+	_Grid->RecalRowCount(rect.Height(), true);
+
+	_Grid->CreateGrids();
+	{
+		_HeaderTitles.push_back("종목");
+		_HeaderTitles.push_back("구분");
+		_HeaderTitles.push_back("잔고");
+		_HeaderTitles.push_back("평균가");
+		_HeaderTitles.push_back("평가손익");
+		_HeaderTitles.push_back("현재가");
+
+		_Grid->SetColHeaderTitles(_HeaderTitles);
+	}
+
+	SetTimer(1, 40, NULL);
+}
+
+void SymbolPositionView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
+{
+	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
+	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
+
 	CRect rect;
 	GetClientRect(rect);
 

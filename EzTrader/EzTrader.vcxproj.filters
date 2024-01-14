@@ -2325,6 +2325,9 @@
     <ClInclude Include="Symbol\AbFavoriteSymbolView.h">
       <Filter>Symbol</Filter>
     </ClInclude>
+    <ClInclude Include="Util\SimpleTree.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

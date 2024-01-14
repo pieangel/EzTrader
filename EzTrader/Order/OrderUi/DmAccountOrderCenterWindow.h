@@ -35,7 +35,7 @@ namespace DarkHorse {
 	class SmAccount;
 	class SmFund;
 }
-
+struct WinInfo;
 class HdSymbolSelecter;
 class SmOrderSetDialog;
 class SmSymbolTableDialog;
@@ -49,6 +49,9 @@ public:
 	static int DeltaOrderArea;
 	DmAccountOrderCenterWindow(CWnd* pParent = nullptr);   // standard constructor
 	DmAccountOrderCenterWindow(CWnd* pParent, std::string symbol_code, DarkHorse::OrderSetEvent order_set);
+
+	DmAccountOrderCenterWindow(CWnd* pParent , std::shared_ptr<WinInfo> parent_win_info);   // standard constructor
+	DmAccountOrderCenterWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info, std::string symbol_code, DarkHorse::OrderSetEvent order_set);
 	virtual ~DmAccountOrderCenterWindow();
 
 	// Dialog Data
@@ -69,6 +72,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
+	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
+
 	int window_width = 0;
 	int window_height = 0;
 	void arrange_children();
@@ -97,6 +103,7 @@ public:
 	int GetPositionCount();
 	std::string get_symbol_code();
 private:
+	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	int extra_height_ = 0;
 	std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
 	CRect rcGrid;
@@ -230,6 +237,7 @@ public:
 	afx_msg void OnBnClickedCheckFixHoga();
 	void saveToJson(json& j) const;
 	void loadFromJson(const json& j);
+	CButton BtnSymbol_;
 };
 
 

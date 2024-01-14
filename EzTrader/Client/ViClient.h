@@ -147,6 +147,9 @@ namespace DarkHorse {
 		bool Enable() const { return _Enable; }
 		void Enable(bool val) { _Enable = val; }
 	private:
+		void simul_kospi();
+		void simul_kosdaq();
+		void simul_option();
 		void handle_order_event(order_event&& order_info_item);
 		void dm_new_order(order_request_p order_req);
 		void dm_change_order(order_request_p order_req);

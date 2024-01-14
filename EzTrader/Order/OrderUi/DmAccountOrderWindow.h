@@ -7,6 +7,7 @@
 #include "../OrderWndConst.h"
 #include "../../Util/SmButton.h"
 #include "../../Json/json.hpp"
+#include "../../Util/SimpleTree.h"
 
 using json = nlohmann::json;
 
@@ -54,7 +55,11 @@ public:
 	void OnQuoteAreaShowHide();
 	void RecalcChildren(CmdMode mode);
 	void RecalcChildren2(CmdMode mode);
+	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
+	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
+
 private:
+	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	CBCGPButton _BtnLeft;
 	CBCGPButton _BtnRight;
 	nlohmann::json center_wnd_prop_;

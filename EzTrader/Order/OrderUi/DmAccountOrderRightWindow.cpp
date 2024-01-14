@@ -2,6 +2,7 @@
 #include "DmAccountOrderRightWindow.h"
 #include "../../DarkHorse.h"
 #include "afxdialogex.h"
+#include "../../Util/SimpleTree.h"
 
 
 // DmAccountOrderRightWindow dialog
@@ -11,6 +12,15 @@ IMPLEMENT_DYNAMIC(DmAccountOrderRightWindow, CBCGPDialog)
 DmAccountOrderRightWindow::DmAccountOrderRightWindow(CWnd* pParent /*=nullptr*/)
 	: CBCGPDialog(IDD_ORDER_RIGHT, pParent)
 {
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+}
+
+DmAccountOrderRightWindow::DmAccountOrderRightWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info)
+	: CBCGPDialog(IDD_ORDER_RIGHT, pParent)
+{
+	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
+	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }

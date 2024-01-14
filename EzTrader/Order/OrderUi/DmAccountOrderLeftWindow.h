@@ -23,6 +23,7 @@ class DmAccountOrderLeftWindow
 #include "../../View/AccountAssetView.h"
 #include <map>
 #include <string>
+#include <memory>
 
 // DmAccountOrderLeftWindow dialog
 
@@ -31,6 +32,7 @@ namespace DarkHorse {
 	class SmAccount;
 	class SmFund;
 }
+struct WinInfo;
 class SmSymbolTableDialog;
 class DmAccountOrderWindow;
 class DmAccountOrderLeftWindow : public CBCGPDialog
@@ -38,6 +40,7 @@ class DmAccountOrderLeftWindow : public CBCGPDialog
 	DECLARE_DYNAMIC(DmAccountOrderLeftWindow)
 
 public:
+	DmAccountOrderLeftWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info);
 	DmAccountOrderLeftWindow(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~DmAccountOrderLeftWindow();
 
@@ -52,6 +55,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	void set_option_view();
 	// key : option year-month combo index, value : year-month name
 	std::map<int, std::string> option_yearmonth_index_map;
@@ -65,6 +69,9 @@ private:
 	DmFutureView future_view_;
 	int order_window_id_{ 0 };
 public:
+	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
+	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
+
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 	void SetMainWnd(DmAccountOrderWindow* main_wnd);
