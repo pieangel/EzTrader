@@ -3,8 +3,10 @@
 #include <vector>
 #include <memory>
 #include <windows.h>
+#include <string>
 // User-defined structure
 struct WinInfo {
+	std::string name_;
 	HANDLE handle_{nullptr};
 	int old_x{0};
 	int old_y{0};
@@ -26,6 +28,7 @@ struct WinInfo {
 	bool operator==(const WinInfo& other) const {
 		return x_ == other.x_ && y_ == other.y_ && h_ == other.h_ && w_ == other.w_;
 	}
+	// Custom equality operator for WinInfo
 	bool is_samme(const WinInfo& other) {
 		return x_ == old_x_ && y_ == old_y_ && h_ == old_h_ && w_ == old_w_;
 	}

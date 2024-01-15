@@ -37,6 +37,7 @@ DmAccountOrderLeftWindow::DmAccountOrderLeftWindow(CWnd* pParent, std::shared_pt
 	: CBCGPDialog(IDD_ORDER_LEFT, pParent)
 {
 	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
+	win_info_->name_ = "left";
 	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();

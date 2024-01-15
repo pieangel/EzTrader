@@ -114,6 +114,7 @@ DmAccountOrderWindow::DmAccountOrderWindow(CWnd* pParent /*=nullptr*/)
 	EnableLayout();
 	id_ = IdGenerator::get_id();
 	win_info_ = std::make_shared<WinInfo>(nullptr, id_, 0, 0, 0, 0);
+	win_info_->name_ = "main";
 	mainApp.event_hub()->add_symbol_order_view_event(1, std::bind(&DmAccountOrderWindow::on_symbol_view_clicked, this, std::placeholders::_1, std::placeholders::_2));
 	mainApp.event_hub()->subscribe_symbol_order_view_event_handler(id_, std::bind(&DmAccountOrderWindow::on_symbol_view_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
@@ -370,7 +371,7 @@ void DmAccountOrderWindow::RecalcChildren(CmdMode mode)
 	GetWindowRect(rcMain);
 	GetClientRect(rcMainWork);
 
-	// ÀüÃ¼ ±æÀÌ °è»ê
+	// ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	const int hor_gap = 5;
 	int total_width = 0;
 
@@ -530,7 +531,7 @@ void DmAccountOrderWindow::RecalcChildren(CmdMode mode)
 
 void DmAccountOrderWindow::RecalcChildren2(CmdMode mode)
 {
-	// ÀüÃ¼ ±æÀÌ °è»ê
+	// ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	const int hor_gap = 2;
 	int total_width = 0;
 	CRect rcWnd;
@@ -647,7 +648,7 @@ void DmAccountOrderWindow::OnSymbolClicked(const std::string& symbol_code)
 
 void DmAccountOrderWindow::OnBnClickedBtnAdd()
 {
-	// ¸ÕÀú ÇöÀç Ã¢ÀÇ Å©±â¸¦ ±¸ÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ Å©ï¿½â¸¦ ï¿½ï¿½ï¿½Ñ´ï¿½.
 	CRect rcWnd, rcCenter, rcRight, rcClient;
 	GetWindowRect(rcWnd);
 	GetClientRect(rcClient);

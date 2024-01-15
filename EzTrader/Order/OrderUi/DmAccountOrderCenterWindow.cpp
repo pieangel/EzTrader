@@ -114,6 +114,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::share
 {
 	id_ = IdGenerator::get_id();
 	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
+	win_info_->name_ = "center";
 	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
 	symbol_order_view_.symbol_type(SymbolType::Domestic);
 	symbol_position_view_.symbol_type(SymbolType::Domestic);
@@ -135,6 +136,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::share
 {
 	id_ = IdGenerator::get_id();
 	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
+	win_info_->name_ = "center";
 	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
 	symbol_order_view_.order_set(order_set);
 	if (order_set_.show_symbol_tick)
@@ -380,12 +382,12 @@ void DmAccountOrderCenterWindow::recal_window_size()
 	symbol_order_view_.GetWindowRect(&rc_order_view);
 
 
-	// ÁÖ¹®±×¸®µå À§Ä¡¸¦ °¡Á®¿Â´Ù.
+	// ï¿½Ö¹ï¿½ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
 	//CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
-	// ÁÖ¹®¼³Á¤ º¸±â ¿É¼Ç¿¡ µû¶ó ÁÖ¹® ±×¸®µå ÇÏ´ÜÀ» ¼³Á¤ÇÑ´Ù.
+	// ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¹ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	//int orderGridBottom = _ShowRemainConfig ? availableHeight - rcGrid.top - ConfigHeight : availableHeight - rcGrid.top;
 	//CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
-	// ÁÖ¹® ±×¸®µå À§Ä¡ ¹× Å©±â ¼³Á¤
+	// ï¿½Ö¹ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//rcGrid.left = 0;
 	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
 	rcGrid.bottom = rc_order_view.Height() - extra_height_;
@@ -416,8 +418,8 @@ CRect DmAccountOrderCenterWindow::GetClientArea(int resourceID)
 void DmAccountOrderCenterWindow::save_control_size()
 {
 	layout_manager_.ParentWnd(this);
-	//layout_manager_.AddWindow(_T("ÁÖ¹®ÆÐ³Î"), IDC_STATIC_ORDER, GetClientArea(IDC_STATIC_ORDER));
-	//layout_manager_.AddWindow(_T("Æ½ÆÐ³Î"), IDC_STATIC_QUOTE, GetClientArea(IDC_STATIC_QUOTE));
+	//layout_manager_.AddWindow(_T("ï¿½Ö¹ï¿½ï¿½Ð³ï¿½"), IDC_STATIC_ORDER, GetClientArea(IDC_STATIC_ORDER));
+	//layout_manager_.AddWindow(_T("Æ½ï¿½Ð³ï¿½"), IDC_STATIC_QUOTE, GetClientArea(IDC_STATIC_QUOTE));
 	rcGrid = GetClientArea(IDC_STATIC_ORDER);
 	rcTick = GetClientArea(IDC_STATIC_QUOTE);
 }
@@ -429,12 +431,12 @@ void DmAccountOrderCenterWindow::on_resize_event_from_order_view()
 	symbol_order_view_.GetWindowRect(&rc_order_view);
 
 
-	// ÁÖ¹®±×¸®µå À§Ä¡¸¦ °¡Á®¿Â´Ù.
+	// ï¿½Ö¹ï¿½ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
 	//CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
-	// ÁÖ¹®¼³Á¤ º¸±â ¿É¼Ç¿¡ µû¶ó ÁÖ¹® ±×¸®µå ÇÏ´ÜÀ» ¼³Á¤ÇÑ´Ù.
+	// ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¹ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	//int orderGridBottom = _ShowRemainConfig ? availableHeight - rcGrid.top - ConfigHeight : availableHeight - rcGrid.top;
 	//CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
-	// ÁÖ¹® ±×¸®µå À§Ä¡ ¹× Å©±â ¼³Á¤
+	// ï¿½Ö¹ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//rcGrid.left = 0;
 	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
 	rcGrid.bottom = rc_order_view.top + rc_order_view.Height();
@@ -546,11 +548,11 @@ void DmAccountOrderCenterWindow::init_control()
 	//_ConfigGrid.AttachGrid(this, IDC_STATIC_CONFIG);
 
 	filled_remain_button_.SetUp();
-	filled_remain_button_.Text("Ã¼°áµÈ ÀÜ°í");
+	filled_remain_button_.Text("Ã¼ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½");
 	filled_remain_button_.ShowWindow(SW_HIDE);
 
 	remain_button_.SetUp();
-	remain_button_.Text("ÀÜ°í");
+	remain_button_.Text("ï¿½Ü°ï¿½");
 	//_RemainButton.OrderCenterWnd(this);
 }
 
