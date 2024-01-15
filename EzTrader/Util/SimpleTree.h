@@ -2,8 +2,14 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <windows.h>
 // User-defined structure
 struct WinInfo {
+	HANDLE handle_{nullptr};
+	int old_x{0};
+	int old_y{0};
+	int old_w_{0};
+	int old_h_{0};
 	int x_{ 0 };
 	int y_{ 0 };
 	int w_{ 0 };
@@ -18,6 +24,9 @@ struct WinInfo {
 
 	// Custom equality operator for WinInfo
 	bool operator==(const WinInfo& other) const {
-		return id_ == other.id_ && x_ == other.x_ && y_ == other.y_ && h_ == other.h_ && w_ == other.w_;
+		return x_ == other.x_ && y_ == other.y_ && h_ == other.h_ && w_ == other.w_;
+	}
+	bool is_samme(const WinInfo& other) {
+		return x_ == old_x_ && y_ == old_y_ && h_ == old_h_ && w_ == old_w_;
 	}
 };
