@@ -563,6 +563,16 @@ void DmAccountOrderWindow::RecalcChildren2(CmdMode mode)
 	SetWindowPos(nullptr, rcWnd.left, rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_NOZORDER | SWP_NOREDRAW);
 }
 
+void DmAccountOrderWindow::recalculateChildWindowPosNSize()
+{
+	CRect rcWnd;
+	_LeftWnd->GetWindowRect(rcWnd);
+	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
+		it->second->GetWindowRect(rcWnd);
+	}
+	_RightWnd->GetWindowRect(rcWnd);
+}
+
 void DmAccountOrderWindow::SetAccountForOrderWnd()
 {
 	if (_ComboAccountMap.size() > 0) {

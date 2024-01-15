@@ -7,9 +7,9 @@
 // User-defined structure
 struct WinInfo {
 	std::string name_;
-	HANDLE handle_{nullptr};
-	int old_x{0};
-	int old_y{0};
+	HANDLE wh_{nullptr};
+	int old_x_{0};
+	int old_y_{0};
 	int old_w_{0};
 	int old_h_{0};
 	int x_{ 0 };

@@ -926,8 +926,11 @@ void DmAccountOrderCenterWindow::OnSize(UINT nType, int cx, int cy)
 	if (init_dialog_ && symbol_order_view_.GetSafeHwnd()) {
 		CRect rcWnd;
 		GetWindowRect(rcWnd);
-		//_OrderArea.RecalRowCount(rcWnd.Height());
 		symbol_order_view_.Invalidate();
+
+		symbol_tick_view_.GetWindowRect(rcWnd);
+
+		symbol_tick_view_.Invalidate();
 	}
 
 }

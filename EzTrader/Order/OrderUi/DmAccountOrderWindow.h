@@ -59,6 +59,7 @@ public:
 	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
 
 private:
+	void recalculateChildWindowPosNSize();
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	CBCGPButton _BtnLeft;
 	CBCGPButton _BtnRight;
