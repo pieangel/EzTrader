@@ -8,7 +8,8 @@ namespace DarkHorse {
 
 	void SmAccount::move_up_sub_account(const int& target_index)
 	{
-
+		int i = 0;
+		i = i + 1;
 	}
 
 	void SmAccount::move_down_sub_account(const int& target_index)
