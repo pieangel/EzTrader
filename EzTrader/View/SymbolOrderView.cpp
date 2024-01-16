@@ -194,37 +194,37 @@ SymbolOrderView::SymbolOrderView()
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::SELL_ORDER;
-	header_info.title = "ÁÖ¹®";
+	header_info.title = "ï¿½Ö¹ï¿½";
 	header_info.width = 55;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::SELL_CNT;
-	header_info.title = "°Ç¼ö";
+	header_info.title = "ï¿½Ç¼ï¿½";
 	header_info.width = 35;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::SELL_QTY;
-	header_info.title = "ÀÜ·®";
+	header_info.title = "ï¿½Ü·ï¿½";
 	header_info.width = 35;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::QUOTE;
-	header_info.title = "½Ã¼¼";
+	header_info.title = "ï¿½Ã¼ï¿½";
 	header_info.width = 80;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::BUY_QTY;
-	header_info.title = "ÀÜ·®";
+	header_info.title = "ï¿½Ü·ï¿½";
 	header_info.width = 35;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::BUY_CNT;
-	header_info.title = "°Ç¼ö";
+	header_info.title = "ï¿½Ç¼ï¿½";
 	header_info.width = 35;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::BUY_ORDER;
-	header_info.title = "ÁÖ¹®";
+	header_info.title = "ï¿½Ö¹ï¿½";
 	header_info.width = 55;
 	grid_header_vector_.push_back(header_info);
 
@@ -649,7 +649,7 @@ void SymbolOrderView::ClearOldHoga(DarkHorse::Hoga_Type hoga_type) const noexcep
 
 void SymbolOrderView::ClearOldHoga()
 {
-	// ÀÌÀü È£°¡¸¦ Áö¿î´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 	ClearOldHoga(Hoga_Type::SELL);
 	ClearOldHoga(Hoga_Type::BUY);
 	_OldHogaSellRowIndex.clear();
@@ -745,10 +745,10 @@ int SymbolOrderView::FindRowFromCenterValue(const int& value)
 	const int int_tick_size = product_control_->get_product().int_tick_size;
 	if (int_tick_size == 0) return -1;
 	auto it = price_to_row_.find(value);
-	if (it != price_to_row_.end()) { // °ªÀÌ º¸ÀÌ´Â ¹üÀ§ ¾È¿¡ ÀÖÀ» ¶§
+	if (it != price_to_row_.end()) { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 		return it->second;
 	}
-	else { // °ªÀÌ º¸ÀÌ´Â ¹üÀ§ ¹Û¿¡ ÀÖÀ» ¶§
+	else { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 		auto itr = price_to_row_.rbegin();
 		int big_val = itr->first;
 		int big_row = itr->second;
@@ -813,7 +813,7 @@ void SymbolOrderView::set_quote_color()
 		int closeRow = find_row(quote.close);
 		int openRow = find_row(quote.open);
 		
-		if (quote.close > quote.open) { // ¾çºÀ
+		if (quote.close > quote.open) { // ï¿½ï¿½ï¿½ï¿½
 			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
 				if (it->second < highRow) set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 				else if (it->second < closeRow) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
@@ -823,7 +823,7 @@ void SymbolOrderView::set_quote_color()
 			}
 
 		}
-		else if (quote.close < quote.open) { // À½ºÀ
+		else if (quote.close < quote.open) { // ï¿½ï¿½ï¿½ï¿½
 			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
 				if (it->second < highRow) set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 				else if (it->second < openRow) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
@@ -832,7 +832,7 @@ void SymbolOrderView::set_quote_color()
 				else set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 			}
 		}
-		else { // µµÁö
+		else { // ï¿½ï¿½ï¿½ï¿½
 			for (auto it = price_to_row_.rbegin(); it != price_to_row_.rend(); ++it) {
 				if (it->second < highRow) set_quote_cell(it->second, true, SmMarkType::MT_NONE);
 				else if (it->second < closeRow) set_quote_cell(it->second, true, SmMarkType::MT_HILO);
@@ -1458,6 +1458,32 @@ void SymbolOrderView::reset_col_widths(const DarkHorse::OrderSetEvent& order_set
 	ResetHeaderWidth(0);
 }
 
+int SymbolOrderView::get_width()
+{
+  int width_sum = 0;
+  	width_sum += 2;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width;
+  	width_sum += 1;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].width;
+  	width_sum += 1;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_CNT].width;
+  	width_sum += 1;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_QTY].width;
+  	width_sum += 1;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::QUOTE].width;
+  	width_sum += 1;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_QTY].width;
+  	width_sum += 1;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_CNT].width;
+  	width_sum += 1;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_ORDER].width;
+  	width_sum += 1;
+  	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width;
+  	width_sum += 2;
+  
+  	return width_sum;
+}
+
 int SymbolOrderView::get_entire_width()
 {
 	int width_sum = 0;
@@ -1501,7 +1527,7 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 	auto hoga = mainApp.HogaMgr()->get_hoga(symbol_code);
 }
 /// <summary>
-/// °³¼±ÀÇ ¿©Áö°¡ ÀÖÀ½. 
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. 
 /// </summary>
 void SymbolOrderView::set_position() {
 	if (!position_control_ || !symbol_) return;
@@ -1658,32 +1684,32 @@ int SymbolOrderView::find_row(const int value)
 	if (!product_control_ || price_to_row_.size() == 0)
 		return 0;
 	auto it = price_to_row_.find(value);
-	if (it != price_to_row_.end()) { // °ªÀÌ º¸ÀÌ´Â ¹üÀ§ ¾È¿¡ ÀÖÀ» ¶§
+	if (it != price_to_row_.end()) { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 		return it->second;
 	}
-	else { // °ªÀÌ º¸ÀÌ´Â ¹üÀ§ ¹Û¿¡ ÀÖÀ» ¶§
+	else { // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 		const VmProduct& product = product_control_->get_product();
 		auto itr = price_to_row_.rbegin();
 		int big_value = itr->first;
 		int big_row = itr->second;
 		int thousand_row = 0;
-		// °¡°ÝÀÌ 10ÀÎ ÇàÀ» Ã£´Â °úÁ¤ - 10ÀÌ»óÀÌ¸é ½Â¼ö°¡ º¯ÇÑ´Ù.
-		if (big_value >= 1000) { // ÃÖ»óÀ§ °ªÀÌ 10º¸´Ù ÀÌ»óÀÏ °æ¿ì
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - 10ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ ï¿½Â¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
+		if (big_value >= 1000) { // ï¿½Ö»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 10ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			int delta = big_value - 1000;
 			int delta_row = delta / product.int_tick_size;
 			thousand_row = big_row + delta_row;
 		}
-		else { // ÃÖ»óÀ§ °ªÀÌ 10¹Ì¸¸ÀÎ °æ¿ì
+		else { // ï¿½Ö»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 10ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			int delta = 1000 - big_value;
 			thousand_row = big_row - delta;
 		}
 
-		if (value >= 1000) { // °¡°ÝÀÌ 10 ÀÌ»óÀÎ ÀÖ´Â °æ¿ì - Á¾¸ñÀÇ Æ½Å©±â ¸¸Å­ º¯ÇÔ
+		if (value >= 1000) { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10 ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ½Å©ï¿½ï¿½ ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½
 			int delta = value - 1000;
 			int delta_row = delta / product.int_tick_size;
 			return thousand_row - delta_row;
 		}
-		else { // °¡°ÝÀÌ 10 ¹Ì¸¸ÀÎ °æ¿ì - Á¾¸ñ¿¡ °ü°è¾øÀÌ 1¾¿ º¯ÇÔ
+		else { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10 ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			int delta = 1000 - value;
 			return thousand_row + delta;
 		}
@@ -1721,7 +1747,7 @@ int SymbolOrderView::find_start_value()
 		int zeroRow = price_end_row_;
 		if (index_row_ < endRow) {
 			for (int r = index_row_; r < endRow; ++r) {
-				// 0.01 ¹ØÀ¸·Î ¾È³ª¿À°Ô ÇÔ
+				// 0.01 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 				if (/*endValue == 1 ||*/ endValue == 0) {
 					zeroRow = r;
 					break;
@@ -1959,7 +1985,7 @@ void SymbolOrderView::CreateResource()
 	//_Resource.QMHighLowBrush.SetOpacity(0.5);
 	_Resource.OrderStroke.SetStartCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_ROUND);
 	_Resource.OrderStroke.SetEndCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_TRIANGLE);
-	CBCGPTextFormat fmt3(_T("±¼¸²"), globalUtils.ScaleByDPI(30.0f));
+	CBCGPTextFormat fmt3(_T("ï¿½ï¿½ï¿½ï¿½"), globalUtils.ScaleByDPI(30.0f));
 
 	fmt3.SetFontSize(12);
 	fmt3.SetTextAlignment(CBCGPTextFormat::BCGP_TEXT_ALIGNMENT_CENTER);
@@ -1981,7 +2007,7 @@ void SymbolOrderView::CreateResource()
 	_Resource.QuoteTextFormat = fmt;
 
 
-	CBCGPTextFormat fmt2(_T("±¼¸²"), globalUtils.ScaleByDPI(30.0f));
+	CBCGPTextFormat fmt2(_T("ï¿½ï¿½ï¿½ï¿½"), globalUtils.ScaleByDPI(30.0f));
 
 	fmt2.SetFontSize(12);
 	fmt2.SetTextAlignment(CBCGPTextFormat::BCGP_TEXT_ALIGNMENT_CENTER);
@@ -2263,7 +2289,7 @@ void SymbolOrderView::change_order(const std::vector<std::shared_ptr<DarkHorse::
 {
 	for (auto it = order_vec.begin(); it != order_vec.end(); ++it) {
 		const auto& order = *it;
-		// ÀÜ·®ÀÌ ¼³Á¤µÇÁö ¾ÊÀ¸¸é ÁÖ¹® Á¤Á¤À» ¸øÇÏ°Ô ¸·´Â´Ù. 
+		// ï¿½Ü·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Â´ï¿½. 
 		if (order->remain_count == 0) continue;
 		auto parent_account = mainApp.AcntMgr()->get_parent_account(order->account_no);
 		auto order_req = OrderRequestManager::make_change_order_request(

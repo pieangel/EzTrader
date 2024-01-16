@@ -59,7 +59,10 @@ public:
 	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
 
 private:
-	void recalculateChildWindowPosNSize();
+  void onResizeEvent(OrderWndResizeEvent event);
+  void moveWndPos( );
+	void recalChildWndPos();
+	void moveChildWnd();
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	CBCGPButton _BtnLeft;
 	CBCGPButton _BtnRight;
@@ -96,7 +99,7 @@ public:
 	void on_symbol_view_clicked(const int center_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	void OnSymbolClicked(const std::string& symbol_code);
-	// ÁÖ¹®Ã¢À» Ãß°¡ÇÑ´Ù.
+	// ï¿½Ö¹ï¿½Ã¢ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.
 	afx_msg void OnBnClickedBtnAdd();
 	afx_msg void OnBnClickedBtnRemove();
 	afx_msg void OnBnClickedBtnLeft();

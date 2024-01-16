@@ -50,6 +50,7 @@
 #include "../../Position/GroupPositionManager.h"
 #include "../../Fund/SmFund.h"
 #include "DmFundOrderWindow.h"
+#include "OrderWndConst.h"
 #include <functional>
 using namespace std::placeholders;
 // SmOrderWnd dialog
@@ -363,7 +364,34 @@ void DmAccountOrderCenterWindow::ArrangeCenterValue()
 
 void DmAccountOrderCenterWindow::CreateResource()
 {
-
+  
+}
+void DmAccountOrderCenterWindow::set_child_wnd_pos(
+  const int parent_width, 
+  const int parent_height)
+{
+    // index 0 : order_vivew
+    int wnd_xpos = 0;
+    int order_view_width = get_entire_width();
+    win_info_->children[0]->wnd = symbol_order_view_;
+    win_info_->children[0]->rc_new.left = wnd_xpos;
+    win_info_->children[0]->rc_new.right = order_view_width;
+    win_info_->children[0]->rc_new.top = fixed_order_panel_y_pos;
+    win_info_->children[0]->rc_new.bottom = parent_height - fixed_order_panel_y_pos;
+    // index 1 : tick_view
+    wnd_xpos +=  order_view_width;
+    win_info_->children[1]->wnd = symbol_tick_view_;
+    win_info_->children[1]->rc_new.left = wnd_xpos;
+    win_info_->children[1]->rc_new.right = wnd_xpos + fixed_tick_wnd_width;
+    win_info_->children[1]->rc_new.top = fixed_order_panel_y_pos;
+    win_info_->children[1]->rc_new.bottom = fixed_order_panel_y_pos + fixed_tick_wnd_height;
+    // index 2 : position_view
+}
+int DmAccountOrderCenterWindow::get_width() 
+{
+  int width = symbol_order_view_.get_width();
+  width += fixed_tick_wnd_width;
+  return width;
 }
 
 void DmAccountOrderCenterWindow::trigger_resize_event()
@@ -559,8 +587,8 @@ void DmAccountOrderCenterWindow::init_control()
 void DmAccountOrderCenterWindow::init_views()
 {
 	symbol_order_view_.SetUp();
-	symbol_position_view_.SetUp();
 	symbol_tick_view_.SetUp();
+	symbol_position_view_.SetUp();
 }
 
 void DmAccountOrderCenterWindow::init_dm_symbol()

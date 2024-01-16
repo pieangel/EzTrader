@@ -72,6 +72,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+  void recal_child_wnd_pos();
+  int get_width();
 	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
 	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
 
@@ -102,6 +104,7 @@ public:
 	void SetOrderAmount(const int& count);
 	int GetPositionCount();
 	std::string get_symbol_code();
+	void set_child_wnd_pos(const int parent_width, const int parent_height);
 private:
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	int extra_height_ = 0;

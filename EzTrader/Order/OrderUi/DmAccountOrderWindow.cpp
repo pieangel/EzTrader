@@ -3,6 +3,7 @@
 #include "../../Util/IdGenerator.h"
 #include "../../Global/SmTotalManager.h"
 #include "../../Task/SmTaskRequestManager.h"
+#include "OrderWndConst.h"
 
 /*
 DmAccountOrderWindow::DmAccountOrderWindow()
@@ -358,7 +359,37 @@ void DmAccountOrderWindow::OnQuoteAreaShowHide()
 
 void DmAccountOrderWindow::RecalcChildren(CmdMode mode)
 {
-
+  CRect rc_main, rc_left, rc_right, rc_center;
+  GetWindowRect(rc_main);
+  _LeftWnd->GetWindowRect(rc_left);
+  _RightWnd->GetWindowRect(rc_right);
+  // First, calculate the height of the child windows.
+  const int child_wnd_height = rc_main.bottom - rc_left.top;
+  const size_t child_count = win_info_->children_.size();
+  int child_wnd_xpos = 0;
+  win_info_->children_[0]->wnd = _LeftWnd;
+  win_info_->children_[0]->rc_new.left = child_wnd_xpos;
+  win_info_->children_[0]->rc_new.right = _ShowLeft ? fixed_left_wnd_width : 0;
+  win_info_->children_[0]->rc_new.top = fixed_child_wnd_y_pos;
+  win_info_->children_[0]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
+  child_wnd_xpos = win_info_->children_[0]->rc_new.right;
+  for (auto it = center_window_map_.begin(), size_t i = 1; 
+  it != center_window_map_.end(); 
+  it++, i++) {
+    win_info_->children_[i]->wnd = it->second;
+    win_info_->children_[i]->rc_new.left = child_wnd_xpos;
+    win_info_->children_[i]->rc_new.right = it->second->get_width();
+    win_info_->children_[i]->rc_new.top = fixed_child_wnd_y_pos;
+    win_info_->children_[i]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
+    child_wnd_xpos += win_info_->children_[i]->rc_new.right;
+  }
+  
+  win_info_->children_[child_count - 1]->wnd = _RightWnd;
+  win_info_->children_[child_count - 1]->rc_new.left = child_wnd_xpos;
+  win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? fixed_right_wnd_width : 0;
+  win_info_->children_[child_count - 1]->rc_new.top = fixed_child_wnd_y_pos;
+  win_info_->children_[child_count - 1]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
+    
 	std::set<CWnd*> wnd_set;
 	const int top_gap = 2;
 	//const int hor_gap = 2;
@@ -563,14 +594,86 @@ void DmAccountOrderWindow::RecalcChildren2(CmdMode mode)
 	SetWindowPos(nullptr, rcWnd.left, rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_NOZORDER | SWP_NOREDRAW);
 }
 
-void DmAccountOrderWindow::recalculateChildWindowPosNSize()
+void DmAccountOrderWindow::onResizeEvent(OrderWndResizeEvent event)
 {
-	CRect rcWnd;
-	_LeftWnd->GetWindowRect(rcWnd);
-	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
-		it->second->GetWindowRect(rcWnd);
-	}
-	_RightWnd->GetWindowRect(rcWnd);
+  switch(event) {
+    case CHILD_ADD:
+    case CHILD_DELETE:
+    case SHOW_LEFT:
+    case HIDE_LEFT:
+    case SHOW_RIGHT:
+    case HIDE_RIGHT:
+    case ORDER_CONFIG_CHANGED:
+      recalChildWndPos();
+      // 이 함수는 이벤트가 일어나는 곳에서 직접 호출한다. 
+      moveWndPos();
+      //moveChildWnd();
+      break;
+    case RESIZE_MAIN:
+      //recalChildWndPos();
+      moveChildWnd();
+      break;
+    default:
+      break;
+  }
+}
+
+void DmAccountOrderWindow::moveWndPos(bool include_parent)
+{
+  if (!win_info || !include_parent) return;
+  win_info_->move_window();
+}
+
+void DmAccountOrderWindow::recalChildWndPos()
+{
+  CRect rc_main, rc_left, rc_right, rc_center;
+  GetWindowRect(rc_main);
+  _LeftWnd->GetWindowRect(rc_left);
+  _RightWnd->GetWindowRect(rc_right);
+  // First, calculate the height of the child windows.
+  const int child_wnd_height = rc_main.bottom - rc_left.top;
+  const size_t child_count = win_info_->children_.size();
+  int child_wnd_xpos = 0;
+  win_info_->children_[0]->wnd = _LeftWnd;
+  win_info_->children_[0]->rc_new.left = child_wnd_xpos;
+  win_info_->children_[0]->rc_new.right = _ShowLeft ? fixed_left_wnd_width : 0;
+  win_info_->children_[0]->rc_new.top = fixed_child_wnd_y_pos;
+  win_info_->children_[0]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
+  child_wnd_xpos = win_info_->children_[0]->rc_new.right;
+  for (auto it = center_window_map_.begin(), size_t i = 1; 
+  it != center_window_map_.end(); 
+  it++, i++) {
+    win_info_->children_[i]->wnd = it->second;
+    win_info_->children_[i]->rc_new.left = child_wnd_xpos;
+    win_info_->children_[i]->rc_new.right = it->second->get_width();
+    win_info_->children_[i]->rc_new.top = fixed_child_wnd_y_pos;
+    win_info_->children_[i]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
+    it->second->set_child_wnd_pos(it->second->get_width(), child_wnd_height);
+    child_wnd_xpos += win_info_->children_[i]->rc_new.right;
+  }
+    
+  win_info_->children_[child_count - 1]->wnd = _RightWnd;
+  win_info_->children_[child_count - 1]->rc_new.left = child_wnd_xpos;
+  win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? fixed_right_wnd_width : 0;
+  win_info_->children_[child_count - 1]->rc_new.top = fixed_child_wnd_y_pos;
+  win_info_->children_[child_count - 1]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
+  
+  win_info_->wnd = this;
+  win_info_->rc_new.left = rc_main.left;
+  win_info_->rc_new.top = rc_main.top;
+  win_info_->rc_new.right = rc_main.left + win_info_->children_[child_count - 1]->rc_new.right;
+  win_info_->rc_new.bottom = rc_main.bottom;
+}
+
+void DmAccountOrderWindow::moveChildWnd()
+{
+  const size_t child_count = win_info_->children_.size();
+  for(size_t i = 0; i < child_count; i++) {
+    wnd_info_->children[i]->move_window();
+    if (wnd_info_->children[i]->get_child_count() > 0) {
+      wnd_info_->children[i]->move_child_window();
+    }
+  }
 }
 
 void DmAccountOrderWindow::SetAccountForOrderWnd()
