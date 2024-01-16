@@ -8,6 +8,7 @@
 #include "../../Util/SmButton.h"
 #include "../../Json/json.hpp"
 #include "../../Util/SimpleTree.h"
+#include "OrderWndConst.h"
 
 using json = nlohmann::json;
 
@@ -59,8 +60,8 @@ public:
 	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
 
 private:
-  void onResizeEvent(OrderWndResizeEvent event);
-  void moveWndPos( );
+	void onResizeEvent(OrderWndResizeEvent event);
+	void moveWndPos();
 	void recalChildWndPos();
 	void moveChildWnd();
 	std::shared_ptr<WinInfo> win_info_{ nullptr };

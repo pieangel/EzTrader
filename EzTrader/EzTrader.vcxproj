@@ -424,6 +424,7 @@
     <ClInclude Include="Order\OrderUi\ControlId.h" />
     <ClInclude Include="Order\OrderUi\DmDefine.h" />
     <ClInclude Include="Order\OrderUi\DmFundOrderWindow.h" />
+    <ClInclude Include="Order\OrderUi\OrderWndConst.h" />
     <ClInclude Include="Order\OrderWndConst.h" />
     <ClInclude Include="Order\SmAcceptedGrid.h" />
     <ClInclude Include="Order\SmAccountOrderManager.h" />

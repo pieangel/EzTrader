@@ -9,12 +9,12 @@ const int hor_gap = 3;
 const int ver_gap = 3;
 
 enum OrderWndResizeEvent {
-  CHILD_ADD = 0,
-  CHILD_DELETE,
-  SHOW_LEFT,
-  HIDE_LEFT,
-  SHOW_RIGHT,
-  HIDE_RIGHT,
-  ORDER_CONFIG_CHANGED,
-  RESIZE_MAIN
-}
+	CHILD_ADD = 0,
+	CHILD_DELETE,
+	SHOW_LEFT,
+	HIDE_LEFT,
+	SHOW_RIGHT,
+	HIDE_RIGHT,
+	ORDER_CONFIG_CHANGED,
+	RESIZE_MAIN
+};

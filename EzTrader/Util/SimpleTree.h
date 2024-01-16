@@ -2,8 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <windows.h>
 #include <string>
+#include <windows.h>
 // User-defined structure
 struct WinInfo {
 	std::string name_;
@@ -44,18 +44,18 @@ struct WinInfo {
 	  return rc_new.left == rc_old.left &&
 	         rc_new.right == rc_old.right && 
 	         rc_new.top == rc_old.top &&
-	         rc_new_bottom == rc_old.bottom;
+	         rc_new.bottom == rc_old.bottom;
 	}
-	void move_window_to_new(bool redraw)
+	void move_window(bool redraw)
 	{
 	  if (!wnd || is_same_as_old_window()) return;
 	  wnd->MoveWindow(rc_new, redraw ? TRUE : FALSE);
 	}
 	void move_child_window()
 	{
-	  const size_t child_count = win_info_->children_.size();
+	  const size_t child_count = children_.size();
 	  for(size_t i = 0; i < child_count; i++) {
-	    wnd_info_->children[i]->move_window();
+	    children_[i]->move_window(true);
 	  }
 	}
 };

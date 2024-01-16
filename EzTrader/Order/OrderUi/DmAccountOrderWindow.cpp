@@ -209,7 +209,7 @@ LRESULT DmAccountOrderWindow::OnExitSizeMove(WPARAM wparam, LPARAM lparam)
 
 	if (moveRect.Width() == rcWnd.Width() && moveRect.Height() == rcWnd.Height()) return 0;
 
-	RecalcChildren(CM_REFRESH);
+	//RecalcChildren(CM_REFRESH);
 	//Invalidate(FALSE);
 	// do stuff      
 	return (LRESULT)0;
@@ -333,7 +333,7 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 
 
 
-	RecalcChildren(CM_REFRESH);
+	//RecalcChildren(CM_REFRESH);
 
 
 
@@ -367,191 +367,37 @@ void DmAccountOrderWindow::RecalcChildren(CmdMode mode)
   const int child_wnd_height = rc_main.bottom - rc_left.top;
   const size_t child_count = win_info_->children_.size();
   int child_wnd_xpos = 0;
-  win_info_->children_[0]->wnd = _LeftWnd;
+  win_info_->children_[0]->wnd = _LeftWnd.get();
   win_info_->children_[0]->rc_new.left = child_wnd_xpos;
   win_info_->children_[0]->rc_new.right = _ShowLeft ? fixed_left_wnd_width : 0;
   win_info_->children_[0]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[0]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
   child_wnd_xpos = win_info_->children_[0]->rc_new.right;
-  for (auto it = center_window_map_.begin(), size_t i = 1; 
+  size_t i = 1;
+  for (auto it = center_window_map_.begin(); 
   it != center_window_map_.end(); 
-  it++, i++) {
-    win_info_->children_[i]->wnd = it->second;
+  it++) {
+    win_info_->children_[i]->wnd = it->second.get();
     win_info_->children_[i]->rc_new.left = child_wnd_xpos;
     win_info_->children_[i]->rc_new.right = it->second->get_width();
     win_info_->children_[i]->rc_new.top = fixed_child_wnd_y_pos;
     win_info_->children_[i]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
     child_wnd_xpos += win_info_->children_[i]->rc_new.right;
+	i++;
   }
   
-  win_info_->children_[child_count - 1]->wnd = _RightWnd;
+  win_info_->children_[child_count - 1]->wnd = _RightWnd.get();
   win_info_->children_[child_count - 1]->rc_new.left = child_wnd_xpos;
   win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? fixed_right_wnd_width : 0;
   win_info_->children_[child_count - 1]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[child_count - 1]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
-    
-	std::set<CWnd*> wnd_set;
-	const int top_gap = 2;
-	//const int hor_gap = 2;
-	int max_height = 0, width_total = 0, start_x = 0;
+   
+
+	GetWindowRect(rc_main);
+	_rcMain = rc_main;
 	CRect rcWnd;
-	CRect rcLine;
-	CRect rcMain, rcMainWork, rcLeft, rcRight;
-	_LeftWnd->GetWindowRect(rcLeft);
-	_RightWnd->GetWindowRect(rcRight);
-	GetWindowRect(rcMain);
-	GetClientRect(rcMainWork);
-
-	// ��ü ���� ���
-	const int hor_gap = 5;
-	int total_width = 0;
-
-
-	start_x = hor_gap;
-
-	int line_index = 0;
-	if (_ShowLeft) {
-		_LeftWnd->GetWindowRect(rcWnd);
-		_rcLeft = rcWnd;
-		_LeftWnd->MoveWindow(start_x, CtrlHeight + top_gap, rcWnd.Width(), rcWnd.Height());
-		_LeftWnd->ShowWindow(SW_SHOW);
-		max_height = rcWnd.Height();
-		start_x += rcWnd.Width();
-		width_total += rcWnd.Width();
-		wnd_set.insert(_LeftWnd.get());
-
-		rcLine.left = start_x + 1;
-		rcLine.right = start_x + _LineGap;
-		rcLine.top = CtrlHeight + top_gap + 2;
-		rcLine.bottom = 1600;
-		_LineVector[line_index]->MoveWindow(rcLine);
-		_LineVector[line_index]->ShowWindow(SW_SHOW);
-		line_index++;
-
-		start_x += hor_gap;
-	}
-	else {
-		_LeftWnd->ShowWindow(SW_HIDE);
-	}
-
-
-	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); ++it) {
-		std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = it->second;
-		center_wnd->GetWindowRect(rcWnd);
-
-
-		//center_wnd->ShowWindow(SW_HIDE);
-		int center_window_width = center_wnd->window_width;
-		int center_window_height = rcWnd.Height() - center_wnd->RecalcOrderAreaHeight(this);
-		center_wnd->MoveWindow(start_x, CtrlHeight + top_gap, center_window_width, rcWnd.Height());
-		center_wnd->arrange_children();
-		center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
-		start_x += center_window_width;
-		width_total += rcWnd.Width();
-
-		
-
-		wnd_set.insert(center_wnd.get());
-
-		rcLine.left = start_x + 1;
-		rcLine.right = start_x + _LineGap;
-		rcLine.top = CtrlHeight + top_gap + 2;
-		rcLine.bottom = 1600;
-		_LineVector[line_index]->MoveWindow(rcLine);
-		_LineVector[line_index]->ShowWindow(SW_SHOW);
-		line_index++;
-		start_x += hor_gap;
-	}
-
-
-	if (_ShowRight) {
-		_RightWnd->GetWindowRect(rcWnd);
-		_rcRight = rcWnd;
-		width_total += rcWnd.Width();
-		if (rcWnd.Height() > max_height) max_height = rcWnd.Height();
-		_RightWnd->MoveWindow(start_x, CtrlHeight + top_gap, rcWnd.Width(), rcWnd.Height());
-		_RightWnd->ShowWindow(SW_SHOW);
-		wnd_set.insert(_RightWnd.get());
-		//start_x += rcWnd.Width();
-
-		//start_x++;
-	}
-	else {
-		_RightWnd->ShowWindow(SW_HIDE);
-	}
-
-
-
-	GetWindowRect(rcWnd);
-	//MoveWindow(rcWnd.left, rcWnd.top, width_total + 21, rcWnd.Height());
-
-
-	CRect rcClient;
-	GetClientRect(&rcClient);
-
-	for (auto it = wnd_set.begin(); it != wnd_set.end(); ++it) {
-
-		(*it)->GetWindowRect(&rcWnd);
-		ScreenToClient(rcWnd);
-		rcWnd.bottom = rcClient.Height();
-		//(*it)->MoveWindow(rcWnd);
-
-		(*it)->SetWindowPos(nullptr, rcWnd.left, rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_FRAMECHANGED);
-		//(*it)->ShowWindow(SW_SHOW);
-	}
-
-
-
-
-	if (mode != CM_REFRESH)
-		Invalidate();
-
-
-
-
-	//SetWindowPos(nullptr, rcMain.left, rcMain.top, width_total + 20, rcMain.Height(), SWP_NOZORDER | SWP_NOREDRAW);
-
-	std::vector<CRect> rcVector;
-	if (_ShowLeft) {
-		_LeftWnd->GetWindowRect(rcWnd);
-		rcVector.push_back(rcWnd);
-	}
-
-	for (auto it = center_window_map_.begin(); it != center_window_map_.end(); it++) {
-		it->second->GetWindowRect(rcWnd);
-		rcVector.push_back(rcWnd);
-	}
-
-	if (_ShowRight) {
-		_RightWnd->GetWindowRect(rcWnd);
-		rcVector.push_back(rcWnd);
-	}
-	for (size_t i = 0; i < rcVector.size(); i++) {
-		total_width += rcVector[i].Width();
-		total_width += hor_gap;
-	}
-
-	//total_width += hor_gap;
-
-	GetWindowRect(rcWnd);
-	rcWnd.right = rcWnd.left + total_width + 20;
-
-	rcLine.left = 0;
-	rcLine.right = rcWnd.Width() - 8;
-	rcLine.top = CtrlHeight - 2;
-	rcLine.bottom = CtrlHeight + _LineGap - 2;
-
-	_LineVector[line_index]->MoveWindow(rcLine);
-	_LineVector[line_index]->ShowWindow(SW_SHOW);
-	line_index++;
-
-	SetWindowPos(nullptr, rcWnd.left, rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_NOZORDER | SWP_FRAMECHANGED);
-
-	GetWindowRect(rcMain);
-	_rcMain = rcMain;
-
 	_StaticMsg.GetWindowRect(rcWnd);
-	int len = rcMain.right - rcWnd.left - 13;
+	int len = rc_main.right - rcWnd.left - 13;
 	rcWnd.right = rcWnd.left + len;
 	ScreenToClient(rcWnd);
 	//_StaticMsg.MoveWindow(rcWnd);
@@ -610,7 +456,7 @@ void DmAccountOrderWindow::onResizeEvent(OrderWndResizeEvent event)
       //moveChildWnd();
       break;
     case RESIZE_MAIN:
-      //recalChildWndPos();
+      recalChildWndPos();
       moveChildWnd();
       break;
     default:
@@ -618,10 +464,10 @@ void DmAccountOrderWindow::onResizeEvent(OrderWndResizeEvent event)
   }
 }
 
-void DmAccountOrderWindow::moveWndPos(bool include_parent)
+void DmAccountOrderWindow::moveWndPos()
 {
-  if (!win_info || !include_parent) return;
-  win_info_->move_window();
+	if (!win_info_) return;
+	win_info_->move_window(true);
 }
 
 void DmAccountOrderWindow::recalChildWndPos()
@@ -634,25 +480,27 @@ void DmAccountOrderWindow::recalChildWndPos()
   const int child_wnd_height = rc_main.bottom - rc_left.top;
   const size_t child_count = win_info_->children_.size();
   int child_wnd_xpos = 0;
-  win_info_->children_[0]->wnd = _LeftWnd;
+  win_info_->children_[0]->wnd = _LeftWnd.get();
   win_info_->children_[0]->rc_new.left = child_wnd_xpos;
   win_info_->children_[0]->rc_new.right = _ShowLeft ? fixed_left_wnd_width : 0;
   win_info_->children_[0]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[0]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
   child_wnd_xpos = win_info_->children_[0]->rc_new.right;
-  for (auto it = center_window_map_.begin(), size_t i = 1; 
+  size_t i = 1;
+  for (auto it = center_window_map_.begin(); 
   it != center_window_map_.end(); 
-  it++, i++) {
-    win_info_->children_[i]->wnd = it->second;
+  it++) {
+    win_info_->children_[i]->wnd = it->second.get();
     win_info_->children_[i]->rc_new.left = child_wnd_xpos;
     win_info_->children_[i]->rc_new.right = it->second->get_width();
     win_info_->children_[i]->rc_new.top = fixed_child_wnd_y_pos;
     win_info_->children_[i]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
     it->second->set_child_wnd_pos(it->second->get_width(), child_wnd_height);
     child_wnd_xpos += win_info_->children_[i]->rc_new.right;
+	i++;
   }
     
-  win_info_->children_[child_count - 1]->wnd = _RightWnd;
+  win_info_->children_[child_count - 1]->wnd = _RightWnd.get();
   win_info_->children_[child_count - 1]->rc_new.left = child_wnd_xpos;
   win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? fixed_right_wnd_width : 0;
   win_info_->children_[child_count - 1]->rc_new.top = fixed_child_wnd_y_pos;
@@ -669,9 +517,9 @@ void DmAccountOrderWindow::moveChildWnd()
 {
   const size_t child_count = win_info_->children_.size();
   for(size_t i = 0; i < child_count; i++) {
-    wnd_info_->children[i]->move_window();
-    if (wnd_info_->children[i]->get_child_count() > 0) {
-      wnd_info_->children[i]->move_child_window();
+    win_info_->children_[i]->move_window(true);
+    if (win_info_->children_[i]->get_child_count() > 0) {
+      win_info_->children_[i]->move_child_window();
     }
   }
 }
@@ -830,7 +678,7 @@ void DmAccountOrderWindow::OnBnClickedBtnRemove()
 	//LockWindowUpdate();
 	auto it = std::prev(center_window_map_.end());
 	center_window_map_.erase(it);
-	RecalcChildren(CM_DEL_CENTER);
+	//RecalcChildren(CM_DEL_CENTER);
 	//UnlockWindowUpdate();
 	Invalidate(FALSE);
 }
@@ -842,7 +690,7 @@ void DmAccountOrderWindow::OnBnClickedBtnLeft()
 	if (_ShowLeft) _BtnLeft.SetWindowText(">>");
 	else _BtnLeft.SetWindowText("<<");	
 	//LockWindowUpdate();
-	RecalcChildren(_ShowLeft ? CM_SHOW_LEFT : CM_HIDE_LEFT);
+	//RecalcChildren(_ShowLeft ? CM_SHOW_LEFT : CM_HIDE_LEFT);
 	//UnlockWindowUpdate();
 	Invalidate(FALSE);
 }
@@ -854,7 +702,7 @@ void DmAccountOrderWindow::OnBnClickedBtnRight()
 	if (_ShowRight) _BtnRight.SetWindowText("<<");
 	else _BtnRight.SetWindowText(">>");
 	//LockWindowUpdate();
-	RecalcChildren(_ShowRight ? CM_SHOW_RIGHT : CM_HIDE_RIGHT);
+	//RecalcChildren(_ShowRight ? CM_SHOW_RIGHT : CM_HIDE_RIGHT);
 	//UnlockWindowUpdate();
 	Invalidate(FALSE);
 }
@@ -893,24 +741,7 @@ void DmAccountOrderWindow::OnSize(UINT nType, int cx, int cy)
 
 	if (!_Init) return;
 
-	CRect rcMain, rcLeft, rcRight;
-	_LeftWnd->GetWindowRect(rcLeft);
-	ScreenToClient(rcLeft);
-	_RightWnd->GetWindowRect(rcRight);
-	ScreenToClient(rcRight);
-	GetWindowRect(rcMain);
-
-	auto left_win_info = win_info_->children_.front();
-	left_win_info->x_ = rcLeft.left;
-	left_win_info->y_ = rcLeft.top;
-	left_win_info->w_ = rcLeft.Width();
-	left_win_info->h_ = rcLeft.Height();
-	auto right_win_info = win_info_->children_.back();
-
-	//LockWindowUpdate();
-	RecalcChildren(CM_REFRESH);
-	//UnlockWindowUpdate();
-	//Invalidate(FALSE);
+	onResizeEvent(RESIZE_MAIN);
 }
 
 

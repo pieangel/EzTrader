@@ -372,19 +372,19 @@ void DmAccountOrderCenterWindow::set_child_wnd_pos(
 {
     // index 0 : order_vivew
     int wnd_xpos = 0;
-    int order_view_width = get_entire_width();
-    win_info_->children[0]->wnd = symbol_order_view_;
-    win_info_->children[0]->rc_new.left = wnd_xpos;
-    win_info_->children[0]->rc_new.right = order_view_width;
-    win_info_->children[0]->rc_new.top = fixed_order_panel_y_pos;
-    win_info_->children[0]->rc_new.bottom = parent_height - fixed_order_panel_y_pos;
+    int order_view_width = get_width();
+    win_info_->children_[0]->wnd = &symbol_order_view_;
+    win_info_->children_[0]->rc_new.left = wnd_xpos;
+    win_info_->children_[0]->rc_new.right = order_view_width;
+    win_info_->children_[0]->rc_new.top = fixed_order_panel_y_pos;
+    win_info_->children_[0]->rc_new.bottom = parent_height - fixed_order_panel_y_pos;
     // index 1 : tick_view
     wnd_xpos +=  order_view_width;
-    win_info_->children[1]->wnd = symbol_tick_view_;
-    win_info_->children[1]->rc_new.left = wnd_xpos;
-    win_info_->children[1]->rc_new.right = wnd_xpos + fixed_tick_wnd_width;
-    win_info_->children[1]->rc_new.top = fixed_order_panel_y_pos;
-    win_info_->children[1]->rc_new.bottom = fixed_order_panel_y_pos + fixed_tick_wnd_height;
+    win_info_->children_[1]->wnd = &symbol_tick_view_;
+    win_info_->children_[1]->rc_new.left = wnd_xpos;
+    win_info_->children_[1]->rc_new.right = wnd_xpos + fixed_tick_wnd_width;
+    win_info_->children_[1]->rc_new.top = fixed_order_panel_y_pos;
+    win_info_->children_[1]->rc_new.bottom = fixed_order_panel_y_pos + fixed_tick_wnd_height;
     // index 2 : position_view
 }
 int DmAccountOrderCenterWindow::get_width() 
@@ -586,9 +586,9 @@ void DmAccountOrderCenterWindow::init_control()
 
 void DmAccountOrderCenterWindow::init_views()
 {
-	symbol_order_view_.SetUp();
-	symbol_tick_view_.SetUp();
-	symbol_position_view_.SetUp();
+	symbol_order_view_.SetUp(win_info_);
+	symbol_tick_view_.SetUp(win_info_);
+	symbol_position_view_.SetUp(win_info_);
 }
 
 void DmAccountOrderCenterWindow::init_dm_symbol()

@@ -1338,9 +1338,6 @@
     <ClInclude Include="Util\SmButton.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="Util\SmButtonResource.h">
-      <Filter>Util</Filter>
-    </ClInclude>
     <ClInclude Include="SmGrid\SmButtonId.h">
       <Filter>SmGrid</Filter>
     </ClInclude>
@@ -2327,6 +2324,12 @@
     </ClInclude>
     <ClInclude Include="Util\SimpleTree.h">
       <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\SmButtonResource.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Order\OrderUi\OrderWndConst.h">
+      <Filter>Order\OrderUi</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
