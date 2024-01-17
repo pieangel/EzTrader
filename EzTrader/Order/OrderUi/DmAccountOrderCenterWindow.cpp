@@ -373,12 +373,14 @@ void DmAccountOrderCenterWindow::set_child_wnd_pos(
 {
     // index 0 : order_vivew
     int wnd_xpos = 0;
-    int order_view_width = get_width();
+    int order_view_width = symbol_order_view_.get_entire_width();
     win_info_->children_[0]->wnd = &symbol_order_view_;
     win_info_->children_[0]->rc_new.left = wnd_xpos;
     win_info_->children_[0]->rc_new.right = order_view_width;
     win_info_->children_[0]->rc_new.top = fixed_order_panel_y_pos;
     win_info_->children_[0]->rc_new.bottom = parent_height - fixed_order_panel_y_pos;
+	symbol_order_view_.reset_row_info();
+	//_Grid->RecalRowCount(height, false);
     // index 1 : tick_view
     wnd_xpos +=  order_view_width;
     win_info_->children_[1]->wnd = &symbol_tick_view_;
@@ -391,7 +393,7 @@ void DmAccountOrderCenterWindow::set_child_wnd_pos(
 int DmAccountOrderCenterWindow::get_width() 
 {
   int width = symbol_order_view_.get_width();
-  width += fixed_tick_wnd_width;
+  width += show_symbol_tick_view_ ? fixed_tick_wnd_width : 0;
   return width;
 }
 

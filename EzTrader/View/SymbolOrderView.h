@@ -196,6 +196,7 @@ public:
 	void trigger_resize_event();
 	DarkHorse::OrderSetEvent order_set() const { return order_set_; }
 	void order_set(DarkHorse::OrderSetEvent val) { order_set_ = val; }
+	void reset_row_info();
 private:
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	DarkHorse::OrderSetEvent order_set_;

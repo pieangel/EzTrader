@@ -328,6 +328,7 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 	MoveWindow(rcWnd);
 	recalChildWndPos();
 	moveMainWnd();
+	moveChildWnd();
 	//GetClientRect(rcClient);
 	//_StaticAccountName.GetWindowRect(rcClient);
 

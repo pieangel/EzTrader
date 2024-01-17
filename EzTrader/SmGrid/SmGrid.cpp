@@ -546,6 +546,13 @@ void DarkHorse::SmGrid::MakeRowHeightMap()
 	}
 }
 
+void DarkHorse::SmGrid::MakeRowHeightMap(const int row_height)
+{
+	for (int i = 0; i < _RowCount; i++) {
+		_RowHeightMap[i] = row_height;
+	}
+}
+
 void DarkHorse::SmGrid::SetMergeCells()
 {
 	_MergedCellMap[std::make_pair(1, 2)] = std::make_pair(1, 2);

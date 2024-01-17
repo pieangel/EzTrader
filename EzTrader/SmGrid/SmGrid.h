@@ -32,6 +32,7 @@ namespace DarkHorse {
 		// 행 높이 맵을 만든다. 사용자가 정한 것은 따로 저장하고 
 		// 사용자가 지정하지 않은 것은 기본 높이로 정한다.
 		void MakeRowHeightMap();
+		void MakeRowHeightMap(const int row_height);
 		// 병합할 셀을 지정한다.
 		void SetMergeCells();
 		void AddMergeCell(const int& row, const int& col, const int& row_span, const int& col_span);

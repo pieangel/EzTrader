@@ -93,6 +93,7 @@ void SymbolTickView::SetUp()
 void SymbolTickView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 {
 	win_info_ = std::make_shared<WinInfo>(parent_win_info, id_, 0, 0, 0, 0);
+	win_info_->name_ = "symbol_tick_view";
 	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
 
 	CRect rect;

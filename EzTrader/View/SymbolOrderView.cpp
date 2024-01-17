@@ -1003,6 +1003,7 @@ void SymbolOrderView::SetUp()
 void SymbolOrderView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 {
 	win_info_ = std::make_shared<WinInfo>(parent_win_info, id_, 0, 0, 0, 0);
+	win_info_->name_ = "symbol_order_view";
 	if (parent_win_info) parent_win_info->children_.push_back(win_info_);
 	CRect rect;
 	GetClientRect(rect);
@@ -1023,8 +1024,8 @@ void SymbolOrderView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 	ResetHeaderWidth(rect.Width());
 	_Grid->HeaderMode(SmHeaderMode::HeaderColOnly);
 	//_Grid->SetOrderHeaderTitles();
-	_Grid->MakeRowHeightMap();
 	_Grid->RecalRowCount(rect.Height(), true);
+	_Grid->MakeRowHeightMap(order_set_.grid_height);
 	// _MergedCellMap[std::make_pair(1, 2)] = std::make_pair(1, 2);
 	//_MergedCellMap[std::make_pair(1, 5)] = std::make_pair(1, 2);
 	_Grid->AddMergeCell(1, 2, 1, 2);
@@ -1172,6 +1173,14 @@ void SymbolOrderView::reset_window_size()
 void SymbolOrderView::trigger_resize_event()
 {
 	mainApp.event_hub()->trigger_window_resize_event(id_);
+}
+
+void SymbolOrderView::reset_row_info()
+{
+	if (!win_info_) return;
+	const int height = win_info_->rc_new.bottom - win_info_->rc_new.top;
+	_Grid->RecalRowCount(height, true);
+	_Grid->MakeRowHeightMap(order_set_.grid_height);
 }
 
 void SymbolOrderView::CancelSellOrder()
