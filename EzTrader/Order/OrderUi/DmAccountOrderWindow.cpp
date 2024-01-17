@@ -487,6 +487,7 @@ void DmAccountOrderWindow::recalChildWndPos()
   win_info_->children_[0]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[0]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
   child_wnd_xpos = win_info_->children_[0]->rc_new.right;
+  LOGINFO(CMyLogger::getInstance(), "child_wnd_pos[%d]", child_wnd_pos);
   size_t i = 1;
   for (auto it = center_window_map_.begin(); 
   it != center_window_map_.end(); 
@@ -498,12 +499,13 @@ void DmAccountOrderWindow::recalChildWndPos()
     win_info_->children_[i]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
     it->second->set_child_wnd_pos(it->second->get_width(), child_wnd_height);
     child_wnd_xpos += it->second->get_width();
-	i++;
+    LOGINFO(CMyLogger::getInstance(), "child_wnd_pos[%d]", child_wnd_pos);
+	  i++;
   }
     
   win_info_->children_[child_count - 1]->wnd = _RightWnd.get();
   win_info_->children_[child_count - 1]->rc_new.left = child_wnd_xpos;
-  win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? fixed_right_wnd_width : 0;
+  win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? child_wnd_pos + fixed_right_wnd_width : 0;
   win_info_->children_[child_count - 1]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[child_count - 1]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
   
