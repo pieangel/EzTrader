@@ -326,6 +326,8 @@ BOOL DmAccountOrderWindow::OnInitDialog()
 
 	rcWnd.bottom = rcWnd.top + 1000;
 	MoveWindow(rcWnd);
+	recalChildWndPos();
+	moveMainWnd();
 	//GetClientRect(rcClient);
 	//_StaticAccountName.GetWindowRect(rcClient);
 
@@ -481,17 +483,19 @@ void DmAccountOrderWindow::recalChildWndPos()
   const int child_wnd_height = rc_main.bottom - rc_left.top;
   const size_t child_count = win_info_->children_.size();
   int child_wnd_xpos = 0;
+  LOGINFO(CMyLogger::getInstance(), "child_wnd_xpos[%d]", child_wnd_xpos);
   win_info_->children_[0]->wnd = _LeftWnd.get();
   win_info_->children_[0]->rc_new.left = child_wnd_xpos;
   win_info_->children_[0]->rc_new.right = _ShowLeft ? fixed_left_wnd_width : 0;
   win_info_->children_[0]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[0]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
   child_wnd_xpos = win_info_->children_[0]->rc_new.right;
-  LOGINFO(CMyLogger::getInstance(), "child_wnd_xpos[%d]", child_wnd_xpos);
+  
   size_t i = 1;
   for (auto it = center_window_map_.begin(); 
   it != center_window_map_.end(); 
   it++) {
+    LOGINFO(CMyLogger::getInstance(), "child_wnd_xpos[%d]", child_wnd_xpos);
     win_info_->children_[i]->wnd = it->second.get();
     win_info_->children_[i]->rc_new.left = child_wnd_xpos;
     win_info_->children_[i]->rc_new.right = child_wnd_xpos + it->second->get_width();
@@ -499,21 +503,28 @@ void DmAccountOrderWindow::recalChildWndPos()
     win_info_->children_[i]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
     it->second->set_child_wnd_pos(it->second->get_width(), child_wnd_height);
     child_wnd_xpos += it->second->get_width();
-    LOGINFO(CMyLogger::getInstance(), "child_wnd_xpos[%d]", child_wnd_xpos);
+    
 	  i++;
   }
-    
+  LOGINFO(CMyLogger::getInstance(), "child_wnd_xpos[%d]", child_wnd_xpos);  
   win_info_->children_[child_count - 1]->wnd = _RightWnd.get();
   win_info_->children_[child_count - 1]->rc_new.left = child_wnd_xpos;
   win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? child_wnd_xpos + fixed_right_wnd_width : 0;
   win_info_->children_[child_count - 1]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[child_count - 1]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
   
+  const int main_wnd_width = child_wnd_xpos + fixed_right_wnd_width;
   win_info_->wnd = this;
   win_info_->rc_new.left = rc_main.left;
   win_info_->rc_new.top = rc_main.top;
-  win_info_->rc_new.right = rc_main.left + win_info_->children_[child_count - 1]->rc_new.right;
+  win_info_->rc_new.right = rc_main.left + main_wnd_width;
   win_info_->rc_new.bottom = rc_main.bottom;
+}
+
+void DmAccountOrderWindow::moveMainWnd()
+{
+  if (!win_info_) return;
+  win_info_->move_window();
 }
 
 void DmAccountOrderWindow::moveChildWnd()

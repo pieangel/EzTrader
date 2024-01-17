@@ -64,6 +64,7 @@ private:
 	void moveWndPos();
 	void recalChildWndPos();
 	void moveChildWnd();
+	void moveMainWnd();
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	CBCGPButton _BtnLeft;
 	CBCGPButton _BtnRight;
