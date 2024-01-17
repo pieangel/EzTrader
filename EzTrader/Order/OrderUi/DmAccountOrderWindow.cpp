@@ -505,7 +505,7 @@ void DmAccountOrderWindow::recalChildWndPos()
     
   win_info_->children_[child_count - 1]->wnd = _RightWnd.get();
   win_info_->children_[child_count - 1]->rc_new.left = child_wnd_xpos;
-  win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? child_wnd_pos + fixed_right_wnd_width : 0;
+  win_info_->children_[child_count - 1]->rc_new.right = _ShowRight ? child_wnd_xpos + fixed_right_wnd_width : 0;
   win_info_->children_[child_count - 1]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[child_count - 1]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
   
