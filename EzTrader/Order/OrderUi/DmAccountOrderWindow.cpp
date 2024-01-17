@@ -524,7 +524,7 @@ void DmAccountOrderWindow::recalChildWndPos()
 void DmAccountOrderWindow::moveMainWnd()
 {
   if (!win_info_) return;
-  win_info_->move_window();
+  win_info_->move_window(true);
 }
 
 void DmAccountOrderWindow::moveChildWnd()
