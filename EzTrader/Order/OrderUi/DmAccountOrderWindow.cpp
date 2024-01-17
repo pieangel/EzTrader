@@ -499,7 +499,7 @@ void DmAccountOrderWindow::recalChildWndPos()
     win_info_->children_[i]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
     it->second->set_child_wnd_pos(it->second->get_width(), child_wnd_height);
     child_wnd_xpos += it->second->get_width();
-    LOGINFO(CMyLogger::getInstance(), "child_wnd_pos[%d]", child_wnd_xpos);
+    LOGINFO(CMyLogger::getInstance(), "child_wnd_xpos[%d]", child_wnd_xpos);
 	  i++;
   }
     
