@@ -105,13 +105,13 @@ public:
 	int GetPositionCount();
 	std::string get_symbol_code();
 	void set_child_wnd_pos(const int parent_width, const int parent_height);
+	void trigger_resize_event();
 private:
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	int extra_height_ = 0;
 	std::shared_ptr<HdSymbolSelecter> _SymbolSelecter;
 	CRect rcGrid;
 	CRect rcTick;
-	void trigger_resize_event();
 	void recal_window_size();
 	CRect GetClientArea(int resourceID);
 	DarkHorse::SmLayoutManager layout_manager_;
@@ -174,7 +174,7 @@ private:
 public:
 	void refresh_tick_view();
 	void set_order_view(const DarkHorse::OrderSetEvent& order_set);
-	void set_order_set(const DarkHorse::OrderSetEvent& order_set);
+	void set_order_view_config(const DarkHorse::OrderSetEvent& order_set);
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 	const DarkHorse::OrderSetEvent& get_order_set() const { return order_set_; }

@@ -167,7 +167,8 @@ void SmOrderSetDialog::apply_change()
 	
 	//mainApp.event_hub()->trigger_parameter_event(window_id_from_, order_set_event, "test", true);
 	if (_DmAccountOrderCenterWindow) {
-		_DmAccountOrderCenterWindow->set_order_set(order_set_event);
+		_DmAccountOrderCenterWindow->set_order_view_config(order_set_event);
+		_DmAccountOrderCenterWindow->trigger_resize_event();
 	}
 }
 
@@ -261,7 +262,7 @@ void SmOrderSetDialog::OnBnClickedCheckCancelByRightClick()
 
 void SmOrderSetDialog::OnBnClickedCheckStopToReal()
 {
-	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ë¸ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå¸¦ ï¿½ß°ï¿½ï¿½Õ´Ï´ï¿½.
 	if (check_stop_by_real_.GetCheck() == BST_CHECKED)
 		order_set_event_.stop_as_real_order = true;
 	else

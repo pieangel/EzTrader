@@ -91,6 +91,7 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::strin
 {
 		id_ = IdGenerator::get_id();
 		symbol_order_view_.order_set(order_set);
+		set_order_view_config(order_set);
 		if (order_set_.show_symbol_tick)
 			show_symbol_tick_view_ = true;
 		else
@@ -814,11 +815,12 @@ void DmAccountOrderCenterWindow::set_order_view(const DarkHorse::OrderSetEvent& 
 	symbol_order_view_.reset_col_widths(event);
 }
 
-void DmAccountOrderCenterWindow::set_order_set(const DarkHorse::OrderSetEvent& event)
+void DmAccountOrderCenterWindow::set_order_view_config(const DarkHorse::OrderSetEvent& event)
 {
-	set_order_view(event);
-	recal_window_size();
-	trigger_resize_event();
+	order_set_ = event;
+	symbol_order_view_.set_stop_as_real_order(event.stop_as_real_order);
+	symbol_order_view_.SetAllRowHeight(event.grid_height);
+	symbol_order_view_.reset_col_widths(event);
 }
 
 void DmAccountOrderCenterWindow::on_paramter_event(const DarkHorse::OrderSetEvent& event, const std::string& event_message, const bool enable)
