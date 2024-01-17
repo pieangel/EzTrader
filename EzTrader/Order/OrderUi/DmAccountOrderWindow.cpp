@@ -455,12 +455,16 @@ void DmAccountOrderWindow::onResizeEvent(OrderWndResizeEvent event)
     case HIDE_RIGHT:
     case ORDER_CONFIG_CHANGED:
       recalChildWndPos();
+	  moveMainWnd();
+
       // 이 함수는 이벤트가 일어나는 곳에서 직접 호출한다. 
-      moveWndPos();
-      //moveChildWnd();
+      //moveWndPos();
+      moveChildWnd();
       break;
     case RESIZE_MAIN:
+		
       recalChildWndPos();
+	  moveMainWnd();
       moveChildWnd();
       break;
     default:
