@@ -50,6 +50,10 @@ struct WinInfo {
 	{
 	  if (!wnd || is_same_as_old_window()) return;
 	  wnd->MoveWindow(rc_new, redraw ? TRUE : FALSE);
+	  rc_old.left = rc_new.left;
+	  rc_old.top = rc_new.top;
+	  rc_old.right = rc_new.right;
+	  rc_old.bottom = rc_new.bottom;
 	}
 	void move_child_window()
 	{
