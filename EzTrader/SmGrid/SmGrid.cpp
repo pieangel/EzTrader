@@ -62,9 +62,9 @@ void DarkHorse::SmGrid::DrawCheckHeader(CBCGPGraphicsManager* pGM, std::shared_p
 // This function should not use any more.
 void DarkHorse::SmGrid::SetAllRowHeight(const int& height)
 {
-	cell_height_ = height;
+	_defaultRowHeight = height;
 	for (auto it = _RowHeightMap.begin(); it != _RowHeightMap.end(); ++it) {
-		_RowHeightMap[it->first] = cell_height_;
+		_RowHeightMap[it->first] = _defaultRowHeight;
 	}
 }
 
