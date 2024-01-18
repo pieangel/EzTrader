@@ -52,7 +52,7 @@ namespace DarkHorse {
 		{
 		  _defaultRowHeight = value;
 		}
-		int GetDefaultRowHeight const () {
+		int GetDefaultRowHeight() const {
 		  return _defaultRowHeight;
 		}
 	private:
