@@ -1020,13 +1020,14 @@ void SymbolOrderView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 	set_stop_as_real_order(order_set_.stop_as_real_order);
 	//SetAllRowHeight(order_set_.grid_height);
 	_Grid->SetDefaultRowHeight(order_set_.grid_height);
+	_Grid->MakeRowHeightMap();
 	reset_col_widths(order_set_);
 
 	ResetHeaderWidth(rect.Width());
 	_Grid->HeaderMode(SmHeaderMode::HeaderColOnly);
 	//_Grid->SetOrderHeaderTitles();
 	_Grid->RecalRowCount(rect.Height(), true);
-	_Grid->MakeRowHeightMap();
+
 	// _MergedCellMap[std::make_pair(1, 2)] = std::make_pair(1, 2);
 	//_MergedCellMap[std::make_pair(1, 5)] = std::make_pair(1, 2);
 	_Grid->AddMergeCell(1, 2, 1, 2);
