@@ -22,18 +22,20 @@ namespace DarkHorse {
 	public:
 		SmGrid(SmOrderGridResource& res, const int& row_count, const int& col_count)
 			: m_pEditWnd(nullptr), _Res(res), _RowCount(row_count), _ColCount(col_count)
-		{}
+		{
+		  _defaultRowHeight = DefaultRowHeight;
+		}
 		~SmGrid() {}
 
 		void SetOrderHeaderTitles();
-		// ÁÖ¾îÁø ³ôÀÌ¸¦ °¡Áö°í Çà °¹¼ö¸¦ ´Ù½Ã ÇÑ¹ø Á¤ÇÑ´Ù.
+		// ï¿½Ö¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½Ñ¹ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 		int RecalRowCount(const int& height, bool change_close_row);
 		void MakeColWidthMap();
-		// Çà ³ôÀÌ ¸ÊÀ» ¸¸µç´Ù. »ç¿ëÀÚ°¡ Á¤ÇÑ °ÍÀº µû·Î ÀúÀåÇÏ°í 
-		// »ç¿ëÀÚ°¡ ÁöÁ¤ÇÏÁö ¾ÊÀº °ÍÀº ±âº» ³ôÀÌ·Î Á¤ÇÑ´Ù.
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ 
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 		void MakeRowHeightMap();
 		void MakeRowHeightMap(const int row_height);
-		// º´ÇÕÇÒ ¼¿À» ÁöÁ¤ÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		void SetMergeCells();
 		void AddMergeCell(const int& row, const int& col, const int& row_span, const int& col_span);
 		int index_row() const { return index_row_; }
@@ -46,42 +48,50 @@ namespace DarkHorse {
 		int GridLineWidth() const { return _GridLineWidth; }
 		void GridLineWidth(int val) { _GridLineWidth = val; }
 		void Clear();
+		void SetDefaultRowHeight(const int value) 
+		{
+		  _defaultRowHeight = value;
+		}
+		int GetDefaultRowHeight const () {
+		  return _defaultRowHeight;
+		}
 	private:
+	  int _defaultRowHeight;
 		int _GridLineWidth = 1;
 		CWnd* m_pEditWnd;
 		const SmOrderGridResource& _Res;
 		std::vector<std::string> _RowHeaderTitles;
 		std::vector<std::string> _ColHeaderTitles;
-		// ±×¸®µå ³ôÀÌ
+		// ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		int _Height = 0;
-		// ±×¸®µå ³Êºñ
+		// ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Êºï¿½
 		int _Width = 0;
-		// ¹öÆ° ¸Ê. first : row, second : column
+		// ï¿½ï¿½Æ° ï¿½ï¿½. first : row, second : column
 		std::set<std::pair<int, int>> _ButtonSet;
-		// ±âº» ¼³Á¤ÀÌ ¾Æ´Ñ °Í¸¸ ÀúÀåÇÔ.
+		// ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		std::map<int, int> _RowHeightMap;
-		// ±âº» ¼³Á¤ÀÌ ¾Æ´Ñ °Í¸¸ ÀúÀåÇÔ.
+		// ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		std::map<int, int> _ColWidthMap;
-		// Çà°ú ¿­ °¹¼ö¸¦ ÂüÁ¶ÇÏ¿© ¸¸µç ¼¿ ¸Ê
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
 		//std::map <std::pair<int, int>, std::shared_ptr<SmCell>> _CellMap;
 		// Key : <row, col> pair, Value : <row_span, col_span> pair
 		std::map<std::pair<int, int>, std::pair<int, int>> _MergedCellMap;
 
 		std::map<int, std::shared_ptr<SmRow>> _RowMap;
 		
-		// Çà °¹¼ö
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		int _RowCount = 0;
-		// ¿­ °¹¼ö
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		int _ColCount = 0;
-		// ±×¸®µå º¸ÀÌ±â/°¨Ãß±â
+		// ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½/ï¿½ï¿½ï¿½ß±ï¿½
 		bool _ShowGrid = true;
-		// Çà ±×¸®µå ¼± ±½±â
+		// ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		int _RowGridLineHeight = 1;
-		// ¿­ ±×¸®µå ¼± ±½±â
+		// ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		int _ColGridWidth = 1;
 		int _GridHeight = 0;
-		// Á¾°¡ Çà. ÃÖÃÊ¿¡ ÇÑ¹ø °áÁ¤µÇ°í 
-		// ½ºÅ©·Ñ ÇÒ ¶§¸¸ ¹Ù²ï´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½. ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½Ñ¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ 
+		// ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½.
 		int index_row_{ 15 };
 		int _HeaderRow = 0;
 		int _HeaderCol = 0;
@@ -118,11 +128,11 @@ namespace DarkHorse {
 		void SetAllRowHeight(const int& height);
 		void OnEndEdit();
 		bool Edit(CWnd* wnd, int  nRow , int nCol , CRect  rect, UINT nID , UINT  nChar );
-		// Çà ³Êºñ³ª ¿­ ³ôÀÌ°¡ º¯°æµÇ¾úÀ» ¶§ °¢ ¼¿ÀÇ ³ôÀÌ¿Í ³Êºñ¸¦ ´Ù½Ã °è»êÇØ ÁØ´Ù.
+		// ï¿½ï¿½ ï¿½Êºï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½Êºï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½.
 		void RecalCells();
 		//void RegisterOrderButtons();
 		void RegisterOrderButtons(std::map<std::shared_ptr<DarkHorse::SmCell>, BUTTON_ID>& order_button_map);
-		// ¹Ýµå½Ã ¼¿À» »ý¼ºÇÑ ÈÄ¿¡ È£ÃâÇØ¾ß ÇÑ´Ù.
+		// ï¿½Ýµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¿ï¿½ È£ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
 		void SetColCellType(const int& col, const SmCellType& cell_type);
 		void SetRowHeaderTitles(const std::vector<std::string>& row_titles);
 		void SetColHeaderTitles(const std::vector<std::string>& col_titles);
@@ -149,7 +159,7 @@ namespace DarkHorse {
 		void SetTextHAlign(const int& row, const int& col, const int h_align);
 		void SetLeftMargin(const int& row, const int& col, const int& margin);
 		void SetRightMargin(const int& row, const int& col, const int& margin);
-		// Çà°ú ¿­ °¹¼ö¸¦ ÂüÁ¶ÇÏ¿© ÇÊ¿äÇÑ ¼¿À» ¸¸µç´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		void CreateGrids();
 		//void CreatePositionGrids();
 		void DrawGrid(CBCGPGraphicsManager* pGM, CRect& wnd_area);

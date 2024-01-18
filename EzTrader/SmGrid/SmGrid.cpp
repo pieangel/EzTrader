@@ -59,7 +59,7 @@ void DarkHorse::SmGrid::DrawCheckHeader(CBCGPGraphicsManager* pGM, std::shared_p
 }
 
 
-
+// This function should not use any more.
 void DarkHorse::SmGrid::SetAllRowHeight(const int& height)
 {
 	cell_height_ = height;
@@ -88,7 +88,7 @@ void DarkHorse::SmGrid::RecalCells()
 // 		int x = _ColGridWidth;
 // 		std::shared_ptr<SmRow> row_obj = std::make_shared<SmRow>(row);
 // 		for (int col = 0; col < _ColCount; col++) {
-// 			// º´ÇÕµÈ ¼¿ÀÌ¸é °Ç³Ê ¶Ú´Ù.
+// 			// ï¿½ï¿½ï¿½Õµï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½Ç³ï¿½ ï¿½Ú´ï¿½.
 // 			const int mr = IsInMergedCells(row, col);
 // 			if (mr == 1) {
 // 				x += (_ColWidthMap[col] + _ColGridWidth);
@@ -111,7 +111,7 @@ void DarkHorse::SmGrid::RecalCells()
 // 			if (cell->Row() == _HeaderRow) {
 // 				cell->CellType(SmCellType::CT_HEADER);
 // 			}
-// 			// º´ÇÕÇÑ ¼¿ÀÏ ¶§
+// 			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 // 			if (mr == 0) {
 // 				auto cell_span = _MergedCellMap[std::make_pair(row, col)];
 // 				cell->RowSpan(cell_span.first);
@@ -148,13 +148,13 @@ void DarkHorse::SmGrid::RegisterOrderButtons(std::map<std::shared_ptr<DarkHorse:
 	order_button_map[FindCell(1, DarkHorse::OrderHeader::SELL_CNT)] = BUTTON_ID::SELL;
 	SetCellType(1, DarkHorse::OrderHeader::BUY_QTY, SmCellType::CT_BUTTON_BUY);
 	order_button_map[FindCell(1, DarkHorse::OrderHeader::BUY_QTY)] = BUTTON_ID::BUY;
-	SetCellText(1, DarkHorse::OrderHeader::SELL_CNT, "½ÃÀå°¡¸Åµµ");
-	SetCellText(1, DarkHorse::OrderHeader::BUY_QTY, "½ÃÀå°¡¸Å¼ö");
+	SetCellText(1, DarkHorse::OrderHeader::SELL_CNT, "ï¿½ï¿½ï¿½å°¡ï¿½Åµï¿½");
+	SetCellText(1, DarkHorse::OrderHeader::BUY_QTY, "ï¿½ï¿½ï¿½å°¡ï¿½Å¼ï¿½");
 
 	SetCellType(1, DarkHorse::OrderHeader::QUOTE, SmCellType::CT_BUTTON_NORMAL);
 	//_ButtonSet.insert(std::make_pair(1, DarkHorse::OrderGridHeader::QUOTE));
 	order_button_map[FindCell(1, DarkHorse::OrderHeader::QUOTE)] = BUTTON_ID::ARRANGE;
-	SetCellText(1, DarkHorse::OrderHeader::QUOTE, "È£°¡Á¤·Ä");
+	SetCellText(1, DarkHorse::OrderHeader::QUOTE, "È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 
 	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP, SmCellType::CT_BUTTON_SELL);
 	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER, SmCellType::CT_BUTTON_SELL);
@@ -174,11 +174,11 @@ void DarkHorse::SmGrid::RegisterOrderButtons(std::map<std::shared_ptr<DarkHorse:
 	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER)] = BUTTON_ID::CANCEL_BUY_ORDER;
 	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP)] = BUTTON_ID::CANCEL_BUY_STOP;
 
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP, "Ãë¼Ò");
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER, "Ãë¼Ò");
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::QUOTE, "ÀüÃ¼Ãë¼Ò");
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP, "Ãë¼Ò");
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER, "Ãë¼Ò");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP, "ï¿½ï¿½ï¿½ï¿½");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER, "ï¿½ï¿½ï¿½ï¿½");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::QUOTE, "ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP, "ï¿½ï¿½ï¿½ï¿½");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER, "ï¿½ï¿½ï¿½ï¿½");
 }
 
 void DarkHorse::SmGrid::DrawNormalCell(CBCGPGraphicsManager* pGM, std::shared_ptr<SmCell> cell)
@@ -541,11 +541,11 @@ void DarkHorse::SmGrid::MakeRowHeightMap()
 	for (int i = 0; i < _RowCount; i++) {
 		auto found = _RowHeightMap.find(i);
 		if (found == _RowHeightMap.end()) {
-			_RowHeightMap[i] = DefaultRowHeight;
+			_RowHeightMap[i] = _defaultRowHeight;
 		}
 	}
 }
-
+// This function should not use anymore. 
 void DarkHorse::SmGrid::MakeRowHeightMap(const int row_height)
 {
 	for (int i = 0; i < _RowCount; i++) {
@@ -651,15 +651,15 @@ void DarkHorse::SmGrid::CreateGrids()
 {
 	//_RowHeightMap[2] = 40;
 	//MakeColWidthMap();
-	// ¿©±â¼­´Â Çà°ú ¿­ Á¤º¸¸¦ ÀÌ¿ëÇÏ¿© ¼¿ ¸ñ·ÏÀ» ¸¸µç´Ù.
-	// À§¿¡¼­ ºÎÅÍ ¾Æ·¡·Î ¸¸µé¾î °£´Ù.
+	// ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	int y = _RowGridLineHeight;
 	for (int row = 0; row < _RowCount; row++) {
 		int x = _ColGridWidth;
 		std::shared_ptr<SmRow> row_obj = std::make_shared<SmRow>(row);
 		_RowMap[row] = row_obj;
 		for (int col = 0; col < _ColCount; col++) {
-			// º´ÇÕµÈ ¼¿ÀÌ¸é °Ç³Ê ¶Ú´Ù.
+			// ï¿½ï¿½ï¿½Õµï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½Ç³ï¿½ ï¿½Ú´ï¿½.
 			const int mr = IsInMergedCells(row, col);
 			if (mr == 1) {
 				x += (_ColWidthMap[col] + _ColGridWidth);
@@ -679,7 +679,7 @@ void DarkHorse::SmGrid::CreateGrids()
 			cell->Height(_RowHeightMap[row]);
 
 			
-			// º´ÇÕÇÑ ¼¿ÀÏ ¶§
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 			if (mr == 0) {
 				auto cell_span = _MergedCellMap[std::make_pair(row, col)];
 				cell->RowSpan(cell_span.first);
@@ -718,7 +718,7 @@ void DarkHorse::SmGrid::DrawGrid(CBCGPGraphicsManager* pGM, CRect& wnd_area)
 		pGM->DrawLine(0, y, wnd_area.Width(), y, _Res.RowGridBrush, _GridLineWidth);
 		auto it = _RowHeightMap.find(row);
 		if (it == _RowHeightMap.end())
-			y += (DefaultRowHeight);
+			y += (_defaultRowHeight);
 		else
 			y += (it->second);
 		y += _RowGridLineHeight;
@@ -796,7 +796,7 @@ void DarkHorse::SmGrid::draw_cells(CBCGPGraphicsManager* pGM, CRect& wnd_area, c
 
 void DarkHorse::SmGrid::DrawSelectedCell(CBCGPGraphicsManager* pGM, const CBCGPBrush& fill_brush, const CBCGPBrush& select_brush, bool selected)
 {
-	// ¸ÕÀú ÀÌÀü ¼¿À» Áö¿î´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 }
 
 void DarkHorse::SmGrid::SetRowHeight(const int& row, const int& height) 
