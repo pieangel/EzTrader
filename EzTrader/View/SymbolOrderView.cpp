@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+﻿//#include "stdafx.h"
 //#include "SymbolOrderView.h"
 
 #include "stdafx.h"
@@ -194,37 +194,37 @@ SymbolOrderView::SymbolOrderView()
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::SELL_ORDER;
-	header_info.title = "�ֹ�";
+	header_info.title = "주문";
 	header_info.width = 55;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::SELL_CNT;
-	header_info.title = "�Ǽ�";
+	header_info.title = "건수";
 	header_info.width = 35;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::SELL_QTY;
-	header_info.title = "�ܷ�";
+	header_info.title = "수량";
 	header_info.width = 35;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::QUOTE;
-	header_info.title = "�ü�";
+	header_info.title = "시세";
 	header_info.width = 80;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::BUY_QTY;
-	header_info.title = "�ܷ�";
+	header_info.title = "수량";
 	header_info.width = 35;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::BUY_CNT;
-	header_info.title = "�Ǽ�";
+	header_info.title = "건수";
 	header_info.width = 35;
 	grid_header_vector_.push_back(header_info);
 
 	header_info.index = OrderHeader::BUY_ORDER;
-	header_info.title = "�ֹ�";
+	header_info.title = "주문";
 	header_info.width = 55;
 	grid_header_vector_.push_back(header_info);
 
@@ -1062,12 +1062,12 @@ void SymbolOrderView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 
 int SymbolOrderView::RecalRowCount(const int& height)
 {
-	CRect rect;
+	//CRect rect;
 
-	GetWindowRect(rect);
+	//GetWindowRect(rect);
 
 	//rect.right -= 1;
-	rect.bottom -= 1;
+	//rect.bottom -= 1;
 
 	ClearOldQuote();
 	ClearOldHoga();
@@ -1077,7 +1077,6 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	clear_sell_stop_order();
 
 	_Grid->ReleaseOrderButtons(_ButtonMap);
-	const int extra_height = _Grid->RecalRowCount(height, false);
 	price_start_row_ = 2;
 	price_end_row_ = _Grid->RowCount() - 2;
 	_Grid->CreateGrids();
@@ -1093,9 +1092,9 @@ int SymbolOrderView::RecalRowCount(const int& height)
 
 	//Invalidate(FALSE);
 
-	DmAccountOrderCenterWindow::DeltaOrderArea = extra_height;
+	//DmAccountOrderCenterWindow::DeltaOrderArea = extra_height;
 
-	return extra_height;
+	return 0;
 }
 
 void SymbolOrderView::fund(std::shared_ptr<DarkHorse::SmFund> val)
@@ -1181,8 +1180,11 @@ void SymbolOrderView::reset_row_info()
 {
 	if (!win_info_) return;
 	const int height = win_info_->rc_new.bottom - win_info_->rc_new.top;
+
+	_Grid->SetDefaultRowHeight(order_set_.grid_height);
+	_Grid->MakeRowHeightMap();
 	_Grid->RecalRowCount(height, true);
-	_Grid->MakeRowHeightMap(order_set_.grid_height);
+	RecalRowCount(height);
 }
 
 void SymbolOrderView::CancelSellOrder()
@@ -1996,7 +1998,7 @@ void SymbolOrderView::CreateResource()
 	//_Resource.QMHighLowBrush.SetOpacity(0.5);
 	_Resource.OrderStroke.SetStartCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_ROUND);
 	_Resource.OrderStroke.SetEndCap(CBCGPStrokeStyle::BCGP_CAP_STYLE::BCGP_CAP_STYLE_TRIANGLE);
-	CBCGPTextFormat fmt3(_T("����"), globalUtils.ScaleByDPI(30.0f));
+	CBCGPTextFormat fmt3(_T("굴림"), globalUtils.ScaleByDPI(30.0f));
 
 	fmt3.SetFontSize(12);
 	fmt3.SetTextAlignment(CBCGPTextFormat::BCGP_TEXT_ALIGNMENT_CENTER);
@@ -2018,7 +2020,7 @@ void SymbolOrderView::CreateResource()
 	_Resource.QuoteTextFormat = fmt;
 
 
-	CBCGPTextFormat fmt2(_T("����"), globalUtils.ScaleByDPI(30.0f));
+	CBCGPTextFormat fmt2(_T("굴림"), globalUtils.ScaleByDPI(30.0f));
 
 	fmt2.SetFontSize(12);
 	fmt2.SetTextAlignment(CBCGPTextFormat::BCGP_TEXT_ALIGNMENT_CENTER);
@@ -2418,14 +2420,15 @@ void SymbolOrderView::OnPaint()
 		m_pGM->Clear();
 
 		m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
-		rect.right -= 1;
-		rect.bottom -= 1;
+		//rect.right -= 1;
+		//rect.bottom -= 1;
 		_Grid->SetColHeaderTitles(_OrderTableHeader);
 		_Grid->DrawGrid(m_pGM, rect);
 		set_moving_rect();
 		set_fixed_selected_cell();
 		_Grid->draw_cells(m_pGM, rect);
-		//rect.right += 1;
+		rect.right += 2;
+		rect.bottom += 2;
 		_Grid->DrawBorder(m_pGM, rect, _Selected);
 		DrawMovingOrder();
 

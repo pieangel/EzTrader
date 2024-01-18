@@ -378,7 +378,8 @@ void DmAccountOrderCenterWindow::set_child_wnd_pos(
     win_info_->children_[0]->rc_new.left = wnd_xpos;
     win_info_->children_[0]->rc_new.right = order_view_width;
     win_info_->children_[0]->rc_new.top = fixed_order_panel_y_pos;
-    win_info_->children_[0]->rc_new.bottom = parent_height - fixed_order_panel_y_pos;
+    win_info_->children_[0]->rc_new.bottom = parent_height;
+	win_info_->children_[0]->move_window(true);
 	symbol_order_view_.reset_row_info();
 	//_Grid->RecalRowCount(height, false);
     // index 1 : tick_view
@@ -413,12 +414,12 @@ void DmAccountOrderCenterWindow::recal_window_size()
 	symbol_order_view_.GetWindowRect(&rc_order_view);
 
 
-	// �ֹ��׸��� ��ġ�� �����´�.
+	// ???????? ????? ?????��?.
 	//CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
-	// �ֹ����� ���� �ɼǿ� ���� �ֹ� �׸��� �ϴ��� �����Ѵ�.
+	// ??????? ???? ???? ???? ??? ????? ????? ???????.
 	//int orderGridBottom = _ShowRemainConfig ? availableHeight - rcGrid.top - ConfigHeight : availableHeight - rcGrid.top;
 	//CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
-	// �ֹ� �׸��� ��ġ �� ũ�� ����
+	// ??? ????? ??? ?? ??? ????
 	//rcGrid.left = 0;
 	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
 	rcGrid.bottom = rc_order_view.Height() - extra_height_;
@@ -449,8 +450,8 @@ CRect DmAccountOrderCenterWindow::GetClientArea(int resourceID)
 void DmAccountOrderCenterWindow::save_control_size()
 {
 	layout_manager_.ParentWnd(this);
-	//layout_manager_.AddWindow(_T("�ֹ��г�"), IDC_STATIC_ORDER, GetClientArea(IDC_STATIC_ORDER));
-	//layout_manager_.AddWindow(_T("ƽ�г�"), IDC_STATIC_QUOTE, GetClientArea(IDC_STATIC_QUOTE));
+	//layout_manager_.AddWindow(_T("????��?"), IDC_STATIC_ORDER, GetClientArea(IDC_STATIC_ORDER));
+	//layout_manager_.AddWindow(_T("??��?"), IDC_STATIC_QUOTE, GetClientArea(IDC_STATIC_QUOTE));
 	rcGrid = GetClientArea(IDC_STATIC_ORDER);
 	rcTick = GetClientArea(IDC_STATIC_QUOTE);
 }
@@ -462,12 +463,12 @@ void DmAccountOrderCenterWindow::on_resize_event_from_order_view()
 	symbol_order_view_.GetWindowRect(&rc_order_view);
 
 
-	// �ֹ��׸��� ��ġ�� �����´�.
+	// ???????? ????? ?????��?.
 	//CRect& rcGrid = layout_manager_.GetRect(IDC_STATIC_ORDER);
-	// �ֹ����� ���� �ɼǿ� ���� �ֹ� �׸��� �ϴ��� �����Ѵ�.
+	// ??????? ???? ???? ???? ??? ????? ????? ???????.
 	//int orderGridBottom = _ShowRemainConfig ? availableHeight - rcGrid.top - ConfigHeight : availableHeight - rcGrid.top;
 	//CRect& rcTick = layout_manager_.GetRect(IDC_STATIC_QUOTE);
-	// �ֹ� �׸��� ��ġ �� ũ�� ����
+	// ??? ????? ??? ?? ??? ????
 	//rcGrid.left = 0;
 	rcGrid.right = rcGrid.left + symbol_order_view_.get_entire_width();
 	rcGrid.bottom = rc_order_view.top + rc_order_view.Height();
@@ -579,11 +580,11 @@ void DmAccountOrderCenterWindow::init_control()
 	//_ConfigGrid.AttachGrid(this, IDC_STATIC_CONFIG);
 
 	filled_remain_button_.SetUp();
-	filled_remain_button_.Text("ü��� �ܰ�");
+	filled_remain_button_.Text("�ܰ�");
 	filled_remain_button_.ShowWindow(SW_HIDE);
 
 	remain_button_.SetUp();
-	remain_button_.Text("�ܰ�");
+	remain_button_.Text("�ܰ�");
 	//_RemainButton.OrderCenterWnd(this);
 }
 

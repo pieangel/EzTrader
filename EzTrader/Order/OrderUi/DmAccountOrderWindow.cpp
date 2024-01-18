@@ -634,11 +634,7 @@ void DmAccountOrderWindow::OnSymbolClicked(const std::string& symbol_code)
 
 void DmAccountOrderWindow::OnBnClickedBtnAdd()
 {
-	// ���� ���� â�� ũ�⸦ ���Ѵ�.
-	CRect rcWnd, rcCenter, rcRight, rcClient;
-	GetWindowRect(rcWnd);
-	GetClientRect(rcClient);
-
+	
 	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, win_info_);
 	center_wnd->order_window_id(id_);
 	center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
@@ -646,50 +642,8 @@ void DmAccountOrderWindow::OnBnClickedBtnAdd()
 	center_wnd->SetMainDialog(this);
 	center_wnd->Account(_ComboAccountMap[_CurrentAccountIndex]);
 	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
-	center_wnd->GetWindowRect(rcCenter);
-	ScreenToClient(rcCenter);
-	if (_ShowRight) {
-		_RightWnd->GetWindowRect(rcRight);
-		ScreenToClient(rcRight);
-	}
-
-	CRect newRcRight, newRcCenter, newRcRect;
-	newRcRight.left = _LineGap + rcClient.right + rcCenter.Width() - rcRight.Width();
-	newRcRight.top = rcRight.top;
-	newRcRight.bottom = rcClient.Height();
-	newRcRight.right = _LineGap + rcClient.right + rcCenter.Width();
-
-	//_RightWnd->SetWindowPos(nullptr, newRcRight.left, newRcRight.top, newRcRight.Width(), newRcRight.Height(), SWP_NOZORDER | SWP_NOREDRAW);
-	_RightWnd->MoveWindow(newRcRight);
-
-	newRcCenter.left = _LineGap + rcClient.right - rcRight.Width();
-	newRcCenter.top = rcRight.top;
-	newRcCenter.right = newRcCenter.left + rcCenter.Width();
-
-	//auto it = std::prev(_CenterWndMap.end());
-	//it->second->GetWindowRect(rcCenter);
-	newRcCenter.bottom = rcClient.Height();
-
-	//center_wnd->SetWindowPos(nullptr, newRcCenter.left, newRcCenter.top, newRcCenter.Width(), newRcCenter.Height(), SWP_NOZORDER | SWP_NOREDRAW);
-	center_wnd->MoveWindow(newRcCenter);
-	int dif = center_wnd->RecalcOrderAreaHeight(this);
-	center_wnd->ShowWindow(SW_SHOW);
-
-	newRcRect.left = rcWnd.left;
-	newRcRect.right = rcWnd.right + rcCenter.Width();
-	newRcRect.top = rcWnd.top;
-	newRcRect.bottom = rcWnd.bottom;
-
-	//SetWindowPos(nullptr, newRcRect.left, newRcRect.top, newRcRect.Width(), newRcRect.Height(), SWP_NOZORDER | SWP_NOREDRAW);
-	MoveWindow(newRcRect);
-
-	// 	for (int i = 1; i <= rcCenter.Width(); i++) {
-	// 		newRcRect.left = rcWnd.left;
-	// 		newRcRect.right = rcWnd.right + i;
-	// 		newRcRect.top = rcWnd.top;
-	// 		newRcRect.bottom = rcWnd.bottom;
-	// 		MoveWindow(newRcRect);
-	// 	}
+	
+	//win_info_->children_.insert(win_info_->children_.begin() + 1, win_info_);
 
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->ReconnectOrderEvent();
