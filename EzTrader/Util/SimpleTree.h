@@ -49,7 +49,7 @@ struct WinInfo {
 	}
 	void move_window(bool redraw)
 	{
-	  if (!wnd || is_same_as_old_window()) 
+	  if (!wnd /*|| is_same_as_old_window()*/) 
 	  {
 	      //if (wnd && wnd->GetSafeHwnd()) wnd->Invalidate(TRUE);
 	      return;
