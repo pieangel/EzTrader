@@ -54,7 +54,7 @@ struct WinInfo {
 	      //if (wnd && wnd->GetSafeHwnd()) wnd->Invalidate(TRUE);
 	      return;
 	  }
-	  LOGINFO(CMyLogger::getInstance(), "move_window[%s]", name_.c_str());  
+	  //LOGINFO(CMyLogger::getInstance(), "move_window[%s]", name_.c_str());  
 	  wnd->MoveWindow(rc_new, redraw ? TRUE : FALSE);
 	  rc_old.left = rc_new.left;
 	  rc_old.top = rc_new.top;
