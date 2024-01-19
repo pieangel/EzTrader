@@ -661,7 +661,7 @@ void DmAccountOrderWindow::OnBnClickedBtnRemove()
 	//RecalcChildren(CM_DEL_CENTER);
 	//UnlockWindowUpdate();
 	//Invalidate(FALSE);
-	win_info_->children_.erase(win_info_->children_.begin() + center_window_map_.size() + 1);
+	win_info_->children_.erase(win_info_->children_.begin() + center_window_map_.size());
 	
 	onResizeEvent(CHILD_DELETE);
 		
