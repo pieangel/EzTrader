@@ -676,7 +676,8 @@ void DmAccountOrderWindow::OnBnClickedBtnLeft()
 	//LockWindowUpdate();
 	//RecalcChildren(_ShowLeft ? CM_SHOW_LEFT : CM_HIDE_LEFT);
 	//UnlockWindowUpdate();
-	Invalidate(FALSE);
+	//Invalidate(FALSE);
+	onResizeEvent(SHOW_LEFT);
 }
 
 
@@ -688,7 +689,8 @@ void DmAccountOrderWindow::OnBnClickedBtnRight()
 	//LockWindowUpdate();
 	//RecalcChildren(_ShowRight ? CM_SHOW_RIGHT : CM_HIDE_RIGHT);
 	//UnlockWindowUpdate();
-	Invalidate(FALSE);
+	//Invalidate(FALSE);
+	onResizeEvent(SHOW_RIGHT);
 }
 
 
