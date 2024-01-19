@@ -643,7 +643,7 @@ void DmAccountOrderWindow::OnBnClickedBtnAdd()
 	center_wnd->Account(_ComboAccountMap[_CurrentAccountIndex]);
 	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 	
-	win_info_->children_.insert(win_info_->children_.begin() + center_window_map_.size(), win_info_);
+	win_info_->children_.insert(win_info_->children_.begin() + center_window_map_.size() + 1, win_info_);
 
     onResizeEvent(CHILD_ADD);
 	//CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
@@ -661,7 +661,7 @@ void DmAccountOrderWindow::OnBnClickedBtnRemove()
 	//RecalcChildren(CM_DEL_CENTER);
 	//UnlockWindowUpdate();
 	//Invalidate(FALSE);
-	win_info_->children_.erase(win_info_->children_.begin() + center_window_map_.size());
+	win_info_->children_.erase(win_info_->children_.begin() + center_window_map_.size() + 1);
 	
 	onResizeEvent(CHILD_DELETE);
 		
