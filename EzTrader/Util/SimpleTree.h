@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <windows.h>
+#include "../Log/MyLogger.h"
 // User-defined structure
 struct WinInfo {
 	std::string name_;
@@ -50,9 +51,10 @@ struct WinInfo {
 	{
 	  if (!wnd || is_same_as_old_window()) 
 	  {
-	      if (wnd && wnd->GetSafeHwnd()) wnd->Invalidate(TRUE);
+	      //if (wnd && wnd->GetSafeHwnd()) wnd->Invalidate(TRUE);
 	      return;
 	  }
+	  LOGINFO(CMyLogger::getInstance(), "move_window[%s]", name_.c_str());  
 	  wnd->MoveWindow(rc_new, redraw ? TRUE : FALSE);
 	  rc_old.left = rc_new.left;
 	  rc_old.top = rc_new.top;
