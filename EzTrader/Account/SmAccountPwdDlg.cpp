@@ -71,12 +71,12 @@ void SmAccountPwdDlg::SavePassword()
 
 void SmAccountPwdDlg::handle_account_password_error()
 {
-	if (IDYES == AfxMessageBox("°èÁÂºñ¹Ð¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.\n5È¸¿À·ù½Ã °í°´¼¾ÅÍ·Î ¹®ÀÇ¹Ù¶ø´Ï´Ù.\n°è¼Ó ÁøÇàÇÏ½Ã°Ú½À´Ï±î?", MB_YESNO)){
-		//AfxMessageBox("OK¼±ÅÃ");
+	if (IDYES == AfxMessageBox("ï¿½ï¿½ï¿½Âºï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½.\n5È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ ï¿½ï¿½ï¿½Ç¹Ù¶ï¿½ï¿½Ï´ï¿½.\nï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Ã°Ú½ï¿½ï¿½Ï±ï¿½?", MB_YESNO)){
+		//AfxMessageBox("OKï¿½ï¿½ï¿½ï¿½");
 		SetTimer(1, 700, NULL);
 	}
 	else if (IDNO) {
-		//AfxMessageBox("NO¼±ÅÃ");
+		//AfxMessageBox("NOï¿½ï¿½ï¿½ï¿½");
 		EndDialog(IDOK);
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		pFrame->SendMessage(WM_CLOSE, 0, 0);
@@ -110,10 +110,10 @@ BOOL SmAccountPwdDlg::OnInitDialog()
 	m_wndGrid.SetVisualManagerColorTheme(TRUE);
 	
 	// Insert columns:
-	m_wndGrid.InsertColumn(0, _T("°èÁÂ¸í"), 80);
-	m_wndGrid.InsertColumn(1, _T("°èÁÂ¹øÈ£"), 80);
-	m_wndGrid.InsertColumn(2, _T("ºñ¹Ð¹øÈ£"), 80);
-	m_wndGrid.InsertColumn(3, _T("È®ÀÎÀû¿ë"), rect.Width() - 246);
+	m_wndGrid.InsertColumn(0, _T("ï¿½ï¿½ï¿½Â¸ï¿½"), 80);
+	m_wndGrid.InsertColumn(1, _T("ï¿½ï¿½ï¿½Â¹ï¿½È£"), 80);
+	m_wndGrid.InsertColumn(2, _T("ï¿½ï¿½ï¿½Ð¹ï¿½È£"), 80);
+	m_wndGrid.InsertColumn(3, _T("È®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"), rect.Width() - 246);
 
 	m_wndGrid.FreezeColumns(0);
 	
@@ -229,7 +229,7 @@ void SmAccountPwdDlg::OnBnClickedBtnClose()
 		}
 
 		if (strValue.GetLength() == 0 || strValue == "X") {
-			AfxMessageBox("°èÁÂ ºñ¹Ð¹øÈ£¸¦ È®ÀÎÇÏ¿© ÁÖ½Ê½Ã¿À!");
+			AfxMessageBox("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ö½Ê½Ã¿ï¿½!");
 			return;
 		}
 	}

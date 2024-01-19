@@ -50,7 +50,7 @@ struct WinInfo {
 	{
 	  if (!wnd || is_same_as_old_window()) 
 	  {
-	      if (wnd) wnd->Invalidate(TRUE);
+	      if (wnd && wnd->GetSafeHwnd()) wnd->Invalidate(TRUE);
 	      return;
 	  }
 	  wnd->MoveWindow(rc_new, redraw ? TRUE : FALSE);
