@@ -524,6 +524,12 @@ void DmAccountOrderWindow::recalChildWndPos()
   win_info_->children_[child_count - 1]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[child_count - 1]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
   
+  const int x1 = win_info_->children_[child_count - 1]->rc_new.left;
+  const int y1 = win_info_->children_[child_count - 1]->rc_new.top;
+  const int w1 = win_info_->children_[child_count - 1]->rc_new.right - win_info_->children_[i]->rc_new.left;
+  const int h1 = win_info_->children_[child_count - 1]->rc_new.bottom - win_info_->children_[i]->rc_new.top;
+  LOGINFO(CMyLogger::getInstance(), "x1[%d],y1[%d],w1[%d],h1[%d]", x1, y1, w1, h1);
+  
   const int main_wnd_width = child_wnd_xpos + fixed_right_wnd_width;
   win_info_->wnd = this;
   win_info_->rc_new.left = rc_main.left;
