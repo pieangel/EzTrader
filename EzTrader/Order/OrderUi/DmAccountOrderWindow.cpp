@@ -488,14 +488,15 @@ void DmAccountOrderWindow::recalChildWndPos()
   const int child_wnd_height = rc_main.bottom - rc_left.top;
   const size_t child_count = win_info_->children_.size();
   int child_wnd_xpos = 0;
+  int next_child_wnd_xpos = _ShowLeft ? fixed_left_wnd_width : 0;
   LOGINFO(CMyLogger::getInstance(), "child_wnd_xpos[%d]", child_wnd_xpos);
   win_info_->children_[0]->wnd = _LeftWnd.get();
   win_info_->children_[0]->rc_new.left = child_wnd_xpos;
-  win_info_->children_[0]->rc_new.right = _ShowLeft ? fixed_left_wnd_width : 0;
+  win_info_->children_[0]->rc_new.right = next_child_wnd_xpos;
   win_info_->children_[0]->rc_new.top = fixed_child_wnd_y_pos;
   win_info_->children_[0]->rc_new.bottom = fixed_child_wnd_y_pos + child_wnd_height;
-  child_wnd_xpos = win_info_->children_[0]->rc_new.right;
-  
+  child_wnd_xpos = next_child_wnd_xpos;
+  LOGINFO(CMyLogger::getInstance(), "child_wnd_count[%d]", win_info_->children_->size());  
   size_t i = 1;
   for (auto it = center_window_map_.begin(); 
   it != center_window_map_.end(); 
