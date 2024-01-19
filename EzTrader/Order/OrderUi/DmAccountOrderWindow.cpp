@@ -549,15 +549,16 @@ void DmAccountOrderWindow::moveChildWnd()
   const size_t child_count = win_info_->children_.size();
   LOGINFO(CMyLogger::getInstance(), "child_count = %d", child_count);
   for(size_t i = 0; i < child_count; i++) {
+    const int x = win_info_->children_[i]->rc_new.left;
+    const int y = win_info_->children_[i]->rc_new.top;
+    const int w = win_info_->children_[i]->rc_new.right - win_info_->children_[i]->rc_new.left;
+    const int h = win_info_->children_[i]->rc_new.bottom - win_info_->children_[i]->rc_new.top;
+          
     if (!win_info_->children_[i]->is_same_as_old_window()) {
         LOGINFO(CMyLogger::getInstance(), "name[%s]", win_info_->children_[i]->name_.c_str());
         LOGINFO(CMyLogger::getInstance(), "x[%d],y[%d],w[%d],h[%d]", x, y, w, h);
     }
     win_info_->children_[i]->move_window(true);
-    const int x = win_info_->children_[i]->rc_new.left;
-    const int y = win_info_->children_[i]->rc_new.top;
-    const int w = win_info_->children_[i]->rc_new.right - win_info_->children_[i]->rc_new.left;
-    const int h = win_info_->children_[i]->rc_new.bottom - win_info_->children_[i]->rc_new.top;
     
     if (win_info_->children_[i]->get_child_count() > 0) {
       win_info_->children_[i]->move_child_window();
