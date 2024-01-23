@@ -1018,6 +1018,126 @@
     <ClCompile Include="Symbol\AbFavoriteSymbolView.cpp">
       <Filter>Symbol</Filter>
     </ClCompile>
+    <ClCompile Include="OrderUI\AbOrderGridConfigDlg.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmAssetGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmFavoriteGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmFutureGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmOptionGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmOrderGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmOrderGridOut.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmOrderPanel.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmOrderPanelOut.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmPLConfigDlg.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmPLGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmRealtickGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\SmTickGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtAccountRemainGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtConfigGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtCutManager.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtEditCtrl.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtLayoutManager.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderConfigDlg.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderConfigManager.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderConfigPage.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderGridConfig.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderLeftWnd.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderLeftWndHd.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderRightCancelHd.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderRightConfigHd.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderRightWnd.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderRightWndHd.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderSettlePage.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderWnd.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtOrderWndHd.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtProductAcceptedGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtProductRemainGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtProductRemainGridEx.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtStopOrderManager.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtSymbolMasterGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="OrderUI\VtTotalRemainGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="BtnST.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadeButtonST.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\GradientStatic.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -2331,6 +2451,126 @@
     <ClInclude Include="Order\OrderUi\OrderWndConst.h">
       <Filter>Order\OrderUi</Filter>
     </ClInclude>
+    <ClInclude Include="OrderUI\AbOrderGridConfigDlg.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmAssetGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmFavoriteGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmFutureGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmOptionGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmOrderGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmOrderGridOut.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmOrderPanel.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmOrderPanelOut.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmPLConfigDlg.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmPLGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmRealtickGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\SmTickGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtAccountRemainGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtConfigGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtCutManager.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtEditCtrl.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtLayoutManager.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderConfigDlg.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderConfigManager.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderConfigPage.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderGridConfig.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderLeftWnd.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderLeftWndHd.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderRightCancelHd.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderRightConfigHd.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderRightWnd.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderRightWndHd.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderSettlePage.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderWnd.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtOrderWndHd.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtProductAcceptedGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtProductRemainGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtProductRemainGridEx.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtStopOrderManager.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtSymbolMasterGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="OrderUI\VtTotalRemainGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BtnST.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadeButtonST.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\GradientStatic.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -2613,6 +2853,9 @@
     </Filter>
     <Filter Include="Yuanta">
       <UniqueIdentifier>{e10b1a03-4e03-40f7-9b44-a534f3e924ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OrderUI">
+      <UniqueIdentifier>{0494d103-889b-4d5c-883a-ebe68d472e12}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

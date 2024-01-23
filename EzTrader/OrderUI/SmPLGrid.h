@@ -8,7 +8,6 @@
 #include <memory>
 #include <map>
 #include <tuple>
-#include "../Global/VtDefine.h"
 #include <set>
 #include <string>
 class VtOrderConfigManager;

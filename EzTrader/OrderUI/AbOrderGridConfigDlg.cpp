@@ -1,7 +1,7 @@
 // AbOrderGridConfigDlg.cpp : implementation file
 //
 
-#include "pch.h"
+#include "stdafx.h"
 #include "../HdTrader.h"
 #include "AbOrderGridConfigDlg.h"
 #include "afxdialogex.h"
