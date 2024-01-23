@@ -133,6 +133,28 @@ DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::share
 	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
+DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info, std::shared_ptr<WinInfo> win_info)
+	: CBCGPDialog(IDD_ORDER_CENTER, pParent), layout_manager_(this)
+{
+	id_ = IdGenerator::get_id();
+	win_info_ = win_info;
+	win_info_->name_ = "center";
+	//if (parent_win_info) parent_win_info->children_.push_back(win_info_);
+	symbol_order_view_.symbol_type(SymbolType::Domestic);
+	symbol_position_view_.symbol_type(SymbolType::Domestic);
+	symbol_order_view_.set_order_request_type(OrderRequestType::Domestic);
+	symbol_order_view_.set_fill_condition(SmFilledCondition::Fas);
+	mainApp.event_hub()->subscribe_symbol_event_handler(id_, std::bind(&DmAccountOrderCenterWindow::set_symbol_from_out, this, std::placeholders::_1, std::placeholders::_2));
+	EnableVisualManagerStyle(TRUE, TRUE);
+	EnableLayout();
+	symbol_order_view_.set_parent(this);
+	symbol_order_view_.set_center_window_id(id_);
+	symbol_order_view_.set_order_window_id(order_window_id_);
+	symbol_tick_view_.set_parent(this);
+	mainApp.event_hub()->add_window_resize_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_resize_event_from_order_view, this));
+	mainApp.event_hub()->add_parameter_event(symbol_order_view_.get_id(), std::bind(&DmAccountOrderCenterWindow::on_paramter_event, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
 DmAccountOrderCenterWindow::DmAccountOrderCenterWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info, std::string symbol_code, DarkHorse::OrderSetEvent order_set)
 	: CBCGPDialog(IDD_ORDER_CENTER, pParent), symbol_code_(symbol_code), order_set_(order_set), layout_manager_(this)
 {
@@ -1001,7 +1023,7 @@ void DmAccountOrderCenterWindow::OnBnClickedBtnRefreshOrder()
 BOOL DmAccountOrderCenterWindow::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Add your message handler code here and/or call default
-	//return FALSE;
+	//return TRUE;
 	return CBCGPDialog::OnEraseBkgnd(pDC);
 }
 

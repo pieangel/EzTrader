@@ -50,6 +50,7 @@ public:
 	DmAccountOrderCenterWindow(CWnd* pParent = nullptr);   // standard constructor
 	DmAccountOrderCenterWindow(CWnd* pParent, std::string symbol_code, DarkHorse::OrderSetEvent order_set);
 
+	DmAccountOrderCenterWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info, std::shared_ptr<WinInfo> win_info);
 	DmAccountOrderCenterWindow(CWnd* pParent , std::shared_ptr<WinInfo> parent_win_info);   // standard constructor
 	DmAccountOrderCenterWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info, std::string symbol_code, DarkHorse::OrderSetEvent order_set);
 	virtual ~DmAccountOrderCenterWindow();

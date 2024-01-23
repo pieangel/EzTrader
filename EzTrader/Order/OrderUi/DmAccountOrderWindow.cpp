@@ -470,6 +470,9 @@ void DmAccountOrderWindow::onResizeEvent(OrderWndResizeEvent event)
     default:
       break;
   }
+
+  Invalidate(FALSE);
+  //UpdateWindow();
 }
 
 void DmAccountOrderWindow::moveWndPos()
@@ -651,8 +654,8 @@ void DmAccountOrderWindow::OnSymbolClicked(const std::string& symbol_code)
 
 void DmAccountOrderWindow::OnBnClickedBtnAdd()
 {
-	
-	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, win_info_);
+	auto child_win_info_ = std::make_shared<WinInfo>(win_info_, 0, 0, 0, 0, 0);
+	std::shared_ptr<DmAccountOrderCenterWindow> center_wnd = std::make_shared<DmAccountOrderCenterWindow>(this, win_info_, child_win_info_);
 	center_wnd->order_window_id(id_);
 	center_wnd->Create(IDD_DM_ACNT_ORDER_CENTER, this);
 	center_wnd->ShowWindow(SW_SHOW);
@@ -660,7 +663,10 @@ void DmAccountOrderWindow::OnBnClickedBtnAdd()
 	center_wnd->Account(_ComboAccountMap[_CurrentAccountIndex]);
 	center_window_map_.insert(std::make_pair(center_wnd->ID(), center_wnd));
 	
-	//win_info_->children_.insert(win_info_->children_.begin() + center_window_map_.size() + 1, win_info_);
+	child_win_info_->name_ = "center";
+	child_win_info_->wnd = center_wnd.get();
+	center_wnd->Win_info(child_win_info_);
+	win_info_->children_.insert(win_info_->children_.begin() + center_window_map_.size(), child_win_info_);
 
     onResizeEvent(CHILD_ADD);
 	//CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
