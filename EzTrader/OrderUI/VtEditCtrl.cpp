@@ -1,8 +1,8 @@
 // VtEditCtrl.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtEditCtrl.h"
 
 #ifdef _DEBUG

@@ -4,9 +4,9 @@
 #include <map>
 #include <set>
 #include <functional>
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 #include <memory>
-
+struct VtOrder;
 class VtSymbol;
 class VtAccount;
 class VtOrderConfigManager;

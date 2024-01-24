@@ -1,15 +1,16 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SmAssetGrid.h"
 #include "VtOrderConfigManager.h"
-#include "../Account/VtAccount.h"
+//#include "../Account/VtAccount.h"
 //#include "Poco/NumberFormatter.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Format/XFormatNumber.h"
-#include "../Fund/VtFund.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Format/XFormatNumber.h"
+//#include "../Fund/VtFund.h"
 //#include "../Global/MainBeetle.h"
-#include "../Format/format.h"
+//#include "../Format/format.h"
 //using Poco::NumberFormatter;
-#include "../Main/MainBeetle.h"
+//#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -78,8 +79,8 @@ void SmAssetGrid::SetRowTitle()
 	SetColumnWidth(1, 110);
 	for (int i = 0; i < _RowCount; i++) {
 		QuickSetText(i, 0, title[i]);
-		QuickSetBackColor(i, 0, MainBeetle::GridTitleBackColor);
-		QuickSetTextColor(i, 0, MainBeetle::GridTitleTextColor);
+		QuickSetBackColor(i, 0, DarkHorse::SmTotalManager::GridTitleBackColor);
+		QuickSetTextColor(i, 0, DarkHorse::SmTotalManager::GridTitleTextColor);
 		InvalidateCellRect(i, 0);
 	}
 }
@@ -90,7 +91,7 @@ void SmAssetGrid::InitGrid()
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
 			return;
-
+		/*
 		std::string temp = fmt::format("{:.{}f}", acnt->OpenDeposit, 0);
 		CString profitLoss = XFormatNumber(temp.c_str(), -1);
 
@@ -103,11 +104,13 @@ void SmAssetGrid::InitGrid()
 
 		InvalidateCellRect(0, 1);
 		InvalidateCellRect(1, 1);
+		*/
 	}
 	else {
 		VtFund* fund = _OrderConfigMgr->Fund();
 		if (!fund)
 			return;
+		/*
 		const std::vector<VtAccount*>& acntVec = fund->GetFundAccountVector();
 		if (acntVec.size() == 0)
 			return;
@@ -128,6 +131,7 @@ void SmAssetGrid::InitGrid()
 
 		InvalidateCellRect(0, 1);
 		InvalidateCellRect(1, 1);
+		*/
 	}
 }
 

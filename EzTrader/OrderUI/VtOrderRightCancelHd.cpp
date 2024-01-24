@@ -1,8 +1,8 @@
 // VtOrderRightCancelHd.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderRightCancelHd.h"
 #include "afxdialogex.h"
 
@@ -13,10 +13,10 @@
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_DYNAMIC(VtOrderRightCancelHd, CDialogEx)
+IMPLEMENT_DYNAMIC(VtOrderRightCancelHd, CDialog)
 
 VtOrderRightCancelHd::VtOrderRightCancelHd(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_ORDER_RIGHT_CANCEL_HD, pParent)
+	: CDialog(IDD_ORDER_RIGHT_CANCEL_HD, pParent)
 {
 	_OrderConfigMgr = nullptr;
 }
@@ -27,12 +27,12 @@ VtOrderRightCancelHd::~VtOrderRightCancelHd()
 
 void VtOrderRightCancelHd::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_CANCEL, _EditCancel);
 }
 
 
-BEGIN_MESSAGE_MAP(VtOrderRightCancelHd, CDialogEx)
+BEGIN_MESSAGE_MAP(VtOrderRightCancelHd, CDialog)
 	ON_BN_CLICKED(IDC_BTN_CANCEL_LAST, &VtOrderRightCancelHd::OnBnClickedBtnCancelLast)
 	ON_BN_CLICKED(IDC_CK_FROMRECENT, &VtOrderRightCancelHd::OnBnClickedCkFromrecent)
 	ON_BN_CLICKED(IDC_BTN_CANCEL_SELECTED, &VtOrderRightCancelHd::OnBnClickedBtnCancelSelected)
@@ -62,7 +62,7 @@ void VtOrderRightCancelHd::OnBnClickedBtnCancelSelected()
 
 BOOL VtOrderRightCancelHd::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CDialog::OnInitDialog();
 
 	// TODO:  Add extra initialization here
 

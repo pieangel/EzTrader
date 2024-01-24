@@ -1,12 +1,12 @@
 // VtOrderRightWndHd.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderRightWndHd.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
-#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
 
 
 #ifdef _DEBUG
@@ -32,8 +32,8 @@ VtOrderRightWndHd::VtOrderRightWndHd(CWnd* pParent )
 
 VtOrderRightWndHd::~VtOrderRightWndHd()
 {
-	_DefaultWidth = MainBeetle::GetHorWidthByScaleFactor(167);
-	_DefaultHeight = MainBeetle::GetVerHeightByScaleFactor(561);
+	_DefaultWidth = 167;
+	_DefaultHeight = 561;
 }
 
 // int VtOrderRightWndHd::CRHGetDialogID()

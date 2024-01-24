@@ -4,14 +4,14 @@
 #include <map>
 #include <set>
 #include <functional>
-#include "../Global/VtDefine.h"
+//#include "../Global/VtDefine.h"
 #include <memory>
 #include <map>
 #include <tuple>
-#include "../Global/VtDefine.h"
+//#include "../Global/VtDefine.h"
 #include <set>
 #include <string>
-#include "../Symbol/SmRunInfo.h"
+//#include "../Symbol/SmRunInfo.h"
 class VtOrderLeftWndHd;
 class VtProductSection;
 class VtOrderConfigManager;
@@ -79,7 +79,7 @@ public:
 	void SetExpected2();
 private:
 	int _SelectedProduct = 0;
-	std::vector<SmRunInfo> _RunInfo;
+	//std::vector<SmRunInfo> _RunInfo;
 	CCellID _EqualCell;
 	VtOrderLeftWndHd* _LeftWnd = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;

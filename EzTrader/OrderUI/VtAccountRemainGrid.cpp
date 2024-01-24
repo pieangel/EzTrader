@@ -1,13 +1,14 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "VtAccountRemainGrid.h"
 #include "VtOrderConfigManager.h"
-#include "../Account/VtAccount.h"
+//#include "../Account/VtAccount.h"
 #include "../UGrid/UGStrOp.h"
 //#include "../Global/MainBeetle.h"
 #include <functional>
-#include "../Task/SmCallbackManager.h"
+//#include "../Task/SmCallbackManager.h"
 #include "VtOrderConfigManager.h"
-#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
+#include "../MessageDefine.h"
 using namespace std;
 using namespace std::placeholders;
 
@@ -39,13 +40,13 @@ void VtAccountRemainGrid::UnregisterAllCallback()
 void VtAccountRemainGrid::RegisterQuoteCallback()
 {
 	//SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&VtAccountRemainGrid::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void VtAccountRemainGrid::UnregisterQuoteCallback()
 {
 	//SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
-	mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void VtAccountRemainGrid::OnQuoteEvent(VtSymbol* symbol)
@@ -63,12 +64,12 @@ LRESULT VtAccountRemainGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 
 void VtAccountRemainGrid::RegisterOrderallback()
 {
-	mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&VtAccountRemainGrid::OnOrderEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&VtAccountRemainGrid::OnOrderEvent, this, _1));
 }
 
 void VtAccountRemainGrid::UnregisterOrderCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
 }
 
 void VtAccountRemainGrid::OnOrderEvent(VtOrder* order)
@@ -136,8 +137,8 @@ void VtAccountRemainGrid::SetRowTitle()
 	{
 		QuickSetText(0, i, title[i]);
 		GetCell(0, i, &cell);
-		cell.SetBackColor(MainBeetle::GridTitleBackColor);
-		cell.SetTextColor(MainBeetle::GridTitleTextColor);
+		cell.SetBackColor(DarkHorse::SmTotalManager::GridTitleBackColor);
+		cell.SetTextColor(DarkHorse::SmTotalManager::GridTitleTextColor);
 		SetCell(0, i, &cell);
 		QuickSetAlignment(0, i, UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		QuickSetFont(0, i, &_titleFont);
@@ -161,6 +162,7 @@ void VtAccountRemainGrid::ShowAccountInfo(VtAccount* acnt)
 {
 	if (!_OrderConfigMgr || !acnt)
 		return;
+	/*
 	if (_OrderConfigMgr->Account()->AccountNo.compare(acnt->AccountNo) != 0)
 		return;
 
@@ -224,6 +226,7 @@ void VtAccountRemainGrid::ShowAccountInfo(VtAccount* acnt)
 
 	QuickSetText(1, 5, acnt->CurrencyCode.c_str());
 	RedrawCell(1, 5);
+	*/
 }
 
 void VtAccountRemainGrid::SetOrderConfigMgr(VtOrderConfigManager* val)
@@ -274,6 +277,7 @@ void VtAccountRemainGrid::UpdateAccountInfo()
 	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, bufSDecimal, 5);
 	numberformat2.lpDecimalSep = bufSDecimal;
 	numberformat2.NumDigits = 2;
+	/*
 	CTextNumber::s_lpNumberFormat = &numberformat2;
 	CTextNumber tn;
 
@@ -314,5 +318,6 @@ void VtAccountRemainGrid::UpdateAccountInfo()
 
 	QuickSetText(1, 5, acnt->CurrencyCode.c_str());
 	RedrawCell(1, 5);
+	*/
 }
 

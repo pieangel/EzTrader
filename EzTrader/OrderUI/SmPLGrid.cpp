@@ -1,14 +1,15 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SmPLGrid.h"
 #include "VtOrderConfigManager.h"
-#include "../Account/VtAccount.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Format/XFormatNumber.h"
-#include "../Fund/VtFund.h"
+//#include "../Account/VtAccount.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Format/XFormatNumber.h"
+//#include "../Fund/VtFund.h"
 //#include "../Global/MainBeetle.h"
-#include "../Task/SmCallbackManager.h"
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
+#include "../MessageDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -21,7 +22,7 @@ SmPLGrid::SmPLGrid()
 
 SmPLGrid::~SmPLGrid()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 
@@ -74,7 +75,7 @@ void SmPLGrid::Init()
 
 	SetRowTitle();
 
-	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void SmPLGrid::SetRowTitle()
@@ -84,8 +85,8 @@ void SmPLGrid::SetRowTitle()
 	SetColumnWidth(1, 110);
 	for (int i = 0; i < _RowCount; i++) {
 		QuickSetText(i, 0, title[i]);
-		QuickSetBackColor(i, 0, MainBeetle::GridTitleBackColor);
-		QuickSetTextColor(i, 0, MainBeetle::GridTitleTextColor);
+		QuickSetBackColor(i, 0, DarkHorse::SmTotalManager::GridTitleBackColor);
+		QuickSetTextColor(i, 0, DarkHorse::SmTotalManager::GridTitleTextColor);
 		InvalidateCellRect(i, 0);
 	}
 }
@@ -169,7 +170,7 @@ void SmPLGrid::ShowAccountProfitLoss()
 	if (!acnt)
 		return;
 
-
+	/*
 	std::string temp = fmt::format("{:.{}f}", acnt->OpenPL, 0);
 	CString profitLoss = XFormatNumber(temp.c_str(), -1);
 
@@ -220,6 +221,7 @@ void SmPLGrid::ShowAccountProfitLoss()
 	InvalidateCellRect(0, 1);
 	InvalidateCellRect(1, 1);
 	InvalidateCellRect(2, 1);
+	*/
 }
 
 void SmPLGrid::ShowFundProfitLoss()
@@ -227,7 +229,7 @@ void SmPLGrid::ShowFundProfitLoss()
 	VtFund* fund = _OrderConfigMgr->Fund();
 	if (!fund)
 		return;
-
+	/*
 	std::string temp = fmt::format("{:.{}f}", fund->OpenPL, 0);
 	CString profitLoss = XFormatNumber(temp.c_str(), -1);
 
@@ -287,4 +289,5 @@ void SmPLGrid::ShowFundProfitLoss()
 	InvalidateCellRect(0, 1);
 	InvalidateCellRect(1, 1);
 	InvalidateCellRect(2, 1);
+	*/
 }

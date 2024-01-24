@@ -682,9 +682,6 @@
     <ClCompile Include="Task\VtProgressDlg.cpp">
       <Filter>Task</Filter>
     </ClCompile>
-    <ClCompile Include="Task\GradientStatic.cpp">
-      <Filter>Task</Filter>
-    </ClCompile>
     <ClCompile Include="Controller\AccountAssetControl.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
@@ -1024,7 +1021,7 @@
     <ClCompile Include="OrderUI\SmAssetGrid.cpp">
       <Filter>OrderUI</Filter>
     </ClCompile>
-    <ClCompile Include="OrderUI\SmFavoriteGrid.cpp">
+    <ClCompile Include="OrderUI\HdFavoriteGrid.cpp">
       <Filter>OrderUI</Filter>
     </ClCompile>
     <ClCompile Include="OrderUI\SmFutureGrid.cpp">
@@ -1137,6 +1134,9 @@
     </ClCompile>
     <ClCompile Include="Util\GradientStatic.cpp">
       <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CeXDib.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2049,9 +2049,6 @@
     <ClInclude Include="Task\VtProgressDlg.h">
       <Filter>Task</Filter>
     </ClInclude>
-    <ClInclude Include="Task\GradientStatic.h">
-      <Filter>Task</Filter>
-    </ClInclude>
     <ClInclude Include="Controller\AccountAssetControl.h">
       <Filter>Controller</Filter>
     </ClInclude>
@@ -2457,7 +2454,7 @@
     <ClInclude Include="OrderUI\SmAssetGrid.h">
       <Filter>OrderUI</Filter>
     </ClInclude>
-    <ClInclude Include="OrderUI\SmFavoriteGrid.h">
+    <ClInclude Include="OrderUI\HdFavoriteGrid.h">
       <Filter>OrderUI</Filter>
     </ClInclude>
     <ClInclude Include="OrderUI\SmFutureGrid.h">
@@ -2571,6 +2568,10 @@
     <ClInclude Include="Util\GradientStatic.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="VtDefine.h" />
+    <ClInclude Include="CeXDib.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">
@@ -2631,6 +2632,126 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\set.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00002.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort_25.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properti.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menu_ima.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00003.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\file_vie.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00004.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00005.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_vi.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\calc2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_up_tri.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_up.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_t.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Gears_bitmap.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_s.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\s2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00006.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_o.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\search.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_down_tri.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_down.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_c.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Arrow2 - Up.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Gears.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Search_4.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\search_3.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\search24.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Arrow2 - Right.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Plus.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Minus.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Arrow2 - Left.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

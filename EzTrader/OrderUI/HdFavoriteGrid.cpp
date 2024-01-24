@@ -1,39 +1,40 @@
-#include "pch.h"
-#include "SmFavoriteGrid.h"
-#include "../Account/VtAccount.h"
+#include "stdafx.h"
+#include "HdFavoriteGrid.h"
+//#include "../Account/VtAccount.h"
 //#include "VtFDSubAcntPage.h"
 //#include "../Global/MainBeetle.h"
-#include "../Symbol/SmMarketManager.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Format/format.h"
-#include "../Task/SmCallbackManager.h"
+//#include "../Symbol/SmMarketManager.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Format/format.h"
+//#include "../Task/SmCallbackManager.h"
 #include "VtOrderConfigManager.h"
 #include "SmOrderPanelOut.h"
-#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
+#include "../MessageDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-SmFavoriteGrid::SmFavoriteGrid()
+HdFavoriteGrid::HdFavoriteGrid()
 {
 	_SubAcntPage = nullptr;
 	_ParentAccount = nullptr;
 }
 
 
-SmFavoriteGrid::~SmFavoriteGrid()
+HdFavoriteGrid::~HdFavoriteGrid()
 {
 }
 
-BEGIN_MESSAGE_MAP(SmFavoriteGrid, VtGrid)
+BEGIN_MESSAGE_MAP(HdFavoriteGrid, VtGrid)
 	ON_MESSAGE(WM_QUOTE_CHANGED, OnQuoteChangedMessage)
 	//ON_MESSAGE(WM_HOGA_CHANGED, OnHogaChangedMessage)
 	//ON_MESSAGE(WM_ORDER_CHANGED, OnOrderChangedMessage)
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
-void SmFavoriteGrid::OnSetup()
+void HdFavoriteGrid::OnSetup()
 {
 	_defFont.CreateFont(11, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("±¼¸²"));
 	_titleFont.CreateFont(11, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("±¼¸²"));
@@ -68,12 +69,12 @@ void SmFavoriteGrid::OnSetup()
 	InitGrid();
 }
 
-void SmFavoriteGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
+void HdFavoriteGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
 {
 
 }
 
-void SmFavoriteGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
+void HdFavoriteGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
 	if (updn == FALSE)
 		return;
@@ -95,6 +96,7 @@ void SmFavoriteGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *
 
 	CUGCell cell;
 	GetCell(0, _ClickedRow, &cell);
+	/*
 	VtSymbol* sym = (VtSymbol*)cell.Tag();
 	if (sym) {
 		if (sym->Quote.intClose == 0)
@@ -107,9 +109,10 @@ void SmFavoriteGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *
 			}
 		}
 	}
+	*/
 }
 
-void SmFavoriteGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
+void HdFavoriteGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
 	if (updn == FALSE)
 		return;
@@ -131,7 +134,7 @@ void SmFavoriteGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *
 
 	CUGCell cell;
 	GetCell(0, _ClickedRow, &cell);
-
+	/*
 	VtAccount* subAcnt = (VtAccount*)cell.Tag();
 	if (subAcnt && _ParentAccount)
 	{
@@ -146,10 +149,11 @@ void SmFavoriteGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *
 // 			_SubAcntPage->RefreshSubAccountList(_ParentAccount);
 // 		}
 	}
+	*/
 
 }
 
-void SmFavoriteGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed /*= 0*/)
+void HdFavoriteGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed /*= 0*/)
 {
 	if (_OldSelRow == row)
 		return;
@@ -177,7 +181,7 @@ void SmFavoriteGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, B
 	_OldSelRow = row;
 }
 
-void SmFavoriteGrid::OnMouseLeaveFromMainGrid()
+void HdFavoriteGrid::OnMouseLeaveFromMainGrid()
 {
 	if (_OldSelRow == _ClickedRow)
 		return;
@@ -190,7 +194,7 @@ void SmFavoriteGrid::OnMouseLeaveFromMainGrid()
 	_OldSelRow = -2;
 }
 
-void SmFavoriteGrid::SetColTitle()
+void HdFavoriteGrid::SetColTitle()
 {
 	CUGCell cell;
 	LPCTSTR title[2] = { "Á¾¸ñ", "ÇöÀç°¡" };
@@ -202,8 +206,8 @@ void SmFavoriteGrid::SetColTitle()
 		SetColWidth(i, colWidth[i]);
 		GetCell(i, -1, &cell);
 		cell.SetText(title[i]);
-		cell.SetBackColor(MainBeetle::GridTitleBackColor);
-		cell.SetTextColor(MainBeetle::GridTitleTextColor);
+		cell.SetBackColor(DarkHorse::SmTotalManager::GridTitleBackColor);
+		cell.SetTextColor(DarkHorse::SmTotalManager::GridTitleTextColor);
 		cell.SetAlignment(UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		cell.SetFont(&_titleFont);
 		SetCell(i, -1, &cell);
@@ -211,7 +215,7 @@ void SmFavoriteGrid::SetColTitle()
 	}
 }
 
-void SmFavoriteGrid::QuickRedrawCell(int col, long row)
+void HdFavoriteGrid::QuickRedrawCell(int col, long row)
 {
 	CRect rect;
 	GetCellRect(col, row, rect);
@@ -224,7 +228,7 @@ void SmFavoriteGrid::QuickRedrawCell(int col, long row)
 
 }
 
-void SmFavoriteGrid::InitGrid(VtAccount* acnt)
+void HdFavoriteGrid::InitGrid(VtAccount* acnt)
 {
 	if (!acnt)
 		return;
@@ -236,6 +240,7 @@ void SmFavoriteGrid::InitGrid(VtAccount* acnt)
 
 	int i = 0;
 	CUGCell cell;
+	/*
 	std::vector<VtAccount*>& acntMap = acnt->GetSubAccountList();
 	for (auto it = acntMap.begin(); it != acntMap.end(); ++it)
 	{
@@ -268,12 +273,14 @@ void SmFavoriteGrid::InitGrid(VtAccount* acnt)
 		std::pair<int, int> cellInfo = *it;
 		QuickRedrawCell(cellInfo.first, cellInfo.second);
 	}
+	*/
 }
 
-void SmFavoriteGrid::InitGrid()
+void HdFavoriteGrid::InitGrid()
 {
 	ClearCells();
 	CUGCell cell;
+	/*
 	std::vector<VtSymbol*>& fav_list = mainApp.SymbolMgr().MrktMgr().GetFavoriteList();
 	for (size_t i = 0; i < fav_list.size(); ++i) {
 		VtSymbol* symbol = fav_list[i];
@@ -294,9 +301,10 @@ void SmFavoriteGrid::InitGrid()
 	}
 
 	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	*/
 }
 
-void SmFavoriteGrid::ClearCells()
+void HdFavoriteGrid::ClearCells()
 {
 	CUGCell cell;
 	for (int i = 0; i < _RowCount; i++) {
@@ -311,14 +319,14 @@ void SmFavoriteGrid::ClearCells()
 	}
 }
 
-VtAccount* SmFavoriteGrid::GetSelectedAccount()
+VtAccount* HdFavoriteGrid::GetSelectedAccount()
 {
 	CUGCell cell;
 	GetCell(0, _ClickedRow, &cell);
 	return (VtAccount*)cell.Tag();
 }
 
-void SmFavoriteGrid::SetDefaultSelect()
+void HdFavoriteGrid::SetDefaultSelect()
 {
 	ChangeSelectedRow(_ClickedRow, 0);
 	_ClickedRow = 0;
@@ -329,8 +337,9 @@ void SmFavoriteGrid::SetDefaultSelect()
 // 	}
 }
 
-LRESULT SmFavoriteGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
+LRESULT HdFavoriteGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 {
+	/*
 	VtSymbol* symbol = (VtSymbol*)lParam;
 	auto it = _CodeIntMap.find(symbol->ShortCode);
 	if (it != _CodeIntMap.end()) {
@@ -339,15 +348,16 @@ LRESULT SmFavoriteGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 		QuickSetText(1, row, temp.c_str());
 		QuickRedrawCell(1, row);
 	}
+	*/
 	return 1;
 }
 
-void SmFavoriteGrid::OnClose()
+void HdFavoriteGrid::OnClose()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
-void SmFavoriteGrid::ChangeSelectedRow(int oldRow, int newRow)
+void HdFavoriteGrid::ChangeSelectedRow(int oldRow, int newRow)
 {
 	for (int j = 0; j < _ColCount; j++) {
 		QuickSetBackColor(j, oldRow, RGB(255, 255, 255));

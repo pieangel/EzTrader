@@ -1,17 +1,17 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "VtCutManager.h"
-#include "../Account/VtAccount.h"
-#include "../Order/VtOrder.h"
-#include "../Position/VtPosition.h"
-#include "../Fund/VtFund.h"
-#include "../Symbol/VtSymbol.h"
+//#include "../Account/VtAccount.h"
+//#include "../Order/VtOrder.h"
+//#include "../Position/VtPosition.h"
+//#include "../Fund/VtFund.h"
+//#include "../Symbol/VtSymbol.h"
 #include "VtOrderConfigManager.h"
-#include "../Order/VtOrderManager.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Account/VtAccountManager.h"
-#include "../Account/VtSubAccountManager.h"
-#include "../Order/VtFundOrderManager.h"
-#include "../Main/MainBeetle.h"
+//#include "../Order/VtOrderManager.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Account/VtAccountManager.h"
+//#include "../Account/VtSubAccountManager.h"
+//#include "../Order/VtFundOrderManager.h"
+#include "../Global/SmTotalManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -33,7 +33,7 @@ void VtCutManager::AddOrderHd(std::shared_ptr<HdOrderRequest> req)
 {
 	if (!req)
 		return;
-	StopOrderMapHd[req->RequestId] = req;
+	//StopOrderMapHd[req->RequestId] = req;
 }
 
 std::shared_ptr<HdOrderRequest> VtCutManager::FindOrderHd(int reqID)
@@ -72,12 +72,12 @@ void VtCutManager::RemoveBuyAllHd()
 {
 	for (auto it = StopOrderMapHd.begin(); it != StopOrderMapHd.end(); ) {
 		std::shared_ptr<HdOrderRequest> order = it->second;
-		if (order->Position == VtPositionType::Buy) {
-			it = StopOrderMapHd.erase(it);
-			//delete order;
-		}
-		else
-			it++;
+// 		if (order->Position == VtPositionType::Buy) {
+// 			it = StopOrderMapHd.erase(it);
+// 			//delete order;
+// 		}
+// 		else
+// 			it++;
 	}
 }
 
@@ -85,12 +85,12 @@ void VtCutManager::RemoveSellAllHd()
 {
 	for (auto it = StopOrderMapHd.begin(); it != StopOrderMapHd.end(); ) {
 		std::shared_ptr<HdOrderRequest> order = it->second;
-		if (order->Position == VtPositionType::Sell) {
-			it = StopOrderMapHd.erase(it);
-			//delete order;
-		}
-		else
-			it++;
+// 		if (order->Position == VtPositionType::Sell) {
+// 			it = StopOrderMapHd.erase(it);
+// 			//delete order;
+// 		}
+// 		else
+// 			it++;
 	}
 }
 
@@ -98,24 +98,24 @@ void VtCutManager::MakePositionStop(int mode, VtSymbol* sym)
 {
 	if (!sym || !_OrderConfigMgr)
 		return;
-	if (_OrderConfigMgr->Type() == 0) {
-		VtAccount* acnt = _OrderConfigMgr->Account();
-		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
-		if (posi && std::abs(posi->OpenQty) > 0) {
-			if (mode == 0 || mode == 1)
-				MakePositionStopOrderRequest(mode, posi, sym, acnt, nullptr);
-			else {
-				MakePairStopOrderRequest(posi, sym, acnt, nullptr);
-			}
-		}
-	} else {
-		VtFund* fund = _OrderConfigMgr->Fund();
-		int count = 0;
-		VtPosition posi = fund->GetPosition(sym->ShortCode, count);
-		if (count != 0) {
-			MakeAutoStopList(mode, &posi, sym, fund);
-		}
-	}
+// 	if (_OrderConfigMgr->Type() == 0) {
+// 		VtAccount* acnt = _OrderConfigMgr->Account();
+// 		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
+// 		if (posi && std::abs(posi->OpenQty) > 0) {
+// 			if (mode == 0 || mode == 1)
+// 				MakePositionStopOrderRequest(mode, posi, sym, acnt, nullptr);
+// 			else {
+// 				MakePairStopOrderRequest(posi, sym, acnt, nullptr);
+// 			}
+// 		}
+// 	} else {
+// 		VtFund* fund = _OrderConfigMgr->Fund();
+// 		int count = 0;
+// 		VtPosition posi = fund->GetPosition(sym->ShortCode, count);
+// 		if (count != 0) {
+// 			MakeAutoStopList(mode, &posi, sym, fund);
+// 		}
+// 	}
 }
 
 void VtCutManager::MakeAutoStopList(int mode, VtPosition* totalPosi, VtSymbol* sym, VtFund* fund)
@@ -123,20 +123,20 @@ void VtCutManager::MakeAutoStopList(int mode, VtPosition* totalPosi, VtSymbol* s
 	if (!totalPosi || !sym || !fund )
 		return;
 
-	std::vector<VtPosition*> posiVec = fund->GetPositionList(sym->ShortCode);
-	for (auto it = posiVec.begin(); it != posiVec.end(); ++it) {
-		VtPosition* curPosi = *it;
-		VtAccount* parentAcnt = fund->GetParentAccount(curPosi->SubAccountNo);
-		if (!parentAcnt)
-			continue;
-		if (std::abs(curPosi->OpenQty) > 0) {
-			if (mode == 0 || mode == 1)
-				MakePositionStopOrderRequest(mode, curPosi, sym, parentAcnt, fund);
-			else {
-				MakePairStopOrderRequest(curPosi, sym, parentAcnt, fund);
-			}
-		}
-	}
+// 	std::vector<VtPosition*> posiVec = fund->GetPositionList(sym->ShortCode);
+// 	for (auto it = posiVec.begin(); it != posiVec.end(); ++it) {
+// 		VtPosition* curPosi = *it;
+// 		VtAccount* parentAcnt = fund->GetParentAccount(curPosi->SubAccountNo);
+// 		if (!parentAcnt)
+// 			continue;
+// 		if (std::abs(curPosi->OpenQty) > 0) {
+// 			if (mode == 0 || mode == 1)
+// 				MakePositionStopOrderRequest(mode, curPosi, sym, parentAcnt, fund);
+// 			else {
+// 				MakePairStopOrderRequest(curPosi, sym, parentAcnt, fund);
+// 			}
+// 		}
+// 	}
 }
 
 std::shared_ptr<HdOrderRequest> VtCutManager::MakePositionStopOrderRequest(int mode, VtPosition* posi, VtSymbol* sym, VtAccount* acnt, VtFund* fund)
@@ -144,70 +144,71 @@ std::shared_ptr<HdOrderRequest> VtCutManager::MakePositionStopOrderRequest(int m
 	if (!posi || !sym || !acnt || !_OrderConfigMgr->OrderMgr())
 		return nullptr;
 
-	if (!(posi->Position == VtPositionType::Buy || posi->Position == VtPositionType::Sell))
-		return nullptr;
-
-	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->Decimal), sym->Decimal));
-	// 적절한 값을 셀에서 찾기 위하여 나머지를 빼준다.
-	intAvg = intAvg - intAvg % sym->intTickSize;
-
-	std::shared_ptr<HdOrderRequest> request = nullptr;
-	std::string keyAccountNo = fund ? posi->SubAccountNo : acnt->AccountNo;
-	auto it = CutInfoMap.find(std::make_tuple(keyAccountNo, sym->ShortCode, mode));
-	if (it != CutInfoMap.end()) { // 이미 손절이나 익절 스탑이 있는 경우
-		request = it->second;
-	}
-	else { // 익절, 손절 스탑이 전혀 없는 경우
-		request = std::make_shared<HdOrderRequest>();
-		// 새로운 주문요청번호를 생성하여 대입한다.
-		request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
-		// 펀드일 경우 2, 아닐 경우 0
-		request->Type = fund ? 2 : 0;
-		CutInfoMap[std::make_tuple(keyAccountNo, sym->ShortCode, mode)] = request;
-	}
-
-	if (posi->Position == VtPositionType::Buy) { // 매수 포지션일 때
-		if (mode == 0) { // 익절일 때
-			request->Price = intAvg + sym->intTickSize * _CutProfit;
-			request->RequestType = 1;
-			posi->ProfitCutSet = true;
-		}
-		else { // 손절 일 때
-			request->Price = intAvg - sym->intTickSize * _CutLoss;
-			request->RequestType = 2;
-			posi->LossCutSet = true;
-		}
-		request->Position = VtPositionType::Sell;
-	} else if (posi->Position == VtPositionType::Sell) { // 매도 포지션일 때
-		if (mode == 0) { // 익절일 때
-			request->Price = intAvg - sym->intTickSize * _CutProfit;
-			request->RequestType = 1;
-			posi->ProfitCutSet = true;
-		} else { // 손절 일 때
-			request->Price = intAvg + sym->intTickSize * _CutLoss;
-			request->RequestType = 2;
-			posi->LossCutSet = true;
-		}
-		request->Position = VtPositionType::Buy;
-	}
-
-	if (_OrderType == 0)
-		request->PriceType = VtPriceType::Market;
-	else
-		request->PriceType = VtPriceType::Price;
-
-	request->Amount = std::abs(posi->OpenQty);
-	request->AccountNo = acnt->AccountNo;
-	request->Password = acnt->Password;
-	request->SymbolCode = sym->ShortCode;
-	request->FillCondition = _FillCondition;
-	request->slip = _OrderTypeSlip;
-	request->SourceId = (long)this;
-	request->SubAccountNo = posi->SubAccountNo;
-	request->FundName = posi->FundName;
-	request->SrcPosition = posi;
-	AddOrderHd(request);
-	return request;
+// 	if (!(posi->Position == VtPositionType::Buy || posi->Position == VtPositionType::Sell))
+// 		return nullptr;
+// 
+// 	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->Decimal), sym->Decimal));
+// 	// 적절한 값을 셀에서 찾기 위하여 나머지를 빼준다.
+// 	intAvg = intAvg - intAvg % sym->intTickSize;
+// 
+// 	std::shared_ptr<HdOrderRequest> request = nullptr;
+// 	std::string keyAccountNo = fund ? posi->SubAccountNo : acnt->AccountNo;
+// 	auto it = CutInfoMap.find(std::make_tuple(keyAccountNo, sym->ShortCode, mode));
+// 	if (it != CutInfoMap.end()) { // 이미 손절이나 익절 스탑이 있는 경우
+// 		request = it->second;
+// 	}
+// 	else { // 익절, 손절 스탑이 전혀 없는 경우
+// 		request = std::make_shared<HdOrderRequest>();
+// 		// 새로운 주문요청번호를 생성하여 대입한다.
+// 		request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+// 		// 펀드일 경우 2, 아닐 경우 0
+// 		request->Type = fund ? 2 : 0;
+// 		CutInfoMap[std::make_tuple(keyAccountNo, sym->ShortCode, mode)] = request;
+// 	}
+// 
+// 	if (posi->Position == VtPositionType::Buy) { // 매수 포지션일 때
+// 		if (mode == 0) { // 익절일 때
+// 			request->Price = intAvg + sym->intTickSize * _CutProfit;
+// 			request->RequestType = 1;
+// 			posi->ProfitCutSet = true;
+// 		}
+// 		else { // 손절 일 때
+// 			request->Price = intAvg - sym->intTickSize * _CutLoss;
+// 			request->RequestType = 2;
+// 			posi->LossCutSet = true;
+// 		}
+// 		request->Position = VtPositionType::Sell;
+// 	} else if (posi->Position == VtPositionType::Sell) { // 매도 포지션일 때
+// 		if (mode == 0) { // 익절일 때
+// 			request->Price = intAvg - sym->intTickSize * _CutProfit;
+// 			request->RequestType = 1;
+// 			posi->ProfitCutSet = true;
+// 		} else { // 손절 일 때
+// 			request->Price = intAvg + sym->intTickSize * _CutLoss;
+// 			request->RequestType = 2;
+// 			posi->LossCutSet = true;
+// 		}
+// 		request->Position = VtPositionType::Buy;
+// 	}
+// 
+// 	if (_OrderType == 0)
+// 		request->PriceType = VtPriceType::Market;
+// 	else
+// 		request->PriceType = VtPriceType::Price;
+// 
+// 	request->Amount = std::abs(posi->OpenQty);
+// 	request->AccountNo = acnt->AccountNo;
+// 	request->Password = acnt->Password;
+// 	request->SymbolCode = sym->ShortCode;
+// 	request->FillCondition = _FillCondition;
+// 	request->slip = _OrderTypeSlip;
+// 	request->SourceId = (long)this;
+// 	request->SubAccountNo = posi->SubAccountNo;
+// 	request->FundName = posi->FundName;
+// 	request->SrcPosition = posi;
+// 	AddOrderHd(request);
+//	return request;
+	return nullptr;
 }
 
 std::shared_ptr<HdOrderRequest> VtCutManager::MakePositionStopOrderRequest(int mode, VtOrder* order, VtSymbol* sym, VtAccount* acnt, VtFund* fund)
@@ -215,172 +216,174 @@ std::shared_ptr<HdOrderRequest> VtCutManager::MakePositionStopOrderRequest(int m
 	if (!order || !sym || !acnt || !_OrderConfigMgr->OrderMgr())
 		return nullptr;
 
-	if (!(order->orderPosition == VtPositionType::Buy || order->orderPosition == VtPositionType::Sell))
-		return nullptr;
-
-	int filledPrice = order->intFilledPrice;
-	
-	std::shared_ptr<HdOrderRequest> request = nullptr;
-	std::string keyAccountNo = order->Type == 0 ? order->AccountNo : order->SubAccountNo;
-	auto it = CutInfoMap.find(std::make_tuple(keyAccountNo, sym->ShortCode, mode));
-	if (it != CutInfoMap.end()) { // 이미 손절이나 익절 스탑이 있는 경우
-		request = it->second;
-	} else { // 익절, 손절 스탑이 전혀 없는 경우
-		request = std::make_shared<HdOrderRequest>();
-		// 새로운 주문요청번호를 생성하여 대입한다.
-		request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
-		request->Type = order->Type;
-		CutInfoMap[std::make_tuple(keyAccountNo, sym->ShortCode, mode)] = request;
-	}
-
-	if (order->orderPosition == VtPositionType::Buy) { // 매수 포지션일 때
-		if (mode == 0) { // 익절일 때
-			request->Price = filledPrice + sym->intTickSize * _CutProfit;
-			request->RequestType = 1;
-			// 익절 감시대상에서 제외
-			order->EnableProfitCut = false;
-		} else { // 손절 일 때
-			request->Price = filledPrice - sym->intTickSize * _CutLoss;
-			request->RequestType = 2;
-			// 손절 감시대상에서 제외
-			order->EnableLossCut = false;
-		}
-		request->Position = VtPositionType::Sell;
-	}
-	else if (order->orderPosition == VtPositionType::Sell) { // 매도 포지션일 때
-		if (mode == 0) { // 익절일 때
-			request->Price = filledPrice - sym->intTickSize * _CutProfit;
-			request->RequestType = 1;
-			// 익절 감시대상에서 제외
-			order->EnableProfitCut = false;
-		}
-		else { // 손절 일 때
-			request->Price = filledPrice + sym->intTickSize * _CutLoss;
-			request->RequestType = 2;
-			// 손절 감시대상에서 제외
-			order->EnableLossCut = false;
-		}
-		request->Position = VtPositionType::Buy;
-	}
-
-	if (_OrderType == 0)
-		request->PriceType = VtPriceType::Market;
-	else
-		request->PriceType = VtPriceType::Price;
-
-	request->Amount = std::abs(order->remainQty);
-	request->AccountNo = acnt->AccountNo;
-	request->Password = acnt->Password;
-	request->SymbolCode = sym->ShortCode;
-	request->FillCondition = _FillCondition;
-	request->slip = _OrderTypeSlip;
-	request->SourceId = (long)this;
-	request->SubAccountNo = order->SubAccountNo;
-	request->FundName = order->FundName;
-	// 청산 대상 주문번호를 넣어 준다.
-	// 주문이 나가 체결되었을 경우 이 번호를 찾아 잔고 목록에서 지워준다.
-	request->LiqReqOrderNo = order->orderNo;
-	AddOrderHd(request);
-	return request;
+// 	if (!(order->orderPosition == VtPositionType::Buy || order->orderPosition == VtPositionType::Sell))
+// 		return nullptr;
+// 
+// 	int filledPrice = order->intFilledPrice;
+// 	
+// 	std::shared_ptr<HdOrderRequest> request = nullptr;
+// 	std::string keyAccountNo = order->Type == 0 ? order->AccountNo : order->SubAccountNo;
+// 	auto it = CutInfoMap.find(std::make_tuple(keyAccountNo, sym->ShortCode, mode));
+// 	if (it != CutInfoMap.end()) { // 이미 손절이나 익절 스탑이 있는 경우
+// 		request = it->second;
+// 	} else { // 익절, 손절 스탑이 전혀 없는 경우
+// 		request = std::make_shared<HdOrderRequest>();
+// 		// 새로운 주문요청번호를 생성하여 대입한다.
+// 		request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+// 		request->Type = order->Type;
+// 		CutInfoMap[std::make_tuple(keyAccountNo, sym->ShortCode, mode)] = request;
+// 	}
+// 
+// 	if (order->orderPosition == VtPositionType::Buy) { // 매수 포지션일 때
+// 		if (mode == 0) { // 익절일 때
+// 			request->Price = filledPrice + sym->intTickSize * _CutProfit;
+// 			request->RequestType = 1;
+// 			// 익절 감시대상에서 제외
+// 			order->EnableProfitCut = false;
+// 		} else { // 손절 일 때
+// 			request->Price = filledPrice - sym->intTickSize * _CutLoss;
+// 			request->RequestType = 2;
+// 			// 손절 감시대상에서 제외
+// 			order->EnableLossCut = false;
+// 		}
+// 		request->Position = VtPositionType::Sell;
+// 	}
+// 	else if (order->orderPosition == VtPositionType::Sell) { // 매도 포지션일 때
+// 		if (mode == 0) { // 익절일 때
+// 			request->Price = filledPrice - sym->intTickSize * _CutProfit;
+// 			request->RequestType = 1;
+// 			// 익절 감시대상에서 제외
+// 			order->EnableProfitCut = false;
+// 		}
+// 		else { // 손절 일 때
+// 			request->Price = filledPrice + sym->intTickSize * _CutLoss;
+// 			request->RequestType = 2;
+// 			// 손절 감시대상에서 제외
+// 			order->EnableLossCut = false;
+// 		}
+// 		request->Position = VtPositionType::Buy;
+// 	}
+// 
+// 	if (_OrderType == 0)
+// 		request->PriceType = VtPriceType::Market;
+// 	else
+// 		request->PriceType = VtPriceType::Price;
+// 
+// 	request->Amount = std::abs(order->remainQty);
+// 	request->AccountNo = acnt->AccountNo;
+// 	request->Password = acnt->Password;
+// 	request->SymbolCode = sym->ShortCode;
+// 	request->FillCondition = _FillCondition;
+// 	request->slip = _OrderTypeSlip;
+// 	request->SourceId = (long)this;
+// 	request->SubAccountNo = order->SubAccountNo;
+// 	request->FundName = order->FundName;
+// 	// 청산 대상 주문번호를 넣어 준다.
+// 	// 주문이 나가 체결되었을 경우 이 번호를 찾아 잔고 목록에서 지워준다.
+// 	request->LiqReqOrderNo = order->orderNo;
+// 	AddOrderHd(request);
+// 	return request;
+	return nullptr;
 }
 
 std::shared_ptr<HdOrderRequest> VtCutManager::MakePositionStopOrderRequest(int mode, VtOrder* order, VtSymbol* sym, VtAccount* acnt)
 {
 	CString msg;
-	msg.Format("MakePositionStopOrderRequest start order_no %d, order_state = %d, order_remain = %d\n", order->orderNo, (int)order->state, order->remainQty);
+	//msg.Format("MakePositionStopOrderRequest start order_no %d, order_state = %d, order_remain = %d\n", order->orderNo, (int)order->state, order->remainQty);
 	TRACE(msg);
 
-	if (!order || !sym || !acnt || !_OrderConfigMgr->OrderMgr())
-		return nullptr;
-
-	if (!(order->orderPosition == VtPositionType::Buy || order->orderPosition == VtPositionType::Sell))
-		return nullptr;
-	// 익절로 청산, 손절로 청산 주문이거나, 주문 잔고가 없을 때는 수행하지 않는다.
-	if (order->RequestType == 1 || order->RequestType == 2 || order->remainQty == 0)
-		return nullptr;
-
-	int filledPrice = order->intFilledPrice;
-
-	std::shared_ptr<HdOrderRequest> request = std::make_shared<HdOrderRequest>();
-	// 새로운 주문요청번호를 생성하여 대입한다.
-	request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
-	// 주문타입 본계좌 0, 서브계좌 1, 펀드 2.
-	request->Type = order->Type;
-
-	if (order->orderPosition == VtPositionType::Buy) { // 매수 포지션일 때
-		if (mode == 0) { // 익절일 때
-			request->RequestType = 1;
-			// 익절 감시대상에서 제외
-			order->EnableProfitCut = false;
-		} else { // 손절 일 때
-			request->RequestType = 2;
-			// 손절 감시대상에서 제외
-			order->EnableLossCut = false;
-		}
-		request->Position = VtPositionType::Sell;
-	} else if (order->orderPosition == VtPositionType::Sell) { // 매도 포지션일 때
-		if (mode == 0) { // 익절일 때
-			request->RequestType = 1;
-			// 익절 감시대상에서 제외
-			order->EnableProfitCut = false;
-		} else { // 손절 일 때
-			request->RequestType = 2;
-			// 손절 감시대상에서 제외
-			order->EnableLossCut = false;
-		}
-		request->Position = VtPositionType::Buy;
-	}
-
-	if (_OrderType == 0)
-		request->PriceType = VtPriceType::Market;
-	else
-		request->PriceType = VtPriceType::Price;
-
-	request->Amount = std::abs(order->remainQty);
-	request->AccountNo = acnt->AccountNo;
-	request->Password = acnt->Password;
-	request->SymbolCode = sym->ShortCode;
-	request->FillCondition = _FillCondition;
-	request->slip = _OrderTypeSlip;
-	request->SourceId = (long)this;
-	request->SubAccountNo = order->SubAccountNo;
-	request->FundName = order->FundName;
-	// 청산 대상 주문번호를 넣어 준다.
-	// 주문이 나가 체결되었을 경우 이 번호를 찾아 잔고 목록에서 지워준다.
-	request->LiqReqOrderNo = order->orderNo;
-	AddOrderHd(request);
-	// 평균값을 계산하여 스탑 위치를 다시 설정한다.
-	RecalPosByAvg(sym);
-
-	msg.Format("MakePositionStopOrderRequest end order_no %d, order_state = %d, order_remain = %d\n", order->orderNo, (int)order->state, order->remainQty);
-	TRACE(msg);
-	
-
-	return request;
+// 	if (!order || !sym || !acnt || !_OrderConfigMgr->OrderMgr())
+// 		return nullptr;
+// 
+// 	if (!(order->orderPosition == VtPositionType::Buy || order->orderPosition == VtPositionType::Sell))
+// 		return nullptr;
+// 	// 익절로 청산, 손절로 청산 주문이거나, 주문 잔고가 없을 때는 수행하지 않는다.
+// 	if (order->RequestType == 1 || order->RequestType == 2 || order->remainQty == 0)
+// 		return nullptr;
+// 
+// 	int filledPrice = order->intFilledPrice;
+// 
+// 	std::shared_ptr<HdOrderRequest> request = std::make_shared<HdOrderRequest>();
+// 	// 새로운 주문요청번호를 생성하여 대입한다.
+// 	request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+// 	// 주문타입 본계좌 0, 서브계좌 1, 펀드 2.
+// 	request->Type = order->Type;
+// 
+// 	if (order->orderPosition == VtPositionType::Buy) { // 매수 포지션일 때
+// 		if (mode == 0) { // 익절일 때
+// 			request->RequestType = 1;
+// 			// 익절 감시대상에서 제외
+// 			order->EnableProfitCut = false;
+// 		} else { // 손절 일 때
+// 			request->RequestType = 2;
+// 			// 손절 감시대상에서 제외
+// 			order->EnableLossCut = false;
+// 		}
+// 		request->Position = VtPositionType::Sell;
+// 	} else if (order->orderPosition == VtPositionType::Sell) { // 매도 포지션일 때
+// 		if (mode == 0) { // 익절일 때
+// 			request->RequestType = 1;
+// 			// 익절 감시대상에서 제외
+// 			order->EnableProfitCut = false;
+// 		} else { // 손절 일 때
+// 			request->RequestType = 2;
+// 			// 손절 감시대상에서 제외
+// 			order->EnableLossCut = false;
+// 		}
+// 		request->Position = VtPositionType::Buy;
+// 	}
+// 
+// 	if (_OrderType == 0)
+// 		request->PriceType = VtPriceType::Market;
+// 	else
+// 		request->PriceType = VtPriceType::Price;
+// 
+// 	request->Amount = std::abs(order->remainQty);
+// 	request->AccountNo = acnt->AccountNo;
+// 	request->Password = acnt->Password;
+// 	request->SymbolCode = sym->ShortCode;
+// 	request->FillCondition = _FillCondition;
+// 	request->slip = _OrderTypeSlip;
+// 	request->SourceId = (long)this;
+// 	request->SubAccountNo = order->SubAccountNo;
+// 	request->FundName = order->FundName;
+// 	// 청산 대상 주문번호를 넣어 준다.
+// 	// 주문이 나가 체결되었을 경우 이 번호를 찾아 잔고 목록에서 지워준다.
+// 	request->LiqReqOrderNo = order->orderNo;
+// 	AddOrderHd(request);
+// 	// 평균값을 계산하여 스탑 위치를 다시 설정한다.
+// 	RecalPosByAvg(sym);
+// 
+// 	msg.Format("MakePositionStopOrderRequest end order_no %d, order_state = %d, order_remain = %d\n", order->orderNo, (int)order->state, order->remainQty);
+// 	TRACE(msg);
+// 	
+// 
+// 	return request;
+	return nullptr;
 }
 
 void VtCutManager::MakePairStopOrderRequest(VtPosition* posi, VtSymbol* sym, VtAccount* acnt, VtFund* fund)
 {
 	std::shared_ptr<HdOrderRequest> profitReq = MakePositionStopOrderRequest(0, posi, sym, acnt, fund);
 	std::shared_ptr<HdOrderRequest> lossReq = MakePositionStopOrderRequest(1, posi, sym, acnt, fund);
-	if (profitReq && lossReq) {
-		profitReq->Paired = true;
-		profitReq->PairedReq = lossReq;
-		lossReq->Paired = true;
-		lossReq->PairedReq = profitReq;
-	}
+// 	if (profitReq && lossReq) {
+// 		profitReq->Paired = true;
+// 		profitReq->PairedReq = lossReq;
+// 		lossReq->Paired = true;
+// 		lossReq->PairedReq = profitReq;
+// 	}
 }
 
 void VtCutManager::MakePairStopOrderRequest(VtOrder* order, VtSymbol* sym, VtAccount* acnt)
 {
 	std::shared_ptr<HdOrderRequest> profitReq = MakePositionStopOrderRequest(0, order, sym, acnt);
 	std::shared_ptr<HdOrderRequest> lossReq = MakePositionStopOrderRequest(1, order, sym, acnt);
-	if (profitReq && lossReq) {
-		profitReq->Paired = true;
-		profitReq->PairedReq = lossReq;
-		lossReq->Paired = true;
-		lossReq->PairedReq = profitReq;
-	}
+// 	if (profitReq && lossReq) {
+// 		profitReq->Paired = true;
+// 		profitReq->PairedReq = lossReq;
+// 		lossReq->Paired = true;
+// 		lossReq->PairedReq = profitReq;
+// 	}
 }
 
 void VtCutManager::AddStopOrderForFilled(VtSymbol* sym, VtOrder* order)
@@ -418,35 +421,35 @@ void VtCutManager::AddStopOrderForFilled(VtSymbol* sym, VtOrder* order)
 		acnt = _OrderConfigMgr->Fund()->GetParentAccount(order->SubAccountNo);
 	}
 	*/
-	VtAccount* acnt = nullptr;
-	if (_OrderConfigMgr->Type() == 0) {  // 실계좌나 서브계좌 주문일때
-		acnt = _OrderConfigMgr->Account();
-		if (acnt->AccountLevel() != 0) { //  서브계좌 주문일 때
-			acnt = acnt->ParentAccount();
-		}
-	}
-	else { // 펀드주문일 때
-		acnt = _OrderConfigMgr->Fund()->GetParentAccount(order->SubAccountNo);
-	}
-
-	msg.Format("AddStopOrderForFilled3:: order->no = %d, order_state = %d, order_remain = %d, order_type = %d\n", order->orderNo, (int)order->state, order->remainQty, order->Type);
-	TRACE(msg);
-
-	if (!acnt)
-		return;
-
-	
-	msg.Format("AddStopOrderForFilled4:: order->no = %d, order_state = %d, order_remain = %d, order_type = %d\n", order->orderNo, (int)order->state, order->remainQty, order->Type);
-	TRACE(msg);
-
-	if (mode == 0 || mode == 1) // 익절만 혹은 손절만 설정되어 있는 경우
-		MakePositionStopOrderRequest(mode, order, sym, acnt);
-	else { // 익절, 손절 동시에 설정되어 있는 경우
-		MakePairStopOrderRequest(order, sym, acnt);
-	}
-
-	msg.Format("AddStopOrderForFilled5:: order->no = %d, order_state = %d, order_remain = %d, order_type = %d\n", order->orderNo, (int)order->state, order->remainQty, order->Type);
-	TRACE(msg);
+// 	VtAccount* acnt = nullptr;
+// 	if (_OrderConfigMgr->Type() == 0) {  // 실계좌나 서브계좌 주문일때
+// 		acnt = _OrderConfigMgr->Account();
+// 		if (acnt->AccountLevel() != 0) { //  서브계좌 주문일 때
+// 			acnt = acnt->ParentAccount();
+// 		}
+// 	}
+// 	else { // 펀드주문일 때
+// 		acnt = _OrderConfigMgr->Fund()->GetParentAccount(order->SubAccountNo);
+// 	}
+// 
+// 	msg.Format("AddStopOrderForFilled3:: order->no = %d, order_state = %d, order_remain = %d, order_type = %d\n", order->orderNo, (int)order->state, order->remainQty, order->Type);
+// 	TRACE(msg);
+// 
+// 	if (!acnt)
+// 		return;
+// 
+// 	
+// 	msg.Format("AddStopOrderForFilled4:: order->no = %d, order_state = %d, order_remain = %d, order_type = %d\n", order->orderNo, (int)order->state, order->remainQty, order->Type);
+// 	TRACE(msg);
+// 
+// 	if (mode == 0 || mode == 1) // 익절만 혹은 손절만 설정되어 있는 경우
+// 		MakePositionStopOrderRequest(mode, order, sym, acnt);
+// 	else { // 익절, 손절 동시에 설정되어 있는 경우
+// 		MakePairStopOrderRequest(order, sym, acnt);
+// 	}
+// 
+// 	msg.Format("AddStopOrderForFilled5:: order->no = %d, order_state = %d, order_remain = %d, order_type = %d\n", order->orderNo, (int)order->state, order->remainQty, order->Type);
+// 	TRACE(msg);
 	
 }
 
@@ -454,40 +457,40 @@ void VtCutManager::MakePositionStopByRemain(int mode, VtSymbol* sym)
 {
 	if (!sym || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
-	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
-	// 잔고 목록이 비어 있으면 수행하지 않는다.
-	if (remainMap.size() == 0)
-		return;
-	VtAccount* acnt = nullptr;
-	if (_OrderConfigMgr->Type() == 0) {  // 계좌 주문일때
-		acnt = _OrderConfigMgr->Account();
-		if (!acnt) // 계좌가 없으면 탈출
-			return;
-
-		for (auto it = remainMap.begin(); it != remainMap.end(); ++it) {
-			VtOrder* order = it->second;
-			if (mode == 0 || mode == 1) { // 손절만 혹은 익절만 설정되어 있을 경우
-				MakePositionStopOrderRequest(mode, order, sym, acnt);
-			} else { // 손절, 익절 동시에 설정되어 있을 경우
-				MakePairStopOrderRequest(order, sym, acnt);
-			}
-		}
-	} else { // 펀드 주문일 경우
-		VtFund* fund = _OrderConfigMgr->Fund();
-		for (auto it = remainMap.begin(); it != remainMap.end(); ++it) {
-			VtOrder* order = it->second;
-			// 부모 계좌를 가져온다.
-			acnt = fund->GetParentAccount(order->SubAccountNo);
-			if (!acnt)
-				continue;
-
-			if (mode == 0 || mode == 1) { // 손절만 혹은 익절만 설정되어 있을 경우
-				MakePositionStopOrderRequest(mode, order, sym, acnt);
-			} else { // 손절, 익절 동시에 설정되어 있을 경우
-				MakePairStopOrderRequest(order, sym, acnt);
-			}
-		}
-	}
+// 	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
+// 	// 잔고 목록이 비어 있으면 수행하지 않는다.
+// 	if (remainMap.size() == 0)
+// 		return;
+// 	VtAccount* acnt = nullptr;
+// 	if (_OrderConfigMgr->Type() == 0) {  // 계좌 주문일때
+// 		acnt = _OrderConfigMgr->Account();
+// 		if (!acnt) // 계좌가 없으면 탈출
+// 			return;
+// 
+// 		for (auto it = remainMap.begin(); it != remainMap.end(); ++it) {
+// 			VtOrder* order = it->second;
+// 			if (mode == 0 || mode == 1) { // 손절만 혹은 익절만 설정되어 있을 경우
+// 				MakePositionStopOrderRequest(mode, order, sym, acnt);
+// 			} else { // 손절, 익절 동시에 설정되어 있을 경우
+// 				MakePairStopOrderRequest(order, sym, acnt);
+// 			}
+// 		}
+// 	} else { // 펀드 주문일 경우
+// 		VtFund* fund = _OrderConfigMgr->Fund();
+// 		for (auto it = remainMap.begin(); it != remainMap.end(); ++it) {
+// 			VtOrder* order = it->second;
+// 			// 부모 계좌를 가져온다.
+// 			acnt = fund->GetParentAccount(order->SubAccountNo);
+// 			if (!acnt)
+// 				continue;
+// 
+// 			if (mode == 0 || mode == 1) { // 손절만 혹은 익절만 설정되어 있을 경우
+// 				MakePositionStopOrderRequest(mode, order, sym, acnt);
+// 			} else { // 손절, 익절 동시에 설정되어 있을 경우
+// 				MakePairStopOrderRequest(order, sym, acnt);
+// 			}
+// 		}
+// 	}
 }
 
 // 손절, 익절이 걸려 있지 않을 때 수동 설정하는 함수
@@ -495,58 +498,58 @@ void VtCutManager::MakePositionStopByRemain(VtSymbol* sym)
 {
 	if (!sym || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
-	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
-	// 잔고 목록이 비어 있으면 수행하지 않는다.
-	if (remainMap.size() == 0)
-		return;
-	// 모드를 확인한다.
-	int mode = _EnableCutProfit && _EnableCutLoss ? 2 : (_EnableCutProfit ? 0 : 1);
-	VtAccount* acnt = nullptr;
-	if (_OrderConfigMgr->Type() == 0) {  // 실계좌 주문일때 서브 계좌 주문일 때
-		acnt = _OrderConfigMgr->Account();
-		if (acnt->AccountLevel() != 0) { // 서브 계좌일 경우 부모 계좌를 가져 온다.
-			acnt = acnt->ParentAccount();
-		}
-		if (!acnt) // 계좌가 없으면 탈출
-			return;
-
-		for (auto it = remainMap.begin(); it != remainMap.end(); ++it) {
-			VtOrder* order = it->second;
-			if (mode == 0 || mode == 1) { // 손절만 혹은 익절만 설정되어 있을 경우
-				MakePositionStopOrderRequest(mode, order, sym, acnt);
-			} else { // 손절, 익절 동시에 설정되어 있을 경우
-				MakePairStopOrderRequest(order, sym, acnt);
-			}
-		}
-	}
-	else { // 펀드 주문일 경우
-		VtFund* fund = _OrderConfigMgr->Fund();
-		for (auto it = remainMap.begin(); it != remainMap.end(); ++it) {
-			VtOrder* order = it->second;
-			// 부모 계좌를 가져온다.
-			acnt = fund->GetParentAccount(order->SubAccountNo);
-			if (!acnt)
-				continue;
-
-			if (mode == 0 || mode == 1) { // 손절만 혹은 익절만 설정되어 있을 경우
-				MakePositionStopOrderRequest(mode, order, sym, acnt);
-			} else { // 손절, 익절 동시에 설정되어 있을 경우
-				MakePairStopOrderRequest(order, sym, acnt);
-			}
-		}
-	}
+// 	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
+// 	// 잔고 목록이 비어 있으면 수행하지 않는다.
+// 	if (remainMap.size() == 0)
+// 		return;
+// 	// 모드를 확인한다.
+// 	int mode = _EnableCutProfit && _EnableCutLoss ? 2 : (_EnableCutProfit ? 0 : 1);
+// 	VtAccount* acnt = nullptr;
+// 	if (_OrderConfigMgr->Type() == 0) {  // 실계좌 주문일때 서브 계좌 주문일 때
+// 		acnt = _OrderConfigMgr->Account();
+// 		if (acnt->AccountLevel() != 0) { // 서브 계좌일 경우 부모 계좌를 가져 온다.
+// 			acnt = acnt->ParentAccount();
+// 		}
+// 		if (!acnt) // 계좌가 없으면 탈출
+// 			return;
+// 
+// 		for (auto it = remainMap.begin(); it != remainMap.end(); ++it) {
+// 			VtOrder* order = it->second;
+// 			if (mode == 0 || mode == 1) { // 손절만 혹은 익절만 설정되어 있을 경우
+// 				MakePositionStopOrderRequest(mode, order, sym, acnt);
+// 			} else { // 손절, 익절 동시에 설정되어 있을 경우
+// 				MakePairStopOrderRequest(order, sym, acnt);
+// 			}
+// 		}
+// 	}
+// 	else { // 펀드 주문일 경우
+// 		VtFund* fund = _OrderConfigMgr->Fund();
+// 		for (auto it = remainMap.begin(); it != remainMap.end(); ++it) {
+// 			VtOrder* order = it->second;
+// 			// 부모 계좌를 가져온다.
+// 			acnt = fund->GetParentAccount(order->SubAccountNo);
+// 			if (!acnt)
+// 				continue;
+// 
+// 			if (mode == 0 || mode == 1) { // 손절만 혹은 익절만 설정되어 있을 경우
+// 				MakePositionStopOrderRequest(mode, order, sym, acnt);
+// 			} else { // 손절, 익절 동시에 설정되어 있을 경우
+// 				MakePairStopOrderRequest(order, sym, acnt);
+// 			}
+// 		}
+// 	}
 }
 
 void VtCutManager::UpdateCutInfo()
 {
-	VtSymbol* sym = nullptr;
-	for (auto it = StopOrderMapHd.begin(); it != StopOrderMapHd.end(); it++)
-	{
-		std::shared_ptr<HdOrderRequest> order = it->second;
-		sym = mainApp.SymbolMgr().FindSymbol(order->SymbolCode);
-		if (!sym)
-			continue;
-	}
+// 	VtSymbol* sym = nullptr;
+// 	for (auto it = StopOrderMapHd.begin(); it != StopOrderMapHd.end(); it++)
+// 	{
+// 		std::shared_ptr<HdOrderRequest> order = it->second;
+// 		sym = mainApp.SymbolMgr().FindSymbol(order->SymbolCode);
+// 		if (!sym)
+// 			continue;
+// 	}
 }
 
 void VtCutManager::ApplyProfitLossForPosition(VtSymbol* sym)
@@ -578,48 +581,49 @@ bool VtCutManager::CheckCutLoss(VtPosition* posi, VtSymbol* sym, int tickCount)
 {
 	if (!sym)
 		return false;
-	if (!posi || posi->OpenQty == 0)
-		return false;
-	// 틱크기 * 틱수 * 승수 = 실제 수익
-	int target = sym->intTickSize * tickCount * sym->Seungsu;
-
-	target = -1 * target;
-	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) <= (double)target)
-		return true;
-	else
-		return false;
+// 	if (!posi || posi->OpenQty == 0)
+// 		return false;
+// 	// 틱크기 * 틱수 * 승수 = 실제 수익
+// 	int target = sym->intTickSize * tickCount * sym->Seungsu;
+// 
+// 	target = -1 * target;
+// 	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) <= (double)target)
+// 		return true;
+// 	else
+// 		return false;
+	return false;
 }
 
 bool VtCutManager::CheckCutLoss(VtOrder* order, VtSymbol* sym, int cutTick)
 {
-	if (!_EnableCutLoss || !sym || !order || order->EnableLossCut)
-		return false;
+	//if (!_EnableCutLoss || !sym || !order || order->EnableLossCut)
+	//	return false;
 
 	// 체결된 값을 넣어 준다.
-	int targetValue = order->intFilledPrice;
-	if (order->orderPosition == VtPositionType::Buy) { // 잔고가 매수일 때
-		// 손실 확인 이므로 체결된 값에서 틱크기만큼 빼준다.
-		targetValue -= cutTick * sym->intTickSize;
-		// 지정된 값보다 작거나 같으면 터치했다고 보고 컷신호 발사
-		if (sym->Quote.intClose <= targetValue) {
-			// 여기서 청산 주문을 내준다.
-			PutOrder(order, sym, 2, VtPriceType::Price);
-			// 이미 청산 명렬이 내려졌으므로 더이상 손절 확인을 하지 않게 한다.
-			order->EnableLossCut = false;
-			return true;
-		}
-	} else if (order->orderPosition == VtPositionType::Sell) { // 잔고가 매도일 때
-		// 손실 확인 이므로 체결된 값에서 틱크기만큼 더해준다.
-		targetValue += cutTick * sym->intTickSize;
-		// 지정된 값보다 크거나 같으면 터치했다고 보고 컷신호 발사
-		if (sym->Quote.intClose >= targetValue) {
-			// 여기서 청산 주문을 내준다.
-			PutOrder(order, sym, 2, VtPriceType::Price);
-			// 이미 청산 명렬이 내려졌으므로 더이상 손절 확인을 하지 않게 한다.
-			order->EnableLossCut = false;
-			return true;
-		}
-	}
+// 	int targetValue = order->intFilledPrice;
+// 	if (order->orderPosition == VtPositionType::Buy) { // 잔고가 매수일 때
+// 		// 손실 확인 이므로 체결된 값에서 틱크기만큼 빼준다.
+// 		targetValue -= cutTick * sym->intTickSize;
+// 		// 지정된 값보다 작거나 같으면 터치했다고 보고 컷신호 발사
+// 		if (sym->Quote.intClose <= targetValue) {
+// 			// 여기서 청산 주문을 내준다.
+// 			PutOrder(order, sym, 2, VtPriceType::Price);
+// 			// 이미 청산 명렬이 내려졌으므로 더이상 손절 확인을 하지 않게 한다.
+// 			order->EnableLossCut = false;
+// 			return true;
+// 		}
+// 	} else if (order->orderPosition == VtPositionType::Sell) { // 잔고가 매도일 때
+// 		// 손실 확인 이므로 체결된 값에서 틱크기만큼 더해준다.
+// 		targetValue += cutTick * sym->intTickSize;
+// 		// 지정된 값보다 크거나 같으면 터치했다고 보고 컷신호 발사
+// 		if (sym->Quote.intClose >= targetValue) {
+// 			// 여기서 청산 주문을 내준다.
+// 			PutOrder(order, sym, 2, VtPriceType::Price);
+// 			// 이미 청산 명렬이 내려졌으므로 더이상 손절 확인을 하지 않게 한다.
+// 			order->EnableLossCut = false;
+// 			return true;
+// 		}
+// 	}
 	return false;
 }
 
@@ -631,81 +635,82 @@ bool VtCutManager::CheckCutProfit(VtPosition* posi, VtSymbol* sym, int size)
 	if (!posi)
 		return false;
 	// 틱크기 * 틱수 * 승수 = 실제 수익
-	int target = sym->intTickSize * size * sym->Seungsu;
-
-	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) >= (double)target)
-		return true;
-	else
-		return false;
+// 	int target = sym->intTickSize * size * sym->Seungsu;
+// 
+// 	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) >= (double)target)
+// 		return true;
+// 	else
+// 		return false;
+	return false;
 }
 
 bool VtCutManager::CheckCutProfit(VtOrder* order, VtSymbol* sym, int cutTick)
 {
-	if (!_EnableCutProfit || !sym || !order || order->EnableProfitCut)
-		return false;
-
-	// 체결된 값을 넣어 준다.
-	int targetValue = order->intFilledPrice;
-	if (order->orderPosition == VtPositionType::Buy) { // 잔고가 매수일 때
-		// 이익 확인 이므로 체결된 값에서 틱크기만큼 더해준다.
-		targetValue += cutTick * sym->intTickSize;
-		// 종가가 지정된 값보다 크거나 같으면 터치했다고 보고 컷신호 발사
-		if (sym->Quote.intClose >= targetValue) {
-			// 여기서 청산 주문을 내준다.
-			PutOrder(order, sym, 1, VtPriceType::Price);
-			// 이미 청산 명렬이 내려졌으므로 더이상 익절 확인을 하지 않게 한다.
-			order->EnableProfitCut = false;
-			return true;
-		}
-	}
-	else if (order->orderPosition == VtPositionType::Sell) { // 잔고가 매도일 때
-		// 이익 확인 이므로 체결된 값에서 틱크기만큼 빼준다.
-		targetValue -= cutTick * sym->intTickSize;
-		// 지정된 값보다 작거나 같으면 터치했다고 보고 컷신호 발사
-		if (sym->Quote.intClose <= targetValue) {
-			// 여기서 청산 주문을 내준다.
-			PutOrder(order, sym, 1, VtPriceType::Price);
-			// 이미 청산 명렬이 내려졌으므로 더이상 익절 확인을 하지 않게 한다.
-			order->EnableProfitCut = false;
-			return true;
-		}
-	}
+// 	if (!_EnableCutProfit || !sym || !order || order->EnableProfitCut)
+// 		return false;
+// 
+// 	// 체결된 값을 넣어 준다.
+// 	int targetValue = order->intFilledPrice;
+// 	if (order->orderPosition == VtPositionType::Buy) { // 잔고가 매수일 때
+// 		// 이익 확인 이므로 체결된 값에서 틱크기만큼 더해준다.
+// 		targetValue += cutTick * sym->intTickSize;
+// 		// 종가가 지정된 값보다 크거나 같으면 터치했다고 보고 컷신호 발사
+// 		if (sym->Quote.intClose >= targetValue) {
+// 			// 여기서 청산 주문을 내준다.
+// 			PutOrder(order, sym, 1, VtPriceType::Price);
+// 			// 이미 청산 명렬이 내려졌으므로 더이상 익절 확인을 하지 않게 한다.
+// 			order->EnableProfitCut = false;
+// 			return true;
+// 		}
+// 	}
+// 	else if (order->orderPosition == VtPositionType::Sell) { // 잔고가 매도일 때
+// 		// 이익 확인 이므로 체결된 값에서 틱크기만큼 빼준다.
+// 		targetValue -= cutTick * sym->intTickSize;
+// 		// 지정된 값보다 작거나 같으면 터치했다고 보고 컷신호 발사
+// 		if (sym->Quote.intClose <= targetValue) {
+// 			// 여기서 청산 주문을 내준다.
+// 			PutOrder(order, sym, 1, VtPriceType::Price);
+// 			// 이미 청산 명렬이 내려졌으므로 더이상 익절 확인을 하지 않게 한다.
+// 			order->EnableProfitCut = false;
+// 			return true;
+// 		}
+// 	}
 	return false;
 }
 
 bool VtCutManager::CheckCutLossByPercent(VtPosition* posi, VtSymbol* sym, double percent)
 {
-	double avg = posi->AvgPrice;
-	double dif = avg * percent / 100.0;
-	double curPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
-	if (posi->Position == VtPositionType::Buy) {
-		if (curPrice <= avg - dif) {
-			return true;
-		}
-	}
-	else if (posi->Position == VtPositionType::Sell) {
-		if (curPrice >= avg + dif) {
-			return true;
-		}
-	}
+// 	double avg = posi->AvgPrice;
+// 	double dif = avg * percent / 100.0;
+// 	double curPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
+// 	if (posi->Position == VtPositionType::Buy) {
+// 		if (curPrice <= avg - dif) {
+// 			return true;
+// 		}
+// 	}
+// 	else if (posi->Position == VtPositionType::Sell) {
+// 		if (curPrice >= avg + dif) {
+// 			return true;
+// 		}
+// 	}
 	return false;
 }
 
 bool VtCutManager::CheckCutProfitByPercent(VtPosition* posi, VtSymbol* sym, double percent)
 {
-	double avg = posi->AvgPrice;
-	double dif = avg * percent / 100.0;
-	double curPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
-	if (posi->Position == VtPositionType::Buy) {
-		if (curPrice >= avg + dif) {
-			return true;
-		}
-	}
-	else if (posi->Position == VtPositionType::Sell) {
-		if (curPrice <= avg - dif) {
-			return true;
-		}
-	}
+// 	double avg = posi->AvgPrice;
+// 	double dif = avg * percent / 100.0;
+// 	double curPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
+// 	if (posi->Position == VtPositionType::Buy) {
+// 		if (curPrice >= avg + dif) {
+// 			return true;
+// 		}
+// 	}
+// 	else if (posi->Position == VtPositionType::Sell) {
+// 		if (curPrice <= avg - dif) {
+// 			return true;
+// 		}
+// 	}
 	return false;
 }
 
@@ -713,6 +718,7 @@ bool VtCutManager::CheckProfitLoss(VtSymbol* sym)
 {
 	if (!sym)
 		return false;
+	/*
 	// 잔고 주문 목록을 가져온다.
 	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
 	// 잔고가 없으면 처리하지 않는다.
@@ -725,6 +731,7 @@ bool VtCutManager::CheckProfitLoss(VtSymbol* sym)
 			CheckCutProfit(order, sym, _CutProfit); // 익절 확인을 한다.
 		}
 	}
+	*/
 
 	return false;
 }
@@ -733,7 +740,7 @@ void VtCutManager::LiqudAll(VtSymbol* sym, VtPriceType priceType, int price)
 {
 	if (!sym)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) {
 		auto remain = GetTotalRemain(sym, _OrderConfigMgr->OrderMgr());
 		if (remain.first == 0)
@@ -757,14 +764,14 @@ void VtCutManager::LiqudAll(VtSymbol* sym, VtPriceType priceType, int price)
 		}
 	}
 
-	
+	*/
 }
 
 std::pair<int, VtOrder*> VtCutManager::GetTotalRemain(VtSymbol* sym, VtOrderManager* orderMgr)
 {
 	if (!sym || !orderMgr)
 		return std::make_pair(0, nullptr);
-
+	/*
 	std::map<std::string, VtOrder*> remainMap = orderMgr->GetTotalRemain(sym->ShortCode);
 	// 잔고 목록이 비어 있으면 수행하지 않는다.
 	if (remainMap.size() == 0)
@@ -776,15 +783,17 @@ std::pair<int, VtOrder*> VtCutManager::GetTotalRemain(VtSymbol* sym, VtOrderMana
 		topOrder = it->second;
 		total += it->second->remainQty;
 	}
-
+	
 	return std::make_pair(total, topOrder);;
+	*/
+	return std::make_pair(0, nullptr);
 }
 
 int VtCutManager::GetAvg(VtSymbol* sym)
 {
 	if (!sym)
 		return -1;
-
+	/*
 	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
 	// 잔고 목록이 비어 있으면 수행하지 않는다.
 	if (remainMap.size() == 0)
@@ -798,6 +807,8 @@ int VtCutManager::GetAvg(VtSymbol* sym)
 	int avg = total / remainMap.size();
 	avg = avg - avg % sym->intTickSize;
 	return avg;
+	*/
+	return 1;
 }
 
 void VtCutManager::RecalPosByAvg(VtSymbol* sym)
@@ -805,6 +816,7 @@ void VtCutManager::RecalPosByAvg(VtSymbol* sym)
 	if (!sym)
 		return;
 	int avg = GetAvg(sym);
+	/*
 	for (auto it = StopOrderMapHd.begin(); it != StopOrderMapHd.end(); ++it) {
 		std::shared_ptr<HdOrderRequest> request = it->second;
 		// 매도나 매수일 때 각각 위치가 다르다.
@@ -823,42 +835,45 @@ void VtCutManager::RecalPosByAvg(VtSymbol* sym)
 				request->Price = avg - sym->intTickSize * _CutLoss;
 		}
 	}
+	*/
 }
 
 VtPosition* VtCutManager::FindPositionByOrder(VtOrder* order)
 {
 	if (!order)
 		return nullptr;
-	if (_OrderConfigMgr->Type() == 0) { // 계좌 주문일 때
-		if (!_OrderConfigMgr->Account())
-			return nullptr;
-
-		VtAccount* acnt = _OrderConfigMgr->Account();
-		return acnt->FindPosition(order->shortCode);
-	} else { // 펀드 주문일 때
-		if (!_OrderConfigMgr->Fund())
-			return nullptr;
-		VtFund* fund = _OrderConfigMgr->Fund();
-		return fund->FindPosition(order->SubAccountNo, order->shortCode);
-	}
+// 	if (_OrderConfigMgr->Type() == 0) { // 계좌 주문일 때
+// 		if (!_OrderConfigMgr->Account())
+// 			return nullptr;
+// 
+// 		VtAccount* acnt = _OrderConfigMgr->Account();
+// 		return acnt->FindPosition(order->shortCode);
+// 	} else { // 펀드 주문일 때
+// 		if (!_OrderConfigMgr->Fund())
+// 			return nullptr;
+// 		VtFund* fund = _OrderConfigMgr->Fund();
+// 		return fund->FindPosition(order->SubAccountNo, order->shortCode);
+// 	}
+	return nullptr;
 }
 
 void VtCutManager::RemoveCutInfo(std::shared_ptr<HdOrderRequest> req, bool resetProfitLoss)
 {
 	if (!req)
 		return;
-	auto keyAccount = req->Type == 0 ? req->AccountNo : req->SubAccountNo;
-	auto it = CutInfoMap.find(std::make_tuple(keyAccount, req->SymbolCode, req->RequestType == 1 ? 0 : 1));
-	if (it != CutInfoMap.end()) { // 익절, 손절 정보 객체가 목록에 있는 경우
-		CutInfoMap.erase(it);
-	}
+// 	auto keyAccount = req->Type == 0 ? req->AccountNo : req->SubAccountNo;
+// 	auto it = CutInfoMap.find(std::make_tuple(keyAccount, req->SymbolCode, req->RequestType == 1 ? 0 : 1));
+// 	if (it != CutInfoMap.end()) { // 익절, 손절 정보 객체가 목록에 있는 경우
+// 		CutInfoMap.erase(it);
+// 	}
 }
 
 void VtCutManager::PutOrder(VtOrder* order, VtSymbol* sym, int reqType, VtPriceType priceType)
 {
+	/*
 	if (!order || !sym || !_OrderConfigMgr || order->remainQty == 0)
 		return;
-
+	
 	VtAccount* acnt = nullptr;
 	if (order->Type == 0) { // 실계좌 주문
 		acnt = mainApp.AcntMgr().FindAccount(order->AccountNo);
@@ -922,10 +937,12 @@ void VtCutManager::PutOrder(VtOrder* order, VtSymbol* sym, int reqType, VtPriceT
 	request->LiqReqOrderNo = order->orderNo;
 
 	_OrderConfigMgr->OrderMgr()->PutOrder(request);
+	*/
 }
 
 void VtCutManager::LiqudOrder(VtSymbol* sym, VtOrder* order, int totalRemain, VtPriceType priceType, int price)
 {
+	/*
 	VtAccount* acnt = nullptr;
 	if (order->Type == 0)
 		acnt = mainApp.AcntMgr().FindAccount(order->AccountNo);
@@ -975,5 +992,6 @@ void VtCutManager::LiqudOrder(VtSymbol* sym, VtOrder* order, int totalRemain, Vt
 	request->RequestType = 1;
 
 	_OrderConfigMgr->OrderMgr()->PutOrder(request);
+	*/
 }
 

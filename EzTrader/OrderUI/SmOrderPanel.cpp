@@ -1,23 +1,23 @@
 // SmOrderPanel.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "SmOrderPanel.h"
 #include "afxdialogex.h"
-#include "../Task/SmCallbackManager.h"
+//#include "../Task/SmCallbackManager.h"
 #include <functional>
 #include "../OrderUI/VtOrderConfigManager.h"
 #include "../resource.h"
 //#include "VtOrderDialogManager.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Account/VtAccount.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Account/VtAccount.h"
 //#include "../Order/VtOrderManagerSelector.h"
-#include "../Symbol/VtRealtimeRegisterManager.h"
-#include "../Account/VtAccountManager.h"
+//#include "../Symbol/VtRealtimeRegisterManager.h"
+//#include "../Account/VtAccountManager.h"
 //#include "../Global/MainBeetle.h"
-#include "../Order/VtOrderManager.h"
-#include "../Order/VtProductOrderManager.h"
+//#include "../Order/VtOrderManager.h"
+//#include "../Order/VtProductOrderManager.h"
 //#include "../Order/VtProductOrderManagerSelector.h"
 
 //#include "HdSymbolSelecter.h"
@@ -25,18 +25,18 @@
 #include "VtOrderConfigDlg.h"
 #include "VtOrderGridConfig.h"
 //#include "HdScheduler.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Archieve/VtSaveManager.h"
-#include "../Fund/VtFund.h"
-#include "../Order/VtFundOrderManager.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Archieve/VtSaveManager.h"
+//#include "../Fund/VtFund.h"
+//#include "../Order/VtFundOrderManager.h"
 #include "VtCutManager.h"
 #include <map>
 #include "VtLayoutManager.h"
-#include "../Task/SmCallbackManager.h"
-#include "../Symbol/SmMarketManager.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Symbol/SmMarketManager.h"
 #include "../Util/SmUtil.h"
-#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
 
 
 //using Poco::NumberParser;
@@ -52,10 +52,10 @@ using namespace std::placeholders;
 
 // SmOrderPanel dialog
 
-IMPLEMENT_DYNAMIC(SmOrderPanel, CDialogEx)
+IMPLEMENT_DYNAMIC(SmOrderPanel, CDialog)
 
 SmOrderPanel::SmOrderPanel(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_ORDER_PANEL, pParent)
+	: CDialog(IDD_ORDER_PANEL, pParent)
 {
 	_ParentDlg = nullptr;
 	_Symbol = nullptr;
@@ -124,7 +124,7 @@ void SmOrderPanel::OrderConfigMgr(VtOrderConfigManager* val)
 
 void SmOrderPanel::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_ORDER_GRID, m_Grid);
 	DDX_Control(pDX, IDC_STATIC_REAL_TICK, _TickGrid);
 	DDX_Control(pDX, IDC_COMBO_PRODUCT_HD, _ComboSymbol);
@@ -152,7 +152,7 @@ void SmOrderPanel::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(SmOrderPanel, CDialogEx)
+BEGIN_MESSAGE_MAP(SmOrderPanel, CDialog)
 	ON_WM_CLOSE()
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
@@ -171,7 +171,7 @@ BEGIN_MESSAGE_MAP(SmOrderPanel, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_REMAIN, &SmOrderPanel::OnBnClickedBtnRemain)
 	ON_BN_CLICKED(IDC_BTN_SEL_SYMBOL, &SmOrderPanel::OnBnClickedBtnSelSymbol)
 	ON_STN_CLICKED(IDC_STATIC_MSG, &SmOrderPanel::OnStnClickedStaticMsg)
-	ON_BN_CLICKED(IDC_STATIC_FILL_PL, &SmOrderPanel::OnBnClickedStaticFillPl)
+	//ON_BN_CLICKED(IDC_STATIC_FILL_PL, &SmOrderPanel::OnBnClickedStaticFillPl)
 	ON_BN_CLICKED(IDC_BUTTON_SETTING, &SmOrderPanel::OnBnClickedButtonSetting)
 	ON_BN_CLICKED(IDC_BUTTON_PROFIT_LOSS, &SmOrderPanel::OnBnClickedButtonProfitLoss)
 	ON_STN_CLICKED(IDC_STATIC_ORDER_PANEL, &SmOrderPanel::OnStnClickedStaticOrderPanel)
@@ -237,7 +237,7 @@ void SmOrderPanel::OnCbnSelchangeComboProductHd()
 		if (!sym)
 			return;
 		ChangeSymbol(sym);
-		sym->GetSymbolMaster();
+		//sym->GetSymbolMaster();
 	}
 }
 
@@ -481,12 +481,12 @@ void SmOrderPanel::OnBnClickedBtnRemainFund()
 	if (_OrderConfigMgr->Type() == 0) { // 게좌 주문 일 때
 		if (!_OrderConfigMgr->Account())
 			return;
-		curRemain = _OrderConfigMgr->Account()->GetRemainCount(_Symbol->ShortCode);
+		//curRemain = _OrderConfigMgr->Account()->GetRemainCount(_Symbol->ShortCode);
 	}
 	else { // 펀드 주문일 때
 		if (!_OrderConfigMgr->Fund())
 			return;
-		curRemain = _OrderConfigMgr->Fund()->GetRemainCount(_Symbol->ShortCode);
+		//curRemain = _OrderConfigMgr->Fund()->GetRemainCount(_Symbol->ShortCode);
 	}
 
 	// 잔고가 한번도 생기지 않았거나 0일 때는 처리하지 않는다.
@@ -524,7 +524,7 @@ void SmOrderPanel::OnLButtonDown(UINT nFlags, CPoint point)
 	if (_ParentDlg) {
 		_ParentDlg->SetActiveCenterWnd(this);
 	}
-	CDialogEx::OnLButtonDown(nFlags, point);
+	CDialog::OnLButtonDown(nFlags, point);
 }
 
 void SmOrderPanel::CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent)
@@ -803,8 +803,8 @@ void SmOrderPanel::OnSymbolMaster(VtSymbol* sym)
 {
 	if (!sym || !_Symbol)
 		return;
-	if (_Symbol->ShortCode.compare(sym->ShortCode) != 0)
-		return;
+	//if (_Symbol->ShortCode.compare(sym->ShortCode) != 0)
+	//	return;
 
 	SetProductName(sym);
 	if (m_Grid.GetSafeHwnd()) {
@@ -829,7 +829,7 @@ void SmOrderPanel::InitSymbol()
 // 				}
 // 			}
 // 		}
-		sym = mainApp.SymbolMgr().MrktMgr().GetDefaultSymbol();
+		//sym = mainApp.SymbolMgr().MrktMgr().GetDefaultSymbol();
 	}
 	SetSymbol(sym);
 	AddSymbolToCombo(sym);
@@ -840,7 +840,7 @@ void SmOrderPanel::SetSymbol(VtSymbol* sym)
 {
 	if (!sym || !_OrderConfigMgr)
 		return;
-
+	/*
 	_Symbol = sym;
 	// 실시간 시세와 호가를 등록해준다.
 	RegisterRealtimeSymbol();
@@ -859,6 +859,7 @@ void SmOrderPanel::SetSymbol(VtSymbol* sym)
 		VtProductOrderManager* PrdtOrderMgr = _OrderConfigMgr->OrderMgr()->FindAddProductOrderManager(sym->ShortCode);
 		PrdtOrderMgr->OrderMgr(_OrderConfigMgr->OrderMgr());
 	}
+	*/
 }
 
 void SmOrderPanel::SetSymbol()
@@ -867,6 +868,7 @@ void SmOrderPanel::SetSymbol()
 		return;
 
 	_ProductRemainGrid.SetSymbol(_Symbol);
+	/*
 	if (_OrderConfigMgr->Type() == 0)
 	{
 		if (_OrderConfigMgr->OrderMgr())
@@ -888,12 +890,14 @@ void SmOrderPanel::SetSymbol()
 			PrdtOrderMgr->OrderMgr(orderMgr);
 		}
 	}
+	*/
 }
 
 void SmOrderPanel::AddSymbolToCombo(VtSymbol* symbol)
 {
 	if (!symbol || !_ComboSymbol.GetSafeHwnd())
 		return;
+	/*
 	int index = _ComboSymbol.FindString(0, symbol->ShortCode.c_str());
 	if (index == -1)
 	{
@@ -901,6 +905,7 @@ void SmOrderPanel::AddSymbolToCombo(VtSymbol* symbol)
 		_ComboSymbol.SetItemDataPtr(index, symbol);
 	}
 	_ComboSymbol.SetCurSel(index);
+	*/
 }
 
 void SmOrderPanel::SetProductName(VtSymbol* symbol)
@@ -909,7 +914,7 @@ void SmOrderPanel::SetProductName(VtSymbol* symbol)
 		return;
 
 	if (_StaticProductName.GetSafeHwnd()) {
-		_StaticProductName.SetWindowText(symbol->Name.c_str());
+		//_StaticProductName.SetWindowText(symbol->Name.c_str());
 		_StaticProductName.Invalidate();
 	}
 }
@@ -923,14 +928,14 @@ void SmOrderPanel::RegisterRealtimeSymbol()
 {
 	if (!_Symbol)
 		return;
-	mainApp.RealtimeRegisterMgr().RegisterProduct(_Symbol->ShortCode, 0);
+	//mainApp.RealtimeRegisterMgr().RegisterProduct(_Symbol->ShortCode, 0);
 }
 
 void SmOrderPanel::UnregisterRealtimeSymbol()
 {
 	if (!_Symbol)
 		return;
-	mainApp.RealtimeRegisterMgr().UnregisterProduct(_Symbol->ShortCode, 0);
+	//mainApp.RealtimeRegisterMgr().UnregisterProduct(_Symbol->ShortCode, 0);
 }
 
 void SmOrderPanel::RegisterRealtimeAccount()
@@ -943,19 +948,21 @@ void SmOrderPanel::RegisterRealtimeAccount()
 		if (!_OrderConfigMgr->Account())
 			return;
 
-		mainApp.RealtimeRegisterMgr().RegisterAccount(_OrderConfigMgr->Account()->AccountNo);
+		//mainApp.RealtimeRegisterMgr().RegisterAccount(_OrderConfigMgr->Account()->AccountNo);
 	}
 	else
 	{
 		if (!_OrderConfigMgr->Fund())
 			return;
 		// Register the new account to the Event Map.
+		/*
 		std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
 		for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it)
 		{
 			VtAccount* parentAcnt = *it;
 			mainApp.RealtimeRegisterMgr().RegisterAccount(parentAcnt->AccountNo);
 		}
+		*/
 	}
 }
 
@@ -967,28 +974,31 @@ void SmOrderPanel::UnregisterRealtimeAccount()
 	{
 		if (!_OrderConfigMgr->Account())
 			return;
-		mainApp.RealtimeRegisterMgr().UnregisterAccount(_OrderConfigMgr->Account()->AccountNo);
+		//mainApp.RealtimeRegisterMgr().UnregisterAccount(_OrderConfigMgr->Account()->AccountNo);
 	}
 	else
 	{
+		/*
 		std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
 		for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it)
 		{
 			VtAccount* acnt = *it;
-			mainApp.RealtimeRegisterMgr().UnregisterAccount(acnt->AccountNo);
+			//mainApp.RealtimeRegisterMgr().UnregisterAccount(acnt->AccountNo);
 		}
+		*/
+		int i = 0;
 	}
 }
 
 BOOL SmOrderPanel::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CDialog::OnInitDialog();
 	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
 
 
 	_ConfigDlg = new VtOrderConfigDlg();
 	_ConfigDlg->CenterWnd(this);
-	_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
+	//_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
 
 	//_ConfigGrid.CenterWnd(this);
 	_ProductRemainGrid.AttachGrid(this, IDC_STATIC_PRODUCT_REMAIN);
@@ -1069,7 +1079,7 @@ BOOL SmOrderPanel::OnInitDialog()
 
 	//timer->start(TimerCallback<SmOrderPanel>(*this, &SmOrderPanel::OnTimer2));
 
-	mainApp.CallbackMgr().SubscribeMasterCallback((long)this, std::bind(&SmOrderPanel::OnSymbolMaster, this, _1));
+	//mainApp.CallbackMgr().SubscribeMasterCallback((long)this, std::bind(&SmOrderPanel::OnSymbolMaster, this, _1));
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -1080,7 +1090,7 @@ void SmOrderPanel::OnClose()
 	//UnregisterRealtimeSymbol();
 	// TODO: Add your message handler code here and/or call default
 	KillTimer(1);
-	CDialogEx::OnClose();
+	CDialog::OnClose();
 }
 
 
@@ -1092,7 +1102,7 @@ void SmOrderPanel::OnTimer(UINT_PTR nIDEvent)
 	//if (_UseHogaSiseFilter)
  	m_Grid.RefreshAllValues();
 	_TickGrid.RefreshValues();
-	CDialogEx::OnTimer(nIDEvent);
+	CDialog::OnTimer(nIDEvent);
 }
 
 // void SmOrderPanel::OnTimer2(Timer& timer)
@@ -1179,7 +1189,7 @@ void SmOrderPanel::Activated(bool flag)
 	if (_Symbol && _ParentDlg) {
 		SetProductName(_Symbol);
 		CString title;
-		title.Format(_T("계좌주문창 : 종목 - %s"), _Symbol->Name.c_str());
+		//title.Format(_T("계좌주문창 : 종목 - %s"), _Symbol->Name.c_str());
 		_ParentDlg->SetWindowText(title);
 	}
 	if (_Activated) {
@@ -1319,7 +1329,7 @@ bool SmOrderPanel::ShowTickWnd()
 
 void SmOrderPanel::BlockEvent()
 {
-	mainApp.CallbackMgr().UnsubscribeMasterCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeMasterCallback((long)this);
 	m_Grid.UnregisterAllCallback();
 	_ProductRemainGrid.UnregisterAllCallback();
 	_TickGrid.UnregisterAllCallback();
@@ -1379,7 +1389,7 @@ BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 
-	return CDialogEx::PreTranslateMessage(pMsg);
+	return CDialog::PreTranslateMessage(pMsg);
 }
 
 
@@ -1490,7 +1500,7 @@ void SmOrderPanel::SaveToXml(pugi::xml_node& node_center_window)
 	if (!_Symbol)
 		return;
 	pugi::xml_node center_window_child = node_center_window.append_child("symbol_code");
-	center_window_child.append_child(pugi::node_pcdata).set_value(_Symbol->ShortCode.c_str());
+	//center_window_child.append_child(pugi::node_pcdata).set_value(_Symbol->ShortCode.c_str());
 	bool val = _OrderGridColOption[0];
 	center_window_child = node_center_window.append_child("show_order_area");
 	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(val).c_str());
@@ -1534,9 +1544,11 @@ void SmOrderPanel::LoadFromXml(pugi::xml_node& node_center_window)
 	_ShowOrderCountArea = _OrderGridColOption[2];
 
 	// 심볼 대입
+	/*
 	_DefaultSymbol = mainApp.SymbolMgr().FindHdSymbol(symbol_code);
 	// 저장된 심볼은 목록으로 만들어 심볼 마스터 요청한다.
 	std::vector<VtSymbol*>& symvec = mainApp.SaveMgr().GetSymbolVector();
 	if (_DefaultSymbol)
 		symvec.push_back(_DefaultSymbol);
+		*/
 }

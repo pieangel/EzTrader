@@ -1,8 +1,8 @@
 // VtOrderRightConfigHd.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderRightConfigHd.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
@@ -14,10 +14,10 @@
 // VtOrderRightConfigHd dialog
 extern TApplicationFont g_Font;
 
-IMPLEMENT_DYNAMIC(VtOrderRightConfigHd, CDialogEx)
+IMPLEMENT_DYNAMIC(VtOrderRightConfigHd, CDialog)
 
 VtOrderRightConfigHd::VtOrderRightConfigHd(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_ORDER_RIGHT_CONFIG_HD, pParent)
+	: CDialog(IDD_ORDER_RIGHT_CONFIG_HD, pParent)
 {
 	_OrderConfigMgr = nullptr;
 }
@@ -28,14 +28,14 @@ VtOrderRightConfigHd::~VtOrderRightConfigHd()
 
 void VtOrderRightConfigHd::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_FORMAT_THOUSAND, _FormatThousand);
 	DDX_Control(pDX, IDC_ONE_CLICK, _OneClick);
 	DDX_Control(pDX, IDC_SPACEBAR_ORDER, _SpaceBarOrder);
 }
 
 
-BEGIN_MESSAGE_MAP(VtOrderRightConfigHd, CDialogEx)
+BEGIN_MESSAGE_MAP(VtOrderRightConfigHd, CDialog)
 	ON_BN_CLICKED(IDC_ONE_CLICK, &VtOrderRightConfigHd::OnBnClickedOneClick)
 	ON_BN_CLICKED(IDC_SPACEBAR_ORDER, &VtOrderRightConfigHd::OnBnClickedSpacebarOrder)
 	ON_BN_CLICKED(IDC_RADIO_BY_MOUSE_SELECT, &VtOrderRightConfigHd::OnBnClickedRadioByMouseSelect)
@@ -148,7 +148,7 @@ void VtOrderRightConfigHd::OnBnClickedFormatThousand()
 
 BOOL VtOrderRightConfigHd::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CDialog::OnInitDialog();
 
 	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
 	// TODO:  Add extra initialization here

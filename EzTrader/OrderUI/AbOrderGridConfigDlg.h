@@ -8,7 +8,7 @@
 // AbOrderGridConfigDlg dialog
 class VtOrderCenterWndHd;
 class SmOrderPanelOut;
-class AbOrderGridConfigDlg : public CDialogEx
+class AbOrderGridConfigDlg : public CDialog
 {
 	DECLARE_DYNAMIC(AbOrderGridConfigDlg)
 

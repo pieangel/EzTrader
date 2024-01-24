@@ -4,7 +4,7 @@
 #include <map>
 #include <set>
 #include <functional>
-#include "../Global/VtDefine.h"
+//#include "../Global/VtDefine.h"
 #include <memory>
 #include <map>
 #include <tuple>

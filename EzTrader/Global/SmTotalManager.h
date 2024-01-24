@@ -36,6 +36,15 @@ namespace DarkHorse {
 	class SmTotalManager
 	{
 	public:
+		static int ServerSleepTime;
+		static COLORREF GridTitleBackColor;
+		static COLORREF GridTitleTextColor;
+		static COLORREF SelDialogBackColor;
+		static COLORREF SelCellBackColor;
+		static COLORREF MainBackColor;
+		static COLORREF MainTextColor;
+		static CString GetMacAddress();
+
 		// 0 : domestic server, 1 : abroad server
 		int mode = 0;
 		void CreateManagers();

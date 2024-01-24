@@ -1,20 +1,21 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "VtSymbolMasterGrid.h"
-#include "../Symbol/VtSymbolMaster.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbolMaster.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Symbol/VtSymbol.h"
 #include "../Util/VtTime.h"
 //#include "../Global/MainBeetle.h"
 #include <functional>
-#include "../Task/SmCallbackManager.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Order/VtFundOrderManager.h"
-#include "../Log/loguru.hpp"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Order/VtFundOrderManager.h"
+//#include "../Log/loguru.hpp"
 #include "SmOrderPanelOut.h"
 #include "VtOrderWnd.h"
-#include "../Format/XFormatNumber.h"
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Format/XFormatNumber.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
+#include "../MessageDefine.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -49,20 +50,20 @@ void VtSymbolMasterGrid::UnregisterAllCallback()
 
 void VtSymbolMasterGrid::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void VtSymbolMasterGrid::UnregisterQuoteCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
 }
 
 void VtSymbolMasterGrid::OnQuoteEvent(VtSymbol* symbol)
 {
 	if (!_Symbol || !symbol)
 		return;
-	if (_Symbol->ShortCode.compare(symbol->ShortCode) != 0)
-		return;
+	//if (_Symbol->ShortCode.compare(symbol->ShortCode) != 0)
+	//	return;
 	UpdateSymbol(symbol);
 }
 
@@ -117,8 +118,8 @@ void VtSymbolMasterGrid::SetRowTitle()
 	{
 		QuickSetText(0, i, title[i]);
 		GetCell(0, i, &cell);
-		cell.SetBackColor(MainBeetle::GridTitleBackColor);
-		cell.SetTextColor(MainBeetle::GridTitleTextColor);
+		cell.SetBackColor(DarkHorse::SmTotalManager::GridTitleBackColor);
+		cell.SetTextColor(DarkHorse::SmTotalManager::GridTitleTextColor);
 		SetCell(0, i, &cell);
 		QuickSetFont(0, i, &_titleFont);
 		QuickSetAlignment(0, i, UG_ALIGNCENTER | UG_ALIGNVCENTER);
@@ -147,7 +148,7 @@ void VtSymbolMasterGrid::InitSymbol(VtSymbol* sym)
 		return;
 
 	_Symbol = sym;
-
+	/*
 	try
 	{
 		QuickSetText(0, 0, sym->Name.c_str());
@@ -199,13 +200,14 @@ void VtSymbolMasterGrid::InitSymbol(VtSymbol* sym)
 		std::string msg = e.what();
 		AfxMessageBox(msg.c_str());
 	}
+	*/
 }
 
 void VtSymbolMasterGrid::UpdateSymbol(VtSymbol* sym)
 {
 	if (!sym || !_Symbol)
 		return;
-
+	/*
 	if (_Symbol->ShortCode.compare(sym->ShortCode) != 0)
 		return;
 
@@ -240,6 +242,7 @@ void VtSymbolMasterGrid::UpdateSymbol(VtSymbol* sym)
 		std::string msg = e.what();
 		AfxMessageBox(msg.c_str());
 	}
+	*/
 }
 
 void VtSymbolMasterGrid::ResetSymbol()
@@ -261,6 +264,6 @@ LRESULT VtSymbolMasterGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 
 void VtSymbolMasterGrid::OnClose()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
 }
 

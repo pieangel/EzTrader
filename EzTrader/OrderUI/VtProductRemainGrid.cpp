@@ -1,25 +1,26 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "VtProductRemainGrid.h"
-#include "../Position/VtPosition.h"
-#include "../Account/VtAccount.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Symbol/VtSymbolMaster.h"
-#include "../Quote/VtQuote.h"
-#include "../Global/VtDefine.h"
+//#include "../Position/VtPosition.h"
+//#include "../Account/VtAccount.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Symbol/VtSymbolMaster.h"
+//#include "../Quote/VtQuote.h"
+//#include "../Global/VtDefine.h"
 #include "VtOrderConfigManager.h"
-#include "../Format/XFormatNumber.h"
-#include "../Format/format.h"
-#include "../Fund/VtFund.h"
+//#include "../Format/XFormatNumber.h"
+//#include "../Format/format.h"
+//#include "../Fund/VtFund.h"
 #include <array>
 #include <numeric>
 #include <functional>
 //#include "../Global/MainBeetle.h"
 //#include "SmOrderPanel.h"
-#include "../Task/SmCallbackManager.h"
-#include "../Order/VtOrder.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Order/VtOrder.h"
 #include "SmOrderPanelOut.h"
-#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
+#include "../MessageDefine.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -34,15 +35,15 @@ END_MESSAGE_MAP()
 
 void VtProductRemainGrid::UnregisterAllCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
-	mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr().UnsubscribeOrderWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeOrderWndCallback(GetSafeHwnd());
 }
 
 void VtProductRemainGrid::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
 }
 
 void VtProductRemainGrid::OnQuoteEvent(const VtSymbol* symbol)
@@ -51,8 +52,8 @@ void VtProductRemainGrid::OnQuoteEvent(const VtSymbol* symbol)
 		return;
 	}
 
-	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
-		return;
+	//if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
+	//	return;
 
 	if (_OrderConfigMgr->Type() == 0)
 		ShowSinglePosition();
@@ -62,14 +63,14 @@ void VtProductRemainGrid::OnQuoteEvent(const VtSymbol* symbol)
 
 void VtProductRemainGrid::RegisterOrderallback()
 {
-	mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&VtProductRemainGrid::OnOrderEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&VtProductRemainGrid::OnOrderEvent, this, _1));
 }
 
 void VtProductRemainGrid::OnOrderEvent(const VtOrder* order)
 {
 	if (!order || !_OrderConfigMgr || !_CenterWnd || !_CenterWnd->Symbol())
 		return;
-
+	/*
 	if (order->Type == -1 || order->Type == 0) { // 일반 계좌
 		if (!_OrderConfigMgr->Account())
 			return;
@@ -96,7 +97,7 @@ void VtProductRemainGrid::OnOrderEvent(const VtOrder* order)
 	}
 	else
 		return;
-
+	*/
 	ShowPosition();
 }
 
@@ -163,8 +164,8 @@ void VtProductRemainGrid::SetColTitle()
 		SetColWidth(i, colWidth[i]);
 		QuickSetText(i, -1, title[i]);
 		GetCell(i, -1, &cell);
-		cell.SetBackColor(MainBeetle::GridTitleBackColor);
-		cell.SetTextColor(MainBeetle::GridTitleTextColor);
+		cell.SetBackColor(DarkHorse::SmTotalManager::GridTitleBackColor);
+		cell.SetTextColor(DarkHorse::SmTotalManager::GridTitleTextColor);
 		SetCell(i, -1, &cell);
 		QuickSetFont(i, -1, &_titleFont);
 		QuickSetAlignment(i, -1, UG_ALIGNCENTER | UG_ALIGNVCENTER);
@@ -231,7 +232,7 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 {
 	if (!posi || !sym)
 		return;
-
+	/*
 	if (!posi) {
 		QuickSetText(0, 0, _T(""));
 		QuickSetText(1, 0, _T(""));
@@ -318,9 +319,10 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 		QuickSetText(5, 0, profitLoss);
 	}
 	QuickRedrawCell(5, 0);
-
+	
 	_CenterWnd->SetRemain(posi->OpenQty);
 	_CenterWnd->RefreshOrderPositon();
+	*/
 	//LOG_F(INFO, _T("잔고그리드 갱신"));
 }
 
@@ -329,7 +331,7 @@ void VtProductRemainGrid::SetSymbol(VtSymbol* sym)
 	if (!sym || !_CenterWnd || !_OrderConfigMgr)
 		return;
 
-
+	/*
 	VtAccount* acnt = _OrderConfigMgr->Account();
 	if (!acnt)
 		return;
@@ -339,6 +341,7 @@ void VtProductRemainGrid::SetSymbol(VtSymbol* sym)
 
 	QuickSetText(0, 0, sym->ShortCode.c_str());
 	QuickRedrawCell(0, 0);
+	*/
 }
 
 void VtProductRemainGrid::ShowSinglePosition()
@@ -348,8 +351,8 @@ void VtProductRemainGrid::ShowSinglePosition()
 
 	VtSymbol* sym = _CenterWnd->Symbol();
 	VtAccount* acnt = _OrderConfigMgr->Account();
-	VtPosition* posi = acnt->FindPosition(sym->ShortCode);
-	ShowPosition(posi, sym);
+	//VtPosition* posi = acnt->FindPosition(sym->ShortCode);
+	//ShowPosition(posi, sym);
 }
 
 void VtProductRemainGrid::ShowFundPosition()
@@ -359,13 +362,15 @@ void VtProductRemainGrid::ShowFundPosition()
 
 	VtSymbol* sym = _CenterWnd->Symbol();
 	int count = 0;
+	/*
 	VtPosition posi = _OrderConfigMgr->Fund()->GetPosition(sym->ShortCode, count);
 	if (count == 0) {
 		ShowPosition(nullptr, sym);
 		return;
 	}
-
+	
 	ShowPosition(&posi, sym);
+	*/
 }
 
 void VtProductRemainGrid::ResetColTitle()
@@ -380,8 +385,8 @@ void VtProductRemainGrid::ResetColTitle()
 		SetColWidth(i, colWidth[i]);
 		QuickSetText(i, -1, title[i]);
 		GetCell(i, -1, &cell);
-		cell.SetBackColor(MainBeetle::GridTitleBackColor);
-		cell.SetTextColor(MainBeetle::GridTitleTextColor);
+		cell.SetBackColor(DarkHorse::SmTotalManager::GridTitleBackColor);
+		cell.SetTextColor(DarkHorse::SmTotalManager::GridTitleTextColor);
 		SetCell(i, -1, &cell);
 		QuickSetFont(i, -1, &_titleFont);
 		QuickSetAlignment(i, -1, UG_ALIGNCENTER | UG_ALIGNVCENTER);
@@ -409,10 +414,10 @@ void VtProductRemainGrid::OnReceiveRealtimeQuote(VtQuote* quote)
 	if (!_OrderConfigMgr->Master() || !quote)
 		return;
 
-	std::string strClose = fmt::format("{:.{}f}", quote->close, _OrderConfigMgr->Master()->decimal);
+	//std::string strClose = fmt::format("{:.{}f}", quote->close, _OrderConfigMgr->Master()->decimal);
 
-	QuickSetText(4, 0, strClose.c_str());
-	QuickRedrawCell(4, 0);
+	//QuickSetText(4, 0, strClose.c_str());
+	//QuickRedrawCell(4, 0);
 
 	
 }
@@ -529,8 +534,8 @@ LRESULT VtProductRemainGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 		return 1;
 	}
 
-	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
-		return 1;
+	//if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
+	//	return 1;
 
 	if (_OrderConfigMgr->Type() == 0)
 		ShowSinglePosition();
@@ -573,8 +578,8 @@ void VtProductRemainGrid::SetColTitle(int level)
 		SetColWidth(i, ColWidth[i]);
 		QuickSetText(i, -1, title[i]);
 		GetCell(i, -1, &cell);
-		cell.SetBackColor(MainBeetle::GridTitleBackColor);
-		cell.SetTextColor(MainBeetle::GridTitleTextColor);
+		cell.SetBackColor(DarkHorse::SmTotalManager::GridTitleBackColor);
+		cell.SetTextColor(DarkHorse::SmTotalManager::GridTitleTextColor);
 		SetCell(i, -1, &cell);
 		QuickSetFont(i, -1, &_defFont);
 		QuickSetAlignment(i, -1, UG_ALIGNCENTER | UG_ALIGNVCENTER);

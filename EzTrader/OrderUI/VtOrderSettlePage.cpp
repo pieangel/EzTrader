@@ -1,8 +1,8 @@
 // VtOrderSettlePage.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderSettlePage.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
@@ -14,10 +14,10 @@
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_DYNAMIC(VtOrderSettlePage, CDialogEx)
+IMPLEMENT_DYNAMIC(VtOrderSettlePage, CDialog)
 
 VtOrderSettlePage::VtOrderSettlePage(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_ORDER_SETTLE, pParent)
+	: CDialog(IDD_ORDER_SETTLE, pParent)
 {
 
 }
@@ -28,7 +28,7 @@ VtOrderSettlePage::~VtOrderSettlePage()
 
 void VtOrderSettlePage::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON_PROFIT_LOSS, _BtnProfitLoss);
 	DDX_Control(pDX, IDC_CHECK_LOSS, _CheckLoss);
 	DDX_Control(pDX, IDC_CHECK_PROFIT, _CheckProfit);
@@ -55,7 +55,7 @@ void VtOrderSettlePage::SetOrderConfigMgr(VtOrderConfigManager* val)
 	_OrderConfigMgr = val;
 }
 
-BEGIN_MESSAGE_MAP(VtOrderSettlePage, CDialogEx)
+BEGIN_MESSAGE_MAP(VtOrderSettlePage, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_PROFIT, &VtOrderSettlePage::OnBnClickedCheckProfit)
 	ON_BN_CLICKED(IDC_CHECK_LOSS, &VtOrderSettlePage::OnBnClickedCheckLoss)
 	ON_EN_CHANGE(IDC_EDIT_PROFIT, &VtOrderSettlePage::OnEnChangeEditProfit)
@@ -237,7 +237,7 @@ void VtOrderSettlePage::OnEnChangeEditTsStop()
 
 BOOL VtOrderSettlePage::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CDialog::OnInitDialog();
 	InitControlValues();
 	// TODO:  Add extra initialization here
 	return TRUE;  // return TRUE unless you set the focus to a control

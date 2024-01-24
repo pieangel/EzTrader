@@ -5,7 +5,7 @@
 
 // VtOrderSettlePage dialog
 class VtOrderConfigManager;
-class VtOrderSettlePage : public CDialogEx
+class VtOrderSettlePage : public CDialog
 {
 	DECLARE_DYNAMIC(VtOrderSettlePage)
 

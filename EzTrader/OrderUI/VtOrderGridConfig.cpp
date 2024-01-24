@@ -1,8 +1,8 @@
 // VtOrderGridConfig.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderGridConfig.h"
 #include "afxdialogex.h"
 #include "../resource.h"
@@ -16,10 +16,10 @@
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_DYNAMIC(VtOrderGridConfig, CDialogEx)
+IMPLEMENT_DYNAMIC(VtOrderGridConfig, CDialog)
 
 VtOrderGridConfig::VtOrderGridConfig(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_ORDERGRID_CONFIG, pParent)
+	: CDialog(IDD_ORDERGRID_CONFIG, pParent)
 {
 	_CenterWnd = nullptr;
 }
@@ -35,7 +35,7 @@ VtOrderGridConfig::~VtOrderGridConfig()
 
 void VtOrderGridConfig::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_CELL_HEIGHT, _EditCellHeight);
 	DDX_Control(pDX, IDC_EDIT_CELL_WIDTH, _EditCellWidth);
 	DDX_Control(pDX, IDC_EDIT_TICK_COUNT, _EditTickCount);
@@ -48,7 +48,7 @@ void VtOrderGridConfig::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(VtOrderGridConfig, CDialogEx)
+BEGIN_MESSAGE_MAP(VtOrderGridConfig, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_ORDERCOL, &VtOrderGridConfig::OnBnClickedCheckShowOrdercol)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_STOPCOL, &VtOrderGridConfig::OnBnClickedCheckShowStopcol)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_TICKWND, &VtOrderGridConfig::OnBnClickedCheckShowTickwnd)
@@ -197,14 +197,14 @@ void VtOrderGridConfig::OnBnClickedCheckShowCountcol()
 void VtOrderGridConfig::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
-	CDialogEx::OnOK();
+	CDialog::OnOK();
 }
 
 
 void VtOrderGridConfig::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
-	CDialogEx::OnCancel();
+	CDialog::OnCancel();
 }
 
 
@@ -223,7 +223,7 @@ void VtOrderGridConfig::OnBnClickedApply()
 
 BOOL VtOrderGridConfig::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CDialog::OnInitDialog();
 	if (!_CenterWnd)
 		return FALSE;
 

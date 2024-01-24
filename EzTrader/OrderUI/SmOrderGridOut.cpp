@@ -1,21 +1,21 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SmOrderGridOut.h"
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 //#include "../Global/MainBeetle.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Quote/VtQuote.h"
-#include "../Symbol/VtSymbolMaster.h"
-#include "../Hoga/VtHoga.h"
-#include "../UGrid/VtCellLabel.h"
-#include "../Account/VtAccountManager.h"
-#include "../Order/VtOrder.h"
-#include "../Order/VtOrderManager.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Quote/VtQuote.h"
+//#include "../Symbol/VtSymbolMaster.h"
+//#include "../Hoga/VtHoga.h"
+//#include "../UGrid/VtCellLabel.h"
+//#include "../Account/VtAccountManager.h"
+//#include "../Order/VtOrder.h"
+//#include "../Order/VtOrderManager.h"
 //#include "../Order/VtOrderManagerSelector.h"
-#include "../Account/VtAccount.h"
+//#include "../Account/VtAccount.h"
 //#include "../Order/VtOrderManagerSelector.h"
 //#include "../Order/VtProductOrderManagerSelector.h"
-#include "../Order/VtProductOrderManager.h"
+//#include "../Order/VtProductOrderManager.h"
 #include <chrono>
 #include <algorithm>
 #include <vector>
@@ -23,22 +23,23 @@
 #include <map>
 #include "../resource.h"
 #include "VtStopOrderManager.h"
-#include "../Position/VtPosition.h"
+//#include "../Position/VtPosition.h"
 #include "VtOrderConfigManager.h"
-#include "../Order/VtFundOrderManager.h"
-#include "../Fund/VtFund.h"
-#include "../Account/VtSubAccountManager.h"
-#include "../Format/format.h"
+//#include "../Order/VtFundOrderManager.h"
+//#include "../Fund/VtFund.h"
+//#include "../Account/VtSubAccountManager.h"
+//#include "../Format/format.h"
 #include "VtCutManager.h"
-#include "../Format/XFormatNumber.h"
+//#include "../Format/XFormatNumber.h"
 #include <algorithm> 
 #include <functional>
-#include "../Task/SmCallbackManager.h"
-#include "../Order/VtFundOrderManager.h"
-#include "../Log/loguru.hpp"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Order/VtFundOrderManager.h"
+//#include "../Log/loguru.hpp"
 #include "SmOrderPanelOut.h"
 #include "VtOrderWnd.h"
-#include "../Main/MainBeetle.h"
+#include "../MessageDefine.h"
+//#include "../Main/MainBeetle.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -117,11 +118,12 @@ void SmOrderGridOut::OnSymbolMaster(VtSymbol* sym)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
+	/*
 	VtSymbol* symbol = _CenterWnd->Symbol();
 	if (symbol->ShortCode.compare(sym->ShortCode) != 0) {
 		return;
 	}
-
+	*/
 	ResetByCenterRow();
 }
 
@@ -141,14 +143,14 @@ void SmOrderGridOut::UnregisterAllCallback()
 
 void SmOrderGridOut::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmOrderGridOut::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmOrderGridOut::OnQuoteEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
 }
 
 void SmOrderGridOut::UnregisterQuoteCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
 }
 
 void SmOrderGridOut::OnQuoteEvent(VtSymbol* symbol)
@@ -159,7 +161,7 @@ void SmOrderGridOut::OnQuoteEvent(VtSymbol* symbol)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return;
 	}
-
+	/*
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
 		return;
 
@@ -185,16 +187,17 @@ void SmOrderGridOut::OnQuoteEvent(VtSymbol* symbol)
 // 	SetQuoteColor(_CenterWnd->Symbol(), refreshSet);
 // 
 // 	RefreshCells(refreshSet);
+*/
 }
 
 void SmOrderGridOut::RegisterHogaCallback()
 {
-	mainApp.CallbackMgr().SubscribeHogaWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeHogaWndCallback(GetSafeHwnd());
 }
 
 void SmOrderGridOut::UnregisterHogaCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeHogaCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeHogaCallback((long)this);
 }
 
 void SmOrderGridOut::OnHogaEvent(VtSymbol* symbol)
@@ -205,7 +208,7 @@ void SmOrderGridOut::OnHogaEvent(VtSymbol* symbol)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return;
 	}
-
+	/*
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
 		return;
 
@@ -214,16 +217,17 @@ void SmOrderGridOut::OnHogaEvent(VtSymbol* symbol)
 // 	SetHogaInfo(symbol, refreshSet);
 // 	RefreshCells(refreshSet);
 // 	Invalidate();
+*/
 }
 
 void SmOrderGridOut::RegisterOrderallback()
 {
-	mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmOrderGridOut::OnOrderEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmOrderGridOut::OnOrderEvent, this, _1));
 }
 
 void SmOrderGridOut::UnregisterOrderCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
 }
 
 void SmOrderGridOut::OnOrderEvent(VtOrder* order)
@@ -246,6 +250,7 @@ void SmOrderGridOut::OnOrderEvent(VtOrder* order)
 	ClearPositionInfo(refreshSet);
 	SetPositionInfo(refreshSet);
 	RefreshCells(refreshSet);
+	/*
 	if (order->Type == -1 || order->Type == 0) {
 		if (!_OrderConfigMgr->Account())
 			return;
@@ -281,6 +286,7 @@ void SmOrderGridOut::OnOrderEvent(VtOrder* order)
 		CalcPosStopOrders(refreshSet);
 		RefreshCells(refreshSet);
 	}
+	*/
 }
 
 void SmOrderGridOut::Init()
@@ -420,6 +426,7 @@ void SmOrderGridOut::CancelAllSellAccepted()
 	if (!_CenterWnd)
 		return;
 
+	/*
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(_CenterWnd->Symbol()->ShortCode);
 
 	for (auto it = acptOrderList.begin(); it != acptOrderList.end(); ++it) {
@@ -427,13 +434,14 @@ void SmOrderGridOut::CancelAllSellAccepted()
 		if (order->orderPosition == VtPositionType::Sell)
 			CancelOrder(order);
 	}
+	*/
 }
 
 void SmOrderGridOut::CancelAllBuyAccepted()
 {
 	if (!_CenterWnd)
 		return;
-
+	/*
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(_CenterWnd->Symbol()->ShortCode);
 
 	for (auto it = acptOrderList.begin(); it != acptOrderList.end(); ++it) {
@@ -441,19 +449,21 @@ void SmOrderGridOut::CancelAllBuyAccepted()
 		if (order->orderPosition == VtPositionType::Buy)
 			CancelOrder(order);
 	}
+	*/
 }
 
 void SmOrderGridOut::CancelAllAccepted()
 {
 	if (!_CenterWnd)
 		return;
-
+	/*
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(_CenterWnd->Symbol()->ShortCode);
 
 	for (auto it = acptOrderList.begin(); it != acptOrderList.end(); ++it) {
 		VtOrder* order = *it;
 		CancelOrder(order);
 	}
+	*/
 }
 
 void SmOrderGridOut::RefreshStopOrder()
@@ -469,7 +479,7 @@ void SmOrderGridOut::CheckProfitLossTouchHd(int intClose)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_StopOrderMgr)
 		return;
-
+	/*
 	VtSymbol* sym = _CenterWnd->Symbol();
 
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(), next_it = it; it != _StopOrderMgr->StopOrderMapHd.end(); it = next_it) {
@@ -488,12 +498,14 @@ void SmOrderGridOut::CheckProfitLossTouchHd(int intClose)
 			_StopOrderMgr->StopOrderMapHd.erase(it);
 		}
 	}
+	*/
 }
 
 bool SmOrderGridOut::CheckStopTouchedHd(int intClose)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_CutMgr)
 		return false;
+	/*
 	std::vector<int> removeList;
 	VtSymbol* sym = _CenterWnd->Symbol();
 	std::map<int, std::shared_ptr<HdOrderRequest>>& profitLossMap = _CutMgr->GetStopOrderMap();
@@ -521,8 +533,10 @@ bool SmOrderGridOut::CheckStopTouchedHd(int intClose)
 		_CutMgr->RemoveOrderHd(*it, false);
 		result = true;
 	}
-
+	
 	return result;
+	*/
+	return false;
 }
 
 void SmOrderGridOut::SetColTitle(bool init)
@@ -543,6 +557,7 @@ void SmOrderGridOut::SetColTitle(bool init)
 
 	SetRowHeight(0, _HeadHeight);
 
+	/*
 	for (int i = 0; i < _ColCount; i++) {
 		if (!init)
 			SetColumnWidth(i, colWidth[i]);
@@ -558,13 +573,14 @@ void SmOrderGridOut::SetColTitle(bool init)
 
 		InvalidateCellRect(0, i);
 	}
+	*/
 }
 
 void SmOrderGridOut::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!symbol)
 		return;
-
+	/*
 	std::string code = symbol->ShortCode.substr(0, 1);
 	if ((code.compare(_T("2")) == 0) || (code.compare(_T("3")) == 0)) {
 		SetCenterValueForOption(symbol, refreshSet);
@@ -573,6 +589,7 @@ void SmOrderGridOut::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<i
 	{
 		SetCenterValueForFuture(symbol, refreshSet);
 	}
+	*/
 }
 
 void SmOrderGridOut::SetCenterValue()
@@ -607,7 +624,7 @@ void SmOrderGridOut::SetCenterValueByFixed(const VtSymbol* symbol, std::set<std:
 {
 	if (!symbol)
 		return;
-
+	/*
 	std::string code = symbol->ShortCode.substr(0, 1);
 	if ((code.compare(_T("2")) == 0) || (code.compare(_T("3")) == 0)) {
 		SetCenterValueByFixedForOption(symbol, refreshSet);
@@ -615,6 +632,7 @@ void SmOrderGridOut::SetCenterValueByFixed(const VtSymbol* symbol, std::set<std:
 	else {
 		SetCenterValueByFixedForFuture(symbol, refreshSet);
 	}
+	*/
 }
 
 void SmOrderGridOut::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
@@ -637,7 +655,7 @@ void SmOrderGridOut::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::
 {
 	if (!sym)
 		return;
-
+	/*
 	// Set the close value on the center of the center grid
 	int startValue = sym->Quote.intClose + (sym->intTickSize * (_IndexRow - _StartRowForValue));
 
@@ -657,13 +675,14 @@ void SmOrderGridOut::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::
 		ValueToRowMap[curValue] = i;
 		RowToValueMap[i] = curValue;
 	}
+	*/
 }
 
 void SmOrderGridOut::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
-
+	/*
 	int endValue = sym->Quote.intClose;
 	int endRow = _EndRowForValue - 1;
 	int zeroRow = _EndRowForValue;
@@ -724,6 +743,7 @@ void SmOrderGridOut::SetCenterValueForOption(const VtSymbol* sym, std::set<std::
 		//RedrawCell(i, CenterCol);
 		refreshSet.insert(std::make_pair(i, CenterCol));
 	}
+	*/
 }
 
 void SmOrderGridOut::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
@@ -732,6 +752,7 @@ void SmOrderGridOut::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::se
 		return;
 
 	_IndexRow = FindIndexRow();
+	/*
 	// Set the close value on the center of the center grid
 	int startValue = sym->Quote.intClose + (sym->intTickSize * (_IndexRow - _StartRowForValue));
 
@@ -757,6 +778,7 @@ void SmOrderGridOut::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::se
 		ValueToRowMap[curValue] = i;
 		RowToValueMap[i] = curValue;
 	}
+	*/
 }
 
 void SmOrderGridOut::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
@@ -766,7 +788,7 @@ void SmOrderGridOut::SetCenterValueByFixedForOption(const VtSymbol* sym, std::se
 
 	_IndexRow = FindIndexRow();
 	_IndexRow = -1 * _IndexRow;
-
+	/*
 	// 호가가 바뀌는 행 - 옵션은 10.0부터 호가가 0.05로 그 이하는 0.01로 계산이 된다.
 	int Row10 = 0;
 	if (1000 <= sym->Quote.intClose) {
@@ -810,6 +832,7 @@ void SmOrderGridOut::SetCenterValueByFixedForOption(const VtSymbol* sym, std::se
 		else
 			curVal = curVal - sym->intTickSize;
 	}
+	*/
 }
 
 int SmOrderGridOut::FindIndexRow()
@@ -838,6 +861,7 @@ void SmOrderGridOut::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, in
 	if (!sym)
 		return;
 	_HogaPos.clear();
+	/*
 	for (int i = 0; i < 5; i++) {
 		int pos = FindRowFromCenterValue(sym->Hoga.Ary[i].IntBuyPrice);
 		if (pos >= _StartRowForValue && pos <= _EndRowForValue) {
@@ -948,6 +972,7 @@ void SmOrderGridOut::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, in
 			refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
 		}
 	}
+	*/
 }
 
 int SmOrderGridOut::FindRowFromCenterValue(int value)
@@ -965,6 +990,7 @@ int SmOrderGridOut::FindRowFromCenterValue(const VtSymbol* sym, int value)
 {
 	if (!sym || ValueToRowMap.size() == 0)
 		return 0;
+	/*
 	if (sym->intTickSize == 0)
 		return 0;
 
@@ -998,10 +1024,13 @@ int SmOrderGridOut::FindRowFromCenterValue(const VtSymbol* sym, int value)
 			return thousandRow + delta;
 		}
 	}
+	*/
+	return 0;
 }
 
 void SmOrderGridOut::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
 {
+	/*
 	if (!sym)
 		return;
 
@@ -1129,6 +1158,7 @@ void SmOrderGridOut::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, 
 			refreshSet.insert(std::make_pair(i, CenterCol));
 		}
 	}
+	*/
 }
 
 void SmOrderGridOut::SetSiseCellBackColor(int minRow, int maxRow, int start, int end, COLORREF color)
@@ -1189,7 +1219,7 @@ void SmOrderGridOut::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
-
+	/*
 	VtSymbol* sym = _CenterWnd->Symbol();
 
 	_OrderPos.clear();
@@ -1244,6 +1274,7 @@ void SmOrderGridOut::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 		strVal = fmt::format("{}", sell_count);
 		pCell->SetText(strVal.c_str());
 	}
+	*/
 }
 
 void SmOrderGridOut::ClearOldOrders(std::set<std::pair<int, int>>& refreshSet)
@@ -1265,6 +1296,7 @@ void SmOrderGridOut::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 	CGridCellBase* pCell = nullptr;
 	std::string strVal;
 	int buy_count = 0, sell_count = 0;
+	/*
 	// 일반 스탑주문을 표시해 준다.
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(); it != _StopOrderMgr->StopOrderMapHd.end(); ++it) {
 		std::shared_ptr<HdOrderRequest> order = it->second;
@@ -1332,6 +1364,7 @@ void SmOrderGridOut::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 	refreshSet.insert(std::make_pair(1, CenterCol - 4));
 	strVal = fmt::format("{}", sell_count);
 	pCell->SetText(strVal.c_str());
+	*/
 }
 
 void SmOrderGridOut::ClearOldStopOrders(std::set<std::pair<int, int>>& refreshSet)
@@ -1348,6 +1381,7 @@ void SmOrderGridOut::ClearOldStopOrders(std::set<std::pair<int, int>>& refreshSe
 void SmOrderGridOut::CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet)
 {
 	ClearStopOrderVectors();
+	/*
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(); it != _StopOrderMgr->StopOrderMapHd.end(); ++it) {
 		std::shared_ptr<HdOrderRequest> order = it->second;
 		int order_row = FindRowFromCenterValue(order->Price);
@@ -1414,7 +1448,7 @@ void SmOrderGridOut::CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet
 			}
 		}
 	}
-
+	*/
 	Invalidate();
 }
 
@@ -1431,7 +1465,7 @@ void SmOrderGridOut::PutOrder(int price, VtPositionType position, VtPriceType pr
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) { // 실계좌나 서브 계좌 일 때
 		if (_OrderConfigMgr->Account()) {
 			VtAccount* acnt = _OrderConfigMgr->Account();
@@ -1514,12 +1548,14 @@ void SmOrderGridOut::PutOrder(int price, VtPositionType position, VtPriceType pr
 			}
 		}
 	}
+	*/
 }
 
 void SmOrderGridOut::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !posi || !_OrderConfigMgr)
 		return;
+	/*
 	if (posi->OpenQty == 0)
 		return;
 
@@ -1600,6 +1636,7 @@ void SmOrderGridOut::PutOrder(VtPosition* posi, int price, bool liqud /*= false*
 	request->RequestType = 1;
 
 	_OrderConfigMgr->OrderMgr()->PutOrder(request);
+	*/
 }
 
 void SmOrderGridOut::RefreshOrderPosition()
@@ -1622,6 +1659,7 @@ void SmOrderGridOut::AddOrderToCell(VtOrder* order)
 {
 	if (!order)
 		return;
+	/*
 	if (order->amount == 0)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
@@ -1651,12 +1689,14 @@ void SmOrderGridOut::AddOrderToCell(VtOrder* order)
 			InvalidateCellRect(row, CenterCol - 3);
 		}
 	}
+	*/
 }
 
 void SmOrderGridOut::RemoveOrderFromCell(VtOrder* order)
 {
 	if (!order)
 		return;
+	/*
 	if (order->amount == 0)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
@@ -1686,6 +1726,7 @@ void SmOrderGridOut::RemoveOrderFromCell(VtOrder* order)
 			InvalidateCellRect(row, CenterCol + 3);
 		}
 	}
+	*/
 }
 
 void SmOrderGridOut::RefreshTotalOrderCount(VtOrder* input_order)
@@ -1696,6 +1737,7 @@ void SmOrderGridOut::RefreshTotalOrderCount(VtOrder* input_order)
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
 
+	/*
 	VtSymbol* sym = _CenterWnd->Symbol();
 
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(sym->ShortCode);
@@ -1728,6 +1770,7 @@ void SmOrderGridOut::RefreshTotalOrderCount(VtOrder* input_order)
 			InvalidateCellRect(1, CenterCol - 3);
 		}
 	}
+	*/
 }
 
 void SmOrderGridOut::SetOrderAreaColor()
@@ -1752,6 +1795,7 @@ void SmOrderGridOut::SetPositionInfo(std::set<std::pair<int, int>>& refreshSet)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
+	/*
 	if (_OrderConfigMgr->Type() == 0)
 	{
 		VtAccount* acnt = _OrderConfigMgr->Account();
@@ -1772,6 +1816,7 @@ void SmOrderGridOut::SetPositionInfo(std::set<std::pair<int, int>>& refreshSet)
 		else
 			ShowPosition(refreshSet, &posi, _CenterWnd->Symbol());
 	}
+	*/
 }
 
 void SmOrderGridOut::ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet)
@@ -1789,7 +1834,7 @@ void SmOrderGridOut::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtP
 {
 	if (!sym)
 		return;
-
+	/*
 	if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None) {
 		return;
 	}
@@ -1804,6 +1849,7 @@ void SmOrderGridOut::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtP
 		refreshSet.insert(std::make_pair(cell.row, cell.col));
 		_OldPositionCell = cell;
 	}
+	*/
 }
 
 void SmOrderGridOut::OrderBySpaceBar()
@@ -1862,6 +1908,7 @@ void SmOrderGridOut::LiqudAll(VtPriceType priceType, int price /*= 0*/)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
+	/*
 	VtSymbol* sym = _CenterWnd->Symbol();
 	if (_OrderConfigMgr->Type() == 0) { // 계좌 주문일 때
 		VtAccount* acnt = _OrderConfigMgr->Account();
@@ -1909,6 +1956,7 @@ void SmOrderGridOut::LiqudAll(VtPriceType priceType, int price /*= 0*/)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGridOut::OrderByMouseClick()
@@ -2166,6 +2214,7 @@ void SmOrderGridOut::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pSrcCell = GetCell(cell.row, cell.col);
+	/*
 	if (pSrcCell->GetOrderCount() > 0) {
 		std::map<std::string, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
 		for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
@@ -2191,6 +2240,7 @@ void SmOrderGridOut::OnRButtonUp(UINT nFlags, CPoint point)
 	}
 
 	//CGridCtrl::OnRButtonUp(nFlags, point);
+	*/
 }
 
 void SmOrderGridOut::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -2283,7 +2333,7 @@ void SmOrderGridOut::AddStopOrder(int price, VtPositionType posi)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) { // 계좌 주문
 		if (!_OrderConfigMgr->Account())
 			return;
@@ -2348,6 +2398,7 @@ void SmOrderGridOut::AddStopOrder(int price, VtPositionType posi)
 			_StopOrderMgr->AddOrderHd(request);
 		}
 	}
+	*/
 
 	RefreshStopOrder();
 }
@@ -2490,6 +2541,7 @@ void SmOrderGridOut::ChangeOrder(VtOrder* order, int newPrice)
 
 	if (!_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
+	/*
 	if (_OrderConfigMgr->Type() == 0)
 	{
 		if (!_OrderConfigMgr->Account())
@@ -2570,10 +2622,12 @@ void SmOrderGridOut::ChangeOrder(VtOrder* order, int newPrice)
 			_OrderConfigMgr->OrderMgr()->ChangeOrder(std::move(request));
 		}
 	}
+	*/
 }
 
 void SmOrderGridOut::ChangeOrder()
 {
+	/*
 	try
 	{
 		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
@@ -2600,10 +2654,12 @@ void SmOrderGridOut::ChangeOrder()
 	{
 		std::string error = e.what();
 	}
+	*/
 }
 
 void SmOrderGridOut::ChangeStopOrder()
 {
+	/*
 	try
 	{
 		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
@@ -2629,12 +2685,14 @@ void SmOrderGridOut::ChangeStopOrder()
 	{
 		std::string error = e.what();
 	}
+	*/
 }
 
 void SmOrderGridOut::CancelOrder(VtOrder* order)
 {
 	if (!order || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
+	/*
 	try
 	{
 
@@ -2722,10 +2780,12 @@ void SmOrderGridOut::CancelOrder(VtOrder* order)
 	catch (std::exception& e) {
 		std::string error = e.what();
 	}
+	*/
 }
 
 void SmOrderGridOut::CancelOrder()
 {
+	/*
 	try
 	{
 		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
@@ -2756,6 +2816,7 @@ void SmOrderGridOut::CancelOrder()
 	{
 		std::string error = e.what();
 	}
+	*/
 }
 
 void SmOrderGridOut::OnMouseMove(UINT nFlags, CPoint point)
@@ -2806,7 +2867,7 @@ int SmOrderGridOut::FindPositionRow(VtPosition* posi)
 {
 	if (!posi || ValueToRowMap.size() == 0)
 		return -1;
-
+	/*
 	VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
 	if (!sym)
 		return -1;
@@ -2819,6 +2880,8 @@ int SmOrderGridOut::FindPositionRow(VtPosition* posi)
 		return it->second;
 	else
 		return -1;
+		*/
+	return -1;
 }
 
 void SmOrderGridOut::OnClose()
@@ -2847,7 +2910,7 @@ LRESULT SmOrderGridOut::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return 1;
 	}
-
+	/*
 	VtSymbol* symbol = (VtSymbol*)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
@@ -2877,7 +2940,7 @@ LRESULT SmOrderGridOut::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 
 	// 관련된 셀들을 업데이트 한다.
 	RefreshCells(refreshSet);
-
+	*/
 	return 1;
 }
 
@@ -2890,7 +2953,7 @@ LRESULT SmOrderGridOut::OnHogaChangedMessage(WPARAM wParam, LPARAM lParam)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return 1;
 	}
-
+	/*
 	VtSymbol* symbol = (VtSymbol*)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
@@ -2911,7 +2974,7 @@ LRESULT SmOrderGridOut::OnHogaChangedMessage(WPARAM wParam, LPARAM lParam)
 
 	 
 	RefreshCells(refreshSet);
-
+	*/
 	return 1;
 }
 
@@ -2923,7 +2986,7 @@ LRESULT SmOrderGridOut::OnOrderChangedMessage(WPARAM wParam, LPARAM lParam)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return 1;
 	}
-
+	/*
 	VtOrder* order = (VtOrder*)wParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0)
 		return 1;
@@ -2945,7 +3008,7 @@ LRESULT SmOrderGridOut::OnOrderChangedMessage(WPARAM wParam, LPARAM lParam)
 
 	// 관련된 셀들을 업데이트 한다.
 	RefreshCells(refreshSet);
-
+	*/
 	return 1;
 }
 

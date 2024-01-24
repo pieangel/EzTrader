@@ -6,7 +6,7 @@
 class VtOrderCenterWndHd;
 class SmOrderPanel;
 class SmOrderPanelOut;
-class VtOrderGridConfig : public CDialogEx
+class VtOrderGridConfig : public CDialog
 {
 	DECLARE_DYNAMIC(VtOrderGridConfig)
 

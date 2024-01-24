@@ -1,6 +1,6 @@
 #pragma once
 #include <list>
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 class VtSymbol;
 struct VtHoga;
 class VtAccount;

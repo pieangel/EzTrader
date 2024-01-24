@@ -1,7 +1,7 @@
 // GradientStatic.cpp : implementation file
 //
 
-#include "pch.h"
+#include "stdafx.h"
 #include "GradientStatic.h"
 
 #ifdef _DEBUG

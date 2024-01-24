@@ -4,11 +4,10 @@
 #include <map>
 #include <set>
 #include <functional>
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 #include <memory>
 #include <map>
 #include <tuple>
-#include "../Global/VtDefine.h"
 #include <set>
 #include <string>
 class VtOrderConfigManager;

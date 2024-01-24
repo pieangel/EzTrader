@@ -1,35 +1,36 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SmFutureGrid.h"
 //#include "VtProductCategoryManager.h"
 //#include "VtProductSection.h"
 //#include "VtProductSubSection.h"
-#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbol.h"
 #include "VtOrderConfigManager.h"
 //#include "VtHdClient.h"
 //#include "VtChartDataRequest.h"
-#include "../Position/VtPosition.h"
-#include "../Account/VtAccount.h"
-#include "../Order/VtOrderManager.h"
+//#include "../Position/VtPosition.h"
+//#include "../Account/VtAccount.h"
+//#include "../Order/VtOrderManager.h"
 //#include "../Order/VtOrderManagerSelector.h"
 //#include "../Order/VtProductOrderManagerSelector.h"
-#include "../Order/VtProductOrderManager.h"
-#include "../Fund/VtFund.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Symbol/VtRealtimeRegisterManager.h"
+//#include "../Order/VtProductOrderManager.h"
+//#include "../Fund/VtFund.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Symbol/VtRealtimeRegisterManager.h"
 //#include "VtChartDataManager.h"
 //#include "VtChartData.h"
 //#include "../Global/MainBeetle.h"
-#include "../Format/format.h"
-#include "../Format/XFormatNumber.h"
+//#include "../Format/format.h"
+//#include "../Format/XFormatNumber.h"
 //#include "VtChartDataCollector.h"
 #include "SmOrderPanel.h"
 #include <functional>
-#include "../Task/SmCallbackManager.h"
-#include "../Symbol/SmMarketManager.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Symbol/SmMarketManager.h"
 #include "../Symbol/SmProduct.h"
 #include "../Symbol/SmProductYearMonth.h"
-#include "../Symbol/SmRunInfo.h"
-#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
+//#include "../Symbol/SmRunInfo.h"
+//#include "../Main/MainBeetle.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -50,17 +51,17 @@ SmFutureGrid::~SmFutureGrid()
 
 void SmFutureGrid::RegisterMasterCallback()
 {
-	mainApp.CallbackMgr().SubscribeMasterCallback((long)this, std::bind(&SmFutureGrid::OnMasterEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeMasterCallback((long)this, std::bind(&SmFutureGrid::OnMasterEvent, this, _1));
 }
 
 void SmFutureGrid::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmFutureGrid::OnQuoteEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmFutureGrid::OnQuoteEvent, this, _1));
 }
 
 void SmFutureGrid::RegisterOrderCallback()
 {
-	mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmFutureGrid::OnOrderEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmFutureGrid::OnOrderEvent, this, _1));
 }
 
 void SmFutureGrid::OnMasterEvent(VtSymbol* sym)
@@ -71,11 +72,13 @@ void SmFutureGrid::OnMasterEvent(VtSymbol* sym)
 		return;
 
 	CUGCell cell;
+	/*
 	auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
 	if (it != _FutureCurrentValueRowMap.end()) {
 		auto pos = _FutureCurrentValueRowMap[sym->ShortCode];
 		ShowCurrent(sym, std::get<0>(pos));
 	}
+	*/
 }
 
 void SmFutureGrid::OnOrderEvent(VtOrder* order)
@@ -84,16 +87,22 @@ void SmFutureGrid::OnOrderEvent(VtOrder* order)
 		return;
 
 	if (_OrderConfigMgr->Type() == 0) {
+		/*
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
 			return;
 		SetRemain(order->shortCode);
+		*/
+		int i = 0;
 	}
 	else {
+		/*
 		VtFund* fund = _OrderConfigMgr->Fund();
 		if (!fund)
 			return;
 		SetRemain(order->shortCode);
+		*/
+		int i = 0;
 	}
 }
 
@@ -107,19 +116,21 @@ void SmFutureGrid::OnQuoteEvent(VtSymbol* sym)
 	}
 	else if (_Mode == 1) {
 		CUGCell cell;
+		/*
 		auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
 		if (it != _FutureCurrentValueRowMap.end()) {
 			auto pos = _FutureCurrentValueRowMap[sym->ShortCode];
 			ShowCurrent(sym, std::get<0>(pos));
 		}
+		*/
 	}
 }
 
 void SmFutureGrid::UnregisterAllCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
-	mainApp.CallbackMgr().UnsubscribeMasterCallback((long)this);
-	mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeMasterCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
 }
 
 BEGIN_MESSAGE_MAP(SmFutureGrid, CGridCtrl)
@@ -182,6 +193,7 @@ void SmFutureGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	SetFocus();
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pCell = GetCell(cell.row, cell.col);
+	/*
 	VtSymbol* sym = (VtSymbol*)pCell->GetData();
 	if (sym) {
 		if (sym->Quote.intClose == 0)
@@ -194,6 +206,7 @@ void SmFutureGrid::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 	}
+	*/
 }
 
 LRESULT SmFutureGrid::OnOrderChangedMessage(WPARAM wParam, LPARAM lParam)
@@ -211,7 +224,7 @@ void SmFutureGrid::SetColTitle()
 
 	LPCTSTR title[5] = { "지수선물", "미니선물", "코닥선물", "국채선물", "달러선물" };
 	for (int j = 0; j < _RowCount; ++j) {
-		QuickSetBackColor(j, 0, MainBeetle::GridTitleBackColor);
+		QuickSetBackColor(j, 0, DarkHorse::SmTotalManager::GridTitleBackColor);
 		QuickSetText(j, 0, title[j]);
 		InvalidateCellRect(j, 0);
 		if (j + 1 == 5)
@@ -224,7 +237,7 @@ void SmFutureGrid::InitGrid()
 {
 	if (!_OrderConfigMgr)
 		return;
-
+	/*
 	std::vector<SmRunInfo> run_info = mainApp.SymbolMgr().MrktMgr().GetFutureRunVector();
 	int i = 0;
 	for (auto it = run_info.begin(); it != run_info.end(); ++it) {
@@ -269,6 +282,7 @@ void SmFutureGrid::InitGrid()
 			i++;
 		}
 	}
+	*/
 }
 
 void SmFutureGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::string symCode)
@@ -276,7 +290,7 @@ void SmFutureGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::s
 	auto it = _FutureCurrentValueRowMap.find(symCode);
 	if (it != _FutureCurrentValueRowMap.end()) {
 		auto pos = _FutureCurrentValueRowMap[symCode];
-
+		/*
 		if (!posi) {
 			if (acptCnt > 0) {
 				QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
@@ -317,16 +331,19 @@ void SmFutureGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::s
 
 		QuickSetTextColor(std::get<0>(pos), std::get<1>(pos), RGB(0, 0, 0));
 		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
+		*/
 	}
 }
 
 void SmFutureGrid::GetSymbolMaster(VtSymbol* sym)
 {
+	/*
 	if (!sym)
 		return;
 	if (sym->RecentMonth() && sym->RequestedSymbolMaster())
 		return;
 	sym->GetSymbolMaster();
+	*/
 	//VtRealtimeRegisterManager* realTimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
 	//realTimeRegiMgr->RegisterProduct(sym->ShortCode);
 }
@@ -375,11 +392,13 @@ void SmFutureGrid::OnReceiveQuote(VtSymbol* sym)
 	}
 	else if (_Mode == 1) {
 		CUGCell cell;
+		/*
 		auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
 		if (it != _FutureCurrentValueRowMap.end()) {
 			auto pos = _FutureCurrentValueRowMap[sym->ShortCode];
 			ShowCurrent(sym, std::get<0>(pos));
 		}
+		*/
 	}
 }
 
@@ -391,11 +410,13 @@ void SmFutureGrid::OnSymbolMaster(VtSymbol* sym)
 		return;
 
 	CUGCell cell;
+	/*
 	auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
 	if (it != _FutureCurrentValueRowMap.end()) {
 		auto pos = _FutureCurrentValueRowMap[sym->ShortCode];
 		ShowCurrent(sym, std::get<0>(pos));
 	}
+	*/
 }
 
 void SmFutureGrid::SetRemain(VtPosition* posi)
@@ -405,17 +426,19 @@ void SmFutureGrid::SetRemain(VtPosition* posi)
 
 	if (_Mode != 0)
 		return;
+	/*
 	VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
 	if (sym) {
 		ShowRemain(sym);
 	}
+	*/
 }
 
 void SmFutureGrid::SetRemain(VtOrder* order)
 {
 	if (!order || _Mode != 0 || !_OrderConfigMgr)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) {
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
@@ -442,10 +465,12 @@ void SmFutureGrid::SetRemain(VtOrder* order)
 		else
 			ShowPosition(std::get<0>(result), std::get<1>(result), nullptr, order->shortCode);
 	}
+	*/
 }
 
 void SmFutureGrid::SetRemain(std::string symbol_code)
 {
+	/*
 	VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(symbol_code);
 	if (!sym)
 		return;
@@ -478,13 +503,14 @@ void SmFutureGrid::SetRemain(std::string symbol_code)
 		else
 			ShowPosition(std::get<0>(result), std::get<1>(result), nullptr, sym->ShortCode);
 	}
+	*/
 }
 
 void SmFutureGrid::ShowRemain(VtSymbol* sym)
 {
 	if (!sym)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) {
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
@@ -513,12 +539,14 @@ void SmFutureGrid::ShowRemain(VtSymbol* sym)
 		else
 			ShowPosition(std::get<0>(result), std::get<1>(result), nullptr, sym->ShortCode);
 	}
+	*/
 }
 
 void SmFutureGrid::ShowCurrent(VtSymbol* sym, int row)
 {
 	if (!sym)
 		return;
+	/*
 	std::string val = fmt::format("{:.{}f}", sym->Quote.intClose / std::pow(10, sym->Decimal), sym->Decimal);
 	CString thVal = XFormatNumber(val.c_str(), sym->Decimal);
 	QuickSetText(row, 2, thVal);
@@ -538,13 +566,14 @@ void SmFutureGrid::ShowCurrent(VtSymbol* sym, int row)
 	}
 	QuickSetBackColor(row, 2, RGB(255, 255, 255));
 	InvalidateCellRect(row, 2);
+	*/
 }
 
 void SmFutureGrid::OnOrderFilled(VtOrder* order)
 {
 	if (!_OrderConfigMgr || !order)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) {
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
@@ -562,13 +591,14 @@ void SmFutureGrid::OnOrderFilled(VtOrder* order)
 		VtPosition posi = fund->GetPosition(order->shortCode, count);
 		SetRemain(&posi);
 	}
+	*/
 }
 
 void SmFutureGrid::OnExpected(VtSymbol* sym)
 {
 	if (!sym)
 		return;
-
+	/*
 	if (_Mode == 2) {
 		CUGCell cell;
 		auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
@@ -577,16 +607,19 @@ void SmFutureGrid::OnExpected(VtSymbol* sym)
 			ShowExpected(sym, std::get<0>(pos));
 		}
 	}
+	*/
 }
 
 void SmFutureGrid::ShowExpected(VtSymbol* sym, int row)
 {
 	if (!sym)
 		return;
+	/*
 	std::string val = fmt::format("{:.{}f}", sym->Quote.intExpected / std::pow(10, sym->Decimal), sym->Decimal);
 	CString thVal = XFormatNumber(val.c_str(), sym->Decimal);
 	QuickSetText(row, 2, thVal);
 	QuickSetTextColor(row, 2, RGB(0, 0, 0));
 	QuickSetBackColor(row, 2, RGB(255, 255, 255));
 	InvalidateCellRect(row, 2);
+	*/
 }

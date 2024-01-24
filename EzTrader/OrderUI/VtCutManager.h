@@ -2,10 +2,12 @@
 #include <map>
 #include <list>
 #include <tuple>
-#include "../Order/VtOrder.h"
-#include "../Global/VtDefine.h"
-
+#include <memory>
+//#include "../Order/VtOrder.h"
+#include "../VtDefine.h"
+struct HdOrderRequest;
 struct VtPosition;
+struct VtOrder;
 class VtSymbol;
 class VtFund;
 class VtAccount;

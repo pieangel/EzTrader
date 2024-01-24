@@ -6,11 +6,11 @@
 class VtFDSubAcntPage;
 class VtAccount;
 class VtOrderConfigManager;
-class SmFavoriteGrid : public VtGrid
+class HdFavoriteGrid : public VtGrid
 {
 public:
-	SmFavoriteGrid();
-	virtual ~SmFavoriteGrid();
+	HdFavoriteGrid();
+	virtual ~HdFavoriteGrid();
 
 	virtual void OnSetup();
 	virtual void OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed);

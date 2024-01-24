@@ -21,7 +21,6 @@ public:
 	void OnQuoteEvent(VtSymbol* symbol);
 
 	virtual void OnSetup();
-	virtual void OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed);
 	virtual void OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
 	//cell type notifications
 	virtual int OnCellTypeNotify(long ID, int col, long row, long msg, long param);

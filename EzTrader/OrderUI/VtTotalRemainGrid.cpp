@@ -1,16 +1,16 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "VtTotalRemainGrid.h"
 #include "VtOrderConfigManager.h"
-#include "../Account/VtAccount.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Format/XFormatNumber.h"
-#include "../Fund/VtFund.h"
+//#include "../Account/VtAccount.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Format/XFormatNumber.h"
+//#include "../Fund/VtFund.h"
 //#include "../Global/MainBeetle.h"
 #include <algorithm> 
 #include <functional>
-#include "../Task/SmCallbackManager.h"
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -38,12 +38,12 @@ void VtTotalRemainGrid::UnregisterAllCallback()
 
 void VtTotalRemainGrid::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&VtTotalRemainGrid::OnQuoteEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&VtTotalRemainGrid::OnQuoteEvent, this, _1));
 }
 
 void VtTotalRemainGrid::UnregisterQuoteCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
 }
 
 void VtTotalRemainGrid::OnQuoteEvent(VtSymbol* symbol)
@@ -107,8 +107,8 @@ void VtTotalRemainGrid::SetRowTitle()
 	SetColumnWidth(1, 97);
 	for (int i = 0; i < _RowCount; i++) {
 		QuickSetText(i, 0, title[i]);
-		QuickSetBackColor(i, 0, MainBeetle::GridTitleBackColor);
-		QuickSetTextColor(i, 0, MainBeetle::GridTitleTextColor);
+		QuickSetBackColor(i, 0, DarkHorse::SmTotalManager::GridTitleBackColor);
+		QuickSetTextColor(i, 0, DarkHorse::SmTotalManager::GridTitleTextColor);
 		InvalidateCellRect(i, 0);
 	}
 }
@@ -187,6 +187,7 @@ void VtTotalRemainGrid::ShowAccountProfitLoss()
 
 	// 계좌 업데이트를 활성화 시킨다.
 	// 계좌의 평가손익이 업데이트 된다.
+	/*
 	acnt->Updating(true);
 	std::string temp = fmt::format("{:.{}f}", acnt->OpenPL, 2);
 	CString profitLoss = XFormatNumber(temp.c_str(), 2);
@@ -244,6 +245,7 @@ void VtTotalRemainGrid::ShowAccountProfitLoss()
 	InvalidateCellRect(1, 1);
 	InvalidateCellRect(2, 1);
 	InvalidateCellRect(3, 1);
+	*/
 }
 
 void VtTotalRemainGrid::ShowFundProfitLoss()
@@ -251,7 +253,7 @@ void VtTotalRemainGrid::ShowFundProfitLoss()
 	VtFund* fund = _OrderConfigMgr->Fund();
 	if (!fund)
 		return;
-
+	/*
 	std::string temp = fmt::format("{:.{}f}", fund->OpenPL, 0);
 	CString profitLoss = XFormatNumber(temp.c_str(), -1);
 
@@ -316,4 +318,5 @@ void VtTotalRemainGrid::ShowFundProfitLoss()
 	InvalidateCellRect(1, 1);
 	InvalidateCellRect(2, 1);
 	InvalidateCellRect(3, 1);
+	*/
 }

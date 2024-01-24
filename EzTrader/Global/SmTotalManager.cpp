@@ -37,6 +37,14 @@ using namespace DarkHorse;
 
 DarkHorse::SmTotalManager mainApp;
 
+int SmTotalManager::ServerSleepTime = 500;
+COLORREF SmTotalManager::GridTitleBackColor = RGB(210, 224, 237);
+COLORREF SmTotalManager::GridTitleTextColor = RGB(0, 0, 0);
+COLORREF SmTotalManager::SelDialogBackColor = RGB(210, 224, 237);
+COLORREF SmTotalManager::SelCellBackColor = RGB(252, 252, 190);
+COLORREF SmTotalManager::MainBackColor = RGB(220, 220, 220);
+COLORREF SmTotalManager::MainTextColor = RGB(0, 0, 0);
+
 void SmTotalManager::CreateManagers()
 {
 	use_dark_theme_ = false;

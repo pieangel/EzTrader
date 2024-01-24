@@ -8,7 +8,7 @@
 #include "SmOrderPanelOut.h"
 #include "../Xml/pugixml.hpp"
 #include "VtOrderLeftWnd.h"
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 class VtOrderConfigManager;
 class VtSymbol;
 struct VtOrder;

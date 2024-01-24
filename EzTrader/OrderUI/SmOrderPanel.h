@@ -13,7 +13,7 @@
 #include <thread>
 #include "SmTickGrid.h"
 #include "../Xml/pugixml.hpp"
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 #include "../Time/cpptime.h"
 
 
@@ -35,7 +35,7 @@ class VtLayoutManager;
 class VtRefreshManager;
 
 // 국내 선물을 위한 주문창
-class SmOrderPanel : public CDialogEx
+class SmOrderPanel : public CDialog
 {
 	DECLARE_DYNAMIC(SmOrderPanel)
 

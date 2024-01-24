@@ -1,19 +1,20 @@
 // VtOrderLeftHd.cpp : implementation file
 //
 
-#include "pch.h"
+#include "stdafx.h"
 #include "../resource.h"
-#include "../HdTrader.h"
+#include "../DarkHorse.h"
 #include "VtOrderLeftWndHd.h"
 #include "VtOrderWndHd.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
 //#include "VtHdClient.h"
 #include <string>
-#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbol.h"
 //#include "../Global/MainBeetle.h"
-#include "../Task/SmCallbackManager.h"
-#include "../Main/MainBeetle.h"
+//#include "../Task/SmCallbackManager.h"
+#include "../Global/SmTotalManager.h"
+#include "../MessageDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -50,7 +51,7 @@ VtOrderLeftWndHd::VtOrderLeftWndHd(CWnd* pParent )
 
 	_EventSeq = 0;
 	//_DefaultWidth = MainBeetle::GetHorWidthByScaleFactor(174);
-	_DefaultHeight = MainBeetle::GetVerHeightByScaleFactor(774);
+	_DefaultHeight = 774;
 }
 
 VtOrderLeftWndHd::~VtOrderLeftWndHd()
@@ -63,7 +64,7 @@ VtOrderLeftWndHd::~VtOrderLeftWndHd()
 	}
 	*/
 
-	mainApp.CallbackMgr().UnsubscribeAccountWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeAccountWndCallback(GetSafeHwnd());
 }
 
 // int VtOrderLeftWndHd::CRHGetDialogID()
@@ -143,7 +144,7 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	_ComboProduct.GetWindowRect(&rcRect);
 	ScreenToClient(&rcRect);
 
-	mainApp.CallbackMgr().SubscribeAccountWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeAccountWndCallback(GetSafeHwnd());
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
@@ -360,11 +361,13 @@ void VtOrderLeftWndHd::OnOrderEvent(VtOrder* order)
 {
 	if (!order || !_OrderConfigMgr)
 		return;
+	/*
 	std::string code = order->shortCode.substr(0, 1);
 	if ((code.compare(_T("2")) == 0) || (code.compare(_T("3")) == 0)) {
 		_SymbolOptionGrid.SetRemain(order);
 	} else {
 		_SymbolFutureGrid.SetRemain(order);
 	}
+	*/
 }
 

@@ -1,8 +1,8 @@
 // SmPLConfigDlg.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "SmPLConfigDlg.h"
 #include "afxdialogex.h"
 #include <array>
@@ -10,7 +10,7 @@
 //#include "../Global/MainBeetle.h"
 #include "VtCutManager.h"
 #include "SmOrderPanelOut.h"
-#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -27,7 +27,7 @@ SmPLConfigDlg::SmPLConfigDlg(CWnd* pParent /*=NULL*/)
 	_CenterWnd = nullptr;
 	_LayoutMgr = new VtLayoutManager(this);
 	// create the background brush
-	VERIFY(_BrushBackSel.CreateSolidBrush(MainBeetle::SelDialogBackColor));
+	VERIFY(_BrushBackSel.CreateSolidBrush(DarkHorse::SmTotalManager::SelDialogBackColor));
 	VERIFY(_BrushBackNor.CreateSolidBrush(GetSysColor(COLOR_BTNFACE)));
 }
 
@@ -165,7 +165,7 @@ void SmPLConfigDlg::OnBnClickedButtonProfitLoss()
 
 	CString strVal;
 	_EditCutProfit.GetWindowText(strVal);
-	std::string amt = strVal;
+	std::string amt = (const char*)strVal;
 	int cutProfit = 0, cutLoss = 0;
 
 	char* stop;
@@ -221,7 +221,7 @@ void SmPLConfigDlg::OnEnChangeEditOrderTypeSlip()
 
 	CString strVal;
 	_EditOrderTypeSlip.GetWindowText(strVal);
-	std::string amt = strVal;
+	std::string amt = (const char*)strVal;
 	int orderTypeSlip = 0;
 	char* stop;
 	orderTypeSlip = strtol(strVal, &stop, 10);

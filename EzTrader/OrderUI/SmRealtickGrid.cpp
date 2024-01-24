@@ -1,17 +1,17 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SmRealtickGrid.h"
-#include "../Quote/VtQuote.h"
+//#include "../Quote/VtQuote.h"
 #include "VtOrderConfigManager.h"
-#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbol.h"
 #include "VtOrderConfigManager.h"
 #include "VtOrderWnd.h"
 //#include "../Global/MainBeetle.h"
 #include <numeric>
 #include <functional>
 #include "SmOrderPanelOut.h"
-#include "../Task/SmCallbackManager.h"
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -32,19 +32,19 @@ SmRealtickGrid::~SmRealtickGrid()
 
 void SmRealtickGrid::UnregisterAllCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
 }
 
 void SmRealtickGrid::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmRealtickGrid::OnQuoteEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmRealtickGrid::OnQuoteEvent, this, _1));
 }
 
 void SmRealtickGrid::OnQuoteEvent(VtSymbol* sym)
 {
 	if (!sym || !_Symbol)
 		return;
-
+	/*
 	if (_Symbol->ShortCode.compare(sym->ShortCode) != 0)
 		return;
 
@@ -76,6 +76,7 @@ void SmRealtickGrid::OnQuoteEvent(VtSymbol* sym)
 
 	if (sym->Quote.QuoteItemQ.size() > static_cast<size_t>(m_nRows))
 		sym->Quote.QuoteItemQ.pop_back();
+		*/
 }
 
 BEGIN_MESSAGE_MAP(SmRealtickGrid, CGridCtrl)
@@ -142,8 +143,8 @@ void SmRealtickGrid::SetColTitle()
 		// 텍스트 정렬
 		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 		pCell->SetText(title[i]);
-		pCell->SetBackClr(MainBeetle::GridTitleBackColor);
-		pCell->SetTextClr(MainBeetle::GridTitleTextColor);
+		pCell->SetBackClr(DarkHorse::SmTotalManager::GridTitleBackColor);
+		pCell->SetTextClr(DarkHorse::SmTotalManager::GridTitleTextColor);
 		InvalidateCellRect(0, i);
 	}
 }
@@ -154,6 +155,7 @@ void SmRealtickGrid::OnReceiveQuote(VtSymbol* sym)
 		return;
 	ClearText();
 	int i = 1;
+	/*
 	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
 		VtQuoteItem item = *it;
 		CGridCellBase* pCell = nullptr;
@@ -184,6 +186,7 @@ void SmRealtickGrid::OnReceiveQuote(VtSymbol* sym)
 
 	if (sym->Quote.QuoteItemQ.size() > static_cast<size_t>(m_nRows))
 		sym->Quote.QuoteItemQ.pop_back();
+	*/
 }
 
 void SmRealtickGrid::SetOrderConfigMgr(VtOrderConfigManager* val)

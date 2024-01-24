@@ -4,7 +4,7 @@
 
 // VtOrderRightCancelHd dialog
 class VtOrderConfigManager;
-class VtOrderRightCancelHd : public CDialogEx
+class VtOrderRightCancelHd : public CDialog
 {
 	DECLARE_DYNAMIC(VtOrderRightCancelHd)
 

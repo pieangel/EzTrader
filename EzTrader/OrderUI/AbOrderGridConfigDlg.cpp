@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "../HdTrader.h"
+#include "../DarkHorse.h"
 #include "AbOrderGridConfigDlg.h"
 #include "afxdialogex.h"
 #include "../resource.h"
@@ -15,10 +15,10 @@
 #endif
 // AbOrderGridConfigDlg dialog
 
-IMPLEMENT_DYNAMIC(AbOrderGridConfigDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(AbOrderGridConfigDlg, CDialog)
 
 AbOrderGridConfigDlg::AbOrderGridConfigDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_ORDERGRID_CONFIG_AB, pParent)
+	: CDialog(IDD_ORDERGRID_CONFIG_AB, pParent)
 {
 	_CenterWnd = nullptr;
 }
@@ -34,7 +34,7 @@ AbOrderGridConfigDlg::~AbOrderGridConfigDlg()
 
 void AbOrderGridConfigDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_CELL_HEIGHT, _EditCellHeight);
 	DDX_Control(pDX, IDC_EDIT_CELL_WIDTH, _EditCellWidth);
 	DDX_Control(pDX, IDC_EDIT_TICK_COUNT, _EditTickCount);
@@ -47,7 +47,7 @@ void AbOrderGridConfigDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(AbOrderGridConfigDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(AbOrderGridConfigDlg, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_ORDERCOL, &AbOrderGridConfigDlg::OnBnClickedCheckShowOrdercol)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_STOPCOL, &AbOrderGridConfigDlg::OnBnClickedCheckShowStopcol)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_TICKWND, &AbOrderGridConfigDlg::OnBnClickedCheckShowTickwnd)
@@ -197,14 +197,14 @@ void AbOrderGridConfigDlg::OnBnClickedCheckShowCountcol()
 void AbOrderGridConfigDlg::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
-	CDialogEx::OnOK();
+	CDialog::OnOK();
 }
 
 
 void AbOrderGridConfigDlg::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
-	CDialogEx::OnCancel();
+	CDialog::OnCancel();
 }
 
 
@@ -223,7 +223,7 @@ void AbOrderGridConfigDlg::OnBnClickedApply()
 
 BOOL AbOrderGridConfigDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CDialog::OnInitDialog();
 	if (!_CenterWnd)
 		return FALSE;
 

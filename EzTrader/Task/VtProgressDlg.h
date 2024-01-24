@@ -1,7 +1,7 @@
 #pragma once
 #include "afxwin.h"
 #include "afxcmn.h"
-#include "GradientStatic.h"
+#include "../Util/GradientStatic.h"
 #include <afxcmn.h>
 #include <afxdialogex.h>
 #include <afxwin.h>

@@ -1,14 +1,14 @@
 // VtOrderLeftWnd.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderLeftWnd.h"
 #include "afxdialogex.h"
-#include "../Quote/VtQuote.h"
+//#include "../Quote/VtQuote.h"
 #include "../resource.h"
 #include "VtOrderConfigManager.h"
-#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbol.h"
 
 
 // CVtOrderLeftWnd dialog

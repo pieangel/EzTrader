@@ -1,20 +1,20 @@
 // VtOrderWnd.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderWnd.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
 //#include "VtOrderDialogManager.h"
-#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbol.h"
 #include "../MainFrm.h"
 //#include "../Global/MainBeetle.h"
-#include "../Account/VtAccountManager.h"
-#include "../Account/VtAccount.h"
-#include "../Symbol/VtRealtimeRegisterManager.h"
-#include "../Fund/VtFundManager.h"
-#include "../Fund/VtFund.h"
+//#include "../Account/VtAccountManager.h"
+//#include "../Account/VtAccount.h"
+//#include "../Symbol/VtRealtimeRegisterManager.h"
+//#include "../Fund/VtFundManager.h"
+//#include "../Fund/VtFund.h"
 //#include "VtFundDesigner.h"
 //#include "../Order/VtOrderManagerSelector.h"
 //#include "../Order/VtFundOrderManagerSelecter.h"
@@ -24,8 +24,8 @@
 #include "VtLayoutManager.h"
 #include <libloaderapi.h>
 #include <map>
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -96,14 +96,14 @@ void VtOrderWnd::RegisterRealtimeAccount(VtAccount* acnt)
 {
 	if (!acnt)
 		return;
-	mainApp.RealtimeRegisterMgr().RegisterAccount(acnt->AccountNo);
+	//mainApp.RealtimeRegisterMgr().RegisterAccount(acnt->AccountNo);
 }
 
 void VtOrderWnd::UnregisterRealtimeAccount(VtAccount* acnt)
 {
 	if (!acnt)
 		return;
-	mainApp.RealtimeRegisterMgr().UnregisterAccount(acnt->AccountNo);
+	//mainApp.RealtimeRegisterMgr().UnregisterAccount(acnt->AccountNo);
 }
 
 void VtOrderWnd::Begin()
@@ -329,7 +329,7 @@ int VtOrderWnd::ResizeWindow()
 	// 우측창 길이를 합한다.
 	totalWidth += _ShowRightWnd ? _RightWnd.DefaultWidth() : 0;
 	// 윈도우 시스템 오차 교정
-	totalWidth += (!_ShowLeftWnd || !_ShowRightWnd) ? MainBeetle::GetHorWidthByScaleFactor(16) : 0;
+	totalWidth += (!_ShowLeftWnd || !_ShowRightWnd) ? 16 : 0;
 	// 전체 크기를 정한다.
 	SetWindowPos(nullptr, _XPos == 0 ? rcWnd.left : _XPos, _YPos == 0 ? rcWnd.top : _YPos, totalWidth == 0 ? _WindowWidth : totalWidth, _WindowHeight == 0 ? _DefaultHeight : _WindowHeight, SWP_NOZORDER | SWP_FRAMECHANGED);
 
@@ -897,7 +897,7 @@ void VtOrderWnd::OnFundAdded()
 	if (selAcnt != -1)
 	{
 		_ComboAcnt.GetLBText(selAcnt, str1);
-
+		/*
 		_StaticAcnt.SetWindowText(_T("펀드"));
 		std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
 		if (fundList.size() == 0)
@@ -934,6 +934,7 @@ void VtOrderWnd::OnFundAdded()
 			//_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
 			//_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
 		}
+		*/
 	}
 	else
 	{
@@ -951,7 +952,7 @@ void VtOrderWnd::OnFundDeleted(VtFund* delFund)
 	if (selAcnt != -1)
 	{
 		_ComboAcnt.GetLBText(selAcnt, str1);
-
+		/*
 		_StaticAcnt.SetWindowText(_T("펀드"));
 		std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
 		if (fundList.size() == 0)
@@ -988,6 +989,7 @@ void VtOrderWnd::OnFundDeleted(VtFund* delFund)
 			//_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
 			//_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
 		}
+		*/
 	}
 	else
 	{
@@ -1001,7 +1003,7 @@ bool VtOrderWnd::InitFund()
 		return false;
 
 	_ComboAcnt.ResetContent();
-
+	/*
 	_StaticAcnt.SetWindowText(_T("펀드"));
 	std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
 	if (fundList.size() == 0) {
@@ -1033,7 +1035,7 @@ bool VtOrderWnd::InitFund()
 		//_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
 		//_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
 	}
-
+	*/
 	return true;
 }
 
@@ -1047,6 +1049,7 @@ void VtOrderWnd::InitAccount()
 
 	int selAcnt = -1, index = 0;
 	std::string acntName;
+	/*
 	for (auto it = mainApp.AcntMgr().AccountMap.begin(); it != mainApp.AcntMgr().AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
 		// 해외 계좌만 보여준다.
@@ -1092,6 +1095,7 @@ void VtOrderWnd::InitAccount()
 		pwd.Format(_T("%s"), _OrderConfigMgr->Account()->Password.c_str());
 		_EditPwd.SetWindowText(pwd);
 	}
+	*/
 }
 
 void VtOrderWnd::OnReceiveHoga(VtSymbol* sym)
@@ -1424,7 +1428,7 @@ void VtOrderWnd::OnCbnSelchangeComboAccountHd()
 			VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(curSel);
 			if (!acnt)
 				return;
-
+			/*
 			// 주문 설정 객체 계좌 설정
 			_OrderConfigMgr->Account(acnt);
 			_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->AccountName.c_str());
@@ -1441,9 +1445,11 @@ void VtOrderWnd::OnCbnSelchangeComboAccountHd()
 			_Account = acnt;
 			// 오른쪽에 계좌 정보를 보여준다.
 			_RightWnd.ShowAccountInfo(acnt);
+			*/
 		}
 	}
 	else {
+		/*
 		if (_OrderConfigMgr->Fund()) {
 			std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
 			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
@@ -1472,6 +1478,8 @@ void VtOrderWnd::OnCbnSelchangeComboAccountHd()
 				centerWnd->ChangeFund(_OrderConfigMgr->Fund());
 			}
 		}
+		*/
+		int i = 0;
 	}
 
 // 	if (_LeftWnd) {
@@ -1493,9 +1501,11 @@ void VtOrderWnd::OnBnClickedBtnGetAcntInfo()
 	int curSel = _ComboAcnt.GetCurSel();
 	if (curSel != -1)
 	{
+		/*
 		VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(curSel);
 		if (acnt && acnt->AccountLevel() == 0 && acnt->hasValidPassword())
 			acnt->GetAccountProfitLossDirect();
+		*/
 	}
 }
 
@@ -1550,8 +1560,8 @@ void VtOrderWnd::SetAccount(VtAccount* acnt)
 		return;
 	_Account = acnt;
 
-	VtOrderManager* _OrderMgr = mainApp.TotalOrderMgr().FindAddAccountOrderManger(acnt->AccountNo);
-	_OrderConfigMgr->OrderMgr(_OrderMgr);
+	//VtOrderManager* _OrderMgr = mainApp.TotalOrderMgr().FindAddAccountOrderManger(acnt->AccountNo);
+	//_OrderConfigMgr->OrderMgr(_OrderMgr);
 }
 
 void VtOrderWnd::SetFund(VtFund* fund)
@@ -1560,8 +1570,8 @@ void VtOrderWnd::SetFund(VtFund* fund)
 		return;
 	_Fund = fund;
 
-	VtOrderManager* fundOrderMgr = (VtOrderManager*)mainApp.TotalOrderMgr().FindAddFundOrderManager(fund->Name);
-	_OrderConfigMgr->OrderMgr(fundOrderMgr);
+	//VtOrderManager* fundOrderMgr = (VtOrderManager*)mainApp.TotalOrderMgr().FindAddFundOrderManager(fund->Name);
+	//_OrderConfigMgr->OrderMgr(fundOrderMgr);
 }
 
 void VtOrderWnd::SetType(int type)
@@ -1801,9 +1811,9 @@ void VtOrderWnd::OnEnChangeEditPwd()
 	if (_EditPwd.GetSafeHwnd()) {
 		CString pwd;
 		_EditPwd.GetWindowText(pwd);
-		if (_OrderConfigMgr && _OrderConfigMgr->Account()) {
-			_OrderConfigMgr->Account()->Password = (LPCTSTR)pwd;
-		}
+		//if (_OrderConfigMgr && _OrderConfigMgr->Account()) {
+		//	_OrderConfigMgr->Account()->Password = (LPCTSTR)pwd;
+		//}
 	}
 }
 
@@ -1817,13 +1827,13 @@ void VtOrderWnd::SaveToXml(pugi::xml_node& node_order_window)
 		if (_OrderConfigMgr->Type() == 0) {
 			if (_OrderConfigMgr->Account()) {
 				order_window_child = node_order_window.append_child("account_no");
-				order_window_child.append_child(pugi::node_pcdata).set_value(_OrderConfigMgr->Account()->AccountNo.c_str());
+				//order_window_child.append_child(pugi::node_pcdata).set_value(_OrderConfigMgr->Account()->AccountNo.c_str());
 			}
 		}
 		else {
 			if (_OrderConfigMgr->Fund()) {
 				order_window_child = node_order_window.append_child("fund_name");
-				order_window_child.append_child(pugi::node_pcdata).set_value(_OrderConfigMgr->Fund()->Name.c_str());
+				//order_window_child.append_child(pugi::node_pcdata).set_value(_OrderConfigMgr->Fund()->Name.c_str());
 			}
 		}
 

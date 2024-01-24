@@ -1,8 +1,8 @@
 // VtOrderRightWnd.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderRightWnd.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"

@@ -1,12 +1,12 @@
 #pragma once
 #include "afxwin.h"
 #include "afxcmn.h"
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 
 
 // VtOrderConfigPage dialog
 class VtOrderConfigManager;
-class VtOrderConfigPage : public CDialogEx
+class VtOrderConfigPage : public CDialog
 {
 	DECLARE_DYNAMIC(VtOrderConfigPage)
 

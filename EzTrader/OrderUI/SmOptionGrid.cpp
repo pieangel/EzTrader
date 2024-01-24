@@ -1,28 +1,29 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SmOptionGrid.h"
-#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbol.h"
 #include "VtOrderConfigManager.h"
 #include "VtOrderLeftWndHd.h"
 //#include "VtOptionMonthSection.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Position/VtPosition.h"
-#include "../Account/VtAccount.h"
-#include "../Order/VtOrder.h"
-#include "../Order/VtOrderManager.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Position/VtPosition.h"
+//#include "../Account/VtAccount.h"
+//#include "../Order/VtOrder.h"
+//#include "../Order/VtOrderManager.h"
 //#include "../Order/VtOrderManagerSelector.h"
 //#include "../Order/VtProductOrderManagerSelector.h"
-#include "../Order/VtProductOrderManager.h"
-#include "../Fund/VtFund.h"
-#include "../Symbol/VtRealtimeRegisterManager.h"
+//#include "../Order/VtProductOrderManager.h"
+//#include "../Fund/VtFund.h"
+//#include "../Symbol/VtRealtimeRegisterManager.h"
 //#include "../Global/MainBeetle.h"
 #include "SmOrderPanel.h"
-#include "../Task/SmCallbackManager.h"
-#include "../Symbol/SmMarketManager.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Symbol/SmMarketManager.h"
 #include <functional>
 #include "../Symbol/SmProductYearMonth.h"
 #include "../Symbol/SmProduct.h"
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
+#include "../MessageDefine.h"
 
 #pragma warning(disable:4018)
 
@@ -45,24 +46,24 @@ SmOptionGrid::~SmOptionGrid()
 
 void SmOptionGrid::RegisterMasterCallback()
 {
-	mainApp.CallbackMgr().SubscribeMasterCallback((long)this, std::bind(&SmOptionGrid::OnMasterEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeMasterCallback((long)this, std::bind(&SmOptionGrid::OnMasterEvent, this, _1));
 }
 
 void SmOptionGrid::UnregisterAllCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
-	mainApp.CallbackMgr().UnsubscribeMasterCallback((long)this);
-	mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeMasterCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void SmOptionGrid::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void SmOptionGrid::RegisterOrderCallback()
 {
-	mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmOptionGrid::OnOrderEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmOptionGrid::OnOrderEvent, this, _1));
 }
 
 void SmOptionGrid::OnMasterEvent(VtSymbol* sym)
@@ -88,6 +89,7 @@ void SmOptionGrid::OnOrderEvent(VtOrder* order)
 			return;
 
 		// 체결 이벤트
+		/*
 		if (order->state == VtOrderState::Filled) {
 			if (_OrderConfigMgr->Type() == 0) {
 				VtAccount* acnt = _OrderConfigMgr->Account();
@@ -113,6 +115,7 @@ void SmOptionGrid::OnOrderEvent(VtOrder* order)
 				SetRemain(symbol);
 			}
 		}
+		*/
 	} 
 	catch (...)
 	{
@@ -194,7 +197,7 @@ void SmOptionGrid::Init()
 
 	SetColTitle();
 
-	_RunInfo = mainApp.SymbolMgr().MrktMgr().GetOptionRunVector();
+	//_RunInfo = mainApp.SymbolMgr().MrktMgr().GetOptionRunVector();
 
 	InitSymbol();
 	InitYearMonth();
@@ -205,6 +208,7 @@ void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	SetFocus();
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pCell = GetCell(cell.row, cell.col);
+	/*
 	VtSymbol* sym = (VtSymbol*)pCell->GetData();
 	if (sym) {
 		sym->GetSymbolMaster();
@@ -213,6 +217,7 @@ void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
 			_OrderConfigMgr->_HdCenterWnd->ChangeSymbol(sym);
 		}
 	}
+	*/
 }
 
 void SmOptionGrid::OnRButtonDown(UINT nFlags, CPoint point)
@@ -288,8 +293,8 @@ void SmOptionGrid::SetColTitle()
 			pCell->SetBackClr(RGB(19, 137, 255));
 		}
 		else {
-			pCell->SetTextClr(MainBeetle::GridTitleBackColor);
-			pCell->SetBackClr(MainBeetle::GridTitleTextColor);
+			pCell->SetTextClr(DarkHorse::SmTotalManager::GridTitleBackColor);
+			pCell->SetBackClr(DarkHorse::SmTotalManager::GridTitleTextColor);
 		}
 		InvalidateCellRect(0, i);
 	}
@@ -351,11 +356,12 @@ void SmOptionGrid::InitSymbol()
 {
 	if (!_LeftWnd)
 		return;
-
+	/*
 	for (auto it = _RunInfo.begin(); it != _RunInfo.end(); ++it) {
 		SmRunInfo& run_info = *it;
 		int index = _LeftWnd->_ComboProduct.AddString(run_info.Name.c_str());
 	}
+	*/
 
 	_LeftWnd->_ComboProduct.SetCurSel(0);
 	_SelectedProduct = 0;
@@ -375,7 +381,7 @@ void SmOptionGrid::SetYearMonth()
 	int cur_sel = _LeftWnd->_ComboProduct.GetCurSel();
 	if (cur_sel < 0)
 		return;
-
+	/*
 	SmProduct* product = mainApp.SymbolMgr().MrktMgr().FindProductFromMap(_RunInfo[cur_sel].CallCode);
 	if (!product)
 		return;
@@ -390,6 +396,7 @@ void SmOptionGrid::SetYearMonth()
 		CString yearMon(code.c_str());
 		int index = _LeftWnd->_ComboOptionMonth.AddString(yearMon);
 	}
+	*/
 
 	_LeftWnd->_ComboOptionMonth.SetCurSel(0);
 }
@@ -407,7 +414,7 @@ void SmOptionGrid::GetSymbolMaster()
 		return;
 
 	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
-
+	/*
 	std::pair<SmProduct*, SmProduct*> product_pair = mainApp.SymbolMgr().MrktMgr().GetProductPair(_RunInfo[_SelectedProduct]);
 	if (!product_pair.first || !product_pair.second)
 		return;
@@ -418,7 +425,7 @@ void SmOptionGrid::GetSymbolMaster()
 	SmProductYearMonth* put_year_month = product_pair.second->GetYearMonth((LPCTSTR)curYearMon);
 	if (!call_year_month || !put_year_month)
 		return;
-
+	
 	if (call_year_month && put_year_month) {
 		std::vector<VtSymbol*> call_symbol_list = call_year_month->SymbolList();
 		std::vector<VtSymbol*> put_symbol_list = put_year_month->SymbolList();
@@ -463,6 +470,7 @@ void SmOptionGrid::GetSymbolMaster()
 			addNum++;
 		}
 	}
+	*/
 }
 
 void SmOptionGrid::RefreshMode()
@@ -489,11 +497,11 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 	int eCenter = 0;
 	// 값을 표시하는 시작 인덱스
 	int start_index = 0;
-	int max_row = height / DefaultCellHeight;
+	int max_row = height / 21;// DefaultCellHeight;
 	_MaxRow = max_row;
 	CString curYearMon;
 	_LeftWnd->_ComboOptionMonth.GetLBText(selMon, curYearMon);
-
+	/*
 	SmProduct* product = mainApp.SymbolMgr().MrktMgr().FindProductFromMap(_RunInfo[_SelectedProduct].CallCode);
 	if (!product)
 		return std::make_pair(0, 0);
@@ -563,6 +571,7 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 			}
 		}
 	}
+	*/
 
 	return std::make_pair(start_index, max_row);
 }
@@ -617,6 +626,7 @@ void SmOptionGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::s
 				}
 			}
 			else { // 포지션이 있는 경우 - 최소 한번이라도 주문이 나간것으로 간주한다. - 이전에 나갔어도 
+				/*
 				if (std::abs(posi->OpenQty) > 0) { // 잔고가 있는 경우
 					QuickSetNumber(row, col, posi->OpenQty);
 					if (acptCnt > 0) // 접수 확인 주문이 있는 경우  회색배경에 잔고 갯수
@@ -634,9 +644,12 @@ void SmOptionGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::s
 						QuickSetBackColor(row, col, RGB(255, 255, 255));
 					}
 				}
+				*/
+				int i = 0;
 			}
 		}
 		else { // 풋일 경우
+			/*
 			if (!posi) { // 포지션이 없는 경우 - 주문이 나간적이 없을 경우
 				if (acptCnt > 0) { // 접수확인된 주문이 있을 경우 - 0에 회색 배경
 					QuickSetText(row, col, _T("0"));
@@ -672,6 +685,7 @@ void SmOptionGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::s
 					}
 				}
 			}
+			*/
 		}
 		InvalidateCellRect(row, col);
 		_RemainPos.insert(std::make_pair(row, col));
@@ -683,16 +697,19 @@ void SmOptionGrid::ShowExpected(VtSymbol* sym)
 	if (!sym)
 		return;
 	CUGCell cell;
+	/*
 	auto it = _SymbolRowMap.find(sym->ShortCode);
 	if (it != _SymbolRowMap.end()) {
 		auto pos = _SymbolRowMap[sym->ShortCode];
 		ShowExpected(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
 	}
+	*/
 }
 
 void SmOptionGrid::ShowExpected(int row, int col, VtSymbol* sym)
 {
 	CGridCellBase* pCell = GetCell(row, col);
+	/*
 	if (pCell) {
 		int curValue = sym->Quote.intExpected;
 
@@ -701,6 +718,7 @@ void SmOptionGrid::ShowExpected(int row, int col, VtSymbol* sym)
 		pCell->SetText(strVal.c_str());
 		InvalidateCellRect(row, col);
 	}
+	*/
 }
 
 void SmOptionGrid::ShowCurrent(VtSymbol* sym)
@@ -708,16 +726,19 @@ void SmOptionGrid::ShowCurrent(VtSymbol* sym)
 	if (!sym)
 		return;
 	CUGCell cell;
+	/*
 	auto it = _SymbolRowMap.find(sym->ShortCode);
 	if (it != _SymbolRowMap.end()) {
 		auto pos = _SymbolRowMap[sym->ShortCode];
 		ShowCurrent(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
 	}
+	*/
 }
 
 void SmOptionGrid::ShowCurrent(int row, int col, VtSymbol* sym)
 {
 	CGridCellBase* pCell = GetCell(row, col);
+	/*
 	if (pCell) {
 		int curValue = sym->Quote.intClose;
 
@@ -726,6 +747,7 @@ void SmOptionGrid::ShowCurrent(int row, int col, VtSymbol* sym)
 		pCell->SetText(strVal.c_str());
 		InvalidateCellRect(row, col);
 	}
+	*/
 }
 
 void SmOptionGrid::SetRemain(VtPosition* posi)
@@ -738,7 +760,7 @@ void SmOptionGrid::SetRemain(VtPosition* posi)
 
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
 		return;
-
+	/*
 	auto it = _SymbolRowMap.find(posi->ShortCode);
 	if (it != _SymbolRowMap.end())
 	{
@@ -761,13 +783,14 @@ void SmOptionGrid::SetRemain(VtPosition* posi)
 		msg.Format("SetRemain row = %d, col = %d\n", std::get<0>(pos), std::get<1>(pos));
 		TRACE(msg);
 	}
+	*/
 }
 
 void SmOptionGrid::SetRemain(VtOrder* order)
 {
 	if (!order || _Mode != 0 || !_OrderConfigMgr)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) {
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
@@ -776,11 +799,13 @@ void SmOptionGrid::SetRemain(VtOrder* order)
 		VtOrderManager* orderMgr = mainApp.TotalOrderMgr().FindAddAccountOrderManger(acnt->AccountNo);
 		if (!orderMgr)
 			return;
+		
 		VtProductOrderManager* prdtOrderMgr = orderMgr->GetProductOrderManager(order->shortCode);
 		if (!prdtOrderMgr)
 			return;
 		VtPosition* posi = acnt->FindPosition(order->shortCode);
 		ShowPosition(prdtOrderMgr->Init(), prdtOrderMgr->GetAcceptedOrderCount(), posi, order->shortCode);
+
 	}
 	else {
 		VtFund* fund = _OrderConfigMgr->Fund();
@@ -795,13 +820,14 @@ void SmOptionGrid::SetRemain(VtOrder* order)
 		else
 			ShowPosition(std::get<0>(result), std::get<1>(result), nullptr, order->shortCode);
 	}
+	*/
 }
 
 void SmOptionGrid::SetRemain(VtSymbol* sym)
 {
 	if (!sym || !_OrderConfigMgr)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) {
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
@@ -829,13 +855,14 @@ void SmOptionGrid::SetRemain(VtSymbol* sym)
 		else
 			ShowPosition(std::get<0>(result), std::get<1>(result), nullptr, sym->ShortCode);
 	}
+	*/
 }
 
 void SmOptionGrid::SetRemain2()
 {
 	if (_Mode != 0 || !_OrderConfigMgr)
 		return;
-
+	/*
 	for (auto it = _SymbolRowMap.begin(); it != _SymbolRowMap.end(); ++it) {
 		auto pos = it->second;
 		VtSymbol* sym = std::get<2>(pos);
@@ -869,6 +896,7 @@ void SmOptionGrid::SetRemain2()
 				ShowPosition(std::get<0>(result), std::get<1>(result), nullptr, sym->ShortCode);
 		}
 	}
+	*/
 }
 
 void SmOptionGrid::SetCurrent2()
@@ -938,7 +966,7 @@ void SmOptionGrid::SetEqualRow(int equalRow)
 
 int SmOptionGrid::GetMaxRow()
 {
-	int rowHeight = DefaultCellHeight;
+	int rowHeight = 21; // DefaultCellHeight;
 
 	if (_OrderConfigMgr)
 		rowHeight = _OrderConfigMgr->OrderCellHeight;
@@ -957,7 +985,7 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
 	if (selMon == -1)
 		return;
-
+	/*
 	std::pair<SmProduct*, SmProduct*> product_pair = mainApp.SymbolMgr().MrktMgr().GetProductPair(_RunInfo[_SelectedProduct]);
 	if (!product_pair.first || !product_pair.second)
 		return;
@@ -1056,6 +1084,7 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 			}
 		}
 	}
+	*/
 }
 
 void SmOptionGrid::OnSymbolMaster(VtSymbol* sym)
@@ -1067,7 +1096,7 @@ void SmOptionGrid::OnOrderFilled(VtOrder* order)
 {
 	if (!_OrderConfigMgr || !order)
 		return;
-
+	/*
 	if (_OrderConfigMgr->Type() == 0) {
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
@@ -1085,6 +1114,7 @@ void SmOptionGrid::OnOrderFilled(VtOrder* order)
 		VtPosition posi = fund->GetPosition(order->shortCode, count);
 		SetRemain(&posi);
 	}
+	*/
 }
 
 void SmOptionGrid::OnReceiveQuote(VtSymbol* sym)

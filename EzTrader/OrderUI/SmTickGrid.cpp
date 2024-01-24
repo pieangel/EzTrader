@@ -1,17 +1,18 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SmTickGrid.h"
-#include "../Quote/VtQuote.h"
+//#include "../Quote/VtQuote.h"
 #include "VtOrderConfigManager.h"
-#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbol.h"
 #include "VtOrderConfigManager.h"
 #include "VtOrderWndHd.h"
 //#include "../Global/MainBeetle.h"
 #include <numeric>
 #include <functional>
 #include "SmOrderPanel.h"
-#include "../Task/SmCallbackManager.h"
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
+#include "../MessageDefine.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -33,19 +34,19 @@ SmTickGrid::~SmTickGrid()
 
 void SmTickGrid::UnregisterAllCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void SmTickGrid::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void SmTickGrid::OnQuoteEvent(VtSymbol* sym)
 {
 	if (!sym || !_CenterWnd)
 		return;
-
+	/*
 	if (_CenterWnd->Symbol()->ShortCode.compare(sym->ShortCode) != 0)
 		return;
 
@@ -75,6 +76,7 @@ void SmTickGrid::OnQuoteEvent(VtSymbol* sym)
 		InvalidateCellRect(i, 2);
 		i++;
 	}
+	*/
 }
 
 BEGIN_MESSAGE_MAP(SmTickGrid, CGridCtrl)
@@ -140,8 +142,8 @@ void SmTickGrid::SetColTitle()
 		SetColumnWidth(i, _ColWidths[i]);
 		CGridCellBase* pCell = GetCell(0, i);
 		pCell->SetText(title[i]);
-		pCell->SetBackClr(MainBeetle::GridTitleBackColor);
-		pCell->SetTextClr(MainBeetle::GridTitleTextColor);
+		pCell->SetBackClr(DarkHorse::SmTotalManager::GridTitleBackColor);
+		pCell->SetTextClr(DarkHorse::SmTotalManager::GridTitleTextColor);
 		InvalidateCellRect(0, i);
 	}
 }
@@ -152,6 +154,7 @@ void SmTickGrid::OnReceiveQuote(VtSymbol* sym)
 		return;
 
 	int i = 1;
+	/*
 	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
 		VtQuoteItem item = *it;
 		CGridCellBase* pCell = nullptr;
@@ -180,6 +183,7 @@ void SmTickGrid::OnReceiveQuote(VtSymbol* sym)
 
 	if (sym->Quote.QuoteItemQ.size() > m_nRows)
 		sym->Quote.QuoteItemQ.pop_back();
+		*/
 }
 
 void SmTickGrid::SetOrderConfigMgr(VtOrderConfigManager* val)
@@ -258,7 +262,7 @@ LRESULT SmTickGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 	VtSymbol* sym = _CenterWnd->Symbol();
 	if (!sym)
 		return 1;
-
+	/*
 	VtSymbol* symbol = (VtSymbol*)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
@@ -290,6 +294,7 @@ LRESULT SmTickGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 		InvalidateCellRect(i, 2);
 		i++;
 	}
+	*/
 	return 1;
 }
 
@@ -303,6 +308,7 @@ void SmTickGrid::RefreshValues()
 		return;
 
 	int i = 1;
+	/*
 	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
 		VtQuoteItem item = *it;
 		CGridCellBase* pCell = nullptr;
@@ -328,6 +334,7 @@ void SmTickGrid::RefreshValues()
 		InvalidateCellRect(i, 2);
 		i++;
 	}
+	*/
 	return;
 }
 

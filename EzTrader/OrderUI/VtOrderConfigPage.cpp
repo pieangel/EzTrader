@@ -1,8 +1,8 @@
 // VtOrderConfigPage.cpp : implementation file
 //
 
-#include "pch.h"
-#include "../HdTrader.h"
+#include "stdafx.h"
+#include "../DarkHorse.h"
 #include "VtOrderConfigPage.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
@@ -14,10 +14,10 @@
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_DYNAMIC(VtOrderConfigPage, CDialogEx)
+IMPLEMENT_DYNAMIC(VtOrderConfigPage, CDialog)
 
 VtOrderConfigPage::VtOrderConfigPage(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_ORDER_CONFIG, pParent)
+	: CDialog(IDD_ORDER_CONFIG, pParent)
 {
 
 }
@@ -33,7 +33,7 @@ void VtOrderConfigPage::SetOrderConfigMgr(VtOrderConfigManager* val)
 
 void VtOrderConfigPage::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_CHECK_CONFIRM_SHORTCUTORDER, _CheckConfirmShortcutOrder);
 	DDX_Control(pDX, IDC_CHECK_FIX_HOGA, _CheckFixHoga);
 	DDX_Control(pDX, IDC_CHECK_ONECLICK, _CheckOneClick);
@@ -46,7 +46,7 @@ void VtOrderConfigPage::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(VtOrderConfigPage, CDialogEx)
+BEGIN_MESSAGE_MAP(VtOrderConfigPage, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_ONECLICK, &VtOrderConfigPage::OnBnClickedCheckOneclick)
 	ON_BN_CLICKED(IDC_CHECK_FIX_HOGA, &VtOrderConfigPage::OnBnClickedCheckFixHoga)
 	ON_BN_CLICKED(IDC_CHECK_ORDER_BYSPACE, &VtOrderConfigPage::OnBnClickedCheckOrderByspace)
@@ -66,7 +66,7 @@ END_MESSAGE_MAP()
 
 BOOL VtOrderConfigPage::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CDialog::OnInitDialog();
 
 	// TODO:  Add extra initialization here
 	InitControlValues();

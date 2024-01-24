@@ -1,8 +1,8 @@
 #pragma once
-#include "../pch.h"
+#include "../stdafx.h"
 #include "../UGrid/VtGrid.h"
 #include "../UGrid/CellTypes/UGCTSeperateText.h"
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 class VtSymbol;
 class VtAccount;
 struct VtQuote;

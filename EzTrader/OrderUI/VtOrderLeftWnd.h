@@ -5,7 +5,7 @@
 #include "SmRealtickGrid.h"
 #include "../ShadeButtonST.h"
 #include "afxwin.h"
-#include "SmFavoriteGrid.h"
+#include "HdFavoriteGrid.h"
 // CVtOrderLeftWnd dialog
 struct VtQuote;
 class CVtOrderWnd;
@@ -36,7 +36,7 @@ protected:
 public:
 	void OnReceiveRealtimeQuote(VtQuote* quote);
 private:
-	SmFavoriteGrid _FavGrid;
+	HdFavoriteGrid _FavGrid;
 	VtProductAcceptedGrid  _AcceptGrid;
 	VtProductRemainGridEx _RemainGrid;
 	VtTotalRemainGrid _TotalGrid;

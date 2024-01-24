@@ -7,6 +7,30 @@
 #endif
 
 #include "resource.h"       // main symbols
+BOOL __stdcall SetChildFont(HWND hwnd, LPARAM lparam);
+
+class TApplicationFont : public CObject {
+private:
+	CString m_strFaceName;
+	int m_nFontSize;
+	int m_nPointSize;
+	CFont m_Font;
+
+private:
+	void createFont(void);
+
+public:
+	TApplicationFont(LPCTSTR szFaceName);
+	virtual ~TApplicationFont();
+
+	CFont* GetFont(void);
+	CString& GetFaceName(void);
+	int GetFontSize(void);
+	int GetPointSize(void);
+
+	void SetFaceName(LPCTSTR szFaceName);
+};
+
 
 
 // CDarkHorseApp:

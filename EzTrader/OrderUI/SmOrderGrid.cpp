@@ -1,20 +1,20 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "SmOrderGrid.h"
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 //#include "../Global/MainBeetle.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Quote/VtQuote.h"
-#include "../Symbol/VtSymbolMaster.h"
-#include "../Hoga/VtHoga.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Quote/VtQuote.h"
+//#include "../Symbol/VtSymbolMaster.h"
+//#include "../Hoga/VtHoga.h"
 #include "../UGrid/VtCellLabel.h"
-#include "../Account/VtAccountManager.h"
-#include "../Order/VtOrder.h"
-#include "../Order/VtOrderManager.h"
+//#include "../Account/VtAccountManager.h"
+//#include "../Order/VtOrder.h"
+//#include "../Order/VtOrderManager.h"
 //#include "../Order/VtOrderManagerSelector.h"
-#include "../Account/VtAccount.h"
+//#include "../Account/VtAccount.h"
 //#include "../Order/VtProductOrderManagerSelector.h"
-#include "../Order/VtProductOrderManager.h"
+//#include "../Order/VtProductOrderManager.h"
 #include <chrono>
 #include <algorithm>
 #include <vector>
@@ -22,20 +22,20 @@
 #include <map>
 #include "../resource.h"
 #include "VtStopOrderManager.h"
-#include "../Position/VtPosition.h"
+//#include "../Position/VtPosition.h"
 #include "VtOrderWndHd.h"
 #include "VtOrderConfigManager.h"
-#include "../Order/VtFundOrderManager.h"
-#include "../Fund/VtFund.h"
-#include "../Account/VtSubAccountManager.h"
-#include "../Format/format.h"
+//#include "../Order/VtFundOrderManager.h"
+//#include "../Fund/VtFund.h"
+//#include "../Account/VtSubAccountManager.h"
+//#include "../Format/format.h"
 #include "VtCutManager.h"
-#include "../Format/XFormatNumber.h"
+//#include "../Format/XFormatNumber.h"
 #include <algorithm> 
 #include <functional>
-#include "../Task/SmCallbackManager.h"
-#include "../Log/loguru.hpp"
-#include "../Main/MainBeetle.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Log/loguru.hpp"
+#include "../Global/SmTotalManager.h"
 
 //#include "SmErrorHandler.h"
 
@@ -118,10 +118,12 @@ void SmOrderGrid::OnSymbolMaster(VtSymbol* sym)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
+	/*
 	VtSymbol* symbol = _CenterWnd->Symbol();
 	if (symbol->ShortCode.compare(sym->ShortCode) != 0) {
 		return;
 	}
+	*/
 
 	ResetByCenterRow();
 }
@@ -142,20 +144,21 @@ void SmOrderGrid::UnregisterAllCallback()
 
 void SmOrderGrid::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmOrderGrid::OnQuoteEvent, this, _1));
-	mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmOrderGrid::OnQuoteEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
 }
 
 void SmOrderGrid::UnregisterQuoteCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
-	mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
-	mainApp.CallbackMgr().UnsubscribeOrderWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeOrderWndCallback(GetSafeHwnd());
 }
 
 void SmOrderGrid::OnQuoteEvent(VtSymbol* symbol)
 {
+	/*
 	try {
 	if (!_Init || !symbol)
 		return;
@@ -163,7 +166,7 @@ void SmOrderGrid::OnQuoteEvent(VtSymbol* symbol)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return;
 	}
-
+	
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
 		return;
 
@@ -181,7 +184,7 @@ void SmOrderGrid::OnQuoteEvent(VtSymbol* symbol)
 		//RefreshCells(refreshSet);
 	}
 
-	/*
+	
 	// 기존 시세를 지운다.
 	ClearQuotes(refreshSet);
 	// 중앙 고정일때는 종가 행을 새로 찾아서 매칭해준다.
@@ -194,19 +197,21 @@ void SmOrderGrid::OnQuoteEvent(VtSymbol* symbol)
 
 	// 관련된 셀들을 업데이트 한다.
 	RefreshCells(refreshSet);
-	*/
+	
 
 	}
 	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
+		;// LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
 	}
 	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
+		;// LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 LRESULT SmOrderGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 {
+	/*
 	try {
 	if (!_Init || _Wheeling)
 		return 1;
@@ -214,7 +219,7 @@ LRESULT SmOrderGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return 1;
 	}
-
+	
 	VtSymbol* symbol = (VtSymbol*)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
@@ -253,24 +258,25 @@ LRESULT SmOrderGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
-
+	*/
 	return 1;
 }
 
 void SmOrderGrid::RegisterHogaCallback()
 {
 	//SmCallbackManager::GetInstance()->SubscribeHogaCallback((long)this, std::bind(&SmOrderGrid::OnHogaEvent, this, _1));
-	mainApp.CallbackMgr().SubscribeHogaWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeHogaWndCallback(GetSafeHwnd());
 }
 
 void SmOrderGrid::UnregisterHogaCallback()
 {
 	//SmCallbackManager::GetInstance()->UnsubscribeHogaCallback((long)this);
-	mainApp.CallbackMgr().UnsubscribeHogaWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeHogaWndCallback(GetSafeHwnd());
 }
 
 void SmOrderGrid::OnHogaEvent(VtSymbol* symbol)
 {
+	/*
 	try {
 	if (!_Init || !symbol)
 		return;
@@ -278,7 +284,7 @@ void SmOrderGrid::OnHogaEvent(VtSymbol* symbol)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return;
 	}
-
+	
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
 		return;
 
@@ -302,10 +308,12 @@ void SmOrderGrid::OnHogaEvent(VtSymbol* symbol)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 LRESULT SmOrderGrid::OnHogaChangedMessage(WPARAM wParam, LPARAM lParam)
 {
+	/*
 	try {
 	if (!_Init || _Wheeling) {
 		return 1;
@@ -354,22 +362,23 @@ LRESULT SmOrderGrid::OnHogaChangedMessage(WPARAM wParam, LPARAM lParam)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
-
+	*/
 	return 1;
 }
 
 void SmOrderGrid::RegisterOrderallback()
 {
-	mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmOrderGrid::OnOrderEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmOrderGrid::OnOrderEvent, this, _1));
 }
 
 void SmOrderGrid::UnregisterOrderCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeOrderCallback((long)this);
 }
 
 void SmOrderGrid::OnOrderEvent(VtOrder* order)
 {
+	/*
 	try {
 	CString test;
 	//test.Format("event:: order_event_count = %d, order_state = %d\n", order_count++, (int)order->state);
@@ -444,16 +453,17 @@ void SmOrderGrid::OnOrderEvent(VtOrder* order)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::RegisterOrderWndCallback()
 {
-	mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
 }
 
 void SmOrderGrid::UnregisterOrderWndCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeOrderWndCallback(GetSafeHwnd());
+	//mainApp.CallbackMgr().UnsubscribeOrderWndCallback(GetSafeHwnd());
 }
 
 void SmOrderGrid::OnOrderWndEvent(VtSymbol* symbol)
@@ -463,6 +473,7 @@ void SmOrderGrid::OnOrderWndEvent(VtSymbol* symbol)
 
 LRESULT SmOrderGrid::OnOrderChangedMessage(WPARAM wParam, LPARAM lParam)
 {
+	/*
 	try {
 	if (!_Init || _Wheeling)
 		return 1;
@@ -500,6 +511,7 @@ LRESULT SmOrderGrid::OnOrderChangedMessage(WPARAM wParam, LPARAM lParam)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 
 	return 1;
 }
@@ -634,7 +646,7 @@ void SmOrderGrid::CancelAllSellAccepted()
 {
 	if (!_CenterWnd)
 		return;
-
+	/*
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(_CenterWnd->Symbol()->ShortCode);
 
 	for (auto it = acptOrderList.begin(); it != acptOrderList.end(); ++it) {
@@ -642,13 +654,14 @@ void SmOrderGrid::CancelAllSellAccepted()
 		if (order->orderPosition == VtPositionType::Sell)
 			CancelOrder(order);
 	}
+	*/
 }
 
 void SmOrderGrid::CancelAllBuyAccepted()
 {
 	if (!_CenterWnd)
 		return;
-
+	/*
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(_CenterWnd->Symbol()->ShortCode);
 
 	for (auto it = acptOrderList.begin(); it != acptOrderList.end(); ++it) {
@@ -656,19 +669,21 @@ void SmOrderGrid::CancelAllBuyAccepted()
 		if (order->orderPosition == VtPositionType::Buy)
 			CancelOrder(order);
 	}
+	*/
 }
 
 void SmOrderGrid::CancelAllAccepted()
 {
 	if (!_CenterWnd)
 		return;
-
+	/*
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(_CenterWnd->Symbol()->ShortCode);
 
 	for (auto it = acptOrderList.begin(); it != acptOrderList.end(); ++it) {
 		VtOrder* order = *it;
 		CancelOrder(order);
 	}
+	*/
 }
 
 void SmOrderGrid::RefreshStopOrder()
@@ -684,6 +699,7 @@ void SmOrderGrid::CheckProfitLossTouchHd(int intClose)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_StopOrderMgr)
 		return;
+	/*
 	try {
 
 	VtSymbol* sym = _CenterWnd->Symbol();
@@ -716,11 +732,13 @@ void SmOrderGrid::CheckProfitLossTouchHd(int intClose)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 bool SmOrderGrid::CheckStopTouchedHd(int intClose)
 {
 	bool result = false;
+	/*
 	try {
 
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_CutMgr)
@@ -760,7 +778,7 @@ bool SmOrderGrid::CheckStopTouchedHd(int intClose)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
-
+	*/
 	return result;
 }
 
@@ -791,9 +809,9 @@ void SmOrderGrid::SetColTitle(bool init)
 		// 텍스트 정렬
 		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 		// 셀 배경 색 설정
-		pCell->SetBackClr(MainBeetle::GridTitleBackColor);
+		pCell->SetBackClr(DarkHorse::SmTotalManager::GridTitleBackColor);
 		// 셀 글자색 설정
-		pCell->SetTextClr(MainBeetle::GridTitleTextColor);
+		pCell->SetTextClr(DarkHorse::SmTotalManager::GridTitleTextColor);
 		
 		InvalidateCellRect(0, i);
 	}
@@ -803,7 +821,7 @@ void SmOrderGrid::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<int,
 {
 	if (!symbol)
 		return;
-
+	/*
 	std::string code = symbol->ShortCode.substr(0, 1);
 	if ((code.compare(_T("2")) == 0) || (code.compare(_T("3")) == 0)) {
 		SetCenterValueForOption(symbol, refreshSet);
@@ -812,12 +830,14 @@ void SmOrderGrid::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<int,
 	{
 		SetCenterValueForFuture(symbol, refreshSet);
 	}
+	*/
 }
 
 void SmOrderGrid::SetCenterValue()
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
+	/*
 	try {
 	VtSymbol* symbol = _CenterWnd->Symbol();
 	if (symbol) {
@@ -849,13 +869,14 @@ void SmOrderGrid::SetCenterValue()
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::SetCenterValueByFixed(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!symbol)
 		return;
-
+	/*
 	std::string code = symbol->ShortCode.substr(0, 1);
 	if ((code.compare(_T("2")) == 0) || (code.compare(_T("3")) == 0)){
 		SetCenterValueByFixedForOption(symbol, refreshSet);
@@ -863,10 +884,12 @@ void SmOrderGrid::SetCenterValueByFixed(const VtSymbol* symbol, std::set<std::pa
 	else {
 		SetCenterValueByFixedForFuture(symbol, refreshSet);
 	}
+	*/
 }
 
 void SmOrderGrid::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
 {
+	/*
 	try {
 	for (auto it = _QuotePos.begin(); it != _QuotePos.end(); ++it) {
 		std::pair<int, int> pos = *it;
@@ -888,13 +911,14 @@ void SmOrderGrid::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
-
+	/*
 	try {
 	// Set the close value on the center of the center grid
 	int startValue = sym->Quote.intClose + (sym->intTickSize * (_IndexRow - _StartRowForValue));
@@ -923,12 +947,14 @@ void SmOrderGrid::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::pai
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
+	/*
 	try {
 	int endValue = sym->Quote.intClose;
 	int endRow = _EndRowForValue - 1;
@@ -996,12 +1022,14 @@ void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pai
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
+	/*
 	try {
 	_IndexRow = FindIndexRow();
 	// Set the close value on the center of the center grid
@@ -1037,13 +1065,14 @@ void SmOrderGrid::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::set<s
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
-
+	/*
 	try {
 	_IndexRow = FindIndexRow();
 	_IndexRow = -1 * _IndexRow;
@@ -1099,6 +1128,7 @@ void SmOrderGrid::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<s
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 int SmOrderGrid::FindIndexRow()
@@ -1126,6 +1156,7 @@ void SmOrderGrid::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, int>>
 {
 	if (!sym)
 		return;
+	/*
 	try {
 	_HogaPos.clear();
 	for (int i = 0; i < 5; i++) {
@@ -1249,6 +1280,7 @@ void SmOrderGrid::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, int>>
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 int SmOrderGrid::FindRowFromCenterValue(int value)
@@ -1266,6 +1298,7 @@ int SmOrderGrid::FindRowFromCenterValue(const VtSymbol* sym, int value)
 {
 	if (!sym || ValueToRowMap.size() == 0)
 		return 0;
+	/*
 	auto it = ValueToRowMap.find(value);
 	if (it != ValueToRowMap.end()) { // 값이 보이는 범위 안에 있을 때
 		return it->second;
@@ -1296,6 +1329,8 @@ int SmOrderGrid::FindRowFromCenterValue(const VtSymbol* sym, int value)
 			return thousandRow + delta;
 		}
 	}
+	*/
+	return 1;
 }
 
 void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
@@ -1307,7 +1342,7 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 		return;
 
 	CUGCell cell;
-
+	/*
 	try {
 
 	int lowRow = FindRowFromCenterValue(sym, sym->Quote.intLow);
@@ -1437,6 +1472,7 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::SetSiseCellBackColor(int minRow, int maxRow, int start, int end, COLORREF color)
@@ -1497,6 +1533,7 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
+	/*
 	try {
 	VtSymbol* sym = _CenterWnd->Symbol();
 
@@ -1560,6 +1597,7 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::ClearOldOrders(std::set<std::pair<int, int>>& refreshSet)
@@ -1577,6 +1615,7 @@ void SmOrderGrid::ClearOldOrders(std::set<std::pair<int, int>>& refreshSet)
 
 void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 {
+	/*
 	try {
 	_StopOrderPos.clear();
 	CGridCellBase* pCell = nullptr;
@@ -1657,10 +1696,12 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::ClearOldStopOrders(std::set<std::pair<int, int>>& refreshSet)
 {
+	/*
 	try {
 	// 먼저 스탑 주문이 나간 주문들을 지워준다.
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(), next_it = it; it != _StopOrderMgr->StopOrderMapHd.end(); it = next_it) {
@@ -1688,10 +1729,12 @@ void SmOrderGrid::ClearOldStopOrders(std::set<std::pair<int, int>>& refreshSet)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet)
 {
+	/*
 	try {
 	ClearStopOrderVectors();
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(); it != _StopOrderMgr->StopOrderMapHd.end(); ++it) {
@@ -1770,6 +1813,7 @@ void SmOrderGrid::CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::RefreshCells(std::set<std::pair<int, int>>& refreshSet)
@@ -1806,6 +1850,7 @@ void SmOrderGrid::RefreshCells(std::set<std::pair<int, int>>& refreshSet)
 
 void SmOrderGrid::PutOrder(int price, VtPositionType position, VtPriceType priceType /*= VtPriceType::Price*/)
 {
+	/*
 	try {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr)
 		return;
@@ -1898,10 +1943,12 @@ void SmOrderGrid::PutOrder(int price, VtPositionType position, VtPriceType price
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
 {
+	/*
 	try {
 
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !posi || !_OrderConfigMgr)
@@ -1993,6 +2040,7 @@ void SmOrderGrid::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::RefreshOrderPosition()
@@ -2015,6 +2063,7 @@ void SmOrderGrid::AddOrderToCell(VtOrder* order)
 {
 	if (!order)
 		return;
+	/*
 	if (order->amount == 0)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
@@ -2044,12 +2093,14 @@ void SmOrderGrid::AddOrderToCell(VtOrder* order)
 			InvalidateCellRect(row, CenterCol - 3);
 		}
 	}
+	*/
 }
 
 void SmOrderGrid::RemoveOrderFromCell(VtOrder* order)
 {
 	if (!order)
 		return;
+	/*
 	if (order->amount == 0)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
@@ -2079,10 +2130,12 @@ void SmOrderGrid::RemoveOrderFromCell(VtOrder* order)
 			InvalidateCellRect(row, CenterCol + 3);
 		}
 	}
+	*/
 }
 
 void SmOrderGrid::RefreshTotalOrderCount(VtOrder* input_order)
 {
+	/*
 	try {
 	if (!input_order)
 		return;
@@ -2130,6 +2183,7 @@ void SmOrderGrid::RefreshTotalOrderCount(VtOrder* input_order)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::SetOrderAreaColor()
@@ -2150,11 +2204,13 @@ void SmOrderGrid::SetOrderAreaColor()
 
 void SmOrderGrid::SetPositionInfo(std::set<std::pair<int, int>>& refreshSet)
 {
+	/*
 	try {
 	if (!_OrderConfigMgr)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
+
 	if (_OrderConfigMgr->Type() == 0)
 	{
 		VtAccount* acnt = _OrderConfigMgr->Account();
@@ -2183,6 +2239,7 @@ void SmOrderGrid::SetPositionInfo(std::set<std::pair<int, int>>& refreshSet)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet)
@@ -2198,6 +2255,7 @@ void SmOrderGrid::ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet)
 
 void SmOrderGrid::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, VtSymbol* sym)
 {
+	/*
 	try {
 	if (!sym)
 		return;
@@ -2224,6 +2282,7 @@ void SmOrderGrid::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosi
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::OrderBySpaceBar()
@@ -2280,6 +2339,7 @@ void SmOrderGrid::ResizeGrid(int cellHeight, int orderAreaWidth)
 
 void SmOrderGrid::LiqudAll(VtPriceType priceType, int price /*= 0*/)
 {
+	/*
 	try {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
@@ -2330,6 +2390,7 @@ void SmOrderGrid::LiqudAll(VtPriceType priceType, int price /*= 0*/)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::OrderByMouseClick()
@@ -2601,6 +2662,7 @@ void SmOrderGrid::OnRButtonDown(UINT nFlags, CPoint point)
 
 void SmOrderGrid::OnRButtonUp(UINT nFlags, CPoint point)
 {
+	/*
 	try {
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pSrcCell = GetCell(cell.row, cell.col);
@@ -2637,6 +2699,7 @@ void SmOrderGrid::OnRButtonUp(UINT nFlags, CPoint point)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -2727,6 +2790,7 @@ void SmOrderGrid::RedrawOrderTrackCells()
 
 void SmOrderGrid::AddStopOrder(int price, VtPositionType posi)
 {
+	/*
 	try {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr)
 		return;
@@ -2803,6 +2867,7 @@ void SmOrderGrid::AddStopOrder(int price, VtPositionType posi)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::InvalidateClickedCell()
@@ -2940,7 +3005,7 @@ void SmOrderGrid::ChangeOrder(VtOrder* order, int newPrice)
 {
 	if (!order)
 		return;
-
+	/*
 	try {
 
 	if (!_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
@@ -3031,10 +3096,12 @@ void SmOrderGrid::ChangeOrder(VtOrder* order, int newPrice)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::ChangeOrder()
 {
+	/*
 	try
 	{
 		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
@@ -3063,10 +3130,12 @@ void SmOrderGrid::ChangeOrder()
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::ChangeStopOrder()
 {
+	/*
 	try
 	{
 		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
@@ -3094,12 +3163,14 @@ void SmOrderGrid::ChangeStopOrder()
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::CancelOrder(VtOrder* order)
 {
 	if (!order || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
+	/*
 	try
 	{
 
@@ -3188,10 +3259,12 @@ void SmOrderGrid::CancelOrder(VtOrder* order)
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::CancelOrder()
 {
+	/*
 	try
 	{
 		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
@@ -3224,6 +3297,7 @@ void SmOrderGrid::CancelOrder()
 	catch (...) {
 		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
+	*/
 }
 
 void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
@@ -3274,7 +3348,7 @@ int SmOrderGrid::FindPositionRow(VtPosition* posi)
 {
 	if (!posi || ValueToRowMap.size() == 0)
 		return -1;
-
+	/*
 	VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
 	if (!sym)
 		return -1;
@@ -3287,6 +3361,8 @@ int SmOrderGrid::FindPositionRow(VtPosition* posi)
 		return it->second;
 	else
 		return -1;
+	*/
+	return -1;
 }
 
 void SmOrderGrid::OnClose()

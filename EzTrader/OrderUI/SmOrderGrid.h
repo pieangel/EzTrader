@@ -4,7 +4,7 @@
 #include <map>
 #include <set>
 #include <functional>
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 #include <memory>
 
 //m_Pen.CreatePen(PS_SOLID, 1, RGB(0, 255, 255));
@@ -15,7 +15,7 @@
 // 	QUANTITY,
 // 	CENTER
 // };
-
+struct VtOrder;
 class VtOrderCenterWndHd;
 class VtSymbol;
 class VtAccount;

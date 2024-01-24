@@ -1,19 +1,19 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "VtProductAcceptedGrid.h"
 #include "../Resource.h"
-#include "../Order/VtOrder.h"
-#include "../Order/VtOrderManager.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Symbol/VtSymbolMaster.h"
+//#include "../Order/VtOrder.h"
+//#include "../Order/VtOrderManager.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Symbol/VtSymbolMaster.h"
 //#include "../Order/VtOrderManagerSelector.h"
 #include "VtOrderConfigManager.h"
 #include "VtOrderWnd.h"
 //#include "../Global/MainBeetle.h"
-#include "../Account/VtAccount.h"
-#include "../Account/VtSubAccountManager.h"
-#include "../Fund/VtFund.h"
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Account/VtAccount.h"
+//#include "../Account/VtSubAccountManager.h"
+//#include "../Fund/VtFund.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -88,6 +88,7 @@ void VtProductAcceptedGrid::OnLClicked(int col, long row, int updn, RECT *rect, 
 		msg = QuickGetText(1, row);
 		if (msg.GetLength() > 0)
 		{
+			/*
 			std::string shorCode = msg;
 			VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(shorCode);
 			if (sym && _OrderConfigMgr) {
@@ -97,6 +98,8 @@ void VtProductAcceptedGrid::OnLClicked(int col, long row, int updn, RECT *rect, 
 					_OrderConfigMgr->centerWnd->ChangeSymbol(sym);
 				}
 			}
+			*/
+			int i = 0;
 		}
 	}
 }
@@ -145,8 +148,8 @@ void VtProductAcceptedGrid::SetColTitle()
 		QuickSetText(i, -1, title[i]);
 		GetCell(i, -1, &cell);
 		if (i != 0) {
-			cell.SetBackColor(MainBeetle::GridTitleBackColor);
-			cell.SetTextColor(MainBeetle::GridTitleTextColor);
+			cell.SetBackColor(DarkHorse::SmTotalManager::GridTitleBackColor);
+			cell.SetTextColor(DarkHorse::SmTotalManager::GridTitleTextColor);
 		}
 		else {
 			cell.SetBackColor(RGB(255, 255, 255));
@@ -167,6 +170,7 @@ void VtProductAcceptedGrid::SetAcptOrderList()
 	ResetCellText();
 	int row = 0;
 	CUGCell cell;
+	/*
 	for (auto it = _OrderConfigMgr->OrderMgr()->AcceptedMap.begin(); it != _OrderConfigMgr->OrderMgr()->AcceptedMap.end(); ++it)
 	{
 		VtOrder* order = it->second;
@@ -201,28 +205,8 @@ void VtProductAcceptedGrid::SetAcptOrderList()
 		std::string remainQty = fmt::format("{}", order->amount);
 		QuickSetText(3, row, remainQty.c_str());
 		QuickSetAlignment(3, row, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
-		/*
-		std::string price;
-		if (_OrderConfigMgr->Master())
-			price = NumberFormatter::format(order->orderPrice, 20, _OrderConfigMgr->Master()->decimal);
-		else
-			price = NumberFormatter::format(order->orderPrice, 20, 2);
-		price = trim(price);
-		QuickSetText(4, row, price.c_str());
-
-		std::string amount = NumberFormatter::format(order->amount, 5);
-		amount = trim(amount);
-		QuickSetText(5, row, amount.c_str());
-
-		QuickSetText(6, row, order->tradeTime.c_str());
-		std::string orderNo = NumberFormatter::format(order->orderNo, 5);
-		orderNo = trim(orderNo);
-		QuickSetText(7, row, orderNo.c_str());
-
-		std::string oriOrderNo = NumberFormatter::format(order->oriOrderNo, 5);
-		oriOrderNo = trim(oriOrderNo);
-		QuickSetText(8, row, oriOrderNo.c_str());
-		*/
+		
+		
 		GetCell(0, row, &cell);
 		cell.Tag((void*)order);
 		SetCell(0, row, &cell);
@@ -237,6 +221,7 @@ void VtProductAcceptedGrid::SetAcptOrderList()
 
 		row++;
 	}
+	*/
 
 	DataCount(row);
 }
@@ -292,7 +277,7 @@ void VtProductAcceptedGrid::CancelOrder(VtOrder* order)
 			if (!_OrderConfigMgr->Account())
 				return;
 			VtAccount* acnt = _OrderConfigMgr->Account();
-
+			/*
 			std::shared_ptr<HdOrderRequest> request = std::make_shared<HdOrderRequest>();
 			request->Market = 1; // 해외 선물 시장 설정
 			request->Price = order->intOrderPrice;
@@ -333,11 +318,13 @@ void VtProductAcceptedGrid::CancelOrder(VtOrder* order)
 			request->orderType = VtOrderType::Cancel;
 
 			_OrderConfigMgr->OrderMgr()->CancelOrder(std::move(request));
+			*/
 		}
 		else
 		{
 			if (_OrderConfigMgr->Fund())
 			{
+				/*
 				VtAccount* subAcnt = mainApp.AcntMgr().SubAcntMgr().FindAccount(order->SubAccountNo);
 				if (!subAcnt)
 					return;
@@ -365,6 +352,7 @@ void VtProductAcceptedGrid::CancelOrder(VtOrder* order)
 				request->orderType = VtOrderType::Cancel;
 
 				_OrderConfigMgr->OrderMgr()->CancelOrder(request);
+				*/
 			}
 		}
 	}

@@ -13,7 +13,7 @@
 #include <thread>
 #include "SmTickGrid.h"
 #include "../Xml/pugixml.hpp"
-#include "../Global/VtDefine.h"
+#include "../VtDefine.h"
 #include "SmRealtickGrid.h"
 
 
@@ -34,7 +34,7 @@ class VtRefreshManager;
 class VtSymbolSelector;
 class AbOrderGridConfigDlg;
 class SmPLConfigDlg;
-class SmOrderPanelOut : public CDialogEx
+class SmOrderPanelOut : public CDialog
 {
 	DECLARE_DYNAMIC(SmOrderPanelOut)
 

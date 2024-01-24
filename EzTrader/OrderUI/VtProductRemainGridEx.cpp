@@ -1,30 +1,30 @@
 
 
-#include "pch.h"
+#include "stdafx.h"
 #include "VtProductRemainGridEx.h"
 #include "../Resource.h"
-#include "../Order/VtOrder.h"
-#include "../Order/VtOrderManager.h"
-#include "../Symbol/VtSymbolManager.h"
-#include "../Symbol/VtSymbolMaster.h"
-#include "../Symbol/VtSymbol.h"
-#include "../Account/VtAccountManager.h"
-#include "../Account/VtAccount.h"
-#include "../Position/VtPosition.h"
+//#include "../Order/VtOrder.h"
+//#include "../Order/VtOrderManager.h"
+//#include "../Symbol/VtSymbolManager.h"
+//#include "../Symbol/VtSymbolMaster.h"
+//#include "../Symbol/VtSymbol.h"
+//#include "../Account/VtAccountManager.h"
+//#include "../Account/VtAccount.h"
+//#include "../Position/VtPosition.h"
 //#include "../Order/VtOrderManagerSelector.h"
 #include "VtOrderConfigManager.h"
 #include "VtOrderWnd.h"
 #include "VtOrderLeftWnd.h"
-#include "../Hoga/VtHoga.h"
+//#include "../Hoga/VtHoga.h"
 //#include "../Global/MainBeetle.h"
 #include <algorithm> 
 #include <functional>
-#include "../Task/SmCallbackManager.h"
-#include "../Log/loguru.hpp"
-#include "../Account/VtSubAccountManager.h"
-#include "../Fund/VtFund.h"
-#include "../Format/format.h"
-#include "../Main/MainBeetle.h"
+//#include "../Task/SmCallbackManager.h"
+//#include "../Log/loguru.hpp"
+//#include "../Account/VtSubAccountManager.h"
+//#include "../Fund/VtFund.h"
+//#include "../Format/format.h"
+#include "../Global/SmTotalManager.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -53,12 +53,12 @@ void VtProductRemainGridEx::UnregisterAllCallback()
 
 void VtProductRemainGridEx::RegisterQuoteCallback()
 {
-	mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&VtProductRemainGridEx::OnQuoteEvent, this, _1));
+	//mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&VtProductRemainGridEx::OnQuoteEvent, this, _1));
 }
 
 void VtProductRemainGridEx::UnregisterQuoteCallback()
 {
-	mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
+	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
 }
 
 void VtProductRemainGridEx::OnQuoteEvent(VtSymbol* symbol)
@@ -70,6 +70,7 @@ void VtProductRemainGridEx::OnQuoteEvent(VtSymbol* symbol)
 	for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
 		VtPosition* posi = it->second;
 		int row = it->first;
+		/*
 		if (posi->OpenQty != 0 && posi->ShortCode.compare(symbol->ShortCode) == 0) {
 			std::string strVal = fmt::format("{:.{}f}", posi->OpenProfitLoss, symbol->Decimal);
 			if (posi->OpenProfitLoss > 0)
@@ -80,6 +81,7 @@ void VtProductRemainGridEx::OnQuoteEvent(VtSymbol* symbol)
 			QuickSetText(3, row, strVal.c_str());
 			RedrawCell(3, row);
 		}
+		*/
 	}
 }
 
@@ -122,10 +124,7 @@ void VtProductRemainGridEx::OnSetup()
 	SetVScrollMode(UG_SCROLLNORMAL);
 }
 
-void VtProductRemainGridEx::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
-{
 
-}
 
 void VtProductRemainGridEx::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
@@ -135,7 +134,8 @@ void VtProductRemainGridEx::OnLClicked(int col, long row, int updn, RECT *rect, 
 		msg = QuickGetText(1, row);
 		if (msg.GetLength() > 0)
 		{
-			std::string shorCode = msg;
+			std::string shorCode = (const char*)msg;
+			/*
 			VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(shorCode);
 			if (sym && _OrderConfigMgr) {
 				_OrderConfigMgr->Symbol(sym);
@@ -144,6 +144,7 @@ void VtProductRemainGridEx::OnLClicked(int col, long row, int updn, RECT *rect, 
 					_OrderConfigMgr->centerWnd->ChangeSymbol(sym);
 				}
 			}
+			*/
 		}
 	}
 }
@@ -188,8 +189,8 @@ void VtProductRemainGridEx::SetColTitle()
 		QuickSetText(i, -1, title[i]);
 		GetCell(i, -1, &cell);
 		if (i != 0) {
-			cell.SetBackColor(MainBeetle::GridTitleBackColor);
-			cell.SetTextColor(MainBeetle::GridTitleTextColor);
+			cell.SetBackColor(DarkHorse::SmTotalManager::GridTitleBackColor);
+			cell.SetTextColor(DarkHorse::SmTotalManager::GridTitleTextColor);
 		}
 		else {
 			cell.SetBackColor(RGB(255, 255, 255));
@@ -249,11 +250,12 @@ void VtProductRemainGridEx::SetRemainList()
 	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, bufSDecimal, 5);
 	numberformat2.lpDecimalSep = bufSDecimal;
 	numberformat2.NumDigits = 2;
-	CTextNumber::s_lpNumberFormat = &numberformat2;
-	CTextNumber tn;
+	//CTextNumber::s_lpNumberFormat = &numberformat2;
+	//CTextNumber tn;
 
 	int row = 0;
 	CUGCell cell;
+	/*
 	for (auto it = acnt->PositionMap.begin(); it != acnt->PositionMap.end(); ++it)
 	{
 		VtPosition* posi = it->second;
@@ -315,6 +317,7 @@ void VtProductRemainGridEx::SetRemainList()
 	}
 
 	DataCount(row);
+	*/
 
 }
 
@@ -373,6 +376,7 @@ void VtProductRemainGridEx::PutOrder(VtPosition* posi, int price, bool liqud /*=
 {
 	if (!posi || !_OrderConfigMgr)
 		return;
+	/*
 	if (posi->OpenQty == 0)
 		return;
 
@@ -452,6 +456,7 @@ void VtProductRemainGridEx::PutOrder(VtPosition* posi, int price, bool liqud /*=
 	request->RequestType = 1;
 
 	_OrderConfigMgr->OrderMgr()->PutOrder(request);
+	*/
 }
 
 void VtProductRemainGridEx::LiqList()
@@ -478,6 +483,7 @@ void VtProductRemainGridEx::LiqudRemain(VtPosition* posi)
 void VtProductRemainGridEx::SetFilledOrderList()
 {
 	std::string symbol_code;
+	/*
 	VtOrderManager* orderMgr = mainApp.TotalOrderMgr().FindAddAccountOrderManger(symbol_code);
 	int row = 0;
 	CUGCell cell;
@@ -533,6 +539,7 @@ void VtProductRemainGridEx::SetFilledOrderList()
 	}
 
 	DataCount(row);
+	*/
 }
 
 

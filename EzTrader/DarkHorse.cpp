@@ -30,7 +30,7 @@ using namespace DarkHorse;
 const int  iMaxUserToolbars = 10;
 const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
-
+TApplicationFont g_Font(_T("±¼¸²"));
 // CDarkHorseApp
 
 BEGIN_MESSAGE_MAP(CDarkHorseApp, CBCGPWinApp)
@@ -390,4 +390,73 @@ bool CDarkHorseApp::CheckExpire()
 
 	return true;
 }
+
+
+// lParam is a pointer to CFont object
+BOOL __stdcall SetChildFont(HWND hwnd, LPARAM lparam)
+{
+	CFont* pFont = (CFont*)lparam;
+	CWnd* pWnd = CWnd::FromHandle(hwnd);
+	pWnd->SetFont(pFont);
+	return TRUE;
+}
+
+//=============================================================================
+// TApplicationFont
+//
+//=============================================================================
+
+TApplicationFont::TApplicationFont(LPCTSTR szFaceName)
+{
+	m_strFaceName = szFaceName;
+	createFont();
+}
+
+TApplicationFont::~TApplicationFont()
+{
+}
+
+void TApplicationFont::createFont(void)
+{
+	NONCLIENTMETRICS metrics;
+	metrics.cbSize = sizeof(metrics);
+	::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, &metrics, 0);
+
+	CWindowDC wdc(NULL);
+	int nLPixY = GetDeviceCaps(wdc.m_hDC, LOGPIXELSY);
+
+	m_nFontSize = -8; // metrics.lfStatusFont.lfHeight;
+	m_nPointSize = -MulDiv(m_nFontSize, 72, nLPixY);
+	strcpy_s(metrics.lfStatusFont.lfFaceName, m_strFaceName);
+	m_Font.CreateFontIndirect(&metrics.lfStatusFont);
+}
+
+CFont* TApplicationFont::GetFont(void)
+{
+	return &m_Font;
+}
+
+CString& TApplicationFont::GetFaceName(void)
+{
+	return m_strFaceName;
+}
+
+int TApplicationFont::GetFontSize(void)
+{
+	return m_nFontSize;
+}
+
+int TApplicationFont::GetPointSize(void)
+{
+	return m_nPointSize;
+}
+
+void TApplicationFont::SetFaceName(LPCTSTR szFaceName)
+{
+	m_strFaceName = szFaceName;
+	m_Font.DeleteObject();
+	createFont();
+}
+
+
 

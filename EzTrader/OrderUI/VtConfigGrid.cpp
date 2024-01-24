@@ -1,9 +1,9 @@
-#include "pch.h"
+#include "stdafx.h"
 #include "VtConfigGrid.h"
 #include <numeric>
 //#include "../Global/MainBeetle.h"
 #include "SmOrderPanelOut.h"
-#include "../Main/MainBeetle.h"
+#include "../Global/SmTotalManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -149,7 +149,7 @@ void VtConfigGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOO
 		CUGCell cell;
 		GetCell(col, row, &cell);
 		cell.SetTextColor(RGB(0, 0, 0));
-		cell.SetBackColor(MainBeetle::SelCellBackColor);
+		cell.SetBackColor(DarkHorse::SmTotalManager::SelCellBackColor);
 		SetCell(col, row, &cell);
 		QuickRedrawCell(col, row);
 		_OldBtnCol = col;
