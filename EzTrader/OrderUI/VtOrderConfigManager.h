@@ -120,7 +120,7 @@ public:
 	VtFund* OldFund() const { return _OldFund; }
 	void OldFund(VtFund* val) { _OldFund = val; }
 private:
-	int _Type; // 0 : Normal Order, 1 : Fund Order.
+	int _Type{ 0 }; // 0 : Normal Order, 1 : Fund Order.
 	VtFund* _Fund = nullptr;
 	VtFund* _OldFund = nullptr;
 	VtAccount* _Account = nullptr;
