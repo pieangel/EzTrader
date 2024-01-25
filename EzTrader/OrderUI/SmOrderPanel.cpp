@@ -728,7 +728,7 @@ void SmOrderPanel::RepositionConfigWnd()
 	if (!_LayoutMgr || !_ConfigDlg)
 		return;
 	CRect& rcConfig = _LayoutMgr->GetRect(IDC_STATIC_MSG);
-	//_ConfigDlg->SetWindowPos(nullptr, rcConfig.left, rcConfig.top, rcConfig.Width(), rcConfig.Height(), SWP_NOZORDER);
+	_ConfigDlg->SetWindowPos(nullptr, rcConfig.left, rcConfig.top, rcConfig.Width(), rcConfig.Height(), SWP_NOZORDER);
 	_ConfigDlg->MoveWindow(rcConfig, TRUE);
 	_ConfigDlg->RecalateLayout(rcConfig);
 }
@@ -998,7 +998,7 @@ BOOL SmOrderPanel::OnInitDialog()
 
 	_ConfigDlg = new VtOrderConfigDlg();
 	_ConfigDlg->CenterWnd(this);
-	//_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
+	_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
 
 	//_ConfigGrid.CenterWnd(this);
 	_ProductRemainGrid.AttachGrid(this, IDC_STATIC_PRODUCT_REMAIN);

@@ -1563,12 +1563,14 @@ void CMainFrame::OnSimulStopsimul()
 	mainApp.Client()->stop_timer();
 }
 
-
+#include "OrderUI/VtOrderWndHd.h"
 void CMainFrame::OnSimulYestest()
 {
-	std::string file_name = mainApp.mode == 0 ? mainApp.config_manager()->system_config().yes_path + "\\T1-1.txt" : mainApp.config_manager()->system_config().ab_yes_path + "\\T1-1.txt";
-	LOGINFO(CMyLogger::getInstance(), _T("yes test path[%s]"), file_name.c_str());
-	copyLastLineAndAppend(file_name);
+	VtOrderWndHd dlg;
+	dlg.DoModal();
+	//std::string file_name = mainApp.mode == 0 ? mainApp.config_manager()->system_config().yes_path + "\\T1-1.txt" : mainApp.config_manager()->system_config().ab_yes_path + "\\T1-1.txt";
+	//LOGINFO(CMyLogger::getInstance(), _T("yes test path[%s]"), file_name.c_str());
+	//copyLastLineAndAppend(file_name);
 }
 
 void CMainFrame::copyLastLineAndAppend(const std::string& filename)

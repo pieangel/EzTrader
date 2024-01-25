@@ -93,13 +93,13 @@ SmOrderGrid::SmOrderGrid()
 	_CutMgr = new VtCutManager();
 
 	_StopOrderMgr = new VtStopOrderManager();
-	SetTimer(1, 100, NULL);
+	//SetTimer(1, 100, NULL);
 }
 
 
 SmOrderGrid::~SmOrderGrid()
 {
-	KillTimer(1);
+	//KillTimer(1);
 	if (_StopOrderMgr) {
 		_StopOrderMgr->RemoveAllHd();
 		delete _StopOrderMgr;
