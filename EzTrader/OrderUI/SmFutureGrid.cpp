@@ -64,7 +64,7 @@ void SmFutureGrid::RegisterOrderCallback()
 	//mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmFutureGrid::OnOrderEvent, this, _1));
 }
 
-void SmFutureGrid::OnMasterEvent(VtSymbol* sym)
+void SmFutureGrid::OnMasterEvent(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -106,7 +106,7 @@ void SmFutureGrid::OnOrderEvent(VtOrder* order)
 	}
 }
 
-void SmFutureGrid::OnQuoteEvent(VtSymbol* sym)
+void SmFutureGrid::OnQuoteEvent(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -194,7 +194,7 @@ void SmFutureGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pCell = GetCell(cell.row, cell.col);
 	/*
-	VtSymbol* sym = (VtSymbol*)pCell->GetData();
+	symbol_p sym = (symbol_p)pCell->GetData();
 	if (sym) {
 		if (sym->Quote.intClose == 0)
 			sym->GetSymbolMaster();
@@ -247,7 +247,7 @@ void SmFutureGrid::InitGrid()
 		SmProductYearMonth* year_month = product->GetRecentYearMonth();
 		if (!year_month) continue;
 
-		VtSymbol* sym = year_month->GetFirstSymbol();
+		symbol_p sym = year_month->GetFirstSymbol();
 		if (sym) {
 			GetSymbolMaster(sym);
 			sym->RecentMonth(true);
@@ -335,7 +335,7 @@ void SmFutureGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::s
 	}
 }
 
-void SmFutureGrid::GetSymbolMaster(VtSymbol* sym)
+void SmFutureGrid::GetSymbolMaster(symbol_p sym)
 {
 	/*
 	if (!sym)
@@ -382,7 +382,7 @@ void SmFutureGrid::QuickSetTextColor(int row, int col, COLORREF color)
 	}
 }
 
-void SmFutureGrid::OnReceiveQuote(VtSymbol* sym)
+void SmFutureGrid::OnReceiveQuote(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -402,7 +402,7 @@ void SmFutureGrid::OnReceiveQuote(VtSymbol* sym)
 	}
 }
 
-void SmFutureGrid::OnSymbolMaster(VtSymbol* sym)
+void SmFutureGrid::OnSymbolMaster(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -427,7 +427,7 @@ void SmFutureGrid::SetRemain(VtPosition* posi)
 	if (_Mode != 0)
 		return;
 	/*
-	VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
+	symbol_p sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
 	if (sym) {
 		ShowRemain(sym);
 	}
@@ -471,7 +471,7 @@ void SmFutureGrid::SetRemain(VtOrder* order)
 void SmFutureGrid::SetRemain(std::string symbol_code)
 {
 	/*
-	VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(symbol_code);
+	symbol_p sym = mainApp.SymbolMgr().FindSymbol(symbol_code);
 	if (!sym)
 		return;
 
@@ -506,7 +506,7 @@ void SmFutureGrid::SetRemain(std::string symbol_code)
 	*/
 }
 
-void SmFutureGrid::ShowRemain(VtSymbol* sym)
+void SmFutureGrid::ShowRemain(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -542,7 +542,7 @@ void SmFutureGrid::ShowRemain(VtSymbol* sym)
 	*/
 }
 
-void SmFutureGrid::ShowCurrent(VtSymbol* sym, int row)
+void SmFutureGrid::ShowCurrent(symbol_p sym, int row)
 {
 	if (!sym)
 		return;
@@ -594,7 +594,7 @@ void SmFutureGrid::OnOrderFilled(VtOrder* order)
 	*/
 }
 
-void SmFutureGrid::OnExpected(VtSymbol* sym)
+void SmFutureGrid::OnExpected(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -610,7 +610,7 @@ void SmFutureGrid::OnExpected(VtSymbol* sym)
 	*/
 }
 
-void SmFutureGrid::ShowExpected(VtSymbol* sym, int row)
+void SmFutureGrid::ShowExpected(symbol_p sym, int row)
 {
 	if (!sym)
 		return;

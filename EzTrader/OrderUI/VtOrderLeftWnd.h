@@ -6,6 +6,17 @@
 #include "../ShadeButtonST.h"
 #include "afxwin.h"
 #include "HdFavoriteGrid.h"
+#include <memory>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
 // CVtOrderLeftWnd dialog
 struct VtQuote;
 class CVtOrderWnd;
@@ -41,7 +52,7 @@ private:
 	VtProductRemainGridEx _RemainGrid;
 	VtTotalRemainGrid _TotalGrid;
 public:
-	void SetRealtickSymbol(VtSymbol* symbol);
+	void SetRealtickSymbol(symbol_p symbol);
 	// 좌측창의 그리드들의 정보를 채운다.
 	void InitGridInfo();
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
@@ -65,7 +76,7 @@ public:
 	void RefreshRemainList();
 	void RefreshAcceptedList();
 	void ClearRealtimeTickQuoteGrid();
-	void OnReceiveAccountDeposit(VtAccount* acnt);
+	void OnReceiveAccountDeposit(account_p acnt);
 	afx_msg void OnBnClickedBtnCancelSel();
 	afx_msg void OnBnClickedBtnCancelAll();
 	afx_msg void OnBnClickedBtnLiqSel();

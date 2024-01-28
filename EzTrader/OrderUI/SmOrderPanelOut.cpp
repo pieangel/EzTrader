@@ -229,7 +229,7 @@ void SmOrderPanelOut::OnCbnSelchangeComboProductHd()
 	if (curSel != -1)
 	{
 		/*
-		VtSymbol* sym = (VtSymbol*)_ComboSymbol.GetItemDataPtr(curSel);
+		symbol_p sym = (symbol_p)_ComboSymbol.GetItemDataPtr(curSel);
 		if (!sym)
 			return;
 		ChangeSymbol(sym);
@@ -529,7 +529,7 @@ void SmOrderPanelOut::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialog::OnLButtonDown(nFlags, point);
 }
 
-void SmOrderPanelOut::SetRealtickSymbol(VtSymbol* symbol)
+void SmOrderPanelOut::SetRealtickSymbol(symbol_p symbol)
 {
 	if (!symbol)
 		return;
@@ -819,7 +819,7 @@ void SmOrderPanelOut::OnEntered()
 	}
 }
 
-void SmOrderPanelOut::OnSymbolMaster(VtSymbol* sym)
+void SmOrderPanelOut::OnSymbolMaster(symbol_p sym)
 {
 	if (!sym || !_Symbol)
 		return;
@@ -835,7 +835,7 @@ void SmOrderPanelOut::OnSymbolMaster(VtSymbol* sym)
 void SmOrderPanelOut::InitSymbol()
 {
 	// 기본 심볼 설정
-	VtSymbol* sym = _DefaultSymbol;
+	symbol_p sym = _DefaultSymbol;
 
 	if (!sym) { // 기본 심볼이 없으면 목록에서 첫번째 것을 가져온다.
 		// 해외 기본 종목을 가져 온다.
@@ -854,7 +854,7 @@ void SmOrderPanelOut::InitSymbol()
 	SetProductName(sym);
 }
 
-void SmOrderPanelOut::SetSymbol(VtSymbol* sym)
+void SmOrderPanelOut::SetSymbol(symbol_p sym)
 {
 	if (!sym || !_OrderConfigMgr)
 		return;
@@ -908,7 +908,7 @@ void SmOrderPanelOut::SetSymbol()
 	}
 }
 
-void SmOrderPanelOut::AddSymbolToCombo(VtSymbol* symbol)
+void SmOrderPanelOut::AddSymbolToCombo(symbol_p symbol)
 {
 	if (!symbol || !_ComboSymbol.GetSafeHwnd())
 		return;
@@ -923,7 +923,7 @@ void SmOrderPanelOut::AddSymbolToCombo(VtSymbol* symbol)
 	*/
 }
 
-void SmOrderPanelOut::SetProductName(VtSymbol* symbol)
+void SmOrderPanelOut::SetProductName(symbol_p symbol)
 {
 	if (!symbol)
 		return;
@@ -1375,7 +1375,7 @@ void SmOrderPanelOut::ChangeFund(VtFund* fund)
 	InitPosition();
 }
 
-void SmOrderPanelOut::ChangeSymbol(VtSymbol* symbol)
+void SmOrderPanelOut::ChangeSymbol(symbol_p symbol)
 {
 	if (!symbol)
 		return;
@@ -1559,7 +1559,7 @@ void SmOrderPanelOut::LoadFromXml(pugi::xml_node& node_center_window)
 	/*
 	_DefaultSymbol = mainApp.SymbolMgr().FindHdSymbol(symbol_code);
 	// 저장된 심볼은 목록으로 만들어 심볼 마스터 요청한다.
-	std::vector<VtSymbol*>& symvec = mainApp.SaveMgr().GetSymbolVector();
+	std::vector<symbol_p>& symvec = mainApp.SaveMgr().GetSymbolVector();
 	if (_DefaultSymbol)
 		symvec.push_back(_DefaultSymbol);
 		*/

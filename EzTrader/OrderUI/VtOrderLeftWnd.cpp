@@ -73,7 +73,7 @@ END_MESSAGE_MAP()
 // CVtOrderLeftWnd message handlers
 
 
-void CVtOrderLeftWnd::SetRealtickSymbol(VtSymbol* symbol)
+void CVtOrderLeftWnd::SetRealtickSymbol(symbol_p symbol)
 {
 	if (!symbol)
 		return;
@@ -145,7 +145,7 @@ void CVtOrderLeftWnd::InitRemainList()
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
 		return;
 	if (_RemainGrid.GetSafeHwnd()) {
-		VtAccount* acnt = _OrderConfigMgr->Account();
+		account_p acnt = _OrderConfigMgr->Account();
 		_RemainGrid.SetRemainList();
 	}
 }
@@ -154,7 +154,7 @@ void CVtOrderLeftWnd::InitAcceptedList()
 {
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
 		return;
-	VtAccount* acnt = _OrderConfigMgr->Account();
+	account_p acnt = _OrderConfigMgr->Account();
 	_AcceptGrid.SetAcptOrderList();
 }
 
@@ -163,7 +163,7 @@ void CVtOrderLeftWnd::InitAccountInfo()
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
 		return;
 	if (_TotalGrid.GetSafeHwnd()) {
-		VtAccount* acnt = _OrderConfigMgr->Account();
+		account_p acnt = _OrderConfigMgr->Account();
 		_TotalGrid.InitGrid();
 	}
 }
@@ -191,7 +191,7 @@ void CVtOrderLeftWnd::ClearRealtimeTickQuoteGrid()
 	//	_TickQuoteGrid.ClearText();
 }
 
-void CVtOrderLeftWnd::OnReceiveAccountDeposit(VtAccount* acnt)
+void CVtOrderLeftWnd::OnReceiveAccountDeposit(account_p acnt)
 {
 // 	if (GetSafeHwnd())
 // 		_TotalGrid.OnReceiveAccountDeposit(acnt);

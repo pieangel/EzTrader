@@ -11,13 +11,21 @@
 #include "../ShadeButtonST.h"
 #include "../Util/GradientStatic.h"
 #include <thread>
+#include <memory>
 #include "SmTickGrid.h"
 #include "../Xml/pugixml.hpp"
 #include "../VtDefine.h"
 #include "../Time/cpptime.h"
 
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
 
-
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
 // SmOrderPanel dialog
 class VtOrderWndHd;
 class VtOrderConfigManager;
@@ -54,8 +62,8 @@ public:
 	void FillCondition(VtFilledCondition val) { _FillCondition = val; }
 	VtPriceType PriceType() const { return _PriceType; }
 	void PriceType(VtPriceType val) { _PriceType = val; }
-	VtSymbol* Symbol() const { return _Symbol; }
-	//void Symbol(VtSymbol* val) { _Symbol = val; }
+	symbol_p Symbol() const { return _Symbol; }
+	void Symbol(symbol_p val) { _Symbol = val; }
 	int StopVal() const { return _StopVal; }
 	void StopVal(int val) { _StopVal = val; }
 	int TickWndPos() const { return _TickWndPos; }
@@ -81,11 +89,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	void OnEntered();
-	void OnSymbolMaster(VtSymbol* sym);
+	void OnSymbolMaster(symbol_p sym);
 	void InitSymbol();
-	void SetSymbol(VtSymbol* sym);
-	void AddSymbolToCombo(VtSymbol* symbol);
-	void SetProductName(VtSymbol* symbol);
+	void SetSymbol(symbol_p sym);
+	void AddSymbolToCombo(symbol_p symbol);
+	void SetProductName(symbol_p symbol);
 	void InitPosition();
 	void RegisterRealtimeSymbol();
 	void UnregisterRealtimeSymbol();
@@ -138,11 +146,12 @@ public:
 	void ResizeOrderGrid();
 	int GetCountOrderGridEnabledCol();
 	bool ShowTickWnd();
-	void ChangeAccount(VtAccount* acnt);
-	void ChangeFund(VtFund* fund);
-	void ChangeSymbol(VtSymbol* symbol);
+	void ChangeAccount(account_p acnt);
+	void ChangeFund(fund_p fund);
+	void ChangeSymbol(symbol_p symbol);
 	void ResetRemainFund();
 public:
+	void set_default_symbol();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	CComboBox _ComboSymbol;
@@ -197,6 +206,28 @@ public:
 	afx_msg void OnBnClickedBtnRemainFund();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 private:
+	void AddItemToComboBox(CComboBox& comboBox, symbol_p item)
+	{
+		// Add the std::shared_ptr to the vector
+		combo_symbol_vector.push_back(item);
+
+		// Add item to the combo box and store the index in the combo box
+		int index = comboBox.AddString(_T("Item text here")); // Replace with appropriate text
+		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_symbol_vector.size() - 1));
+	}
+
+	symbol_p GetSelectedItemDataPtr(const CComboBox& comboBox)
+	{
+		int index = comboBox.GetCurSel();
+		if (index != CB_ERR)
+		{
+			// Retrieve the index from the combo box and get the std::shared_ptr
+			size_t ptrIndex = reinterpret_cast<size_t>(comboBox.GetItemDataPtr(index));
+			return combo_symbol_vector[ptrIndex];
+		}
+		return nullptr;
+	}
+	std::vector<symbol_p> combo_symbol_vector;
 	//Timer* timer = nullptr;
 	bool _BlockEvent = true;
 	VtOrderWndHd* _ParentDlg = nullptr;
@@ -213,7 +244,7 @@ private:
 	bool _ShowOrderCountArea = true;
 	bool _UseHogaSiseFilter = false;
 
-	VtSymbol*  _Symbol;
+	symbol_p  _Symbol;
 	int _OrderAmount;
 	VtFilledCondition _FillCondition;
 	VtPriceType _PriceType;
@@ -235,9 +266,15 @@ private:
 	VtLayoutManager* _LayoutMgr;
 	std::vector<bool> _OrderGridColOption;
 
+	// key : combobox index, value : symbol object
+	std::map<int, symbol_p> index_to_symbol_;
+	// key : symbol code, value : combobox index.
+	std::map<std::string, int> symbol_to_index_;
+
+
 	int _DefaultWidth = 482;
 	int _DefaultHeight = 750;
-	VtSymbol* _DefaultSymbol = nullptr;
+	symbol_p _DefaultSymbol = nullptr;
 	VtOrderConfigDlg* _ConfigDlg = nullptr;
 private:
 	void CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent);

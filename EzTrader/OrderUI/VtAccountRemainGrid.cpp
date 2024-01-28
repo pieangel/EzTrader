@@ -49,7 +49,7 @@ void VtAccountRemainGrid::UnregisterQuoteCallback()
 	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
-void VtAccountRemainGrid::OnQuoteEvent(VtSymbol* symbol)
+void VtAccountRemainGrid::OnQuoteEvent(symbol_p symbol)
 {
 	if (!symbol)
 		return;
@@ -158,7 +158,7 @@ void VtAccountRemainGrid::QuickRedrawCell(int col, long row)
 	m_CUGGrid->PaintDrawHintsNow(rect);
 }
 
-void VtAccountRemainGrid::ShowAccountInfo(VtAccount* acnt)
+void VtAccountRemainGrid::ShowAccountInfo(account_p acnt)
 {
 	if (!_OrderConfigMgr || !acnt)
 		return;
@@ -234,7 +234,7 @@ void VtAccountRemainGrid::SetOrderConfigMgr(VtOrderConfigManager* val)
 	_OrderConfigMgr = val;
 }
 
-void VtAccountRemainGrid::OnReceiveAccountDeposit(VtAccount* acnt)
+void VtAccountRemainGrid::OnReceiveAccountDeposit(account_p acnt)
 {
 	if (!_OrderConfigMgr)
 		return;
@@ -249,7 +249,7 @@ void VtAccountRemainGrid::UpdateAccount(VtOrder* order)
 	UpdateAccountInfo();
 }
 
-void VtAccountRemainGrid::UpdateAccount(VtSymbol* symbol)
+void VtAccountRemainGrid::UpdateAccount(symbol_p symbol)
 {
 	UpdateAccountInfo();
 }
@@ -258,7 +258,7 @@ void VtAccountRemainGrid::UpdateAccountInfo()
 {
 	if (!_OrderConfigMgr)
 		return;
-	VtAccount* acnt = _OrderConfigMgr->Account();
+	account_p acnt = _OrderConfigMgr->Account();
 	if (!acnt)
 		return;
 

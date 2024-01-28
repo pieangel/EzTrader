@@ -6,6 +6,17 @@
 #include <functional>
 #include "../VtDefine.h"
 #include <memory>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 struct VtQuote;
 class VtOrderConfigManager;
 class VtSymbol;
@@ -21,7 +32,7 @@ public:
 	void UnregisterAllCallback();
 
 	void RegisterQuoteCallback();
-	void OnQuoteEvent(VtSymbol* symbol);
+	void OnQuoteEvent(symbol_p symbol);
 
 	void Init();
 
@@ -31,7 +42,7 @@ public:
 	int _RowCount = 20;
 	CFont _defFont;
 	CFont _titleFont;
-	void OnReceiveQuote(VtSymbol* sym);
+	void OnReceiveQuote(symbol_p sym);
 	void SetOrderConfigMgr(VtOrderConfigManager* val);
 	void ClearText();
 	int MaxRow() const { return _RowCount; }

@@ -1,6 +1,19 @@
 #pragma once
 #include <list>
+#include <memory>
+#include <map>
 #include "../VtDefine.h"
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	struct SmPosition;
+	class SmFund;
+}
+
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 class VtSymbol;
 struct VtHoga;
 class VtAccount;
@@ -91,8 +104,8 @@ public:
 
 	bool UseThousandOnProfit = true;
 	
-	VtAccount* Account() const { return _Account; }
-	void Account(VtAccount* val);
+	account_p Account() const { return _Account; }
+	void Account(account_p val);
 	// 이 함수는 중앙창에서 주문을 낼 때는 절대로 사용하면 안됨.
 	// 대신 반드시 중앙창에 있는 심볼을 이용할것.
 	VtSymbol* Symbol() const { return _Symbol; }
@@ -111,20 +124,22 @@ public:
 	void PrdtOrderMgr(VtProductOrderManager* val) { _PrdtOrderMgr = val; }
 	void RegisterRealtimeSymbol();
 	void UnregisterRealtimeSymbol();
-	VtFund* Fund() const { return _Fund; }
-	void Fund(VtFund* val);
+	fund_p Fund() const { return _Fund; }
+	void Fund(fund_p val);
 	int Type() const { return _Type; }
 	void Type(int val) { _Type = val; }
 
-	VtAccount* OldAccount() const { return _OldAccount; }
-	VtFund* OldFund() const { return _OldFund; }
-	void OldFund(VtFund* val) { _OldFund = val; }
+	account_p OldAccount() const { return _OldAccount; }
+	fund_p OldFund() const { return _OldFund; }
+	void OldFund(fund_p val) { _OldFund = val; }
 private:
+	// key : account no , value : account
+	std::map<std::string, account_p> _AccountMap;
 	int _Type{ 0 }; // 0 : Normal Order, 1 : Fund Order.
-	VtFund* _Fund = nullptr;
-	VtFund* _OldFund = nullptr;
-	VtAccount* _Account = nullptr;
-	VtAccount* _OldAccount = nullptr;
+	fund_p _Fund = nullptr;
+	fund_p _OldFund = nullptr;
+	account_p _Account = nullptr;
+	account_p _OldAccount = nullptr;
 	VtSymbol* _Symbol = nullptr;
 	VtHoga* _Hoga = nullptr;
 	VtSymbolMaster* _Master = nullptr;

@@ -88,7 +88,7 @@ void SmAssetGrid::SetRowTitle()
 void SmAssetGrid::InitGrid()
 {
 	if (_OrderConfigMgr->Type() == 0) {
-		VtAccount* acnt = _OrderConfigMgr->Account();
+		account_p acnt = _OrderConfigMgr->Account();
 		if (!acnt)
 			return;
 		/*
@@ -107,7 +107,7 @@ void SmAssetGrid::InitGrid()
 		*/
 	}
 	else {
-		VtFund* fund = _OrderConfigMgr->Fund();
+		fund_p fund = _OrderConfigMgr->Fund();
 		if (!fund)
 			return;
 		/*

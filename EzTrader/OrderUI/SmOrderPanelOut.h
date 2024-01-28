@@ -15,7 +15,15 @@
 #include "../Xml/pugixml.hpp"
 #include "../VtDefine.h"
 #include "SmRealtickGrid.h"
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
 
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
 
 // SmOrderPanel dialog
 class VtOrderWnd;
@@ -53,8 +61,8 @@ public:
 	void FillCondition(VtFilledCondition val) { _FillCondition = val; }
 	VtPriceType PriceType() const { return _PriceType; }
 	void PriceType(VtPriceType val) { _PriceType = val; }
-	VtSymbol* Symbol() const { return _Symbol; }
-	//void Symbol(VtSymbol* val) { _Symbol = val; }
+	symbol_p Symbol() const { return _Symbol; }
+	//void Symbol(symbol_p val) { _Symbol = val; }
 	int StopVal() const { return _StopVal; }
 	void StopVal(int val) { _StopVal = val; }
 	int TickWndPos() const { return _TickWndPos; }
@@ -80,11 +88,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	void OnEntered();
-	void OnSymbolMaster(VtSymbol* sym);
+	void OnSymbolMaster(symbol_p sym);
 	void InitSymbol();
-	void SetSymbol(VtSymbol* sym);
-	void AddSymbolToCombo(VtSymbol* symbol);
-	void SetProductName(VtSymbol* symbol);
+	void SetSymbol(symbol_p sym);
+	void AddSymbolToCombo(symbol_p symbol);
+	void SetProductName(symbol_p symbol);
 	void InitPosition();
 	void RegisterRealtimeSymbol();
 	void UnregisterRealtimeSymbol();
@@ -138,7 +146,7 @@ public:
 	bool ShowTickWnd();
 	void ChangeAccount(VtAccount* acnt);
 	void ChangeFund(VtFund* fund);
-	void ChangeSymbol(VtSymbol* symbol);
+	void ChangeSymbol(symbol_p symbol);
 	void ResetRemainFund();
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
@@ -194,7 +202,7 @@ public:
 	afx_msg void OnStnClickedStaticRealTick();
 	afx_msg void OnBnClickedBtnRemainFund();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	void SetRealtickSymbol(VtSymbol* symbol);
+	void SetRealtickSymbol(symbol_p symbol);
 private:
 	bool _BlockEvent = true;
 	VtOrderWnd* _ParentDlg = nullptr;
@@ -214,7 +222,7 @@ private:
 	bool _ShowOrderCountArea = true;
 	bool _UseHogaSiseFilter = true;
 
-	VtSymbol*  _Symbol;
+	symbol_p  _Symbol;
 	int _OrderAmount;
 	VtFilledCondition _FillCondition;
 	VtPriceType _PriceType;
@@ -238,7 +246,7 @@ private:
 
 	int _DefaultWidth = 482;
 	int _DefaultHeight = 750;
-	VtSymbol* _DefaultSymbol = nullptr;
+	symbol_p _DefaultSymbol = nullptr;
 	SmPLConfigDlg* _ConfigDlg = nullptr;
 private:
 	void CreateChildWindow(SmPLConfigDlg* centerWnd, UINT id, CWnd* parent);

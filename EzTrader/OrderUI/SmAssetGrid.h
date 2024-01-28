@@ -1,5 +1,14 @@
 #pragma once
 #include "../Grid/GridCtrl.h"
+
+namespace DarkHorse {
+	class SmAccount;
+	class SmFund;
+}
+
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 class VtOrderConfigManager;
 class SmAssetGrid : public CGridCtrl
 {

@@ -40,7 +40,7 @@ VtOrderConfigManager::~VtOrderConfigManager()
 {
 }
 
-void VtOrderConfigManager::Account(VtAccount* val)
+void VtOrderConfigManager::Account(account_p val)
 {
 	_OldAccount = _Account;
 	_Account = val;
@@ -80,7 +80,7 @@ void VtOrderConfigManager::UnregisterRealtimeSymbol()
 	//oldDlgMgr->RemoveSymbolWindow(_Symbol->ShortCode, _HdOrderWnd);
 }
 
-void VtOrderConfigManager::Fund(VtFund* val)
+void VtOrderConfigManager::Fund(fund_p val)
 {
 	if (!val)
 		return;

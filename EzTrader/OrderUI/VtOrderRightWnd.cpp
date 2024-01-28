@@ -55,7 +55,7 @@ END_MESSAGE_MAP()
 // CVtOrderRightWnd message handlers
 
 
-void CVtOrderRightWnd::ShowAccountInfo(VtAccount* acnt)
+void CVtOrderRightWnd::ShowAccountInfo(account_p acnt)
 {
 	_AccountRemainGrid.ShowAccountInfo(acnt);
 }
@@ -88,12 +88,12 @@ void CVtOrderRightWnd::OnReceiveRealtimeSymbolMaster(VtSymbolMaster* symMaster)
 {
 }
 
-void CVtOrderRightWnd::OnReceiveAccountDeposit(VtAccount* acnt)
+void CVtOrderRightWnd::OnReceiveAccountDeposit(account_p acnt)
 {
 	_AccountRemainGrid.OnReceiveAccountDeposit(acnt);
 }
 
-void CVtOrderRightWnd::SetSymbol(VtSymbol* sym)
+void CVtOrderRightWnd::SetSymbol(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -132,7 +132,7 @@ void CVtOrderRightWnd::InitAccountInfo()
 {
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
 		return;
-	VtAccount* acnt = _OrderConfigMgr->Account();
+	account_p acnt = _OrderConfigMgr->Account();
 	_AccountRemainGrid.SetOrderConfigMgr(_OrderConfigMgr);
 	_AccountRemainGrid.OnReceiveAccountDeposit(acnt);
 }

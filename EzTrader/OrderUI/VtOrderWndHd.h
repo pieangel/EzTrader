@@ -1,11 +1,21 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include "VtOrderLeftWndHd.h"
 #include "VtOrderRightWndHd.h"
 #include "afxwin.h"
 #include "../ShadeButtonST.h"
 #include "SmOrderPanel.h"
 #include "../Xml/pugixml.hpp"
+
+namespace DarkHorse {
+	class SmFund;
+	class SmSymbol;
+	class SmAccount;
+	struct SmPosition;
+
+}
+
 class VtOrderConfigManager;
 class VtSymbol;
 struct VtOrder;
@@ -23,7 +33,8 @@ class VtLayoutManager;
 // 중앙창의 컨트롤들을 정렬시킨다.
 // VtOrderWndHd dialog
 
-
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;	
 class VtOrderWndHd : public CDialog
 {
 	DECLARE_DYNAMIC(VtOrderWndHd)
@@ -42,10 +53,10 @@ public:
 	//void CenterWndCount(int val) { _CenterWndCount = val; }
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
 	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
-	VtAccount* Account() const { return _Account; }
-	void Account(VtAccount* val) { _Account = val; }
-	VtFund* Fund() const { return _Fund; }
-	void Fund(VtFund* val) { _Fund = val; }
+	account_p Account() const { return _Account; }
+	void Account(account_p val) { _Account = val; }
+	fund_p Fund() const { return _Fund; }
+	void Fund(fund_p val) { _Fund = val; }
 	int WindowHeight() const { return _WindowHeight; }
 	void WindowHeight(int val) { _WindowHeight = val; }
 	int DefaultHeight() const { return _DefaultHeight; }
@@ -62,10 +73,58 @@ protected:
 public:
 	static int _MaxWidth;
 private:
-	void RegisterRealtimeAccount(VtAccount* acnt);
-	void UnregisterRealtimeAccount(VtAccount* acnt);
-	VtAccount* _Account = nullptr;
-	VtFund* _Fund = nullptr;
+	void AddItemToComboBox(CComboBox& comboBox, account_p item)
+	{
+		// Add the std::shared_ptr to the vector
+		combo_account_vector.push_back(item);
+
+		// Add item to the combo box and store the index in the combo box
+		int index = comboBox.AddString(_T("Item text here")); // Replace with appropriate text
+		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_account_vector.size() - 1));
+	}
+
+	account_p GetSelectedAccountPtr(CComboBox& comboBox)
+	{
+		int index = comboBox.GetCurSel();
+		if (index != CB_ERR)
+		{
+			// Retrieve the index from the combo box and get the std::shared_ptr
+			size_t ptrIndex = reinterpret_cast<size_t>(comboBox.GetItemDataPtr(index));
+			return combo_account_vector[ptrIndex];
+		}
+		return nullptr;
+	}
+	std::vector<account_p> combo_account_vector;
+
+
+	void AddItemToComboBox(CComboBox& comboBox, fund_p item)
+	{
+		// Add the std::shared_ptr to the vector
+		combo_fund_vector.push_back(item);
+
+		// Add item to the combo box and store the index in the combo box
+		int index = comboBox.AddString(_T("Item text here")); // Replace with appropriate text
+		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_fund_vector.size() - 1));
+	}
+
+	fund_p GetSelectedFundPtr(CComboBox& comboBox)
+	{
+		int index = comboBox.GetCurSel();
+		if (index != CB_ERR)
+		{
+			// Retrieve the index from the combo box and get the std::shared_ptr
+			size_t ptrIndex = reinterpret_cast<size_t>(comboBox.GetItemDataPtr(index));
+			return combo_fund_vector[ptrIndex];
+		}
+		return nullptr;
+	}
+
+	std::vector<fund_p> combo_fund_vector;
+
+	void RegisterRealtimeAccount(account_p acnt);
+	void UnregisterRealtimeAccount(account_p acnt);
+	account_p _Account = nullptr;
+	fund_p _Fund = nullptr;
 	VtOrderLeftWndHd _LeftWnd;
 	VtOrderRightWndHd _RightWnd;
 	std::vector<SmOrderPanel*> _CenterWndVector;
@@ -96,13 +155,13 @@ public:
 	int GetTitleBarHeight();
 	afx_msg void OnClose();
 	void OnFundAdded();
-	void OnFundDeleted(VtFund* fund);
+	void OnFundDeleted(fund_p fund);
 	bool InitFund();
 	void InitAccount();
-	void OnReceiveHoga(VtSymbol* sym);
-	void OnReceiveQuote(VtSymbol* sym);
+	void OnReceiveHoga(symbol_p sym);
+	void OnReceiveQuote(symbol_p sym);
 
-	void OnExpected(VtSymbol* sym);
+	void OnExpected(symbol_p sym);
 	void OnReceiveAccountInfo();
 	void OnReceiveMsg(CString msg);
 	void OnReceiveMsgWithReqId(int id, CString msg);
@@ -125,7 +184,7 @@ public:
 		return _ShowRightWnd;
 	}
 
-	VtFund* GetCurrentFund();
+	fund_p GetCurrentFund();
 	void ShowHideCtrl();
 public:
 // 	BasicEvent<VtOrderWndHdEventArgs> _OrderWindowEvent;
@@ -154,13 +213,13 @@ private:
 public:
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	bool ClickedRightExtend = false;
-	void OnSymbolMaster(VtSymbol* sym);
+	void OnSymbolMaster(symbol_p sym);
 	void OnRemain(VtPosition* posi);
 	void OnOrderAccepted(VtOrder* order);
 	void OnOrderUnfilled(VtOrder* order);
 	void OnOrderFilled(VtOrder* order);
 
-	void ChangeAccount(VtAccount* acnt);
+	void ChangeAccount(account_p acnt);
 	CShadeButtonST _BtnAddWnd;
 	CShadeButtonST _BtnDelWnd;
 	CShadeButtonST _BtnGetAcntInfo;
@@ -179,8 +238,8 @@ public:
 	afx_msg void OnBnClickedBtnShowright();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 
-	void SetAccount(VtAccount* acnt);
-	void SetFund(VtFund* fund);
+	void SetAccount(account_p acnt);
+	void SetFund(fund_p fund);
 
 	void SetType(int type);
 	afx_msg void OnStnClickedStaticAcntName();

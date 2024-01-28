@@ -6,6 +6,17 @@
 #include <functional>
 #include "../VtDefine.h"
 #include <memory>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 struct VtOrder;
 class VtSymbol;
 class VtAccount;
@@ -34,7 +45,7 @@ public:
 	void OrderAmount(int val) { _OrderAmount = val; }
 public:
 	// 심볼마스터 이벤트 처리
-	void OnSymbolMaster(VtSymbol* symbol);
+	void OnSymbolMaster(symbol_p symbol);
 	// 자동스탑 주문 처리
 	void SetAutoStopOnFilled(VtOrder* order);
 	// 콜백 함수 취소
@@ -42,11 +53,11 @@ public:
 
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
-	void OnQuoteEvent(VtSymbol* symbol);
+	void OnQuoteEvent(symbol_p symbol);
 
 	void RegisterHogaCallback();
 	void UnregisterHogaCallback();
-	void OnHogaEvent(VtSymbol* symbol);
+	void OnHogaEvent(symbol_p symbol);
 
 	void RegisterOrderallback();
 	void UnregisterOrderCallback();
@@ -79,8 +90,8 @@ private:
 	void SetColTitle(bool init);
 
 	// 중간값 설정
-	void SetCenterValue(const VtSymbol*, std::set<std::pair<int, int>>& refreshSet);
-	void SetCenterValueByFixed(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
+	void SetCenterValue(const symbol_p, std::set<std::pair<int, int>>& refreshSet);
+	void SetCenterValueByFixed(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet);
 
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::vector<COLORREF> BuyColor;
@@ -116,23 +127,23 @@ private:
 
 	void ClearQuotes(std::set<std::pair<int, int>>& refreshSet);
 	// 선물 중간값 설정
-	void SetCenterValueForFuture(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
+	void SetCenterValueForFuture(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet);
 	// 옵션 중간값 설정
-	void SetCenterValueForOption(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
+	void SetCenterValueForOption(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet);
 	// 시세 고정시 선물 중간값 설정
-	void SetCenterValueByFixedForFuture(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
+	void SetCenterValueByFixedForFuture(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet);
 	// 시세 고정시 옵션 중간값 설정
-	void SetCenterValueByFixedForOption(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
+	void SetCenterValueByFixedForOption(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet);
 	// 중간값 찾기 함수
 	int FindIndexRow();
 	// 현재 최대 행갯수 구하기
 	int GetMaxValueRowCount();
 	// 호가 정보 설정
-	void SetHogaInfo(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
+	void SetHogaInfo(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet);
 	int FindRowFromCenterValue(int value);
-	int FindRowFromCenterValue(const VtSymbol* sym, int value);
+	int FindRowFromCenterValue(const symbol_p sym, int value);
 	// 시세 색상 설정
-	void SetQuoteColor(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
+	void SetQuoteColor(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet);
 	// 셀 배경색 설정
 	void SetSiseCellBackColor(int minRow, int maxRow, int start, int end, COLORREF color);
 	// 시세 텍스트 색상과 레이블 설정
@@ -162,7 +173,7 @@ private:
 	// 포지션 없애기
 	void ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet);
 	// 포지션을 보여준다. 매도, 매수 포지션이 있을 경우
-	void ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, VtSymbol* sym);
+	void ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, symbol_p sym);
 	// 마우스 클릭으로 주문을 낸다.
 	void OrderByMouseClick();
 	// 마우스 위치로 주문을 낸다.
@@ -172,7 +183,7 @@ public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 
 private:
-	//VtSymbol* _Symbol = nullptr;
+	//symbol_p _Symbol = nullptr;
 	//std::string _SymbolCode;
 	// VtAccount* _Account = nullptr;
 public:

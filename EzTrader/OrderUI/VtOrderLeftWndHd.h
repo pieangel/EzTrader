@@ -4,6 +4,18 @@
 #include "SmFutureGrid.h"
 #include "SmPLGrid.h"
 #include "SmAssetGrid.h"
+#include <memory>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 // VtOrderLeftHd dialog
 class VtOrderConfigManager;
 class VtSymbol;
@@ -38,9 +50,9 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 
-	void OnReceiveQuote(VtSymbol* sym);
+	void OnReceiveQuote(symbol_p sym);
 	void OnOutstanding();
-	void OnExpected(VtSymbol* sym);
+	void OnExpected(symbol_p sym);
 	void BlockEvent();
 private:
 	//HdSymbolFutureGrid _SymbolFutureGrid;
@@ -68,7 +80,7 @@ public:
 	afx_msg void OnBnClickedRadioCurrent();
 	afx_msg void OnBnClickedRadioExpect();
 	afx_msg LRESULT OnAccountChangedMessage(WPARAM wParam, LPARAM lParam);
-	void OnSymbolMaster(VtSymbol* sym);
+	void OnSymbolMaster(symbol_p sym);
 public:
 	void OnRemain(VtPosition* posi);
 	void OnOrderAccepted(VtOrder* order);

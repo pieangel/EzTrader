@@ -37,6 +37,11 @@
 //#include "../Symbol/SmMarketManager.h"
 #include "../Util/SmUtil.h"
 #include "../Global/SmTotalManager.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Symbol/SmProduct.h"
+#include "../Symbol/SmProductYearMonth.h"
+#include "../Symbol/MarketDefine.h"
 
 
 //using Poco::NumberParser;
@@ -233,7 +238,7 @@ void SmOrderPanel::OnCbnSelchangeComboProductHd()
 	int curSel = _ComboSymbol.GetCurSel();
 	if (curSel != -1)
 	{
-		VtSymbol* sym = (VtSymbol*)_ComboSymbol.GetItemDataPtr(curSel);
+		symbol_p sym = GetSelectedItemDataPtr(_ComboSymbol);
 		if (!sym)
 			return;
 		ChangeSymbol(sym);
@@ -799,7 +804,7 @@ void SmOrderPanel::OnEntered()
 	}
 }
 
-void SmOrderPanel::OnSymbolMaster(VtSymbol* sym)
+void SmOrderPanel::OnSymbolMaster(symbol_p sym)
 {
 	if (!sym || !_Symbol)
 		return;
@@ -807,52 +812,57 @@ void SmOrderPanel::OnSymbolMaster(VtSymbol* sym)
 	//	return;
 
 	SetProductName(sym);
-	if (m_Grid.GetSafeHwnd()) {
-		m_Grid.OnSymbolMaster(sym);
-	}
+	//if (m_Grid.GetSafeHwnd()) {
+	//	m_Grid.OnSymbolMaster(sym);
+	//}
 }
 
 void SmOrderPanel::InitSymbol()
 {
 	// 기본 심볼 설정
-	VtSymbol* sym = _DefaultSymbol;
+	symbol_p sym = _DefaultSymbol;
 
-	if (!sym) { // 기본 심볼이 없으면 목록에서 첫번째 것을 가져온다.
-// 		VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-// 		std::string secName = prdtCatMgr->MainFutureVector.front();
-// 		VtProductSection* section = prdtCatMgr->FindProductSection(secName);
-// 		if (section) {
-// 			if (section->SubSectionVector.size() > 0) {
-// 				VtProductSubSection* subSection = section->SubSectionVector.front();
-// 				if (subSection->_SymbolVector.size() > 0) {
-// 					sym = subSection->_SymbolVector.front();
-// 				}
-// 			}
-// 		}
-		//sym = mainApp.SymbolMgr().MrktMgr().GetDefaultSymbol();
+	symbol_to_index_.clear();
+	index_to_symbol_.clear();
+	if (!sym) {
+		const std::vector<DarkHorse::DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
+		for (size_t i = 0; i < future_vec.size(); i++) {
+			const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
+			if (year_month_map.size() == 0) continue;
+			std::shared_ptr<DarkHorse::SmSymbol> symbol = year_month_map.begin()->second->get_first_symbol();
+			if (!symbol) continue;
+			AddSymbolToCombo(symbol);
+		}
 	}
+	_ComboSymbol.SetCurSel(0);
+	sym = GetSelectedItemDataPtr(_ComboSymbol);
 	SetSymbol(sym);
 	AddSymbolToCombo(sym);
 	SetProductName(sym);
 }
 
-void SmOrderPanel::SetSymbol(VtSymbol* sym)
+void SmOrderPanel::set_default_symbol()
+{
+
+}
+
+void SmOrderPanel::SetSymbol(symbol_p sym)
 {
 	if (!sym || !_OrderConfigMgr)
 		return;
-	/*
+	
 	_Symbol = sym;
 	// 실시간 시세와 호가를 등록해준다.
 	RegisterRealtimeSymbol();
 	// 호가 콜백을 등록해 준다.
-	_Symbol->SubscribeHogaWndCallback(m_Grid.GetSafeHwnd());
+	//_Symbol->SubscribeHogaWndCallback(m_Grid.GetSafeHwnd());
 	// 시세 콜백을 등록해 준다.
-	_Symbol->SubscribeQuoteWndCallback(m_Grid.GetSafeHwnd());
-	_Symbol->SubscribeQuoteWndCallback(_TickGrid.GetSafeHwnd());
-	_Symbol->SubscribeQuoteWndCallback(_ProductRemainGrid.GetSafeHwnd());
+	//_Symbol->SubscribeQuoteWndCallback(m_Grid.GetSafeHwnd());
+	//_Symbol->SubscribeQuoteWndCallback(_TickGrid.GetSafeHwnd());
+	//_Symbol->SubscribeQuoteWndCallback(_ProductRemainGrid.GetSafeHwnd());
 	SetProductName(_Symbol);
 	_ProductRemainGrid.SetSymbol(sym);
-
+	/*
 	if (_OrderConfigMgr->OrderMgr())
 	{
 		_OrderConfigMgr->OrderMgr()->CalcTotalProfitLoss(sym);
@@ -893,28 +903,20 @@ void SmOrderPanel::SetSymbol()
 	*/
 }
 
-void SmOrderPanel::AddSymbolToCombo(VtSymbol* symbol)
+void SmOrderPanel::AddSymbolToCombo(symbol_p symbol)
 {
 	if (!symbol || !_ComboSymbol.GetSafeHwnd())
 		return;
-	/*
-	int index = _ComboSymbol.FindString(0, symbol->ShortCode.c_str());
-	if (index == -1)
-	{
-		index = _ComboSymbol.AddString(symbol->ShortCode.c_str());
-		_ComboSymbol.SetItemDataPtr(index, symbol);
-	}
-	_ComboSymbol.SetCurSel(index);
-	*/
+	AddItemToComboBox(_ComboSymbol, symbol);
 }
 
-void SmOrderPanel::SetProductName(VtSymbol* symbol)
+void SmOrderPanel::SetProductName(symbol_p symbol)
 {
 	if (!symbol)
 		return;
 
 	if (_StaticProductName.GetSafeHwnd()) {
-		//_StaticProductName.SetWindowText(symbol->Name.c_str());
+		_StaticProductName.SetWindowText(symbol->SymbolNameKr().c_str());
 		_StaticProductName.Invalidate();
 	}
 }
@@ -963,6 +965,7 @@ void SmOrderPanel::RegisterRealtimeAccount()
 			mainApp.RealtimeRegisterMgr().RegisterAccount(parentAcnt->AccountNo);
 		}
 		*/
+		;
 	}
 }
 
@@ -1335,7 +1338,7 @@ void SmOrderPanel::BlockEvent()
 	_TickGrid.UnregisterAllCallback();
 }
 
-void SmOrderPanel::ChangeAccount(VtAccount* acnt)
+void SmOrderPanel::ChangeAccount(account_p acnt)
 {
 	if (!acnt)
 		return;
@@ -1345,7 +1348,7 @@ void SmOrderPanel::ChangeAccount(VtAccount* acnt)
 	InitPosition();
 }
 
-void SmOrderPanel::ChangeFund(VtFund* fund)
+void SmOrderPanel::ChangeFund(fund_p fund)
 {
 	if (!fund)
 		return;
@@ -1355,7 +1358,7 @@ void SmOrderPanel::ChangeFund(VtFund* fund)
 	InitPosition();
 }
 
-void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
+void SmOrderPanel::ChangeSymbol(symbol_p symbol)
 {
 	if (!symbol)
 		return;
@@ -1544,8 +1547,9 @@ void SmOrderPanel::LoadFromXml(pugi::xml_node& node_center_window)
 	_ShowOrderCountArea = _OrderGridColOption[2];
 
 	// 심볼 대입
+	
+	_DefaultSymbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 	/*
-	_DefaultSymbol = mainApp.SymbolMgr().FindHdSymbol(symbol_code);
 	// 저장된 심볼은 목록으로 만들어 심볼 마스터 요청한다.
 	std::vector<VtSymbol*>& symvec = mainApp.SaveMgr().GetSymbolVector();
 	if (_DefaultSymbol)

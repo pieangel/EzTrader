@@ -276,7 +276,7 @@ void VtProductAcceptedGrid::CancelOrder(VtOrder* order)
 		{
 			if (!_OrderConfigMgr->Account())
 				return;
-			VtAccount* acnt = _OrderConfigMgr->Account();
+			account_p acnt = _OrderConfigMgr->Account();
 			/*
 			std::shared_ptr<HdOrderRequest> request = std::make_shared<HdOrderRequest>();
 			request->Market = 1; // 해외 선물 시장 설정
@@ -293,7 +293,7 @@ void VtProductAcceptedGrid::CancelOrder(VtOrder* order)
 			}
 			else
 			{
-				VtAccount* parentAcnt = acnt->ParentAccount();
+				account_p parentAcnt = acnt->ParentAccount();
 				if (parentAcnt)
 				{
 					request->AccountNo = parentAcnt->AccountNo;
@@ -325,10 +325,10 @@ void VtProductAcceptedGrid::CancelOrder(VtOrder* order)
 			if (_OrderConfigMgr->Fund())
 			{
 				/*
-				VtAccount* subAcnt = mainApp.AcntMgr().SubAcntMgr().FindAccount(order->SubAccountNo);
+				account_p subAcnt = mainApp.AcntMgr().SubAcntMgr().FindAccount(order->SubAccountNo);
 				if (!subAcnt)
 					return;
-				VtAccount* parentAcnt = subAcnt->ParentAccount();
+				account_p parentAcnt = subAcnt->ParentAccount();
 				if (!parentAcnt)
 					return;
 

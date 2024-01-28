@@ -5,6 +5,18 @@
 #include "VtOrderSettlePage.h"
 #include "VtOrderConfigPage.h"
 #include "afxcmn.h"
+#include <memory>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 // CVtOrderRightWnd dialog
 class VtSymbolMaster;
 class VtSymbol;
@@ -39,13 +51,13 @@ private:
 	VtSymbolMasterGrid _SymMasterGrid;
 	CVtOrderWnd* _ParentOrderWnd = nullptr;
 public:
-	void ShowAccountInfo(VtAccount* acnt);
+	void ShowAccountInfo(account_p acnt);
 	virtual BOOL OnInitDialog();
 	void OnReceivedSymbolMaster(VtSymbolMaster* symMaster);
 	void OnReceivedSymbolMaster(VtRealtimeSymbolMaster* symMaster);
 	void OnReceiveRealtimeSymbolMaster(VtSymbolMaster* symMaster);
-	void OnReceiveAccountDeposit(VtAccount* acnt);
-	void SetSymbol(VtSymbol* sym);
+	void OnReceiveAccountDeposit(account_p acnt);
+	void SetSymbol(symbol_p sym);
 	afx_msg void OnClose();
 private:
 	void InitTabCtrl();

@@ -9,6 +9,18 @@
 #include "../Xml/pugixml.hpp"
 #include "VtOrderLeftWnd.h"
 #include "../VtDefine.h"
+#include <memory>
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
+
 class VtOrderConfigManager;
 class VtSymbol;
 struct VtOrder;
@@ -45,8 +57,8 @@ public:
 	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
 	VtAccount* Account() const { return _Account; }
 	void Account(VtAccount* val) { _Account = val; }
-	VtFund* Fund() const { return _Fund; }
-	void Fund(VtFund* val) { _Fund = val; }
+	fund_p Fund() const { return _Fund; }
+	void Fund(fund_p val) { _Fund = val; }
 	int WindowHeight() const { return _WindowHeight; }
 	void WindowHeight(int val) { _WindowHeight = val; }
 	int DefaultHeight() const { return _DefaultHeight; }
@@ -66,7 +78,7 @@ private:
 	void RegisterRealtimeAccount(VtAccount* acnt);
 	void UnregisterRealtimeAccount(VtAccount* acnt);
 	VtAccount* _Account = nullptr;
-	VtFund* _Fund = nullptr;
+	fund_p _Fund = nullptr;
 	CVtOrderLeftWnd _LeftWnd;
 	CVtOrderRightWnd _RightWnd;
 	std::vector<SmOrderPanelOut*> _CenterWndVector;
@@ -99,7 +111,7 @@ public:
 	int GetTitleBarHeight();
 	afx_msg void OnClose();
 	void OnFundAdded();
-	void OnFundDeleted(VtFund* fund);
+	void OnFundDeleted(fund_p fund);
 	bool InitFund();
 	void InitAccount();
 	void OnReceiveHoga(VtSymbol* sym);
@@ -128,7 +140,7 @@ public:
 		return _ShowRightWnd;
 	}
 
-	VtFund* GetCurrentFund();
+	fund_p GetCurrentFund();
 	void ShowHideCtrl();
 public:
 	
@@ -180,7 +192,7 @@ public:
 
 
 	void SetAccount(VtAccount* acnt);
-	void SetFund(VtFund* fund);
+	void SetFund(fund_p fund);
 
 	void SetType(int type);
 	afx_msg void OnStnClickedStaticAcntName();

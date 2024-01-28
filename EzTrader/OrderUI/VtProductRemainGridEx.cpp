@@ -25,6 +25,8 @@
 //#include "../Fund/VtFund.h"
 //#include "../Format/format.h"
 #include "../Global/SmTotalManager.h"
+#include "../Account/SmAccount.h"
+#include "../Account/SmAccountManager.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -228,7 +230,7 @@ void VtProductRemainGridEx::ResetCellText()
 
 void VtProductRemainGridEx::SetRemainList()
 {
-	VtAccount* acnt = _OrderConfigMgr->Account();
+	account_p acnt = _OrderConfigMgr->Account();
 	if (!acnt)
 		return;
 
@@ -380,7 +382,7 @@ void VtProductRemainGridEx::PutOrder(VtPosition* posi, int price, bool liqud /*=
 	if (posi->OpenQty == 0)
 		return;
 
-	VtAccount* acnt = nullptr;
+	account_p acnt = nullptr;
 	acnt = mainApp.AcntMgr().FindAccount(posi->AccountNo);
 	if (!acnt) { // 본계좌에 없을 경우 서브 계좌를 찾아 본다.
 		acnt = mainApp.AcntMgr().SubAcntMgr().FindAccount(posi->AccountNo);
@@ -399,7 +401,7 @@ void VtProductRemainGridEx::PutOrder(VtPosition* posi, int price, bool liqud /*=
 			request->Type = 0;
 		}
 		else { // 서브 계좌 일 때
-			VtAccount* parentAcnt = acnt->ParentAccount();
+			account_p parentAcnt = acnt->ParentAccount();
 			if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
 				request->AccountNo = parentAcnt->AccountNo;
 				request->Password = parentAcnt->Password;
@@ -408,7 +410,7 @@ void VtProductRemainGridEx::PutOrder(VtPosition* posi, int price, bool liqud /*=
 		}
 	}
 	else { // 펀드 주문일때
-		VtAccount* parentAcnt = acnt->ParentAccount();
+		account_p parentAcnt = acnt->ParentAccount();
 		if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
 			request->AccountNo = parentAcnt->AccountNo;
 			request->Password = parentAcnt->Password;

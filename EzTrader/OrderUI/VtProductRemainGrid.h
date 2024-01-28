@@ -3,6 +3,16 @@
 #include "../UGrid/VtGrid.h"
 #include "../UGrid/CellTypes/UGCTSeperateText.h"
 #include "../VtDefine.h"
+#include <memory>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
 class VtSymbol;
 class VtAccount;
 struct VtQuote;
@@ -18,7 +28,7 @@ public:
 	void UnregisterAllCallback();
 
 	void RegisterQuoteCallback();
-	void OnQuoteEvent(const VtSymbol* symbol);
+	void OnQuoteEvent(const symbol_p symbol);
 
 	void RegisterOrderallback();
 	void OnOrderEvent(const VtOrder* order);
@@ -38,7 +48,7 @@ public:
 	CFont _titleFont;
 	void QuickRedrawCell(int col, long row);
 
-	//void Symbol(VtSymbol* val);
+	//void Symbol(symbol_p val);
 	//void Account(VtAccount* val) { _Account = val; }
 
 	//void Position(VtPosition* val);
@@ -48,7 +58,7 @@ public:
 	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
 	SmOrderPanelOut* CenterWnd() const { return _CenterWnd; }
 	void CenterWnd(SmOrderPanelOut* val) { _CenterWnd = val; }
-	void SetSymbol(VtSymbol* sym);
+	void SetSymbol(symbol_p sym);
 	//SmOrderPanelOut* CenterWndOut() const { return _CenterWndOut; }
 	//void CenterWndOut(SmOrderPanelOut* val) { _CenterWndOut = val; }
 	int Mode() const { return _Mode; }
@@ -56,7 +66,7 @@ public:
 private:
 	void ShowSinglePosition();
 	void ShowFundPosition();
-	//VtSymbol* _Symbol = nullptr;
+	//symbol_p _Symbol = nullptr;
 	//VtAccount* _Account = nullptr;
 	//VtPosition* _Position = nullptr;
 	SmOrderPanelOut* _CenterWnd;
@@ -65,14 +75,14 @@ private:
 	void SetColTitle(int level);
 	int FindLevel(int ParentWidth);
 	int FindLevel(std::vector<bool>& colOptions);
-	void ShowPosition(VtPosition* posi, VtSymbol* sym);
+	void ShowPosition(VtPosition* posi, symbol_p sym);
 public:
 	int SetColTitleForLevel(int parentWidth);
 	int SetColTitleForLevel(std::vector<bool>& colOptions);
 	void OnReceiveRealtimeQuote(VtQuote* quote);
 	void InitPosition();
 	void ClearPosition();
-	void OnReceiveQuote(VtSymbol* sym);
+	void OnReceiveQuote(symbol_p sym);
 	void SetOrderConfigMgr(VtOrderConfigManager* val);
 	void OnRemain(VtPosition* posi);
 	void SetShowAvage(bool flag);

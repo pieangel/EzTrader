@@ -58,7 +58,7 @@ void VtSymbolMasterGrid::UnregisterQuoteCallback()
 	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
 }
 
-void VtSymbolMasterGrid::OnQuoteEvent(VtSymbol* symbol)
+void VtSymbolMasterGrid::OnQuoteEvent(symbol_p symbol)
 {
 	if (!_Symbol || !symbol)
 		return;
@@ -142,7 +142,7 @@ void VtSymbolMasterGrid::QuickRedrawCell(int col, long row)
 }
 
 
-void VtSymbolMasterGrid::InitSymbol(VtSymbol* sym)
+void VtSymbolMasterGrid::InitSymbol(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -203,7 +203,7 @@ void VtSymbolMasterGrid::InitSymbol(VtSymbol* sym)
 	*/
 }
 
-void VtSymbolMasterGrid::UpdateSymbol(VtSymbol* sym)
+void VtSymbolMasterGrid::UpdateSymbol(symbol_p sym)
 {
 	if (!sym || !_Symbol)
 		return;
@@ -257,7 +257,8 @@ void VtSymbolMasterGrid::SetOrderConfigMgr(VtOrderConfigManager* val)
 
 LRESULT VtSymbolMasterGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 {
-	VtSymbol* symbol = (VtSymbol*)lParam;
+	symbol_p* pData = reinterpret_cast<symbol_p*>(lParam);
+	symbol_p symbol = *pData;
 	UpdateSymbol(symbol);
 	return 1;
 }

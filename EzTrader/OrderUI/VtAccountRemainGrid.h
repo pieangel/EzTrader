@@ -1,6 +1,17 @@
 #pragma once
+#include <memory>
 #include "afxwin.h"
 #include "../UGrid/VtGrid.h"
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 class VtOrderConfigManager;
 class VtAccount;
 class VtSymbol;
@@ -16,7 +27,7 @@ public:
 
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
-	void OnQuoteEvent(VtSymbol* symbol);
+	void OnQuoteEvent(symbol_p symbol);
 
 
 	void RegisterOrderallback();
@@ -33,17 +44,17 @@ public:
 
 	void QuickRedrawCell(int col, long row);
 
-	void ShowAccountInfo(VtAccount* acnt);
+	void ShowAccountInfo(account_p acnt);
 
 	void SetOrderConfigMgr(VtOrderConfigManager* val);
-	void OnReceiveAccountDeposit(VtAccount* acnt);
+	void OnReceiveAccountDeposit(account_p acnt);
 
 	afx_msg LRESULT OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam);
 
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	void UpdateAccount(VtOrder* order);
-	void UpdateAccount(VtSymbol* symbol);
+	void UpdateAccount(symbol_p symbol);
 	void UpdateAccountInfo();
 
 DECLARE_MESSAGE_MAP()

@@ -728,7 +728,7 @@ void VtOrderWnd::ShowRightWnd()
 	RefreshLayout(true, false);
 }
 
-VtFund* VtOrderWnd::GetCurrentFund()
+fund_p VtOrderWnd::GetCurrentFund()
 {
 	if (!_OrderConfigMgr)
 		return nullptr;
@@ -899,7 +899,7 @@ void VtOrderWnd::OnFundAdded()
 		_ComboAcnt.GetLBText(selAcnt, str1);
 		/*
 		_StaticAcnt.SetWindowText(_T("ÆÝµå"));
-		std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
+		std::map<std::string, fund_p>& fundList = mainApp.FundMgr().GetFundList();
 		if (fundList.size() == 0)
 		{
 			_ComboAcnt.ResetContent();
@@ -909,7 +909,7 @@ void VtOrderWnd::OnFundAdded()
 		_ComboAcnt.ResetContent();
 		for (auto it = fundList.begin(); it != fundList.end(); ++it)
 		{
-			VtFund* fund = it->second;
+			fund_p fund = it->second;
 			int index = _ComboAcnt.AddString(fund->Name.c_str());
 			_ComboAcnt.SetItemDataPtr(index, fund);
 		}
@@ -926,7 +926,7 @@ void VtOrderWnd::OnFundAdded()
 			selIndex = index;
 		}
 
-		VtFund* fund = (VtFund*)_ComboAcnt.GetItemDataPtr(selIndex);
+		fund_p fund = (fund_p)_ComboAcnt.GetItemDataPtr(selIndex);
 		_OrderConfigMgr->Fund(fund);
 		if (_OrderConfigMgr->Fund())
 		{
@@ -942,7 +942,7 @@ void VtOrderWnd::OnFundAdded()
 	}
 }
 
-void VtOrderWnd::OnFundDeleted(VtFund* delFund)
+void VtOrderWnd::OnFundDeleted(fund_p delFund)
 {
 	if (_OrderConfigMgr->Type() == 0 || !delFund)
 		return;
@@ -954,7 +954,7 @@ void VtOrderWnd::OnFundDeleted(VtFund* delFund)
 		_ComboAcnt.GetLBText(selAcnt, str1);
 		/*
 		_StaticAcnt.SetWindowText(_T("ÆÝµå"));
-		std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
+		std::map<std::string, fund_p>& fundList = mainApp.FundMgr().GetFundList();
 		if (fundList.size() == 0)
 		{
 			_ComboAcnt.ResetContent();
@@ -964,7 +964,7 @@ void VtOrderWnd::OnFundDeleted(VtFund* delFund)
 		_ComboAcnt.ResetContent();
 		for (auto it = fundList.begin(); it != fundList.end(); ++it)
 		{
-			VtFund* fund = it->second;
+			fund_p fund = it->second;
 			int index = _ComboAcnt.AddString(fund->Name.c_str());
 			_ComboAcnt.SetItemDataPtr(index, fund);
 		}
@@ -981,7 +981,7 @@ void VtOrderWnd::OnFundDeleted(VtFund* delFund)
 			selIndex = index;
 		}
 
-		VtFund* fund = (VtFund*)_ComboAcnt.GetItemDataPtr(selIndex);
+		fund_p fund = (fund_p)_ComboAcnt.GetItemDataPtr(selIndex);
 		_OrderConfigMgr->Fund(fund);
 		if (_OrderConfigMgr->Fund())
 		{
@@ -1005,7 +1005,7 @@ bool VtOrderWnd::InitFund()
 	_ComboAcnt.ResetContent();
 	/*
 	_StaticAcnt.SetWindowText(_T("ÆÝµå"));
-	std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
+	std::map<std::string, fund_p>& fundList = mainApp.FundMgr().GetFundList();
 	if (fundList.size() == 0) {
 		_ComboAcnt.ResetContent();
 		_OrderConfigMgr->Fund(nullptr);
@@ -1014,7 +1014,7 @@ bool VtOrderWnd::InitFund()
 	// ÄÞº¸ ¹Ú½º¿¡ ÆÝµå Ãß°¡
 	int selIndex = -1;
 	for (auto it = fundList.begin(); it != fundList.end(); ++it) {
-		VtFund* fund = it->second;
+		fund_p fund = it->second;
 		int index = _ComboAcnt.AddString(fund->Name.c_str());
 		if (_DefaultFundName.compare(fund->Name) == 0) { // Á¤ÇØÁø ÆÝµå°¡ ÀÖÀ¸¸é ¼±ÅÃ
 			selIndex = index;
@@ -1024,7 +1024,7 @@ bool VtOrderWnd::InitFund()
 	}
 
 	if (selIndex == -1) { // Á¤ÇØÁø ÆÝµå°¡ ¾øÀ» ¶§ ¸ÇÃ³À½ ÆÝµå ¼±ÅÃ
-		VtFund* fund = fundList.begin()->second;
+		fund_p fund = fundList.begin()->second;
 		selIndex = 0;
 		_OrderConfigMgr->Fund(fund);
 	}
@@ -1459,7 +1459,7 @@ void VtOrderWnd::OnCbnSelchangeComboAccountHd()
 		}
 		int curSel = _ComboAcnt.GetCurSel();
 		if (curSel != -1) {
-			VtFund* fund = (VtFund*)_ComboAcnt.GetItemDataPtr(curSel);
+			fund_p fund = (fund_p)_ComboAcnt.GetItemDataPtr(curSel);
 			if (!fund)
 				return;
 
@@ -1564,7 +1564,7 @@ void VtOrderWnd::SetAccount(VtAccount* acnt)
 	//_OrderConfigMgr->OrderMgr(_OrderMgr);
 }
 
-void VtOrderWnd::SetFund(VtFund* fund)
+void VtOrderWnd::SetFund(fund_p fund)
 {
 	if (!fund || !_OrderConfigMgr)
 		return;

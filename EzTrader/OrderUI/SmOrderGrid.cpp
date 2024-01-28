@@ -112,14 +112,14 @@ SmOrderGrid::~SmOrderGrid()
 	}
 }
 
-void SmOrderGrid::OnSymbolMaster(VtSymbol* sym)
+void SmOrderGrid::OnSymbolMaster(symbol_p sym)
 {
 	if (!sym)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
 	/*
-	VtSymbol* symbol = _CenterWnd->Symbol();
+	symbol_p symbol = _CenterWnd->Symbol();
 	if (symbol->ShortCode.compare(sym->ShortCode) != 0) {
 		return;
 	}
@@ -132,7 +132,7 @@ void SmOrderGrid::SetAutoStopOnFilled(VtOrder* order)
 {
 	if (!order)
 		return;
-	_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
+	//_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
 }
 
 void SmOrderGrid::UnregisterAllCallback()
@@ -156,7 +156,7 @@ void SmOrderGrid::UnregisterQuoteCallback()
 	//mainApp.CallbackMgr().UnsubscribeOrderWndCallback(GetSafeHwnd());
 }
 
-void SmOrderGrid::OnQuoteEvent(VtSymbol* symbol)
+void SmOrderGrid::OnQuoteEvent(symbol_p symbol)
 {
 	/*
 	try {
@@ -220,7 +220,7 @@ LRESULT SmOrderGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 		return 1;
 	}
 	
-	VtSymbol* symbol = (VtSymbol*)lParam;
+	symbol_p symbol = (symbol_p)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
 	}
@@ -274,7 +274,7 @@ void SmOrderGrid::UnregisterHogaCallback()
 	//mainApp.CallbackMgr().UnsubscribeHogaWndCallback(GetSafeHwnd());
 }
 
-void SmOrderGrid::OnHogaEvent(VtSymbol* symbol)
+void SmOrderGrid::OnHogaEvent(symbol_p symbol)
 {
 	/*
 	try {
@@ -323,7 +323,7 @@ LRESULT SmOrderGrid::OnHogaChangedMessage(WPARAM wParam, LPARAM lParam)
 		return 1;
 	}
 
-	VtSymbol* symbol = (VtSymbol*)lParam;
+	symbol_p symbol = (symbol_p)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
 	}
@@ -466,7 +466,7 @@ void SmOrderGrid::UnregisterOrderWndCallback()
 	//mainApp.CallbackMgr().UnsubscribeOrderWndCallback(GetSafeHwnd());
 }
 
-void SmOrderGrid::OnOrderWndEvent(VtSymbol* symbol)
+void SmOrderGrid::OnOrderWndEvent(symbol_p symbol)
 {
 
 }
@@ -702,7 +702,7 @@ void SmOrderGrid::CheckProfitLossTouchHd(int intClose)
 	/*
 	try {
 
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(), next_it = it; it != _StopOrderMgr->StopOrderMapHd.end(); it = next_it) {
 		std::shared_ptr<HdOrderRequest> stop = it->second;
@@ -744,7 +744,7 @@ bool SmOrderGrid::CheckStopTouchedHd(int intClose)
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_CutMgr)
 		return false;
 	std::vector<int> removeList;
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	std::map<int, std::shared_ptr<HdOrderRequest>>& profitLossMap = _CutMgr->GetStopOrderMap();
 	for (auto it = profitLossMap.begin(); it != profitLossMap.end(); ++it) {
 		std::shared_ptr<HdOrderRequest> stop = it->second;
@@ -817,7 +817,7 @@ void SmOrderGrid::SetColTitle(bool init)
 	}
 }
 
-void SmOrderGrid::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGrid::SetCenterValue(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!symbol)
 		return;
@@ -839,7 +839,7 @@ void SmOrderGrid::SetCenterValue()
 		return;
 	/*
 	try {
-	VtSymbol* symbol = _CenterWnd->Symbol();
+	symbol_p symbol = _CenterWnd->Symbol();
 	if (symbol) {
 		std::set<std::pair<int, int>> refreshSet;
 		SetCenterValue(symbol, refreshSet);
@@ -872,7 +872,7 @@ void SmOrderGrid::SetCenterValue()
 	*/
 }
 
-void SmOrderGrid::SetCenterValueByFixed(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGrid::SetCenterValueByFixed(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!symbol)
 		return;
@@ -914,7 +914,7 @@ void SmOrderGrid::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
 	*/
 }
 
-void SmOrderGrid::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGrid::SetCenterValueForFuture(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -950,7 +950,7 @@ void SmOrderGrid::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::pai
 	*/
 }
 
-void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGrid::SetCenterValueForOption(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -1025,7 +1025,7 @@ void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pai
 	*/
 }
 
-void SmOrderGrid::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGrid::SetCenterValueByFixedForFuture(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -1068,7 +1068,7 @@ void SmOrderGrid::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::set<s
 	*/
 }
 
-void SmOrderGrid::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGrid::SetCenterValueByFixedForOption(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -1152,7 +1152,7 @@ int SmOrderGrid::GetMaxValueRowCount()
 }
 
 
-void SmOrderGrid::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGrid::SetHogaInfo(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -1294,7 +1294,7 @@ int SmOrderGrid::FindRowFromCenterValue(int value)
 	}
 }
 
-int SmOrderGrid::FindRowFromCenterValue(const VtSymbol* sym, int value)
+int SmOrderGrid::FindRowFromCenterValue(const symbol_p sym, int value)
 {
 	if (!sym || ValueToRowMap.size() == 0)
 		return 0;
@@ -1333,7 +1333,7 @@ int SmOrderGrid::FindRowFromCenterValue(const VtSymbol* sym, int value)
 	return 1;
 }
 
-void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGrid::SetQuoteColor(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -1535,7 +1535,7 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 		return;
 	/*
 	try {
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 
 	_OrderPos.clear();
 
@@ -1956,7 +1956,7 @@ void SmOrderGrid::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
 	if (posi->OpenQty == 0)
 		return;
 
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	VtAccount* acnt = nullptr;
 	acnt = mainApp.AcntMgr().FindAccount(posi->AccountNo);
 	if (!acnt) { // 본계좌에 없을 경우 서브 계좌를 찾아 본다.
@@ -2068,7 +2068,7 @@ void SmOrderGrid::AddOrderToCell(VtOrder* order)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	CGridCellBase* pCell = nullptr;
 	int row = FindRowFromCenterValue(sym, order->intOrderPrice);
 	if (row >= _StartRowForValue && row <= _EndRowForValue) {
@@ -2105,7 +2105,7 @@ void SmOrderGrid::RemoveOrderFromCell(VtOrder* order)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	CGridCellBase* pCell = nullptr;
 	int row = FindRowFromCenterValue(sym, order->intOrderPrice);
 	if (row >= _StartRowForValue && row <= _EndRowForValue) {
@@ -2143,7 +2143,7 @@ void SmOrderGrid::RefreshTotalOrderCount(VtOrder* input_order)
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
 
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(sym->ShortCode);
 
@@ -2253,7 +2253,7 @@ void SmOrderGrid::ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet)
 	}
 }
 
-void SmOrderGrid::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, VtSymbol* sym)
+void SmOrderGrid::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, symbol_p sym)
 {
 	/*
 	try {
@@ -2343,7 +2343,7 @@ void SmOrderGrid::LiqudAll(VtPriceType priceType, int price /*= 0*/)
 	try {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	if (_OrderConfigMgr->Type() == 0) { // 계좌 주문일 때
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
@@ -3349,7 +3349,7 @@ int SmOrderGrid::FindPositionRow(VtPosition* posi)
 	if (!posi || ValueToRowMap.size() == 0)
 		return -1;
 	/*
-	VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
+	symbol_p sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
 	if (!sym)
 		return -1;
 
@@ -3452,8 +3452,8 @@ void SmOrderGrid::ApplyProfitLossForPosition()
 	if (!_CutMgr || !_CenterWnd || !_CenterWnd->Symbol())
 		return;
 	// 모든 익절,손절 스탑 취소
-	_CutMgr->RemoveAllHd();
-	_CutMgr->MakePositionStopByRemain(_CenterWnd->Symbol());
+	//_CutMgr->RemoveAllHd();
+	//_CutMgr->MakePositionStopByRemain(_CenterWnd->Symbol());
 	std::set<std::pair<int, int>> refreshSet;
 	ClearOldOrders(refreshSet);
 	SetOrderInfo(refreshSet);

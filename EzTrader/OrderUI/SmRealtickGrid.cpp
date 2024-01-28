@@ -12,6 +12,7 @@
 //#include "../Task/SmCallbackManager.h"
 //#include "../Format/format.h"
 #include "../Global/SmTotalManager.h"
+#include "../Symbol/SmSymbol.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -40,7 +41,7 @@ void SmRealtickGrid::RegisterQuoteCallback()
 	//mainApp.CallbackMgr().SubscribeQuoteCallback((long)this, std::bind(&SmRealtickGrid::OnQuoteEvent, this, _1));
 }
 
-void SmRealtickGrid::OnQuoteEvent(VtSymbol* sym)
+void SmRealtickGrid::OnQuoteEvent(symbol_p sym)
 {
 	if (!sym || !_Symbol)
 		return;
@@ -149,7 +150,7 @@ void SmRealtickGrid::SetColTitle()
 	}
 }
 
-void SmRealtickGrid::OnReceiveQuote(VtSymbol* sym)
+void SmRealtickGrid::OnReceiveQuote(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -245,7 +246,7 @@ int SmRealtickGrid::GetGridWidth()
 	return std::accumulate(_ColWidths.begin(), _ColWidths.end(), 0) + 6;
 }
 
-void SmRealtickGrid::Symbol(VtSymbol* val)
+void SmRealtickGrid::Symbol(symbol_p val)
 {
 	_Symbol = val;
 	OnReceiveQuote(val);

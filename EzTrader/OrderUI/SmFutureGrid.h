@@ -10,6 +10,16 @@
 #include <tuple>
 #include <set>
 #include <string>
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 class VtOrderLeftWndHd;
 class VtProductSection;
 class VtOrderConfigManager;
@@ -29,9 +39,9 @@ public:
 	void RegisterQuoteCallback();
 	void RegisterOrderCallback();
 
-	void OnMasterEvent(VtSymbol* sym);
+	void OnMasterEvent(symbol_p sym);
 	void OnOrderEvent(VtOrder* order);
-	void OnQuoteEvent(VtSymbol* sym);
+	void OnQuoteEvent(symbol_p sym);
 
 	// 콜백 함수 취소
 	void UnregisterAllCallback();
@@ -56,13 +66,13 @@ public:
 	void Mode(int val) { _Mode = val; }
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
-	std::map<std::string, std::tuple<int, int, VtSymbol*>> _FutureCurrentValueRowMap;
+	std::map<std::string, std::tuple<int, int, symbol_p>> _FutureCurrentValueRowMap;
 	int _Mode = 1;
 	COLORREF _SellColor;
 	COLORREF _BuyColor;
 	COLORREF _DefaultColor;
 	void ShowPosition(bool init, int acptCnt, VtPosition* posi, std::string symCode);
-	void GetSymbolMaster(VtSymbol* sym);
+	void GetSymbolMaster(symbol_p sym);
 
 	void QuickSetBackColor(int row, int col, COLORREF color);
 	void QuickSetText(int row, int col, LPCTSTR text);
@@ -70,15 +80,15 @@ private:
 	void QuickSetTextColor(int row, int col, COLORREF color);
 
 public:
-	void OnReceiveQuote(VtSymbol* sym);
-	void OnSymbolMaster(VtSymbol* sym);
+	void OnReceiveQuote(symbol_p sym);
+	void OnSymbolMaster(symbol_p sym);
 	void SetRemain(VtPosition* posi);
 	void SetRemain(VtOrder* order);
 	void SetRemain(std::string symbol_code);
-	void ShowRemain(VtSymbol* sym);
-	void ShowCurrent(VtSymbol* sym, int row);
+	void ShowRemain(symbol_p sym);
+	void ShowCurrent(symbol_p sym, int row);
 	void OnOrderFilled(VtOrder* order);
-	void OnExpected(VtSymbol* sym);
-	void ShowExpected(VtSymbol* sym, int row);
+	void OnExpected(symbol_p sym);
+	void ShowExpected(symbol_p sym, int row);
 };
 

@@ -1,5 +1,16 @@
 #pragma once
 #include "../UGrid/VtGrid.h"
+#include <memory>
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 class VtSymbol;
 struct VtRealtimeSymbolMaster;
 class VtOrderConfigManager;
@@ -14,7 +25,7 @@ public:
 
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
-	void OnQuoteEvent(VtSymbol* symbol);
+	void OnQuoteEvent(symbol_p symbol);
 
 	virtual void OnSetup();
 	void SetRowTitle();
@@ -24,10 +35,10 @@ public:
 	CFont _titleFont;
 
 	void QuickRedrawCell(int col, long row);
-	void InitSymbol(VtSymbol* sym);
+	void InitSymbol(symbol_p sym);
 private:
-	void UpdateSymbol(VtSymbol* sym);
-	VtSymbol* _Symbol = nullptr;
+	void UpdateSymbol(symbol_p sym);
+	symbol_p _Symbol = nullptr;
 public:
 	void ResetSymbol();
 

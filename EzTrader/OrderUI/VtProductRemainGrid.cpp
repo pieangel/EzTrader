@@ -21,6 +21,7 @@
 #include "SmOrderPanelOut.h"
 #include "../Global/SmTotalManager.h"
 #include "../MessageDefine.h"
+#include "../Symbol/SmSymbol.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -46,7 +47,7 @@ void VtProductRemainGrid::RegisterQuoteCallback()
 	//mainApp.CallbackMgr().SubscribeOrderWndCallback(GetSafeHwnd());
 }
 
-void VtProductRemainGrid::OnQuoteEvent(const VtSymbol* symbol)
+void VtProductRemainGrid::OnQuoteEvent(const symbol_p symbol)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr) {
 		return;
@@ -228,7 +229,7 @@ void VtProductRemainGrid::ShowPosition()
 		ShowFundPosition();
 }
 
-void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
+void VtProductRemainGrid::ShowPosition(VtPosition* posi, symbol_p sym)
 {
 	if (!posi || !sym)
 		return;
@@ -326,13 +327,13 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 	//LOG_F(INFO, _T("잔고그리드 갱신"));
 }
 
-void VtProductRemainGrid::SetSymbol(VtSymbol* sym)
+void VtProductRemainGrid::SetSymbol(symbol_p sym)
 {
 	if (!sym || !_CenterWnd || !_OrderConfigMgr)
 		return;
 
 	/*
-	VtAccount* acnt = _OrderConfigMgr->Account();
+	account_p acnt = _OrderConfigMgr->Account();
 	if (!acnt)
 		return;
 	VtPosition* posi = acnt->FindPosition(sym->ShortCode);
@@ -349,8 +350,8 @@ void VtProductRemainGrid::ShowSinglePosition()
 	if (!_OrderConfigMgr->Account())
 		return;
 
-	VtSymbol* sym = _CenterWnd->Symbol();
-	VtAccount* acnt = _OrderConfigMgr->Account();
+	symbol_p sym = _CenterWnd->Symbol();
+	account_p acnt = _OrderConfigMgr->Account();
 	//VtPosition* posi = acnt->FindPosition(sym->ShortCode);
 	//ShowPosition(posi, sym);
 }
@@ -360,7 +361,7 @@ void VtProductRemainGrid::ShowFundPosition()
 	if (!_OrderConfigMgr->Fund())
 		return;
 
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	int count = 0;
 	/*
 	VtPosition posi = _OrderConfigMgr->Fund()->GetPosition(sym->ShortCode, count);
@@ -443,10 +444,10 @@ void VtProductRemainGrid::ClearPosition()
 	QuickRedrawCell(4, 0);
 	QuickRedrawCell(5, 0);
 
-	_CenterWnd->SetRemain(0);
+	if (_CenterWnd) _CenterWnd->SetRemain(0);
 }
 
-void VtProductRemainGrid::OnReceiveQuote(VtSymbol* sym)
+void VtProductRemainGrid::OnReceiveQuote(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -526,9 +527,41 @@ int VtProductRemainGrid::GetGridWidth(std::vector<bool>& colOptions)
 	return gridWidth;
 }
 
+/*
+LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+	switch (message) {
+		case WM_USER: // Example message
+			{
+				// Retrieve the std::shared_ptr from lParam
+				std::shared_ptr<MyData>* pData = reinterpret_cast<std::shared_ptr<MyData>*>(lParam);
+				std::shared_ptr<MyData> data = *pData;
+
+				// Use data...
+
+				// Clean up
+				delete pData;
+
+				return 0;
+			}
+		// Other cases...
+	}
+	return DefWindowProc(hwnd, message, wParam, lParam);
+}
+
+void SendMyData(HWND hwnd, std::shared_ptr<MyData> data) {
+	// Allocate a new shared_ptr on the heap
+	std::shared_ptr<MyData>* pData = new std::shared_ptr<MyData>(data);
+
+	// Send the message with pData as LPARAM
+	SendMessage(hwnd, WM_USER, 0, reinterpret_cast<LPARAM>(pData));
+}
+
+*/
+
 LRESULT VtProductRemainGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 {
-	VtSymbol* symbol = (VtSymbol*)lParam;
+	symbol_p* pData = reinterpret_cast<symbol_p*>(lParam);
+	symbol_p symbol = *pData;
 		
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr) {
 		return 1;

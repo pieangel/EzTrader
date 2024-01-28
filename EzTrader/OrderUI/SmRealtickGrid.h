@@ -6,6 +6,17 @@
 #include <functional>
 #include "../VtDefine.h"
 #include <memory>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 struct VtQuote;
 class VtOrderConfigManager;
 class VtSymbol;
@@ -21,7 +32,7 @@ public:
 	void UnregisterAllCallback();
 
 	void RegisterQuoteCallback();
-	void OnQuoteEvent(VtSymbol* symbol);
+	void OnQuoteEvent(symbol_p symbol);
 
 	void Init();
 
@@ -31,7 +42,7 @@ public:
 	int _RowCount = 20;
 	CFont _defFont;
 	CFont _titleFont;
-	void OnReceiveQuote(VtSymbol* sym);
+	void OnReceiveQuote(symbol_p sym);
 	void SetOrderConfigMgr(VtOrderConfigManager* val);
 	void ClearText();
 	int MaxRow() const { return _RowCount; }
@@ -40,14 +51,14 @@ public:
 	SmOrderPanelOut* CenterWnd() const { return _CenterWnd; }
 	void CenterWnd(SmOrderPanelOut* val) { _CenterWnd = val; }
 	int GetGridWidth();
-	VtSymbol* Symbol() const { return _Symbol; }
-	void Symbol(VtSymbol* val);
+	symbol_p Symbol() const { return _Symbol; }
+	void Symbol(symbol_p val);
 public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 private:
-	VtSymbol* _Symbol = nullptr;
+	symbol_p _Symbol = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	int GetMaxRow();
 	int _CellHeight;

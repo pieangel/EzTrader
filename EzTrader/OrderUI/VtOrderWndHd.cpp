@@ -29,6 +29,10 @@
 //#include "../Format/format.h"
 //using Poco::Delegate;
 #include "../Global/SmTotalManager.h"
+#include "../Fund/SmFundManager.h"
+#include "../Fund/SmFund.h"
+#include "../Account/SmAccountManager.h"
+#include "../Account/SmAccount.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -108,14 +112,14 @@ void VtOrderWndHd::DoDataExchange(CDataExchange* pDX)
 }
 
 
-void VtOrderWndHd::RegisterRealtimeAccount(VtAccount* acnt)
+void VtOrderWndHd::RegisterRealtimeAccount(account_p acnt)
 {
 	if (!acnt)
 		return;
 	//mainApp.RealtimeRegisterMgr().RegisterAccount(acnt->AccountNo);
 }
 
-void VtOrderWndHd::UnregisterRealtimeAccount(VtAccount* acnt)
+void VtOrderWndHd::UnregisterRealtimeAccount(account_p acnt)
 {
 	if (!acnt)
 		return;
@@ -447,7 +451,6 @@ void VtOrderWndHd::CreateChildWindows()
 		centerWnd->OrderConfigMgr(_OrderConfigMgr);
 		centerWnd->Create(IDD_ORDER_PANEL, this);
 		_CenterWndVector.push_back(centerWnd);
-		//_CenterWndCount = _CenterWndVector.size();
 	}
 	else { // 주문창 객체가 외부에서 만들어 질때
 		for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
@@ -515,9 +518,6 @@ void VtOrderWndHd::RemoveWindow()
 	auto it = std::prev(_CenterWndVector.end());
 	SmOrderPanel* centerWnd = *it;
 	centerWnd->BlockEvent();
-	// 	bool curCenterWnd = false;
-	// 	if (_OrderConfigMgr && centerWnd == _OrderConfigMgr->_HdCenterWnd)
-	// 		curCenterWnd = true;
 
 	centerWnd->DestroyWindow();
 	delete centerWnd;
@@ -593,7 +593,6 @@ void VtOrderWndHd::RecalcLayout(bool fixed, int maxHeight)
 
 
 		curWnd->MoveWindow(rect);
-		//curWnd->RepositionControl(maxHeight);
 		curWnd->AdjustControlForMode();
 
 
@@ -652,8 +651,6 @@ void VtOrderWndHd::ResizeWnd(int maxHeight)
 		rect.top = top;
 		rect.right = rect.left + rcTemp.Width();
 		rect.bottom = rect.top + rcTemp.Height();
-		//_LeftWnd.MoveWindow(rect);
-
 		left += rcTemp.Width();
 	}
 	else
@@ -698,7 +695,6 @@ void VtOrderWndHd::ResizeWnd(int maxHeight)
 		_RightWnd.ShowWindow(SW_HIDE);
 	}
 
-	//Invalidate(TRUE);
 	ClickedRightExtend = false;
 }
 
@@ -706,13 +702,11 @@ void VtOrderWndHd::ShowLeftWnd()
 {
 	_ShowLeftWnd = !_ShowLeftWnd;
 	if (_ShowLeftWnd) {
-		//_BtnShowLeft.SetWindowText(_T("▶"));
 		_BtnShowLeft.SetIcon(IDI_RIGHT, 16, 16, IDI_RIGHT, 16, 16);
 		_BtnShowLeft.OffsetColor(BTNST_COLOR_BK_IN, 30);
 		_BtnShowLeft.SetAlign(ST_ALIGN_VERT);
 	}
 	else {
-		//_BtnShowLeft.SetWindowText(_T("◀"));
 		_BtnShowLeft.SetIcon(IDI_LEFT, 16, 16, IDI_LEFT, 16, 16);
 		_BtnShowLeft.OffsetColor(BTNST_COLOR_BK_IN, 30);
 		_BtnShowLeft.SetAlign(ST_ALIGN_VERT);
@@ -724,13 +718,11 @@ void VtOrderWndHd::ShowRightWnd()
 {
 	_ShowRightWnd = !_ShowRightWnd;
 	if (_ShowRightWnd) {
-		//_BtnShowRight.SetWindowText(_T("◀"));
 		_BtnShowRight.SetIcon(IDI_LEFT, 16, 16, IDI_LEFT, 16, 16);
 		_BtnShowRight.OffsetColor(BTNST_COLOR_BK_IN, 30);
 		_BtnShowRight.SetAlign(ST_ALIGN_VERT);
 	}
 	else {
-		//_BtnShowRight.SetWindowText(_T("▶"));
 		_BtnShowRight.SetIcon(IDI_RIGHT, 16, 16, IDI_RIGHT, 16, 16);
 		_BtnShowRight.OffsetColor(BTNST_COLOR_BK_IN, 30);
 		_BtnShowRight.SetAlign(ST_ALIGN_VERT);
@@ -738,7 +730,7 @@ void VtOrderWndHd::ShowRightWnd()
 	RefreshLayout(true, false);
 }
 
-VtFund* VtOrderWndHd::GetCurrentFund()
+fund_p VtOrderWndHd::GetCurrentFund()
 {
 	if (!_OrderConfigMgr)
 		return nullptr;
@@ -906,7 +898,7 @@ void VtOrderWndHd::OnFundAdded()
 		_ComboAcnt.GetLBText(selAcnt, str1);
 		/*
 		_StaticAcnt.SetWindowText(_T("펀드"));
-		std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
+		std::map<std::string, fund_p>& fundList = mainApp.FundMgr().GetFundList();
 		if (fundList.size() == 0)
 		{
 			_ComboAcnt.ResetContent();
@@ -916,7 +908,7 @@ void VtOrderWndHd::OnFundAdded()
 		_ComboAcnt.ResetContent();
 		for (auto it = fundList.begin(); it != fundList.end(); ++it)
 		{
-			VtFund* fund = it->second;
+			fund_p fund = it->second;
 			int index = _ComboAcnt.AddString(fund->Name.c_str());
 			_ComboAcnt.SetItemDataPtr(index, fund);
 		}
@@ -933,7 +925,7 @@ void VtOrderWndHd::OnFundAdded()
 			selIndex = index;
 		}
 
-		VtFund* fund = (VtFund*)_ComboAcnt.GetItemDataPtr(selIndex);
+		fund_p fund = (fund_p)_ComboAcnt.GetItemDataPtr(selIndex);
 		_OrderConfigMgr->Fund(fund);
 		if (_OrderConfigMgr->Fund())
 		{
@@ -949,7 +941,7 @@ void VtOrderWndHd::OnFundAdded()
 	}
 }
 
-void VtOrderWndHd::OnFundDeleted(VtFund* delFund)
+void VtOrderWndHd::OnFundDeleted(fund_p delFund)
 {
 	if (_OrderConfigMgr->Type() == 0 || !delFund)
 		return;
@@ -961,7 +953,7 @@ void VtOrderWndHd::OnFundDeleted(VtFund* delFund)
 		_ComboAcnt.GetLBText(selAcnt, str1);
 		/*
 		_StaticAcnt.SetWindowText(_T("펀드"));
-		std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
+		std::map<std::string, fund_p>& fundList = mainApp.FundMgr().GetFundList();
 		if (fundList.size() == 0)
 		{
 			_ComboAcnt.ResetContent();
@@ -971,7 +963,7 @@ void VtOrderWndHd::OnFundDeleted(VtFund* delFund)
 		_ComboAcnt.ResetContent();
 		for (auto it = fundList.begin(); it != fundList.end(); ++it)
 		{
-			VtFund* fund = it->second;
+			fund_p fund = it->second;
 			int index = _ComboAcnt.AddString(fund->Name.c_str());
 			_ComboAcnt.SetItemDataPtr(index, fund);
 		}
@@ -988,7 +980,7 @@ void VtOrderWndHd::OnFundDeleted(VtFund* delFund)
 			selIndex = index;
 		}
 
-		VtFund* fund = (VtFund*)_ComboAcnt.GetItemDataPtr(selIndex);
+		fund_p fund = (fund_p)_ComboAcnt.GetItemDataPtr(selIndex);
 		_OrderConfigMgr->Fund(fund);
 		if (_OrderConfigMgr->Fund())
 		{
@@ -1011,39 +1003,47 @@ bool VtOrderWndHd::InitFund()
 
 	_ComboAcnt.ResetContent();
 
-	/*
+	const std::map<std::string, fund_p>& fund_map = mainApp.FundMgr()->GetFundMap();
+
+	for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
+		auto fund = it->second;
+		std::string account_info;
+		
+	}
+
+	
 	_StaticAcnt.SetWindowText(_T("펀드"));
-	std::map<std::string, VtFund*>& fundList = mainApp.FundMgr().GetFundList();
-	if (fundList.size() == 0) {
+	if (fund_map.size() == 0) {
 		_ComboAcnt.ResetContent();
 		_OrderConfigMgr->Fund(nullptr);
 		return false;
 	}
 	// 콤보 박스에 펀드 추가
 	int selIndex = -1;
-	for (auto it = fundList.begin(); it != fundList.end(); ++it) {
-		VtFund* fund = it->second;
-		int index = _ComboAcnt.AddString(fund->Name.c_str());
-		if (_DefaultFundName.compare(fund->Name) == 0) { // 정해진 펀드가 있으면 선택
+	for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
+		fund_p fund = it->second;
+		int index = _ComboAcnt.AddString(fund->Name().c_str());
+		if (_DefaultFundName.compare(fund->Name()) == 0) { // 정해진 펀드가 있으면 선택
 			selIndex = index;
 			_OrderConfigMgr->Fund(fund);
 		}
-		_ComboAcnt.SetItemDataPtr(index, fund);
+		//_ComboAcnt.SetItemDataPtr(index, fund.get());
+		AddItemToComboBox(_ComboAcnt, fund);
 	}
 
 	if (selIndex == -1) { // 정해진 펀드가 없을 때 맨처음 펀드 선택
-		VtFund* fund = fundList.begin()->second;
+		fund_p fund = fund_map.begin()->second;
 		selIndex = 0;
 		_OrderConfigMgr->Fund(fund);
 	}
 	// 찾은 펀드 선택
 	_ComboAcnt.SetCurSel(selIndex);
 	if (_OrderConfigMgr->Fund()) {
-		_StaticAcntName.SetWindowText(_OrderConfigMgr->Fund()->Name.c_str());
+		_StaticAcntName.SetWindowText(_OrderConfigMgr->Fund()->Name().c_str());
 		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
 		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
 	}
-	*/
+	
 	return true;
 }
 
@@ -1053,61 +1053,78 @@ void VtOrderWndHd::InitAccount()
 		return;
 
 	_StaticAcnt.SetWindowText(_T("계좌"));
-	std::map<std::string, std::pair<int, VtAccount*>> comboMap;
+	//std::map<std::string, std::pair<int, account_p>> comboMap;
 
 	// 먼저 기존 계좌를 지워준다.
 	_ComboAcnt.ResetContent();
-	/*
+	
 	int selAcnt = -1, index = 0;
-	std::string acntName;
-	for (auto it = mainApp.AcntMgr().AccountMap.begin(); it != mainApp.AcntMgr().AccountMap.end(); ++it) {
-		VtAccount* acnt = it->second;
-		acntName = acnt->AccountNo;
-		acntName.append(_T(" "));
-		acntName.append(acnt->AccountName);
-		index = _ComboAcnt.AddString(acntName.c_str());
-		comboMap[acnt->AccountNo] = std::make_pair(index, acnt);
-		_ComboAcnt.SetItemDataPtr(index, acnt);
-		if (acnt->AccountLevel() == 0) {
-			std::vector<VtAccount*>& subAcntList = acnt->GetSubAccountList();
-			for (auto it = subAcntList.begin(); it != subAcntList.end(); ++it) {
-				VtAccount* subAcnt = *it;
-				acntName = subAcnt->AccountNo;
-				acntName.append(_T(" "));
-				acntName.append(subAcnt->AccountName);
-				index = _ComboAcnt.AddString(acntName.c_str());
-				comboMap[subAcnt->AccountNo] = std::make_pair(index, subAcnt);
-				_ComboAcnt.SetItemDataPtr(index, subAcnt);
+	std::vector<account_p> main_account_vector;
+	mainApp.AcntMgr()->get_main_account_vector("9", main_account_vector);
 
-			}
+	std::string acntName;
+	for (auto it = main_account_vector.begin(); it != main_account_vector.end(); ++it) {
+		account_p acnt = *it;
+		acntName = acnt->No();
+		acntName.append(_T(" "));
+		acntName.append(acnt->Name());
+		index = _ComboAcnt.AddString(acntName.c_str());
+		//comboMap[acnt->No()] = std::make_pair(index, acnt);
+		AddItemToComboBox(_ComboAcnt, acnt);
+		//_ComboAcnt.SetItemDataPtr(index, acnt.get());
+		const std::vector<account_p>& sub_account_vector = acnt->get_sub_accounts();
+		for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); it++) {
+			auto sub_account = *it;
+			acntName = sub_account->No();
+			acntName.append(_T(" "));
+			acntName.append(sub_account->Name());
+			index = _ComboAcnt.AddString(acntName.c_str());
+			//comboMap[sub_account->No()] = std::make_pair(index, sub_account);
+			AddItemToComboBox(_ComboAcnt, acnt);
+			//_ComboAcnt.SetItemDataPtr(index, sub_account.get());
 		}
 	}
 
-	if (comboMap.size() == 0)
+	if (combo_account_vector.size() == 0)
 		return;
-	auto it = comboMap.find(_DefaultAccountNo);
-	if (it != comboMap.end()) {
-		selAcnt = it->second.first;
-		_OrderConfigMgr->Account(it->second.second);
+	//auto it = combo_account_vector.find(_DefaultAccountNo);
+
+	std::string searchAccountNo = _DefaultAccountNo;
+
+	// Use std::find_if with a lambda function to find the account
+	auto it = std::find_if(combo_account_vector.begin(), combo_account_vector.end(),
+		[&searchAccountNo](const account_p& account) {
+			return account->No() == searchAccountNo;
+		});
+	index = 0;
+	if (it != combo_account_vector.end()) {
+		index = std::distance(combo_account_vector.begin(), it);
+	}
+
+	if (it != combo_account_vector.end()) {
+		_ComboAcnt.SetCurSel(index);
 	}
 	else {
-		selAcnt = 0;
-		VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(selAcnt);
+		_ComboAcnt.SetCurSel(0);
+		account_p acnt = GetSelectedAccountPtr(_ComboAcnt);
 		_OrderConfigMgr->Account(acnt);
 	}
-	_ComboAcnt.SetCurSel(selAcnt);
+	
+	account_p acnt = GetSelectedAccountPtr(_ComboAcnt);
+	_OrderConfigMgr->Account(acnt);
+
 	if (_OrderConfigMgr->Account()) {
-		_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->AccountName.c_str());
+		_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->Name().c_str());
 		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
 		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
 		CString pwd;
-		pwd.Format(_T("%s"), _OrderConfigMgr->Account()->Password.c_str());
+		pwd.Format(_T("%s"), _OrderConfigMgr->Account()->Pwd().c_str());
 		_EditPwd.SetWindowText(pwd);
 	}
-	*/
+	
 }
 
-void VtOrderWndHd::OnReceiveHoga(VtSymbol* sym)
+void VtOrderWndHd::OnReceiveHoga(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -1117,7 +1134,7 @@ void VtOrderWndHd::OnReceiveHoga(VtSymbol* sym)
 	//}
 }
 
-void VtOrderWndHd::OnReceiveQuote(VtSymbol* sym)
+void VtOrderWndHd::OnReceiveQuote(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -1125,7 +1142,7 @@ void VtOrderWndHd::OnReceiveQuote(VtSymbol* sym)
 	_LeftWnd.OnReceiveQuote(sym);
 }
 
-void VtOrderWndHd::OnExpected(VtSymbol* sym)
+void VtOrderWndHd::OnExpected(symbol_p sym)
 {
 	_LeftWnd.OnExpected(sym);
 }
@@ -1158,13 +1175,13 @@ void VtOrderWndHd::GetOptionSymbolMaster()
 // 		if (section && section->SubSectionVector.size() == 2) {
 // 			VtProductSubSection* subSec = section->SubSectionVector[0];
 // 			for (auto its = subSec->_SymbolVector.begin(); its != subSec->_SymbolVector.end(); ++its) {
-// 				VtSymbol* sym = *its;
+// 				symbol_p sym = *its;
 // 				sym->GetSymbolMaster();
 // 			}
 // 
 // 			subSec = section->SubSectionVector[1];
 // 			for (auto its = subSec->_SymbolVector.begin(); its != subSec->_SymbolVector.end(); ++its) {
-// 				VtSymbol* sym = *its;
+// 				symbol_p sym = *its;
 // 				sym->GetSymbolMaster();
 // 			}
 // 		}
@@ -1345,9 +1362,7 @@ void VtOrderWndHd::ReposChildWindowsForward()
 		CRect& rect = std::get<2>(item);
 		if (std::get<1>(item) && wnd->GetSafeHwnd()) {
 			wnd->ShowWindow(SW_SHOW);
-			//wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
 			wnd->MoveWindow(rect, TRUE);
-			//wnd->Invalidate(FALSE);
 		}
 		else {
 			if (wnd->GetSafeHwnd())
@@ -1364,7 +1379,6 @@ void VtOrderWndHd::ReposChildWindowsBackward()
 		CRect& rect = std::get<2>(item);
 		if (std::get<1>(item)) {
 			wnd->ShowWindow(SW_SHOW);
-			//wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
 			wnd->MoveWindow(rect, FALSE);
 			wnd->RedrawWindow();
 		}
@@ -1381,7 +1395,7 @@ void VtOrderWndHd::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }
 
-void VtOrderWndHd::OnSymbolMaster(VtSymbol* sym)
+void VtOrderWndHd::OnSymbolMaster(symbol_p sym)
 {
 	_LeftWnd.OnSymbolMaster(sym);
 }
@@ -1406,7 +1420,7 @@ void VtOrderWndHd::OnOrderFilled(VtOrder* order)
 	_LeftWnd.OnOrderFilled(order);
 }
 
-void VtOrderWndHd::ChangeAccount(VtAccount* acnt)
+void VtOrderWndHd::ChangeAccount(account_p acnt)
 {
 
 }
@@ -1434,32 +1448,32 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 			UnregisterRealtimeAccount(_Account);
 		int curSel = _ComboAcnt.GetCurSel();
 		if (curSel != -1) {
-			VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(curSel);
+			account_p acnt = GetSelectedAccountPtr(_ComboAcnt);
 			if (!acnt)
 				return;
-			/*
+			
 			// 주문 설정 객체 계좌 설정
 			_OrderConfigMgr->Account(acnt);
-			_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->AccountName.c_str());
+			_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->Name().c_str());
 
 			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 				SmOrderPanel* centerWnd = *it;
 				centerWnd->ChangeAccount(_OrderConfigMgr->Account());
 			}
-			if (acnt->AccountLevel() == 0 && acnt->hasValidPassword()) {
+			if (!acnt->is_subaccount() && !acnt->Pwd().empty()) {
 				// Register the new account to the Event Map.
 				RegisterRealtimeAccount(acnt);
-				acnt->GetAccountInfoNFee(1);
+				//acnt->GetAccountInfoNFee(1);
 			}
-			*/
+			
 		}
 	}
 	else {
 		if (_OrderConfigMgr->Fund()) {
 			/*
-			std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
+			std::set<account_p> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
 			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
-				VtAccount* acnt = *it;
+				account_p acnt = *it;
 				UnregisterRealtimeAccount(acnt);
 			}
 			*/
@@ -1467,25 +1481,25 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 		}
 		int curSel = _ComboAcnt.GetCurSel();
 		if (curSel != -1) {
-			VtFund* fund = (VtFund*)_ComboAcnt.GetItemDataPtr(curSel);
+			fund_p fund = GetSelectedFundPtr(_ComboAcnt);
 			if (!fund)
 				return;
-			/*
+			
 			// 주문 설정 객체 계좌 설정
 			_OrderConfigMgr->Fund(fund);
-			_StaticAcntName.SetWindowText(_OrderConfigMgr->Fund()->Name.c_str());
+			_StaticAcntName.SetWindowText(_OrderConfigMgr->Fund()->Name().c_str());
 
 			// Register the new account to the Event Map.
-			std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
+			std::vector<account_p> parendAcntSet = _OrderConfigMgr->Fund()->GetAccountVector();
 			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
-				VtAccount* parentAcnt = *it;
+				account_p parentAcnt = *it;
 				RegisterRealtimeAccount(parentAcnt);
 			}
 			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 				SmOrderPanel* centerWnd = *it;
 				centerWnd->ChangeFund(_OrderConfigMgr->Fund());
 			}
-			*/
+			
 		}
 	}
 
@@ -1508,12 +1522,12 @@ void VtOrderWndHd::OnBnClickedBtnGetAcntInfo()
 	int curSel = _ComboAcnt.GetCurSel();
 	if (curSel != -1)
 	{
-		/*
-		VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(curSel);
-		if (acnt && acnt->AccountLevel() == 0 && acnt->hasValidPassword())
-			acnt->GetAccountProfitLossDirect();
-		*/
-		int i = 0;
+		
+		account_p acnt = GetSelectedAccountPtr(_ComboAcnt);
+		if (acnt && !acnt->is_subaccount() && !acnt->Pwd().empty())
+			//acnt->GetAccountProfitLossDirect();
+		
+			int i = 0;
 	}
 }
 
@@ -1562,7 +1576,7 @@ void VtOrderWndHd::OnSysCommand(UINT nID, LPARAM lParam)
 	CDialog::OnSysCommand(nID, lParam);
 }
 
-void VtOrderWndHd::SetAccount(VtAccount* acnt)
+void VtOrderWndHd::SetAccount(account_p acnt)
 {
 	if (!acnt || !_OrderConfigMgr)
 		return;
@@ -1572,7 +1586,7 @@ void VtOrderWndHd::SetAccount(VtAccount* acnt)
 	//_OrderConfigMgr->OrderMgr(_OrderMgr);
 }
 
-void VtOrderWndHd::SetFund(VtFund* fund)
+void VtOrderWndHd::SetFund(fund_p fund)
 {
 	if (!fund || !_OrderConfigMgr)
 		return;

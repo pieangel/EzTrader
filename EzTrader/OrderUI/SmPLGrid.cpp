@@ -143,7 +143,7 @@ void SmPLGrid::OnOutstanding()
 	InitGrid();
 }
 
-void SmPLGrid::OnReceiveQuote(VtSymbol* sym)
+void SmPLGrid::OnReceiveQuote(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -165,7 +165,7 @@ LRESULT SmPLGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 
 void SmPLGrid::ShowAccountProfitLoss()
 {
-	VtAccount* acnt = _OrderConfigMgr->Account();
+	account_p acnt = _OrderConfigMgr->Account();
 
 	if (!acnt)
 		return;
@@ -226,7 +226,7 @@ void SmPLGrid::ShowAccountProfitLoss()
 
 void SmPLGrid::ShowFundProfitLoss()
 {
-	VtFund* fund = _OrderConfigMgr->Fund();
+	fund_p fund = _OrderConfigMgr->Fund();
 	if (!fund)
 		return;
 	/*

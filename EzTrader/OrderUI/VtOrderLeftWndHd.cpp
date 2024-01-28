@@ -150,7 +150,7 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void VtOrderLeftWndHd::OnReceiveQuote(VtSymbol* sym)
+void VtOrderLeftWndHd::OnReceiveQuote(symbol_p sym)
 {
 	_SymbolFutureGrid.OnReceiveQuote(sym);
 	_SymbolOptionGrid.OnReceiveQuote(sym);
@@ -162,7 +162,7 @@ void VtOrderLeftWndHd::OnOutstanding()
 	_ProfitLossGrid.OnOutstanding();
 }
 
-void VtOrderLeftWndHd::OnExpected(VtSymbol* sym)
+void VtOrderLeftWndHd::OnExpected(symbol_p sym)
 {
 	_SymbolFutureGrid.OnExpected(sym);
 	_SymbolOptionGrid.OnExpected(sym);
@@ -269,7 +269,7 @@ LRESULT VtOrderLeftWndHd::OnAccountChangedMessage(WPARAM wParam, LPARAM lParam)
 	return 1;
 }
 
-void VtOrderLeftWndHd::OnSymbolMaster(VtSymbol* sym)
+void VtOrderLeftWndHd::OnSymbolMaster(symbol_p sym)
 {
 	if (_Mode != 1)
 		return;

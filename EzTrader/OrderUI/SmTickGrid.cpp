@@ -42,7 +42,7 @@ void SmTickGrid::RegisterQuoteCallback()
 	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
-void SmTickGrid::OnQuoteEvent(VtSymbol* sym)
+void SmTickGrid::OnQuoteEvent(symbol_p sym)
 {
 	if (!sym || !_CenterWnd)
 		return;
@@ -148,7 +148,7 @@ void SmTickGrid::SetColTitle()
 	}
 }
 
-void SmTickGrid::OnReceiveQuote(VtSymbol* sym)
+void SmTickGrid::OnReceiveQuote(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -259,11 +259,11 @@ LRESULT SmTickGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 	if (!_CenterWnd)
 		return 1;
 
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	if (!sym)
 		return 1;
 	/*
-	VtSymbol* symbol = (VtSymbol*)lParam;
+	symbol_p symbol = (symbol_p)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
 	}
@@ -303,7 +303,7 @@ void SmTickGrid::RefreshValues()
 	if (!_CenterWnd)
 		return;
 
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	if (!sym)
 		return;
 

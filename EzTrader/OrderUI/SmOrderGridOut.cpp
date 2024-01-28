@@ -112,14 +112,14 @@ SmOrderGridOut::~SmOrderGridOut()
 	}
 }
 
-void SmOrderGridOut::OnSymbolMaster(VtSymbol* sym)
+void SmOrderGridOut::OnSymbolMaster(symbol_p sym)
 {
 	if (!sym)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
 	/*
-	VtSymbol* symbol = _CenterWnd->Symbol();
+	symbol_p symbol = _CenterWnd->Symbol();
 	if (symbol->ShortCode.compare(sym->ShortCode) != 0) {
 		return;
 	}
@@ -131,7 +131,7 @@ void SmOrderGridOut::SetAutoStopOnFilled(VtOrder* order)
 {
 	if (!order)
 		return;
-	_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
+	//_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
 }
 
 void SmOrderGridOut::UnregisterAllCallback()
@@ -153,7 +153,7 @@ void SmOrderGridOut::UnregisterQuoteCallback()
 	//mainApp.CallbackMgr().UnsubscribeQuoteCallback((long)this);
 }
 
-void SmOrderGridOut::OnQuoteEvent(VtSymbol* symbol)
+void SmOrderGridOut::OnQuoteEvent(symbol_p symbol)
 {
 	if (!_Init || !symbol)
 		return;
@@ -200,7 +200,7 @@ void SmOrderGridOut::UnregisterHogaCallback()
 	//mainApp.CallbackMgr().UnsubscribeHogaCallback((long)this);
 }
 
-void SmOrderGridOut::OnHogaEvent(VtSymbol* symbol)
+void SmOrderGridOut::OnHogaEvent(symbol_p symbol)
 {
 	if (!_Init || !symbol)
 		return;
@@ -480,7 +480,7 @@ void SmOrderGridOut::CheckProfitLossTouchHd(int intClose)
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_StopOrderMgr)
 		return;
 	/*
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(), next_it = it; it != _StopOrderMgr->StopOrderMapHd.end(); it = next_it) {
 		std::shared_ptr<HdOrderRequest> stop = it->second;
@@ -507,7 +507,7 @@ bool SmOrderGridOut::CheckStopTouchedHd(int intClose)
 		return false;
 	/*
 	std::vector<int> removeList;
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	std::map<int, std::shared_ptr<HdOrderRequest>>& profitLossMap = _CutMgr->GetStopOrderMap();
 	for (auto it = profitLossMap.begin(); it != profitLossMap.end(); ++it) {
 		std::shared_ptr<HdOrderRequest> stop = it->second;
@@ -576,7 +576,7 @@ void SmOrderGridOut::SetColTitle(bool init)
 	*/
 }
 
-void SmOrderGridOut::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGridOut::SetCenterValue(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!symbol)
 		return;
@@ -596,7 +596,7 @@ void SmOrderGridOut::SetCenterValue()
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
-	VtSymbol* symbol = _CenterWnd->Symbol();
+	symbol_p symbol = _CenterWnd->Symbol();
 	if (symbol) {
 		std::set<std::pair<int, int>> refreshSet;
 		SetCenterValue(symbol, refreshSet);
@@ -620,7 +620,7 @@ void SmOrderGridOut::SetCenterValue()
 	}
 }
 
-void SmOrderGridOut::SetCenterValueByFixed(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGridOut::SetCenterValueByFixed(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!symbol)
 		return;
@@ -651,7 +651,7 @@ void SmOrderGridOut::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
 	}
 }
 
-void SmOrderGridOut::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGridOut::SetCenterValueForFuture(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -678,7 +678,7 @@ void SmOrderGridOut::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::
 	*/
 }
 
-void SmOrderGridOut::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGridOut::SetCenterValueForOption(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -746,7 +746,7 @@ void SmOrderGridOut::SetCenterValueForOption(const VtSymbol* sym, std::set<std::
 	*/
 }
 
-void SmOrderGridOut::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGridOut::SetCenterValueByFixedForFuture(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -781,7 +781,7 @@ void SmOrderGridOut::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::se
 	*/
 }
 
-void SmOrderGridOut::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGridOut::SetCenterValueByFixedForOption(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -856,7 +856,7 @@ int SmOrderGridOut::GetMaxValueRowCount()
 }
 
 
-void SmOrderGridOut::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGridOut::SetHogaInfo(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	if (!sym)
 		return;
@@ -986,7 +986,7 @@ int SmOrderGridOut::FindRowFromCenterValue(int value)
 	}
 }
 
-int SmOrderGridOut::FindRowFromCenterValue(const VtSymbol* sym, int value)
+int SmOrderGridOut::FindRowFromCenterValue(const symbol_p sym, int value)
 {
 	if (!sym || ValueToRowMap.size() == 0)
 		return 0;
@@ -1028,7 +1028,7 @@ int SmOrderGridOut::FindRowFromCenterValue(const VtSymbol* sym, int value)
 	return 0;
 }
 
-void SmOrderGridOut::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int>>& refreshSet)
+void SmOrderGridOut::SetQuoteColor(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
 {
 	/*
 	if (!sym)
@@ -1220,7 +1220,7 @@ void SmOrderGridOut::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
 	/*
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 
 	_OrderPos.clear();
 
@@ -1559,7 +1559,7 @@ void SmOrderGridOut::PutOrder(VtPosition* posi, int price, bool liqud /*= false*
 	if (posi->OpenQty == 0)
 		return;
 
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	VtAccount* acnt = nullptr;
 	acnt = mainApp.AcntMgr().FindAccount(posi->AccountNo);
 	if (!acnt) { // 본계좌에 없을 경우 서브 계좌를 찾아 본다.
@@ -1664,7 +1664,7 @@ void SmOrderGridOut::AddOrderToCell(VtOrder* order)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	CGridCellBase* pCell = nullptr;
 	int row = FindRowFromCenterValue(sym, order->intOrderPrice);
 	if (row >= _StartRowForValue && row <= _EndRowForValue) {
@@ -1701,7 +1701,7 @@ void SmOrderGridOut::RemoveOrderFromCell(VtOrder* order)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	CGridCellBase* pCell = nullptr;
 	int row = FindRowFromCenterValue(sym, order->intOrderPrice);
 	if (row >= _StartRowForValue && row <= _EndRowForValue) {
@@ -1738,7 +1738,7 @@ void SmOrderGridOut::RefreshTotalOrderCount(VtOrder* input_order)
 		return;
 
 	/*
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 
 	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(sym->ShortCode);
 
@@ -1830,7 +1830,7 @@ void SmOrderGridOut::ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet
 	}
 }
 
-void SmOrderGridOut::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, VtSymbol* sym)
+void SmOrderGridOut::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -1909,7 +1909,7 @@ void SmOrderGridOut::LiqudAll(VtPriceType priceType, int price /*= 0*/)
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
 	/*
-	VtSymbol* sym = _CenterWnd->Symbol();
+	symbol_p sym = _CenterWnd->Symbol();
 	if (_OrderConfigMgr->Type() == 0) { // 계좌 주문일 때
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
@@ -2868,7 +2868,7 @@ int SmOrderGridOut::FindPositionRow(VtPosition* posi)
 	if (!posi || ValueToRowMap.size() == 0)
 		return -1;
 	/*
-	VtSymbol* sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
+	symbol_p sym = mainApp.SymbolMgr().FindSymbol(posi->ShortCode);
 	if (!sym)
 		return -1;
 
@@ -2911,7 +2911,7 @@ LRESULT SmOrderGridOut::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 		return 1;
 	}
 	/*
-	VtSymbol* symbol = (VtSymbol*)lParam;
+	symbol_p symbol = (symbol_p)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
 	}
@@ -2954,7 +2954,7 @@ LRESULT SmOrderGridOut::OnHogaChangedMessage(WPARAM wParam, LPARAM lParam)
 		return 1;
 	}
 	/*
-	VtSymbol* symbol = (VtSymbol*)lParam;
+	symbol_p symbol = (symbol_p)lParam;
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
 		return 1;
 	}
@@ -3081,8 +3081,8 @@ void SmOrderGridOut::ApplyProfitLossForPosition()
 	if (!_CutMgr || !_CenterWnd || !_CenterWnd->Symbol())
 		return;
 	// 모든 익절,손절 스탑 취소
-	_CutMgr->RemoveAllHd();
-	_CutMgr->MakePositionStopByRemain(_CenterWnd->Symbol());
+	//_CutMgr->RemoveAllHd();
+	//_CutMgr->MakePositionStopByRemain(_CenterWnd->Symbol());
 	std::set<std::pair<int, int>> refreshSet;
 	ClearOldOrders(refreshSet);
 	SetOrderInfo(refreshSet);

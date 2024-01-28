@@ -2,6 +2,18 @@
 #pragma once
 #include "../UGrid/VtGrid.h"
 #include <list>
+#include <memory>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 class VtOrderConfigManager;
 class CVtOrderLeftWnd;
 class VtProductAcceptedGrid : public VtGrid

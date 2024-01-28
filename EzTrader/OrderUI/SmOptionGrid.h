@@ -12,6 +12,17 @@
 #include <set>
 #include <string>
 //#include "../Symbol/SmRunInfo.h"
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
+
 class VtOrderLeftWndHd;
 class VtProductSection;
 class VtOrderConfigManager;
@@ -29,9 +40,9 @@ public:
 	void RegisterQuoteCallback();
 	void RegisterOrderCallback();
 
-	void OnMasterEvent(VtSymbol* sym);
+	void OnMasterEvent(symbol_p sym);
 	void OnOrderEvent(VtOrder* order);
-	void OnQuoteEvent(VtSymbol* sym);
+	void OnQuoteEvent(symbol_p sym);
 
 	// 콜백 함수 취소
 	void UnregisterAllCallback();
@@ -55,7 +66,7 @@ public:
 	CFont _titleFont;
 	CPen m_Pen;
 public:
-	VtSymbol* _EqualSymbol = nullptr;
+	symbol_p _EqualSymbol = nullptr;
 	void InitGrid();
 	void InitSymbol();
 	void InitYearMonth();
@@ -87,13 +98,13 @@ private:
 	void SetEqualRow(int equalRow);
 	int GetMaxRow();
 
-	std::map<std::string, std::tuple<int, int, VtSymbol*>> _SymbolRowMap;
+	std::map<std::string, std::tuple<int, int, symbol_p>> _SymbolRowMap;
 	void MakeSymbolRowMap(int start_index, int max_row);
 public:
-	void OnSymbolMaster(VtSymbol* sym);
+	void OnSymbolMaster(symbol_p sym);
 	void OnOrderFilled(VtOrder* order);
-	void OnReceiveQuote(VtSymbol* sym);
-	void OnExpected(VtSymbol* sym);
+	void OnReceiveQuote(symbol_p sym);
+	void OnExpected(symbol_p sym);
 	std::pair<int, int> FindValueStartRow(int height);
 private:
 	void ClearAllText();
@@ -106,11 +117,11 @@ private:
 	std::set<std::pair<int, int>> _RemainPos;
 	void ResetRemainCells();
 	void ShowPosition(bool init, int acptCnt, VtPosition* posi, std::string symCode);
-	void ShowCurrent(VtSymbol* sym);
-	void ShowExpected(VtSymbol* sym);
-	void ShowExpected(int row, int col, VtSymbol* sym);
-	void ShowCurrent(int row, int col, VtSymbol* sym);
-	void SetRemain(VtSymbol* sym);
+	void ShowCurrent(symbol_p sym);
+	void ShowExpected(symbol_p sym);
+	void ShowExpected(int row, int col, symbol_p sym);
+	void ShowCurrent(int row, int col, symbol_p sym);
+	void SetRemain(symbol_p sym);
 	void QuickSetBackColor(int row, int col, COLORREF color);
 	void QuickSetText(int row, int col, LPCTSTR text);
 	void QuickSetNumber(int row, int col, int number);

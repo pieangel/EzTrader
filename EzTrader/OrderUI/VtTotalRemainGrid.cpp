@@ -180,7 +180,7 @@ void VtTotalRemainGrid::OnReceiveAccountInfo()
 
 void VtTotalRemainGrid::ShowAccountProfitLoss()
 {
-	VtAccount* acnt = _OrderConfigMgr->Account();
+	account_p acnt = _OrderConfigMgr->Account();
 
 	if (!acnt)
 		return;
@@ -250,7 +250,7 @@ void VtTotalRemainGrid::ShowAccountProfitLoss()
 
 void VtTotalRemainGrid::ShowFundProfitLoss()
 {
-	VtFund* fund = _OrderConfigMgr->Fund();
+	fund_p fund = _OrderConfigMgr->Fund();
 	if (!fund)
 		return;
 	/*

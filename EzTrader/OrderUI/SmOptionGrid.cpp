@@ -66,7 +66,7 @@ void SmOptionGrid::RegisterOrderCallback()
 	//mainApp.CallbackMgr().SubscribeOrderCallback((long)this, std::bind(&SmOptionGrid::OnOrderEvent, this, _1));
 }
 
-void SmOptionGrid::OnMasterEvent(VtSymbol* sym)
+void SmOptionGrid::OnMasterEvent(symbol_p sym)
 {
 	if (_Mode == 0) {
 		SetRemain(sym);
@@ -110,7 +110,7 @@ void SmOptionGrid::OnOrderEvent(VtOrder* order)
 			}
 		}
 		else { // 나머지 주문 이벤트 
-			VtSymbol* symbol = mainApp.SymbolMgr().FindSymbol(order->shortCode);
+			symbol_p symbol = mainApp.SymbolMgr().FindSymbol(order->shortCode);
 			if (symbol) {
 				SetRemain(symbol);
 			}
@@ -131,7 +131,7 @@ void SmOptionGrid::OnOrderEvent(VtOrder* order)
 	}
 }
 
-void SmOptionGrid::OnQuoteEvent(VtSymbol* sym)
+void SmOptionGrid::OnQuoteEvent(symbol_p sym)
 {
 	if (_Mode == 0) {
 		SetRemain(sym);
@@ -209,7 +209,7 @@ void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pCell = GetCell(cell.row, cell.col);
 	/*
-	VtSymbol* sym = (VtSymbol*)pCell->GetData();
+	symbol_p sym = (symbol_p)pCell->GetData();
 	if (sym) {
 		sym->GetSymbolMaster();
 		if (_OrderConfigMgr->_HdCenterWnd) {
@@ -257,7 +257,8 @@ BOOL SmOptionGrid::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 LRESULT SmOptionGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 {
-	VtSymbol* symbol = (VtSymbol*)lParam;
+	symbol_p* pData = reinterpret_cast<symbol_p*>(lParam);
+	symbol_p symbol = *pData;
 	
 	if (_Mode == 0) {
 		SetRemain(symbol);
@@ -427,8 +428,8 @@ void SmOptionGrid::GetSymbolMaster()
 		return;
 	
 	if (call_year_month && put_year_month) {
-		std::vector<VtSymbol*> call_symbol_list = call_year_month->SymbolList();
-		std::vector<VtSymbol*> put_symbol_list = put_year_month->SymbolList();
+		std::vector<symbol_p> call_symbol_list = call_year_month->SymbolList();
+		std::vector<symbol_p> put_symbol_list = put_year_month->SymbolList();
 		size_t startIndex = 0;
 		size_t endIndex = call_symbol_list.size() - 1;
 		int addNum = 0;
@@ -446,7 +447,7 @@ void SmOptionGrid::GetSymbolMaster()
 				downRange = true;
 
 			if (curIndex >= startIndex && curIndex <= endIndex) {
-				VtSymbol* sym =nullptr;
+				symbol_p sym =nullptr;
 				if (curIndex < call_symbol_list.size()) {
 					sym = call_symbol_list[curIndex];
 					if (sym->Quote.intClose == 0) {
@@ -510,9 +511,9 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 
 	SmProductYearMonth* year_month = product->GetYearMonth((LPCTSTR)curYearMon);
 	if (year_month) {
-		std::vector<VtSymbol*> symbol_list = year_month->SymbolList();
+		std::vector<symbol_p> symbol_list = year_month->SymbolList();
 		for (size_t i = 0; i < symbol_list.size(); ++i) {
-			VtSymbol* sym = symbol_list[i];
+			symbol_p sym = symbol_list[i];
 			// 코스닥은 실제값과 표시값이 다르다.
 			if (product->Code().compare("206") == 0) {
 				if (sym->Name.length() > 0) {
@@ -692,7 +693,7 @@ void SmOptionGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::s
 	}
 }
 
-void SmOptionGrid::ShowExpected(VtSymbol* sym)
+void SmOptionGrid::ShowExpected(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -706,7 +707,7 @@ void SmOptionGrid::ShowExpected(VtSymbol* sym)
 	*/
 }
 
-void SmOptionGrid::ShowExpected(int row, int col, VtSymbol* sym)
+void SmOptionGrid::ShowExpected(int row, int col, symbol_p sym)
 {
 	CGridCellBase* pCell = GetCell(row, col);
 	/*
@@ -721,7 +722,7 @@ void SmOptionGrid::ShowExpected(int row, int col, VtSymbol* sym)
 	*/
 }
 
-void SmOptionGrid::ShowCurrent(VtSymbol* sym)
+void SmOptionGrid::ShowCurrent(symbol_p sym)
 {
 	if (!sym)
 		return;
@@ -735,7 +736,7 @@ void SmOptionGrid::ShowCurrent(VtSymbol* sym)
 	*/
 }
 
-void SmOptionGrid::ShowCurrent(int row, int col, VtSymbol* sym)
+void SmOptionGrid::ShowCurrent(int row, int col, symbol_p sym)
 {
 	CGridCellBase* pCell = GetCell(row, col);
 	/*
@@ -823,7 +824,7 @@ void SmOptionGrid::SetRemain(VtOrder* order)
 	*/
 }
 
-void SmOptionGrid::SetRemain(VtSymbol* sym)
+void SmOptionGrid::SetRemain(symbol_p sym)
 {
 	if (!sym || !_OrderConfigMgr)
 		return;
@@ -865,7 +866,7 @@ void SmOptionGrid::SetRemain2()
 	/*
 	for (auto it = _SymbolRowMap.begin(); it != _SymbolRowMap.end(); ++it) {
 		auto pos = it->second;
-		VtSymbol* sym = std::get<2>(pos);
+		symbol_p sym = std::get<2>(pos);
 
 		if (_OrderConfigMgr->Type() == 0) {
 			VtAccount* acnt = _OrderConfigMgr->Account();
@@ -906,7 +907,7 @@ void SmOptionGrid::SetCurrent2()
 
 	for (auto it = _SymbolRowMap.begin(); it != _SymbolRowMap.end(); ++it) {
 		auto pos = it->second;
-		VtSymbol* sym = std::get<2>(pos);
+		symbol_p sym = std::get<2>(pos);
 		ShowCurrent(sym);
 	}
 }
@@ -1010,13 +1011,13 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 	int delta = 0;
 	int minVal = 1000000;
 	if (call_year_month) {
-		std::vector<VtSymbol*> call_symbol_list = call_year_month->SymbolList();
+		std::vector<symbol_p> call_symbol_list = call_year_month->SymbolList();
 		// 콜과 풋의 심볼을 순회한다.
 		for (size_t i = start_index, j = 1; i < call_symbol_list.size(); ++i, ++j) {
 			// 행의 끝에 도달하면 탈출한다.
 			if (i < 0 || j >= _MaxRow)
 				break;
-			VtSymbol* call_sym = call_symbol_list[i];
+			symbol_p call_sym = call_symbol_list[i];
 			_SymbolRowMap[call_sym->ShortCode] = std::make_tuple(j, 0, call_sym);
 			// 여기서 종목 실시간 시세 등록을 해준다.
 			mainApp.RealtimeRegisterMgr().RegisterProduct(call_sym->ShortCode, 1);
@@ -1064,13 +1065,13 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 	}
 
 	if (put_year_month) {
-		std::vector<VtSymbol*> put_symbol_list = put_year_month->SymbolList();
+		std::vector<symbol_p> put_symbol_list = put_year_month->SymbolList();
 		// 콜과 풋의 심볼을 순회한다.
 		for (size_t i = start_index, j = 1; i < put_symbol_list.size(); ++i, ++j) {
 			// 행의 끝에 도달하면 탈출한다.
 			if (i < 0 || j >= _MaxRow)
 				break;
-			VtSymbol* put_sym = put_symbol_list[i];
+			symbol_p put_sym = put_symbol_list[i];
 			_SymbolRowMap[put_sym->ShortCode] = std::make_tuple(j, 2, put_sym);
 			// 여기서 종목 실시간 시세 등록을 해준다.
 			mainApp.RealtimeRegisterMgr().RegisterProduct(put_sym->ShortCode, 1);
@@ -1087,7 +1088,7 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 	*/
 }
 
-void SmOptionGrid::OnSymbolMaster(VtSymbol* sym)
+void SmOptionGrid::OnSymbolMaster(symbol_p sym)
 {
 	ShowCurrent(sym);
 }
@@ -1117,7 +1118,7 @@ void SmOptionGrid::OnOrderFilled(VtOrder* order)
 	*/
 }
 
-void SmOptionGrid::OnReceiveQuote(VtSymbol* sym)
+void SmOptionGrid::OnReceiveQuote(symbol_p sym)
 {
 	if (_Mode == 0) {
 		SetRemain(sym);
@@ -1127,7 +1128,7 @@ void SmOptionGrid::OnReceiveQuote(VtSymbol* sym)
 	}
 }
 
-void SmOptionGrid::OnExpected(VtSymbol* sym)
+void SmOptionGrid::OnExpected(symbol_p sym)
 {
 	if (_Mode == 0) {
 		SetRemain(sym);

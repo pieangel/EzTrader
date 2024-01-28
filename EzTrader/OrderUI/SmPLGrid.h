@@ -10,6 +10,16 @@
 #include <tuple>
 #include <set>
 #include <string>
+
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+}
+
+using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
+using account_p = std::shared_ptr<DarkHorse::SmAccount>;
+using fund_p = std::shared_ptr<DarkHorse::SmFund>;
 class VtOrderConfigManager;
 class VtSymbol;
 
@@ -33,7 +43,7 @@ public:
 
 	void InitGrid();
 	void OnOutstanding();
-	void OnReceiveQuote(VtSymbol* sym);
+	void OnReceiveQuote(symbol_p sym);
 	void OnReceiveAccountInfo();
 	DECLARE_MESSAGE_MAP()
 	afx_msg LRESULT OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam);
