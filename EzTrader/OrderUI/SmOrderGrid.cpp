@@ -118,12 +118,12 @@ void SmOrderGrid::OnSymbolMaster(symbol_p sym)
 		return;
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
-	/*
+	
 	symbol_p symbol = _CenterWnd->Symbol();
-	if (symbol->ShortCode.compare(sym->ShortCode) != 0) {
+	if (symbol->SymbolCode().compare(sym->SymbolCode()) != 0) {
 		return;
 	}
-	*/
+	
 
 	ResetByCenterRow();
 }
@@ -821,8 +821,8 @@ void SmOrderGrid::SetCenterValue(const symbol_p symbol, std::set<std::pair<int, 
 {
 	if (!symbol)
 		return;
-	/*
-	std::string code = symbol->ShortCode.substr(0, 1);
+	
+	std::string code = symbol->SymbolCode().substr(0, 1);
 	if ((code.compare(_T("2")) == 0) || (code.compare(_T("3")) == 0)) {
 		SetCenterValueForOption(symbol, refreshSet);
 	}
@@ -830,15 +830,13 @@ void SmOrderGrid::SetCenterValue(const symbol_p symbol, std::set<std::pair<int, 
 	{
 		SetCenterValueForFuture(symbol, refreshSet);
 	}
-	*/
+	
 }
 
 void SmOrderGrid::SetCenterValue()
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
-	/*
-	try {
 	symbol_p symbol = _CenterWnd->Symbol();
 	if (symbol) {
 		std::set<std::pair<int, int>> refreshSet;
@@ -851,7 +849,7 @@ void SmOrderGrid::SetCenterValue()
 
 		ClearOldOrders(refreshSet);
 		SetOrderInfo(refreshSet);
-		
+
 		ClearOldStopOrders(refreshSet);
 		SetStopOrderInfo(refreshSet);
 		CalcPosStopOrders(refreshSet);
@@ -861,15 +859,6 @@ void SmOrderGrid::SetCenterValue()
 
 		RefreshCells(refreshSet);
 	}
-
-	}
-	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
-	}
-	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
-	}
-	*/
 }
 
 void SmOrderGrid::SetCenterValueByFixed(const symbol_p symbol, std::set<std::pair<int, int>>& refreshSet)
@@ -889,8 +878,6 @@ void SmOrderGrid::SetCenterValueByFixed(const symbol_p symbol, std::set<std::pai
 
 void SmOrderGrid::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
 {
-	/*
-	try {
 	for (auto it = _QuotePos.begin(); it != _QuotePos.end(); ++it) {
 		std::pair<int, int> pos = *it;
 		if (pos.first < _StartRowForValue ||
@@ -903,15 +890,6 @@ void SmOrderGrid::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
 			pCell->SetLabel("");
 		}
 	}
-
-	}
-	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
-	}
-	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
-	}
-	*/
 }
 
 void SmOrderGrid::SetCenterValueForFuture(const symbol_p sym, std::set<std::pair<int, int>>& refreshSet)
@@ -1343,8 +1321,6 @@ void SmOrderGrid::SetQuoteColor(const symbol_p sym, std::set<std::pair<int, int>
 
 	CUGCell cell;
 	/*
-	try {
-
 	int lowRow = FindRowFromCenterValue(sym, sym->Quote.intLow);
 	int highRow = FindRowFromCenterValue(sym, sym->Quote.intHigh);
 	int closeRow = FindRowFromCenterValue(sym, sym->Quote.intClose);
@@ -1433,16 +1409,16 @@ void SmOrderGrid::SetQuoteColor(const symbol_p sym, std::set<std::pair<int, int>
 	}
 	// 고가 텍스트 색상 설정
 	SetSiseLabel(highRow, "H", RGB(255, 0, 0));
-	
+
 	// 저가 텍스트 색상 설정
 	SetSiseLabel(lowRow, "L", RGB(0, 0, 255));
 
 	// 시작가 레이블 설정
 	SetSiseLabel(openRow, "O", RGB(0, 0, 0));
-	
+
 	// 이전 종가 레이블 설정
 	SetSiseLabel(preCloseRow, "C", RGB(0, 0, 0));
-	
+
 	if (_CenterWnd->FixedCenter()) {
 		for (auto it = ValueToRowMap.begin(); it != ValueToRowMap.end(); ++it) {
 			refreshSet.insert(std::make_pair(it->second, CenterCol));
@@ -1463,14 +1439,6 @@ void SmOrderGrid::SetQuoteColor(const symbol_p sym, std::set<std::pair<int, int>
 		for (int i = min_row; i <= max_row; ++i) {
 			refreshSet.insert(std::make_pair(i, CenterCol));
 		}
-	}
-
-	}
-	catch (std::exception& e) {
-		LOG_F(ERROR, _T(" %s, MSG : %s"), __FUNCTION__, e.what());
-	}
-	catch (...) {
-		LOG_F(ERROR, _T(" %s 알수없는 오류"), __FUNCTION__);
 	}
 	*/
 }

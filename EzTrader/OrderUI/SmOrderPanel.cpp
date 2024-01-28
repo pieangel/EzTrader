@@ -862,6 +862,7 @@ void SmOrderPanel::SetSymbol(symbol_p sym)
 	//_Symbol->SubscribeQuoteWndCallback(_ProductRemainGrid.GetSafeHwnd());
 	SetProductName(_Symbol);
 	_ProductRemainGrid.SetSymbol(sym);
+	m_Grid.OnSymbolMaster(sym);
 	/*
 	if (_OrderConfigMgr->OrderMgr())
 	{

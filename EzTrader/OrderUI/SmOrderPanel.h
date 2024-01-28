@@ -16,6 +16,7 @@
 #include "../Xml/pugixml.hpp"
 #include "../VtDefine.h"
 #include "../Time/cpptime.h"
+#include "../Symbol/SmSymbol.h"
 
 namespace DarkHorse {
 	class SmSymbol;
@@ -212,7 +213,7 @@ private:
 		combo_symbol_vector.push_back(item);
 
 		// Add item to the combo box and store the index in the combo box
-		int index = comboBox.AddString(_T("Item text here")); // Replace with appropriate text
+		int index = comboBox.AddString(item->SymbolCode().c_str()); // Replace with appropriate text
 		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_symbol_vector.size() - 1));
 	}
 

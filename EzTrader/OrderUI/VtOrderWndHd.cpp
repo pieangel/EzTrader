@@ -1363,6 +1363,7 @@ void VtOrderWndHd::ReposChildWindowsForward()
 		if (std::get<1>(item) && wnd->GetSafeHwnd()) {
 			wnd->ShowWindow(SW_SHOW);
 			wnd->MoveWindow(rect, TRUE);
+			wnd->RedrawWindow();
 		}
 		else {
 			if (wnd->GetSafeHwnd())

@@ -7,6 +7,8 @@
 #include "../ShadeButtonST.h"
 #include "SmOrderPanel.h"
 #include "../Xml/pugixml.hpp"
+#include "../Fund/SmFund.h"
+#include "../Account/SmAccount.h"
 
 namespace DarkHorse {
 	class SmFund;
@@ -77,9 +79,11 @@ private:
 	{
 		// Add the std::shared_ptr to the vector
 		combo_account_vector.push_back(item);
-
+		std::string acntName = item->No();
+		acntName.append(_T(":"));
+		acntName.append(item->Name());
 		// Add item to the combo box and store the index in the combo box
-		int index = comboBox.AddString(_T("Item text here")); // Replace with appropriate text
+		int index = comboBox.AddString(acntName.c_str()); // Replace with appropriate text
 		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_account_vector.size() - 1));
 	}
 
@@ -103,7 +107,7 @@ private:
 		combo_fund_vector.push_back(item);
 
 		// Add item to the combo box and store the index in the combo box
-		int index = comboBox.AddString(_T("Item text here")); // Replace with appropriate text
+		int index = comboBox.AddString(item->Name().c_str()); // Replace with appropriate text
 		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_fund_vector.size() - 1));
 	}
 
