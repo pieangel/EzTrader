@@ -17,6 +17,7 @@
 #include "../VtDefine.h"
 #include "../Time/cpptime.h"
 #include "../Symbol/SmSymbol.h"
+#include "../View/SymbolOrderView.h"
 
 namespace DarkHorse {
 	class SmSymbol;
@@ -101,7 +102,7 @@ public:
 	void RegisterRealtimeAccount();
 	void UnregisterRealtimeAccount();
 	virtual BOOL OnInitDialog();
-	SmOrderGrid m_Grid;
+	SymbolOrderView m_Grid;
 	afx_msg void OnClose();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 public:
@@ -113,17 +114,19 @@ public:
 	int GetTickCount();
 	int GetOrderCellWidth()
 	{
-		return m_Grid.OrderWidth();
+		//return m_Grid.OrderWidth();
+		return 18;
 	}
 
 	int GetCellHeight()
 	{
-		return m_Grid.CellHeight();
+		//return m_Grid.CellHeight();
+		return 21;
 	}
-	SmOrderGrid& GetOrderPanelGrid()
-	{
-		return m_Grid;
-	}
+// 	SmOrderGrid& GetOrderPanelGrid()
+// 	{
+// 		return m_Grid;
+// 	}
 	std::vector<bool>& GetGridColOptions() {
 		return _OrderGridColOption;
 	}
@@ -320,9 +323,9 @@ public:
 
 	void OrderTypeSlip(int val);
 
-	VtCutManager* GetCutManager() {
-		return m_Grid.CutMgr();
-	}
+// 	VtCutManager* GetCutManager() {
+// 		return m_Grid.CutMgr();
+// 	}
 
 	void ApplyProfitLossForPosition();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);

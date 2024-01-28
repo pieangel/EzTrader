@@ -208,6 +208,7 @@ BEGIN_MESSAGE_MAP(AbAccountOrderCenterWindow, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BTN_SET, &AbAccountOrderCenterWindow::OnBnClickedBtnSet)
 	ON_STN_CLICKED(IDC_STATIC_FILLED_REMAIN, &AbAccountOrderCenterWindow::OnStnClickedStaticFilledRemain)
 	ON_BN_CLICKED(IDC_CHECK_FIX_HOGA, &AbAccountOrderCenterWindow::OnBnClickedCheckFixHoga)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -963,4 +964,12 @@ void AbAccountOrderCenterWindow::OnBnClickedCheckFixHoga()
 		symbol_order_view_.FixedMode(true);
 	else
 		symbol_order_view_.FixedMode(false);
+}
+
+
+void AbAccountOrderCenterWindow::OnClose()
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CBCGPDialog::OnClose();
 }

@@ -44,6 +44,7 @@ class TotalAssetProfitLossDialog;
 class AbFundOrderWindow;
 class VtAutoSignalManagerDialog;
 class SmUSDSystemDialog;
+class VtOrderWndHd;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -147,6 +148,8 @@ public:
 	std::map<HWND, DmAccountOrderWindow*> dm_account_order_wnd_map_;
 	std::map<HWND, DmFundOrderWindow*> dm_fund_order_wnd_map_;
 
+	std::map<HWND, VtOrderWndHd*> dm_order_wnd_list_;
+
 	std::map<HWND, AbAccountOrderWindow*> _OrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmOrderCompMainDialog>> _CompOrderWndMap;
@@ -176,6 +179,7 @@ public:
 	VtAutoSignalManagerDialog* auto_signal_manager_dlg_ = nullptr;
 	SmUSDSystemDialog* usd_system_dlg_ = nullptr;
 	void remove_dm_account_order_window(HWND handle);
+	void remove_dm_account_order_window2(HWND handle);
 	void remove_dm_fund_order_window(HWND handle);
 	void RemoveOrderWnd(HWND wnd);
 	void RemoveFundOrderWnd(HWND wnd);
@@ -239,4 +243,5 @@ public:
 	afx_msg void OnSimulStopsimul();
 	afx_msg void OnSimulYestest();
 	void copyLastLineAndAppend(const std::string& filename);
+	afx_msg void OnSimulOrderwndtest();
 };

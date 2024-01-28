@@ -75,6 +75,7 @@ protected:
 public:
 	static int _MaxWidth;
 private:
+	bool destroyed_ = false;
 	void AddItemToComboBox(CComboBox& comboBox, account_p item)
 	{
 		// Add the std::shared_ptr to the vector
@@ -278,4 +279,5 @@ public:
 public:
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);
+	virtual void PostNcDestroy();
 };

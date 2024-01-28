@@ -87,6 +87,7 @@ using namespace hmdf;
 #include <iostream>
 #include <string>
 #include "OutSystem/SmUSDSystemDialog.h"
+#include "OrderUi/VtOrderWndHd.h"
 //using namespace hmdf;
 
 using namespace DarkHorse;
@@ -333,6 +334,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_COMMAND(ID_SIMUL_STARTSIMUL, &CMainFrame::OnSimulStartsimul)
 	ON_COMMAND(ID_SIMUL_STOPSIMUL, &CMainFrame::OnSimulStopsimul)
 	ON_COMMAND(ID_SIMUL_YESTEST, &CMainFrame::OnSimulYestest)
+	ON_COMMAND(ID_SIMUL_ORDERWNDTEST, &CMainFrame::OnSimulOrderwndtest)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -891,6 +893,11 @@ void CMainFrame::OnClose()
 		mainApp.SaveMgr()->save_dm_mini_jango_windows("dm_mini_jango_windows.json", mini_jango_wnd_map_);
 		mainApp.SaveMgr()->save_total_asset_windows("dm_total_asset_windows.json", total_asset_profit_loss_map_);
 
+		for (auto it = dm_order_wnd_list_.begin(); it != dm_order_wnd_list_.end(); it++) {
+			it->second->DestroyWindow();
+			//delete it->second;
+		}
+
 		total_asset_profit_loss_map_.clear();
 		if (auto_signal_manager_dlg_) {
 			auto_signal_manager_dlg_->DestroyWindow();
@@ -1402,6 +1409,16 @@ void CMainFrame::remove_dm_account_order_window(HWND handle)
 	dm_account_order_wnd_map_.erase(found);
 }
 
+void CMainFrame::remove_dm_account_order_window2(HWND handle)
+{
+	if (!handle) return;
+	auto found = dm_order_wnd_list_.find(handle);
+	if (found == dm_order_wnd_list_.end()) return;
+	found->second->DestroyWindow();
+	//delete found->second;
+	dm_order_wnd_list_.erase(found);
+}
+
 void CMainFrame::remove_dm_fund_order_window(HWND handle)
 {
 	if (!handle) return;
@@ -1597,4 +1614,13 @@ void CMainFrame::copyLastLineAndAppend(const std::string& filename)
 	else {
 		std::cerr << "Unable to open the file for reading." << std::endl;
 	}
+}
+
+
+void CMainFrame::OnSimulOrderwndtest()
+{
+	VtOrderWndHd* acnt_order_wnd = new VtOrderWndHd();
+	acnt_order_wnd->Create(IDD_ORDER_WND_HD, this);
+	dm_order_wnd_list_[acnt_order_wnd->GetSafeHwnd()] = acnt_order_wnd;
+	acnt_order_wnd->ShowWindow(SW_SHOW);
 }

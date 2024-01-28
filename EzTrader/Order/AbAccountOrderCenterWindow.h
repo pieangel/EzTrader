@@ -201,4 +201,5 @@ public:
 	CBCGPSpinButtonCtrl _SellAvail;
 	afx_msg void OnStnClickedStaticFilledRemain();
 	afx_msg void OnBnClickedCheckFixHoga();
+	afx_msg void OnClose();
 };

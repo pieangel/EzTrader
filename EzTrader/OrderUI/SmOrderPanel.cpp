@@ -80,7 +80,8 @@ SmOrderPanel::SmOrderPanel(CWnd* pParent /*=NULL*/)
 	height = 0;
 	_GridGap = 0;
 	_OrderConfigMgr = nullptr;
-	m_Grid.CenterWnd(this);
+	// test
+	//m_Grid.CenterWnd(this);
 	//_ProductRemainGrid.CenterWnd(this);
 	_Unregistered = false;
 	_OrderByRemain = false;
@@ -121,9 +122,8 @@ SmOrderPanel::~SmOrderPanel()
 void SmOrderPanel::OrderConfigMgr(VtOrderConfigManager* val)
 {
 	_OrderConfigMgr = val;
-	m_Grid.OrderConfigMgr(val);
-	m_Grid.CutMgr()->OrderConfigMgr(_OrderConfigMgr);
-	m_Grid.OrderConfigMgr(_OrderConfigMgr);
+	//m_Grid.CutMgr()->OrderConfigMgr(_OrderConfigMgr);
+	//m_Grid.OrderConfigMgr(_OrderConfigMgr);
 	_ProductRemainGrid.OrderConfigMgr(_OrderConfigMgr);
 }
 
@@ -250,7 +250,7 @@ void SmOrderPanel::OnCbnSelchangeComboProductHd()
 void SmOrderPanel::OnBnClickedCkFixedCenter()
 {
 	_FixedCenter = !_FixedCenter;
-	m_Grid.Init();
+	//m_Grid.Init();
 }
 
 void SmOrderPanel::OnBnClickedBtnOrderAmt1()
@@ -338,7 +338,7 @@ void SmOrderPanel::OnEnChangeEditStopval()
 
 void SmOrderPanel::OnBnClickedBtnLiq()
 {
-	m_Grid.LiqudAll(VtPriceType::Market, 0);
+	//m_Grid.LiqudAll(VtPriceType::Market, 0);
 	ResetRemainFund();
 }
 
@@ -588,7 +588,7 @@ void SmOrderPanel::SetRemain(int remain)
 
 void SmOrderPanel::RefreshOrderPositon()
 {
-	m_Grid.RefreshOrderPosition();
+	//m_Grid.RefreshOrderPosition();
 }
 
 void SmOrderPanel::ClearConfigDlg()
@@ -715,12 +715,14 @@ int SmOrderPanel::GetParentTitleBarHeight()
 
 int SmOrderPanel::GetGridWidth()
 {
-	return m_Grid.GetGridWidth(_OrderGridColOption);
+	//return m_Grid.GetGridWidth(_OrderGridColOption);
+	return 800;
 }
 
 int SmOrderPanel::GetRemainWidth(int parentWidth)
 {
-	return _ProductRemainGrid.GetGridWidth(parentWidth);
+	//return _ProductRemainGrid.GetGridWidth(parentWidth);
+	return 100;
 }
 
 int SmOrderPanel::GetRemainWidth()
@@ -862,7 +864,7 @@ void SmOrderPanel::SetSymbol(symbol_p sym)
 	//_Symbol->SubscribeQuoteWndCallback(_ProductRemainGrid.GetSafeHwnd());
 	SetProductName(_Symbol);
 	_ProductRemainGrid.SetSymbol(sym);
-	m_Grid.OnSymbolMaster(sym);
+	//m_Grid.OnSymbolMaster(sym);
 	/*
 	if (_OrderConfigMgr->OrderMgr())
 	{
@@ -1054,9 +1056,9 @@ BOOL SmOrderPanel::OnInitDialog()
 	_ScStopVal.SetRange32(0, 100);
 
 	CString strValue;
-	strValue.Format(_T("%d"), m_Grid.CutMgr()->CutLoss());
+	//strValue.Format(_T("%d"), m_Grid.CutMgr()->CutLoss());
 
-	strValue.Format(_T("%d"), m_Grid.CutMgr()->CutProfit());
+	//strValue.Format(_T("%d"), m_Grid.CutMgr()->CutProfit());
 
 	strValue.Format(_T("%d"), _OrderAmount);
 	_EditOrderAmount.SetWindowText(strValue);
@@ -1070,7 +1072,8 @@ BOOL SmOrderPanel::OnInitDialog()
 	_BtnRemainFund.SetColor(BTNST_COLOR_FG_IN, RGB(0, 0, 0), true);
 	_BtnRemainFund.SetColor(BTNST_COLOR_BK_OUT, RGB(220, 220, 220), true);
 
-	m_Grid.OrderConfigMgr(_OrderConfigMgr);
+	//m_Grid.OrderConfigMgr(_OrderConfigMgr);
+	m_Grid.SetUp();
 	_TickGrid.SetOrderConfigMgr(_OrderConfigMgr);
 	_TickGrid.CenterWnd(this);
 	ShowHideCtrl();
@@ -1104,8 +1107,8 @@ void SmOrderPanel::OnTimer(UINT_PTR nIDEvent)
  	//for(int i = 0; i < 1000; ++i)
 	// 호가 시세 필터를 적용했을 경우에 작동
 	//if (_UseHogaSiseFilter)
- 	m_Grid.RefreshAllValues();
-	_TickGrid.RefreshValues();
+ 	//m_Grid.RefreshAllValues();
+	//_TickGrid.RefreshValues();
 	CDialog::OnTimer(nIDEvent);
 }
 
@@ -1116,8 +1119,8 @@ void SmOrderPanel::OnTimer(UINT_PTR nIDEvent)
 
 void SmOrderPanel::InitGridInfo()
 {
-	if (m_Grid.GetSafeHwnd())
-		m_Grid.Init();
+	//if (m_Grid.GetSafeHwnd())
+	//	m_Grid.Init();
 }
 
 void SmOrderPanel::ClearPosition()
@@ -1137,13 +1140,13 @@ int SmOrderPanel::GetTickCount()
 
 void SmOrderPanel::SetOrderArea(int height, int width)
 {
-	m_Grid.SetOrderArea(height, width);
+	//m_Grid.SetOrderArea(height, width);
 	// 컨트롤들의 위치를 계산한다.
 	CalcLayout();
 	// 컨트롤들을 계산된 위치로 옮겨 준다.
 	RepositionControl();
 	// 그리드를 다시 설정한다.
-	m_Grid.ResizeGrid(height, width);
+	//m_Grid.ResizeGrid(height, width);
 	// 잔고 그리드를 위치 재설정
 	RepositionProductGrid();
 	// 설정 윈도 위치 재설성
@@ -1154,7 +1157,7 @@ void SmOrderPanel::ShowOrderCountInGrid(bool flag)
 {
 	_ShowOrderCountArea = flag;
 	_OrderGridColOption[2] = flag;
-	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
+	//m_Grid.ShowHideOrderGrid(_OrderGridColOption);
 	if (!_ShowStopArea && !_ShowOrderCountArea) {
 		_ProductRemainGrid.SetShowAvage(false);
 		_ProductRemainGrid.SetShowRemainType(false);
@@ -1177,10 +1180,10 @@ void SmOrderPanel::InitAll()
 	InitSymbol();
 	InitPosition();
 	// 주문 그리드 셀들을 설정한다.
-	m_Grid.Init();
+	//m_Grid.Init();
 	_TickGrid.Init();
 	// 그리드 컬럼 옵션을 설정해 준다.
-	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
+	//m_Grid.ShowHideOrderGrid(_OrderGridColOption);
 	_Init = true;
 }
 
@@ -1225,7 +1228,7 @@ void SmOrderPanel::Activated(bool flag)
 
 void SmOrderPanel::ResetByCenterRow()
 {
-	m_Grid.ResetByCenterRow();
+	//m_Grid.ResetByCenterRow();
 }
 
 void SmOrderPanel::ChangeFocus()
@@ -1249,7 +1252,7 @@ void SmOrderPanel::RefreshLayout(bool flag)
 	// 컨트롤들을 위치를 설정한다.
 	RepositionControl();
 	// 주문 그리들의 크기를 조절한다.
-	m_Grid.ResizeGrid();
+	//m_Grid.ResizeGrid();
 	// 제품정보 그리드를 위치를 설정한다.
 	RepositionProductGrid();
 	// 설정 윈도우의 위치를 재설정한다.
@@ -1314,7 +1317,7 @@ void SmOrderPanel::ResizeOrderGrid()
 	// 컨트롤들을 계산된 위치로 옮겨 준다.
 	RepositionControl();
 	// 그리드를 다시 설정한다.
-	m_Grid.ResizeGrid();
+	//m_Grid.ResizeGrid();
 	// 잔고 그리드를 위치 재설정
 	RepositionProductGrid();
 	// 설정 윈도 위치 재설성
@@ -1334,7 +1337,7 @@ bool SmOrderPanel::ShowTickWnd()
 void SmOrderPanel::BlockEvent()
 {
 	//mainApp.CallbackMgr().UnsubscribeMasterCallback((long)this);
-	m_Grid.UnregisterAllCallback();
+	//m_Grid.UnregisterAllCallback();
 	_ProductRemainGrid.UnregisterAllCallback();
 	_TickGrid.UnregisterAllCallback();
 }
@@ -1388,7 +1391,7 @@ BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 		else if (pMsg->wParam == VK_SPACE ) {
-			m_Grid.OrderBySpaceBar();
+			//m_Grid.OrderBySpaceBar();
 			return TRUE;
 		}
 	}
@@ -1400,74 +1403,80 @@ BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 
 bool SmOrderPanel::EnableCutProfit() const
 {
-	return m_Grid.CutMgr()->EnableCutProfit();
+	//return m_Grid.CutMgr()->EnableCutProfit();
+	return false;
 }
 
 void SmOrderPanel::EnableCutProfit(bool val)
 {
-	m_Grid.CutMgr()->EnableCutProfit(val);
+	//m_Grid.CutMgr()->EnableCutProfit(val);
 }
 
 bool SmOrderPanel::EnableCutLoss() const
 {
-	return m_Grid.CutMgr()->EnableCutLoss();
+	//return m_Grid.CutMgr()->EnableCutLoss();
+	return false;
 }
 
 void SmOrderPanel::EnableCutLoss(bool val)
 {
-	m_Grid.CutMgr()->EnableCutLoss(val);
+	//m_Grid.CutMgr()->EnableCutLoss(val);
 }
 
 int SmOrderPanel::CutProfit() const
 {
-	return m_Grid.CutMgr()->CutProfit();
+	//return m_Grid.CutMgr()->CutProfit();
+	return 2;
 }
 
 void SmOrderPanel::CutProfit(int val)
 {
-	m_Grid.CutMgr()->CutProfit(val);
+	//m_Grid.CutMgr()->CutProfit(val);
 }
 
 int SmOrderPanel::CutLoss() const
 {
-	return m_Grid.CutMgr()->CutLoss();
+	//return m_Grid.CutMgr()->CutLoss();
+	return 2;
 }
 
 void SmOrderPanel::CutLoss(int val)
 {
-	m_Grid.CutMgr()->CutLoss(val);
+	//m_Grid.CutMgr()->CutLoss(val);
 }
 
 int SmOrderPanel::OrderType() const
 {
-	return m_Grid.CutMgr()->OrderType();
+	//return m_Grid.CutMgr()->OrderType();
+	return 2;
 }
 
 void SmOrderPanel::OrderType(int val)
 {
-	m_Grid.CutMgr()->OrderType(val);
+	//m_Grid.CutMgr()->OrderType(val);
 }
 
 int SmOrderPanel::OrderTypeSlip() const
 {
-	return m_Grid.CutMgr()->OrderTypeSlip();
+	//return m_Grid.CutMgr()->OrderTypeSlip();
+	return 2;
 }
 
 void SmOrderPanel::OrderTypeSlip(int val)
 {
-	m_Grid.CutMgr()->OrderTypeSlip(val);
+	//m_Grid.CutMgr()->OrderTypeSlip(val);
 }
 
 void SmOrderPanel::ApplyProfitLossForPosition()
 {
-	m_Grid.ApplyProfitLossForPosition();
+	//m_Grid.ApplyProfitLossForPosition();
 }
 
 void SmOrderPanel::FixedCenter(bool val)
 {
 	ResetByCenterRow();
 	_FixedCenter = val;
-	m_Grid.SetCenterValue();
+	//m_Grid.SetCenterValue();
 }
 
 
@@ -1484,14 +1493,14 @@ void SmOrderPanel::ShowOrderAreaInGrid(bool flag)
 {
 	_ShowOrderArea = flag;
 	_OrderGridColOption[0] = flag;
-	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
+	//m_Grid.ShowHideOrderGrid(_OrderGridColOption);
 }
 
 void SmOrderPanel::ShowStopAreaInGrid(bool flag)
 {
 	_ShowStopArea = flag;
 	_OrderGridColOption[1] = flag;
-	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
+	//m_Grid.ShowHideOrderGrid(_OrderGridColOption);
 }
 
 void SmOrderPanel::SetTickWndPos(int pos)
@@ -1521,9 +1530,9 @@ void SmOrderPanel::SaveToXml(pugi::xml_node& node_center_window)
 	center_window_child = node_center_window.append_child("order_amount");
 	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_OrderAmount).c_str());
 	center_window_child = node_center_window.append_child("order_area_width");
-	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(m_Grid.OrderWidth()).c_str());
+	//center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(m_Grid.OrderWidth()).c_str());
 	center_window_child = node_center_window.append_child("order_row_height");
-	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(m_Grid.CellHeight()).c_str());
+	//center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(m_Grid.CellHeight()).c_str());
 	center_window_child = node_center_window.append_child("show_profitloss_config");
 	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ShowRemainConfig).c_str());
 }
@@ -1539,8 +1548,8 @@ void SmOrderPanel::LoadFromXml(pugi::xml_node& node_center_window)
 	_OrderAmount = std::stoi(node_center_window.child_value("order_amount"));
 	int order_area_width = std::stoi(node_center_window.child_value("order_area_width"));
 	int order_area_height = std::stoi(node_center_window.child_value("order_row_height"));
-	m_Grid.OrderWidth(order_area_width);
-	m_Grid.CellHeight(order_area_height);
+	//m_Grid.OrderWidth(order_area_width);
+	//m_Grid.CellHeight(order_area_height);
 	std::stoi(node_center_window.child_value("show_profitloss_config")) == 0 ? _ShowRemainConfig = false : _ShowRemainConfig = true;
 	// 주문창 그리드 속성 대입
 	_ShowOrderArea = _OrderGridColOption[0];

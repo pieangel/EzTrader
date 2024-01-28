@@ -13,6 +13,7 @@
 #include "../Global/SmTotalManager.h"
 
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -155,9 +156,9 @@ void VtOrderConfigDlg::OnBnClickedButtonProfitLoss()
 	if (!_EditCutProfit.GetSafeHwnd())
 		return;
 
-	VtCutManager* cutMgr = _CenterWnd->GetCutManager();
-	if (cutMgr && (!cutMgr->EnableCutLoss() && !cutMgr->EnableCutProfit()))
-		return;
+	//VtCutManager* cutMgr = _CenterWnd->GetCutManager();
+	//if (cutMgr && (!cutMgr->EnableCutLoss() && !cutMgr->EnableCutProfit()))
+	//	return;
 
 	CString strVal;
 	_EditCutProfit.GetWindowText(strVal);

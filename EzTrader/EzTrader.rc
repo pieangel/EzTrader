@@ -3125,6 +3125,7 @@ BEGIN
         MENUITEM "StartSimul",                  ID_SIMUL_STARTSIMUL
         MENUITEM "StopSimul",                   ID_SIMUL_STOPSIMUL
         MENUITEM "YesTest",                     ID_SIMUL_YESTEST
+        MENUITEM "OrderWndTest",                ID_SIMUL_ORDERWNDTEST
     END
 END
 
@@ -3192,6 +3193,7 @@ BEGIN
         MENUITEM "StartSimul",                  ON_START_SIMUL
         MENUITEM "StopSimul",                   ON_STOP_SIMUL
         MENUITEM "YesTest",                     ON_YES_TEST
+        MENUITEM "OrderWndTest",                ID_SIMUL_ORDERWNDTEST
     END
 END
 

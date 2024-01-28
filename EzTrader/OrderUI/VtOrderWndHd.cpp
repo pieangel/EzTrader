@@ -878,8 +878,11 @@ void VtOrderWndHd::RemoveLastWindow()
 
 void VtOrderWndHd::OnClose()
 {
-	BlockEvent();
-	CDialog::OnClose();
+	//BlockEvent();
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->remove_dm_account_order_window2(GetSafeHwnd());
+	if (!destroyed_)
+		CDialog::OnClose();
 // 	VtOrderWndHdEventArgs arg;
 // 	arg.pOrderWnd = this;
 // 	arg.type = VtOrderWindowEventType::Closed;
@@ -1937,4 +1940,14 @@ void VtOrderWndHd::LoadFromXml(pugi::xml_node& node_order_window)
 			_CenterWndVector.push_back(centerWnd);
 		}
 	}
+}
+
+
+void VtOrderWndHd::PostNcDestroy()
+{
+	// TODO: Add your specialized code here and/or call the base class
+	CDialog::PostNcDestroy();
+
+	destroyed_ = true;
+	delete this;
 }

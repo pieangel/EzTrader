@@ -227,7 +227,7 @@ BOOL VtOrderGridConfig::OnInitDialog()
 	if (!_CenterWnd)
 		return FALSE;
 
-	SmOrderGrid& grid = _CenterWnd->GetOrderPanelGrid();
+	//SmOrderGrid& grid = _CenterWnd->GetOrderPanelGrid();
 
 	std::vector<bool>& gridColOptions = _CenterWnd->GetGridColOptions();
 	
@@ -243,10 +243,10 @@ BOOL VtOrderGridConfig::OnInitDialog()
 		_CheckShowCountCol.SetCheck(BST_CHECKED);
 	else
 		_CheckShowCountCol.SetCheck(BST_UNCHECKED);
-	if (grid.ShowOrderQuantityCol())
-		_CheckShowPLConfigWnd.SetCheck(BST_CHECKED);
-	else
-		_CheckShowPLConfigWnd.SetCheck(BST_UNCHECKED);
+// 	if (grid.ShowOrderQuantityCol())
+// 		_CheckShowPLConfigWnd.SetCheck(BST_CHECKED);
+// 	else
+// 		_CheckShowPLConfigWnd.SetCheck(BST_UNCHECKED);
 
 	if (_CenterWnd->ShowTickWnd()) {
 		((CButton*)GetDlgItem(IDC_CHECK_SHOW_TICKWND))->SetCheck(BST_CHECKED);
