@@ -796,7 +796,7 @@ void DarkHorse::SmGrid::draw_cells(CBCGPGraphicsManager* pGM, CRect& wnd_area, c
 
 void DarkHorse::SmGrid::DrawSelectedCell(CBCGPGraphicsManager* pGM, const CBCGPBrush& fill_brush, const CBCGPBrush& select_brush, bool selected)
 {
-	// ???? ???? ???? ??????.
+	
 }
 
 void DarkHorse::SmGrid::SetRowHeight(const int& row, const int& height) 

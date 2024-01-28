@@ -132,4 +132,12 @@ namespace DarkHorse {
 		OB_HAS_BEEN,
 		OB_PRESENT
 	};
+
+	enum class SmOrderGridCol {
+		STOP,
+		ORDER,
+		COUNT,
+		QUANTITY,
+		CENTER
+	};
 }

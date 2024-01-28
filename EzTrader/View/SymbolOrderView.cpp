@@ -232,6 +232,13 @@ SymbolOrderView::SymbolOrderView()
 	header_info.title = "STOP";
 	header_info.width = 40;
 	grid_header_vector_.push_back(header_info);
+
+
+	_GridColMap[DarkHorse::SmOrderGridCol::STOP] = 48;
+	_GridColMap[DarkHorse::SmOrderGridCol::ORDER] = 60;
+	_GridColMap[DarkHorse::SmOrderGridCol::COUNT] = 45;
+	_GridColMap[DarkHorse::SmOrderGridCol::QUANTITY] = 45;
+	_GridColMap[DarkHorse::SmOrderGridCol::CENTER] = 80;
 }
 
 void SymbolOrderView::on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol)
@@ -1185,6 +1192,151 @@ void SymbolOrderView::reset_row_info()
 	_Grid->MakeRowHeightMap();
 	_Grid->RecalRowCount(height, true);
 	RecalRowCount(height);
+}
+
+void SymbolOrderView::RefreshOrderPosition()
+{
+
+}
+
+int SymbolOrderView::GetGridWidth(std::vector<bool>& colOptions)
+{
+	int totalWidth = _GridColMap[SmOrderGridCol::CENTER] + _GridColMap[SmOrderGridCol::QUANTITY] * 2;
+	for (size_t i = 0; i < colOptions.size(); ++i) {
+		if (i == 0) { // for order
+			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::ORDER] * 2 : 0;
+		}
+		else if (i == 1) { // for stop
+			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::STOP] * 2 : 0;
+		}
+		else if (i == 2) { // for count and quantity.
+			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::COUNT] * 2 : 0;
+		}
+	}
+
+	return totalWidth + 5;
+}
+
+void SymbolOrderView::ResizeGrid(int cellHeight, int orderAreaWidth)
+{
+	_CellHeight = cellHeight;
+	_OrderWidth = orderAreaWidth;
+	Init();
+}
+
+void SymbolOrderView::ResizeGrid()
+{
+	Init();
+}
+
+void SymbolOrderView::SetOrderArea(int height, int width)
+{
+	_CellHeight = height;
+	_GridColMap[SmOrderGridCol::ORDER] = width;
+}
+
+int SymbolOrderView::ShowHideOrderGrid(std::vector<bool>& colOptions)
+{
+	for (size_t i = 0; i < colOptions.size(); ++i) {
+		if (i == 0) {
+			if (colOptions[i]) { // for order column
+				SetColumnWidth(1, _GridColMap[SmOrderGridCol::ORDER]);
+				SetColumnWidth(7, _GridColMap[SmOrderGridCol::ORDER]);
+			}
+			else {
+				SetColumnWidth(1, 0);
+				SetColumnWidth(7, 0);
+			}
+		}
+		else if (i == 1) { // for stop column
+			if (colOptions[1]) {
+				SetColumnWidth(0, _GridColMap[SmOrderGridCol::STOP]);
+				SetColumnWidth(8, _GridColMap[SmOrderGridCol::STOP]);
+			}
+			else {
+				SetColumnWidth(0, 0);
+				SetColumnWidth(8, 0);
+			}
+		}
+		else if (i == 2) { // for order count column
+			if (colOptions[2]) {
+				SetColumnWidth(2, _GridColMap[SmOrderGridCol::COUNT]);
+				SetColumnWidth(6, _GridColMap[SmOrderGridCol::COUNT]);
+			}
+			else {
+				SetColumnWidth(2, 1);
+				SetColumnWidth(6, 1);
+			}
+		}
+	}
+
+	return 0;
+}
+
+bool SymbolOrderView::SetColumnWidth(int col, int width)
+{
+	_Grid->SetColWidth(col, width);
+	return true;
+}
+
+void SymbolOrderView::Init()
+{
+	ClearOldQuote();
+	ClearOldHoga();
+	ClearOrders();
+	ClearStopOrders();
+	clear_buy_stop_order();
+	clear_sell_stop_order();
+
+	_Grid->ReleaseOrderButtons(_ButtonMap);
+	price_start_row_ = 2;
+	price_end_row_ = _Grid->RowCount() - 2;
+	_Grid->CreateGrids();
+	_Grid->RegisterOrderButtons(_ButtonMap);
+	index_row_ = get_center_row();
+	SetCenterValues();
+	set_order_area();
+	update_quote();
+	update_hoga();
+	draw_order();
+	update_buy_stop_order();
+	update_sell_stop_order();
+}
+
+void SymbolOrderView::ResetByCenterRow()
+{
+	index_row_ = get_center_row();
+	SetCenterValues();
+}
+
+void SymbolOrderView::SetCenterValue()
+{
+	SetCenterValues();
+}
+
+void SymbolOrderView::RefreshAllValues()
+{
+	ClearOldQuote();
+	ClearOldHoga();
+	ClearOrders();
+	ClearStopOrders();
+	clear_buy_stop_order();
+	clear_sell_stop_order();
+	/*
+	_Grid->ReleaseOrderButtons(_ButtonMap);
+	price_start_row_ = 2;
+	price_end_row_ = _Grid->RowCount() - 2;
+	_Grid->CreateGrids();
+	_Grid->RegisterOrderButtons(_ButtonMap);
+	index_row_ = get_center_row();
+	*/
+	SetCenterValues();
+	set_order_area();
+	update_quote();
+	update_hoga();
+	draw_order();
+	update_buy_stop_order();
+	update_sell_stop_order();
 }
 
 void SymbolOrderView::CancelSellOrder()

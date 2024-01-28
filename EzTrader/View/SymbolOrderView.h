@@ -20,6 +20,7 @@ class SymbolOrderView
 #include "../Event/EventHubArg.h"
 #include "../Symbol/SymbolConst.h"
 #include "../Position/PositionConst.h"
+//#include "../VtDefine.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -49,6 +50,7 @@ using price_order_request_map_p = std::shared_ptr<DarkHorse::PriceOrderRequestMa
 struct WinInfo;
 class DmAccountOrderWindow;
 class DmFundOrderWindow;
+class VtOrderConfigManager;
 class SymbolOrderView : public CBCGPStatic
 {
 public:
@@ -197,7 +199,29 @@ public:
 	DarkHorse::OrderSetEvent order_set() const { return order_set_; }
 	void order_set(DarkHorse::OrderSetEvent val) { order_set_ = val; }
 	void reset_row_info();
+	int OrderWidth() const { return _OrderWidth; }
+	void OrderWidth(int val) { _OrderWidth = val; }
+	int CellHeight() const { return _CellHeight; }
+	void CellHeight(int val) { _CellHeight = val; }
+	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
+	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
+	void RefreshOrderPosition();
+	int GetGridWidth(std::vector<bool>& colOptions);
+	// 셀의 높이와 주문영역의 너비를 다시 설정하고 그리드의 갯수를 다시 설정한다.
+	void ResizeGrid(int cellHeight, int orderAreaWidth);
+	void ResizeGrid();
+	void SetOrderArea(int height, int width);
+	int ShowHideOrderGrid(std::vector<bool>& colOptions);
+	bool SetColumnWidth(int col, int width);
+	void Init();
+	void ResetByCenterRow();
+	void SetCenterValue();
+	void RefreshAllValues();
 private:
+	std::map<DarkHorse::SmOrderGridCol, int> _GridColMap;
+	VtOrderConfigManager* _OrderConfigMgr = nullptr;
+	int _CellHeight = 20;
+	int _OrderWidth = 60;
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	DarkHorse::OrderSetEvent order_set_;
 	void set_order_area();

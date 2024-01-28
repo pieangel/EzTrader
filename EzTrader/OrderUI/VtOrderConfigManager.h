@@ -48,7 +48,6 @@ enum class VtRButtonCancelOrder
 };
 
 
-class CVtOrderWnd;
 class VtOrderConfigManager
 {
 public:

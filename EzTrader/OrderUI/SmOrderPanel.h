@@ -106,6 +106,7 @@ public:
 	afx_msg void OnClose();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 public:
+	void set_symbol_from_out(const int order_window_id, std::shared_ptr<DarkHorse::SmSymbol> symbol);
 	//void OnTimer2(Timer& timer);
 	void InitGridInfo();
 	void SetSymbol();
@@ -114,19 +115,17 @@ public:
 	int GetTickCount();
 	int GetOrderCellWidth()
 	{
-		//return m_Grid.OrderWidth();
-		return 18;
+		return m_Grid.OrderWidth();
 	}
 
 	int GetCellHeight()
 	{
-		//return m_Grid.CellHeight();
-		return 21;
+		return m_Grid.CellHeight();
 	}
-// 	SmOrderGrid& GetOrderPanelGrid()
-// 	{
-// 		return m_Grid;
-// 	}
+	const SymbolOrderView& GetOrderPanelGrid()
+	{
+		return m_Grid;
+	}
 	std::vector<bool>& GetGridColOptions() {
 		return _OrderGridColOption;
 	}
@@ -280,6 +279,7 @@ private:
 	int _DefaultHeight = 750;
 	symbol_p _DefaultSymbol = nullptr;
 	VtOrderConfigDlg* _ConfigDlg = nullptr;
+	int id_{ 0 };
 private:
 	void CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent);
 	CRect GetClientArea(int resourceID);
