@@ -148,13 +148,13 @@ void DarkHorse::SmGrid::RegisterOrderButtons(std::map<std::shared_ptr<DarkHorse:
 	order_button_map[FindCell(1, DarkHorse::OrderHeader::SELL_CNT)] = BUTTON_ID::SELL;
 	SetCellType(1, DarkHorse::OrderHeader::BUY_QTY, SmCellType::CT_BUTTON_BUY);
 	order_button_map[FindCell(1, DarkHorse::OrderHeader::BUY_QTY)] = BUTTON_ID::BUY;
-	SetCellText(1, DarkHorse::OrderHeader::SELL_CNT, "ï¿½ï¿½ï¿½å°¡ï¿½Åµï¿½");
-	SetCellText(1, DarkHorse::OrderHeader::BUY_QTY, "ï¿½ï¿½ï¿½å°¡ï¿½Å¼ï¿½");
+	SetCellText(1, DarkHorse::OrderHeader::SELL_CNT, "½ÃÀå°¡¸Åµµ");
+	SetCellText(1, DarkHorse::OrderHeader::BUY_QTY, "½ÃÀå°¡¸Å¼ö");
 
 	SetCellType(1, DarkHorse::OrderHeader::QUOTE, SmCellType::CT_BUTTON_NORMAL);
 	//_ButtonSet.insert(std::make_pair(1, DarkHorse::OrderGridHeader::QUOTE));
 	order_button_map[FindCell(1, DarkHorse::OrderHeader::QUOTE)] = BUTTON_ID::ARRANGE;
-	SetCellText(1, DarkHorse::OrderHeader::QUOTE, "ï¿½ï¿½ï¿½ï¿½");
+	SetCellText(1, DarkHorse::OrderHeader::QUOTE, "È£°¡Á¤·Ä");
 
 	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP, SmCellType::CT_BUTTON_SELL);
 	SetCellType(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER, SmCellType::CT_BUTTON_SELL);
@@ -174,11 +174,11 @@ void DarkHorse::SmGrid::RegisterOrderButtons(std::map<std::shared_ptr<DarkHorse:
 	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER)] = BUTTON_ID::CANCEL_BUY_ORDER;
 	order_button_map[FindCell(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP)] = BUTTON_ID::CANCEL_BUY_STOP;
 
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP, "ï¿½ï¿½ï¿½ï¿½");
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER, "ï¿½ï¿½ï¿½ï¿½");
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::QUOTE, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP, "ï¿½ï¿½ï¿½ï¿½");
-	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER, "ï¿½ï¿½ï¿½ï¿½");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_STOP, "Ãë¼Ò");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::SELL_ORDER, "Ãë¼Ò");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::QUOTE, "ÀüÃ¼Ãë¼Ò");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_STOP, "Ãë¼Ò");
+	SetCellText(_RowCount - 1, DarkHorse::OrderHeader::BUY_ORDER, "Ãë¼Ò");
 }
 
 void DarkHorse::SmGrid::DrawNormalCell(CBCGPGraphicsManager* pGM, std::shared_ptr<SmCell> cell)

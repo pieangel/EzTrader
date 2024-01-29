@@ -218,6 +218,8 @@ public:
 	void SetCenterValue();
 	void RefreshAllValues();
 private:
+	// 현재 최대 행갯수 구하기
+	int GetMaxValueRowCount();
 	std::map<DarkHorse::SmOrderGridCol, int> _GridColMap;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	int _CellHeight = 20;

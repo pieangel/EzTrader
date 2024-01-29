@@ -183,26 +183,26 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 	switch (nRealType)
 	{
 	//case 196:
- 	case 296: // �ؿ� �ֹ� ����
+ 	case 296: // ??? ??? ????
  		on_ab_order_accepted(strRecvKey, nRealType); break;
 	//case 186:
- 	case 286: // �ؿ� �ֹ� ��ü��
+ 	case 286: // ??? ??? ?????
  		on_ab_order_unfilled(strRecvKey, nRealType);	break;
 	//case 189:
- 	case 289: // �ؿ� �ֹ� ü��
+ 	case 289: // ??? ??? ???
  		on_ab_order_filled(strRecvKey, nRealType); break;
-	case 76: // �ؿ� �ǽð� ȣ��
+	case 76: // ??? ??��? ???
 		on_ab_future_hoga(strRecvKey, nRealType); break;
-	case 82: // �ؿ� �ǽð� ü��
+	case 82: // ??? ??��? ???
 		on_ab_future_quote(strRecvKey, nRealType); break;
-	case 51: // ���� ���� ȣ��
+	case 51: // ???? ???? ???
 	case 75:
 		on_dm_future_hoga(strRecvKey, nRealType); break;
 	case 52: // dm option hoga
 		on_dm_option_hoga(strRecvKey, nRealType); break;
 	case 58: // dm commodity future hoga
 		on_dm_commodity_future_hoga(strRecvKey, nRealType); break;
-	case 65: // ���� ���� �ü�
+	case 65: // ???? ???? ???
 	case 77:
 		on_dm_future_quote(strRecvKey, nRealType); break;
 	case 66:
@@ -211,11 +211,11 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 		on_dm_commodity_future_quote(strRecvKey, nRealType); break;
 	case 310:
 		on_dm_expected(strRecvKey, nRealType); break;
-	case 261: // ���� �ֹ� ����
+	case 261: // ???? ??? ????
 		on_dm_order_accepted(strRecvKey, nRealType); break;
-	case 262: // ���� �ֹ� ��ü��
+	case 262: // ???? ??? ?????
 		on_dm_order_unfilled(strRecvKey, nRealType); break;
-	case 265: // �ؿ� �ֹ� ü��
+	case 265: // ??? ??? ???
 		on_dm_order_filled(strRecvKey, nRealType); break;
 	case 183:
 		on_dm_order_position(strRecvKey, nRealType); break;
@@ -236,31 +236,31 @@ void ViClient::on_ab_accepted_order(const CString& server_trade_code, const LONG
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���¹�ȣ");
+		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???��??");
 
 		CString msg;
 
 		msg.Format("OnAccountAsset strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
-		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ֹ���ȣ");
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�����ڵ�");
-		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ֹ�����");
-		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ֹ�����");
-		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�Ÿű���");
-		CString strPriceType = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "��������");
-		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���ֹ���ȣ");
-		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���ʿ��ֹ���ȣ");
+		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
+		CString strPriceType = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
+		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????????");
 
-		CString strOrderDate = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ֹ�����");
-		CString strOrderTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ֹ��ð�");
+		CString strOrderDate = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strOrderTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????��?");
 
 		CString strCancelCnt = strOrderAmount;
 		CString strModyCnt = strOrderAmount;
-		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "ü������");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ܷ�");
+		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???");
 
-		// �ֹ� ����
+		// ??? ????
 		strOrderPrice.Trim();
 
 
@@ -307,53 +307,53 @@ void ViClient::on_dm_accepted_order(const CString& server_trade_code, const LONG
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���¹�ȣ");
-		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ֹ���ȣ");
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�����ڵ�");
-		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�Ÿű���");
-		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ֹ�����");
-		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ֹ�����");
-		CString strMan = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���۱���");
-		CString strCancelCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���Ҽ���");
-		CString strModyCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "��������");
-		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "ü������");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ܷ�");
+		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???��??");
+		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
+		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strMan = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strCancelCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strModyCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
+		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???");
 
-		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���ֹ���ȣ");
-		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���ʿ��ֹ���ȣ");
+		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????????");
 		CString strOrderSeq = "0";
 
 		CString strMsg;
-		strMsg.Format("OnOrderUnfilled ����[%s]�ֹ���ȣ[%s][���ֹ���ȣ[%s], ���� ���ֹ� ��ȣ[%s] ,�ֹ�����[%s], �ֹ�����[%s], �ܷ�[%s], ü������[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+		strMsg.Format("OnOrderUnfilled ????[%s]??????[%s][????????[%s], ???? ????? ???[%s] ,???????[%s], ???????[%s], ???[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
 
 		//TRACE(strMsg);
 
 	
-		// �ֹ� ����
+		// ??? ????
 		strOrderPrice.Trim();
 
 
 		const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 		if (order_price < 0) continue;
-		// ���� ��ȣ Ʈ��
+		// ???? ??? ???
 		strAccountNo.TrimRight();
-		// �ֹ� ��ȣ Ʈ��
+		// ??? ??? ???
 		strOrderNo.TrimLeft('0');
-		// ���ֹ� ��ȣ Ʈ��
+		// ????? ??? ???
 		strOriOrderNo.TrimLeft('0');
-		// ù�ֹ� ��ȣ Ʈ��
+		// ???? ??? ???
 		strFirstOrderNo.TrimLeft('0');
-		// �ɺ� �ڵ� Ʈ��
+		// ??? ??? ???
 		strSymbolCode.TrimRight();
-		// �ֹ� ���� Ʈ��
+		// ??? ???? ???
 		strOrderAmount.TrimRight();
-		// �����̳� ���ҽ� ó���� ���� Ʈ��
+		// ??????? ????? ????? ???? ???
 		strRemain.TrimRight();
-		// ������ �̷����� ����
+		// ?????? ??????? ????
 		strModyCnt.TrimRight();
-		// ü���� ����
+		// ????? ????
 		strFilledCnt.TrimRight();
-		// ���ҵ� ����
+		// ????? ????
 		strCancelCnt.TrimRight();
 
 		nlohmann::json order_info;
@@ -467,15 +467,15 @@ int ViClient::connect_to_server()
 
 int DarkHorse::ViClient::Login(const std::string& id, const std::string& pwd, const std::string& cert)
 {
-	const char* pLoginSuccess[] = { "�α��� ����"	, "Login Successful" };
-	const char* pLoginFail[] = { "�α��� ����"	, "Login Failure" };
+	const char* pLoginSuccess[] = { "?��??? ????"	, "Login Successful" };
+	const char* pLoginFail[] = { "?��??? ????"	, "Login Failure" };
 
 	int nRet = m_CommAgent.CommLogin(id.c_str(), pwd.c_str(), cert.c_str());
 	if (nRet > 0) {
 		//AfxMessageBox(pLoginSuccess[0]);
 
-		//�α��� �ݵ��� ȣ��...
-		// ���� ������ �����´�.
+		//?��??? ????? ???...
+		// ???? ?????? ?????��?.
 		m_CommAgent.CommAccInfo();
 		//LOG_F(INFO, pLoginSuccess[0]);
 		LOGINFO(CMyLogger::getInstance(), pLoginSuccess[0]);
@@ -506,7 +506,7 @@ int DarkHorse::ViClient::Login(task_arg&& arg)
 			mainApp.LoginMgr()->SaveUserInfo(id, pwd, cert);
 			mainApp.LoginMgr()->IsLoggedIn(true);
 
-			LOGINFO(CMyLogger::getInstance(), "�α��� ���� ������ ���� user id = %s", id.c_str());
+			LOGINFO(CMyLogger::getInstance(), "?��??? ???? ?????? ???? user id = %s", id.c_str());
 
 			mainApp.SaveMgr()->create_config_path(std::string(id));
 
@@ -530,10 +530,10 @@ int DarkHorse::ViClient::dm_check_account_password(task_arg&& arg)
 
 		std::string reqString;
 		std::string temp;
-		// ���� ��ȣ
+		// ???? ???
 		temp = VtStringUtil::PadRight(account_no, ' ', 11);
 		reqString.append(temp);
-		// ���й�ȣ
+		// ???��??
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 
@@ -566,10 +566,10 @@ int DarkHorse::ViClient::check_account_password(task_arg&& arg)
 		std::string temp;
 
 		if (type == "1") {
-			// ���� ��ȣ
+			// ???? ???
 			temp = VtStringUtil::PadRight(account_no, ' ', 6);
 			reqString.append(temp);
-			// ���й�ȣ
+			// ???��??
 			temp = VtStringUtil::PadRight(password, ' ', 8);
 			reqString.append(temp);
 
@@ -582,10 +582,10 @@ int DarkHorse::ViClient::check_account_password(task_arg&& arg)
 			_CheckPwdReqId = nRqID;
 		}
 		else if (type == "9") {
-			// ���� ��ȣ
+			// ???? ???
 			temp = VtStringUtil::PadRight(account_no, ' ', 11);
 			reqString.append(temp);
-			// ���й�ȣ
+			// ???��??
 			temp = VtStringUtil::PadRight(password, ' ', 8);
 			reqString.append(temp);
 
@@ -611,10 +611,10 @@ int DarkHorse::ViClient::dm_check_account_password(const std::string& account_no
 {
 	std::string reqString;
 	std::string temp;
-	// ���� ��ȣ
+	// ???? ???
 	temp = VtStringUtil::PadRight(account_no, ' ', 11);
 	reqString.append(temp);
-	// ���й�ȣ
+	// ???��??
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	reqString.append(temp);
 
@@ -632,10 +632,10 @@ int DarkHorse::ViClient::ab_check_account_password(const std::string& account_no
 {
 	std::string reqString;
 	std::string temp;
-	// ���� ��ȣ
+	// ???? ???
 	temp = VtStringUtil::PadRight(account_no, ' ', 6);
 	reqString.append(temp);
-	// ���й�ȣ
+	// ???��??
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	reqString.append(temp);
 
@@ -849,10 +849,10 @@ int DarkHorse::ViClient::ab_account_asset(task_arg&& arg)
 
 		std::string reqString;
 		std::string temp;
-		// ���� ��ȣ
+		// ???? ???
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
-		// ���й�ȣ
+		// ???��??
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 
@@ -884,16 +884,16 @@ int DarkHorse::ViClient::ab_account_deposit(task_arg&& arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
-		// ��ȭ�ڵ�
+		// ??????
 		reqString.append("USD");
 
 
@@ -923,16 +923,16 @@ int DarkHorse::ViClient::ab_account_profit_loss(task_arg&& arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
-		// ��ȭ�ڵ�
+		// ??????
 		reqString.append("USD");
 
 
@@ -979,14 +979,14 @@ int DarkHorse::ViClient::ab_symbol_profit_loss(task_arg&& arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
 
 
@@ -1015,14 +1015,14 @@ int DarkHorse::ViClient::ab_accepted_order_list(task_arg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
 
 
@@ -1294,11 +1294,11 @@ int ViClient::dm_symbol_profit_loss(DhTaskArg arg)
 
 		std::string reqString;
 		std::string temp;
-		// ���� ��ȣ
+		// ???? ???
 		temp = VtStringUtil::PadRight(account_no, ' ', 11);
 		reqString.append(temp);
 		//reqString.append(_T("001"));
-		// ���й�ȣ
+		// ???��??
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 
@@ -1333,14 +1333,14 @@ int ViClient::ab_symbol_position(DhTaskArg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
 
 
@@ -1373,14 +1373,14 @@ int ViClient::ab_symbol_profit_loss(DhTaskArg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
 		reqString.append("USD");
 
@@ -1434,7 +1434,7 @@ int DarkHorse::ViClient::ab_filled_order_list(const std::string& account_no, con
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		//const std::string cur_date = VtStringUtil::getCurentDate();
@@ -1447,7 +1447,7 @@ int DarkHorse::ViClient::ab_filled_order_list(const std::string& account_no, con
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
 
 
@@ -1478,7 +1478,7 @@ int DarkHorse::ViClient::ab_filled_order_list(task_arg&& arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		//const std::string cur_date = VtStringUtil::getCurentDate();
@@ -1491,7 +1491,7 @@ int DarkHorse::ViClient::ab_filled_order_list(task_arg&& arg)
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
 
 
@@ -1972,28 +1972,28 @@ void DarkHorse::ViClient::ab_new_order(task_arg&& arg)
 
 		std::string orderString;
 		std::string temp;
-		// ���� ��ȣ
+		// ???? ???
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		orderString.append(temp);
-		// ���й�ȣ
+		// ???��??
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		orderString.append(temp);
-		// ���� �ڵ�
+		// ???? ???
 		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 		orderString.append(temp);
 
-		// �Ÿű���
+		// ??????
 		if (static_cast<SmPositionType>(position_type) == SmPositionType::Buy)
 			orderString.append(_T("1"));
 		else if (static_cast<SmPositionType>(position_type) == SmPositionType::Sell)
 			orderString.append(_T("2"));
 
-		// ���� ����
+		// ???? ????
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			orderString.append(_T("1"));
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			orderString.append(_T("2"));
-		// ü�� ����
+		// ??? ????
 		if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fas)
 			orderString.append(_T("1"));
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fok)
@@ -2003,17 +2003,17 @@ void DarkHorse::ViClient::ab_new_order(task_arg&& arg)
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Day)
 			orderString.append(_T("0"));
 
-		// �ֹ� ����
+		// ??? ????
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			temp = VtStringUtil::PadRight(order_price, ' ', 15);
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			temp = VtStringUtil::PadRight(0, ' ', 15);
 		orderString.append(temp);
 
-		// �ֹ� ����
+		// ??? ????
 		temp = VtStringUtil::PadRight(order_amount, ' ', 10);
 		orderString.append(temp);
-		// ��Ÿ ����
+		// ??? ????
 		temp = VtStringUtil::PadRight(1, ' ', 35);
 		orderString.append(temp);
 
@@ -2071,28 +2071,28 @@ void DarkHorse::ViClient::ab_new_order(const std::shared_ptr<SmOrderRequest>& or
 
 	std::string orderString;
 	std::string temp;
-	// ���� ��ȣ
+	// ???? ???
 	temp = VtStringUtil::PadRight(account_no, ' ', 6);
 	orderString.append(temp);
-	// ���й�ȣ
+	// ???��??
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	orderString.append(temp);
-	// ���� �ڵ�
+	// ???? ???
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// �Ÿű���
+	// ??????
 	if ((position_type) == SmPositionType::Buy)
 		orderString.append(_T("1"));
 	else if ((position_type) == SmPositionType::Sell)
 		orderString.append(_T("2"));
 
-	// ���� ����
+	// ???? ????
 	if ((price_type) == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if ((price_type) == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ü�� ����
+	// ??? ????
 	if ((filled_condition) == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if ((filled_condition) == SmFilledCondition::Fok)
@@ -2102,17 +2102,17 @@ void DarkHorse::ViClient::ab_new_order(const std::shared_ptr<SmOrderRequest>& or
 	else if ((filled_condition) == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// �ֹ� ����
+	// ??? ????
 	if ((price_type) == SmPriceType::Price)
 		temp = VtStringUtil::PadRight(order_price, ' ', 15);
 	else if ((price_type) == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 15);
 	orderString.append(temp);
 
-	// �ֹ� ����
+	// ??? ????
 	temp = VtStringUtil::PadRight(order_amount, ' ', 10);
 	orderString.append(temp);
-	// ��Ÿ ����
+	// ??? ????
 	temp = VtStringUtil::PadRight(1, ' ', 35);
 	orderString.append(temp);
 
@@ -2155,22 +2155,22 @@ void DarkHorse::ViClient::ab_change_order(task_arg&& arg)
 
 		std::string orderString;
 		std::string temp;
-		// ���� ��ȣ
+		// ???? ???
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		orderString.append(temp);
-		// ���й�ȣ
+		// ???��??
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		orderString.append(temp);
-		// ���� �ڵ�
+		// ???? ???
 		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 		orderString.append(temp);
 
-		// ���� ����
+		// ???? ????
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			orderString.append(_T("1"));
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			orderString.append(_T("2"));
-		// ü�� ����
+		// ??? ????
 		if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fas)
 			orderString.append(_T("1"));
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fok)
@@ -2180,20 +2180,20 @@ void DarkHorse::ViClient::ab_change_order(task_arg&& arg)
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Day)
 			orderString.append(_T("0"));
 
-		// �ֹ� ����
+		// ??? ????
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			temp = VtStringUtil::PadRight(order_price, ' ', 15);
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			temp = VtStringUtil::PadRight(0, ' ', 15);
 		orderString.append(temp);
 
-		// ���� ����
+		// ???? ????
 		temp = VtStringUtil::PadRight(order_amount, ' ', 10);
 		orderString.append(temp);
-		// �����̳� ���ҽ� ���ֹ� ��ȣ
+		// ??????? ????? ????? ???
 		temp = VtStringUtil::PadRight(ori_order_no, ' ', 10);
 		orderString.append(temp);
-		// ��Ÿ����
+		// ???????
 		temp = VtStringUtil::PadRight(1, ' ', 26);
 		orderString.append(temp);
 
@@ -2252,22 +2252,22 @@ void DarkHorse::ViClient::ab_change_order(const std::shared_ptr<SmOrderRequest>&
 
 	std::string orderString;
 	std::string temp;
-	// ���� ��ȣ
+	// ???? ???
 	temp = VtStringUtil::PadRight(account_no, ' ', 6);
 	orderString.append(temp);
-	// ���й�ȣ
+	// ???��??
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	orderString.append(temp);
-	// ���� �ڵ�
+	// ???? ???
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ���� ����
+	// ???? ????
 	if ((price_type) == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if ((price_type) == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ü�� ����
+	// ??? ????
 	if ((filled_condition) == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if ((filled_condition) == SmFilledCondition::Fok)
@@ -2277,20 +2277,20 @@ void DarkHorse::ViClient::ab_change_order(const std::shared_ptr<SmOrderRequest>&
 	else if ((filled_condition) == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// �ֹ� ����
+	// ??? ????
 	if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 		temp = VtStringUtil::PadRight(order_price, ' ', 15);
 	else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 15);
 	orderString.append(temp);
 
-	// ���� ����
+	// ???? ????
 	temp = VtStringUtil::PadRight(order_amount, ' ', 10);
 	orderString.append(temp);
-	// �����̳� ���ҽ� ���ֹ� ��ȣ
+	// ??????? ????? ????? ???
 	temp = VtStringUtil::PadRight(ori_order_no, ' ', 10);
 	orderString.append(temp);
-	// ��Ÿ����
+	// ???????
 	temp = VtStringUtil::PadRight(1, ' ', 26);
 	orderString.append(temp);
 
@@ -2332,22 +2332,22 @@ void DarkHorse::ViClient::ab_cancel_order(task_arg&& arg)
 
 		std::string orderString;
 		std::string temp;
-		// ���� ��ȣ
+		// ???? ???
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		orderString.append(temp);
-		// ���й�ȣ
+		// ???��??
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		orderString.append(temp);
-		// ���� �ڵ�
+		// ???? ???
 		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 		orderString.append(temp);
 
-		// ���� ����
+		// ???? ????
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			orderString.append(_T("1"));
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			orderString.append(_T("2"));
-		// ü�� ����
+		// ??? ????
 		if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fas)
 			orderString.append(_T("1"));
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fok)
@@ -2357,17 +2357,17 @@ void DarkHorse::ViClient::ab_cancel_order(task_arg&& arg)
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Day)
 			orderString.append(_T("0"));
 
-		// �ֹ� ���� 15
+		// ??? ???? 15
 		temp = "               ";
 		orderString.append(temp);
 
-		// ���� ���� 10
+		// ???? ???? 10
 		temp = "          ";
 		orderString.append(temp);
-		// �����̳� ���ҽ� ���ֹ� ��ȣ
+		// ??????? ????? ????? ???
 		temp = VtStringUtil::PadRight(ori_order_no, ' ', 10);
 		orderString.append(temp);
-		// ��Ÿ���� 26
+		// ??????? 26
 		temp = "                          ";
 		orderString.append(temp);
 
@@ -2403,28 +2403,28 @@ void ViClient::ab_new_order(order_request_p order_req)
 {
 	std::string orderString;
 	std::string temp;
-	// ���� ��ȣ
+	// ???? ???
 	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
 	orderString.append(temp);
-	// ���й�ȣ
+	// ???��??
 	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
 	orderString.append(temp);
-	// ���� �ڵ�
+	// ???? ???
 	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// �Ÿű���
+	// ??????
 	if (order_req->position_type == SmPositionType::Buy)
 		orderString.append("1");
 	else if (order_req->position_type == SmPositionType::Sell)
 		orderString.append("2");
 
-	// ���� ����
+	// ???? ????
 	if (order_req->price_type == SmPriceType::Price)
 		orderString.append("1");
 	else if (order_req->price_type == SmPriceType::Market)
 		orderString.append("2");
-	// ü�� ����
+	// ??? ????
 	if (order_req->fill_condition == SmFilledCondition::Fas)
 		orderString.append("1");
 	else if (order_req->fill_condition == SmFilledCondition::Fok)
@@ -2434,17 +2434,17 @@ void ViClient::ab_new_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Day)
 		orderString.append("0");
 
-	// �ֹ� ����
+	// ??? ????
 	if (order_req->price_type == SmPriceType::Price)
 		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 15);
 	else if (order_req->price_type == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 15);
 	orderString.append(temp);
 
-	// �ֹ� ����
+	// ??? ????
 	temp = VtStringUtil::PadRight(order_req->order_amount, ' ', 10);
 	orderString.append(temp);
-	// ��Ÿ ����
+	// ??? ????
 	temp = VtStringUtil::PadRight(1, ' ', 35);
 	orderString.append(temp);
 
@@ -2464,22 +2464,22 @@ void ViClient::ab_change_order(order_request_p order_req)
 {
 	std::string orderString;
 	std::string temp;
-	// ���� ��ȣ
+	// ???? ???
 	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
 	orderString.append(temp);
-	// ���й�ȣ
+	// ???��??
 	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
 	orderString.append(temp);
-	// ���� �ڵ�
+	// ???? ???
 	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ���� ����
+	// ???? ????
 	if (order_req->price_type == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if (order_req->price_type == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ü�� ����
+	// ??? ????
 	if (order_req->fill_condition == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if (order_req->fill_condition == SmFilledCondition::Fok)
@@ -2489,20 +2489,20 @@ void ViClient::ab_change_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// �ֹ� ����
+	// ??? ????
 	if (order_req->price_type == SmPriceType::Price)
 		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 15);
 	else if (order_req->price_type == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 15);
 	orderString.append(temp);
 
-	// ���� ����
+	// ???? ????
 	temp = VtStringUtil::PadRight(order_req->order_amount, ' ', 10);
 	orderString.append(temp);
-	// �����̳� ���ҽ� ���ֹ� ��ȣ
+	// ??????? ????? ????? ???
 	temp = VtStringUtil::PadRight(order_req->original_order_no, ' ', 10);
 	orderString.append(temp);
-	// ��Ÿ����
+	// ???????
 	temp = VtStringUtil::PadRight(1, ' ', 26);
 	orderString.append(temp);
 
@@ -2522,22 +2522,22 @@ void ViClient::ab_cancel_order(order_request_p order_req)
 {
 	std::string orderString;
 	std::string temp;
-	// ���� ��ȣ
+	// ???? ???
 	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
 	orderString.append(temp);
-	// ���й�ȣ
+	// ???��??
 	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
 	orderString.append(temp);
-	// ���� �ڵ�
+	// ???? ???
 	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ���� ����
+	// ???? ????
 	if (order_req->price_type == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if (order_req->price_type == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ü�� ����
+	// ??? ????
 	if (order_req->fill_condition == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if (order_req->fill_condition == SmFilledCondition::Fok)
@@ -2547,18 +2547,18 @@ void ViClient::ab_cancel_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// �ֹ� ���� 15
+	// ??? ???? 15
 	temp = "               ";
 	orderString.append(temp);
 
-	// ���� ���� 10
+	// ???? ???? 10
 	temp = "          ";
 	orderString.append(temp);
-	// �����̳� ���ҽ� ���ֹ� ��ȣ
+	// ??????? ????? ????? ???
 	temp = VtStringUtil::PadRight(order_req->original_order_no, ' ', 10);
 	orderString.append(temp);
 
-	// ��Ÿ���� 26
+	// ??????? 26
 	temp = "                          ";
 	orderString.append(temp);
 
@@ -2803,22 +2803,22 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 
 	std::string orderString;
 	std::string temp;
-	// ���� ��ȣ
+	// ???? ???
 	temp = VtStringUtil::PadRight(account_no, ' ', 6);
 	orderString.append(temp);
-	// ���й�ȣ
+	// ???��??
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	orderString.append(temp);
-	// ���� �ڵ�
+	// ???? ???
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ���� ����
+	// ???? ????
 	if ((price_type) == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if ((price_type) == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ü�� ����
+	// ??? ????
 	if ((filled_condition) == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if ((filled_condition) == SmFilledCondition::Fok)
@@ -2828,17 +2828,17 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 	else if ((filled_condition) == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// �ֹ� ���� 15
+	// ??? ???? 15
 	temp = "               ";
 	orderString.append(temp);
 
-	// ���� ���� 10
+	// ???? ???? 10
 	temp = "          ";
 	orderString.append(temp);
-	// �����̳� ���ҽ� ���ֹ� ��ȣ
+	// ??????? ????? ????? ???
 	temp = VtStringUtil::PadRight(ori_order_no, ' ', 10);
 	orderString.append(temp);
-	// ��Ÿ���� 26
+	// ??????? 26
 	temp = "                          ";
 	orderString.append(temp);
 
@@ -2892,16 +2892,16 @@ int ViClient::ab_account_profit_loss(DarkHorse::AccountProfitLossReq arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
-		// ��ȭ�ڵ�
+		// ??????
 		reqString.append("USD");
 
 
@@ -2990,9 +2990,9 @@ void DarkHorse::ViClient::register_symbol(task_arg&& arg)
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
 		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // �ü�
+		int nRealType = 76; // ???
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-		nRealType = 82; // ȣ��
+		nRealType = 82; // ???
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
 	}
 }
@@ -3050,9 +3050,9 @@ void DarkHorse::ViClient::unregister_symbol(const std::string& symbol_code)
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
 		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // �ü�
+		int nRealType = 76; // ???
 		m_CommAgent.CommRemoveBroad(key.c_str(), nRealType);
-		nRealType = 82; // ȣ��
+		nRealType = 82; // ???
 		m_CommAgent.CommRemoveBroad(key.c_str(), nRealType);
 	}
 }
@@ -3107,9 +3107,9 @@ void ViClient::register_symbol(DhTaskArg&& arg)
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
 		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // �ü�
+		int nRealType = 76; // ???
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-		nRealType = 82; // ȣ��
+		nRealType = 82; // ???
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
 	}
 }
@@ -3201,9 +3201,9 @@ void DarkHorse::ViClient::register_symbol(const std::string& symbol_code)
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
 		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // �ü�
+		int nRealType = 76; // ???
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-		nRealType = 82; // ȣ��
+		nRealType = 82; // ???
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
 	}
 }
@@ -3360,7 +3360,7 @@ int DarkHorse::ViClient::ab_chart_data_long(SmTaskArg&& arg)
 
 		std::string temp;
 		std::string reqString;
-		// ���� �ڵ� 32 �ڸ�
+		// ???? ??? 32 ???
 		temp = VtStringUtil::PadRight(req.SymbolCode, ' ', 32);
 		reqString.append(temp);
 
@@ -3420,7 +3420,7 @@ int DarkHorse::ViClient::ab_chart_data_short(SmTaskArg&& arg)
 
 		std::string temp;
 		std::string reqString;
-		// ���� ��û�� 18�ڸ� ����
+		// ???? ????? 18??? ????
 		reqString.append("                  ");
 
 		temp = VtStringUtil::PadRight(req.SymbolCode, ' ', 32);
@@ -3497,7 +3497,7 @@ int DarkHorse::ViClient::ab_chart_data_long(task_arg&& arg)
 	const int next = std::any_cast<int>(arg["next"]);
 	std::string temp;
 	std::string reqString;
-	// ���� �ڵ� 32 �ڸ�
+	// ???? ??? 32 ???
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 	reqString.append(temp);
 
@@ -3552,7 +3552,7 @@ int DarkHorse::ViClient::ab_chart_data_short(task_arg&& arg)
 
 	std::string temp;
 	std::string reqString;
-	// ���� ��û�� 18�ڸ� ����
+	// ???? ????? 18??? ????
 	reqString.append("                  ");
 
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
@@ -3631,7 +3631,7 @@ void DarkHorse::ViClient::on_dm_symbol_code(const CString& sTrCode, const LONG& 
 {
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++) {
-		CString sData = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�����ڵ�");
+		CString sData = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�����ڵ�");
 		TRACE(sData);
 		TRACE(_T("\n"));
 		//WriteLog(sData);
@@ -3647,7 +3647,7 @@ void DarkHorse::ViClient::on_dm_symbol_code(const CString& sTrCode, const LONG& 
 			symbol->MarketName(product->MarketName());
 			symbol->ProductCode(product_code);
 			symbol->decimal(2);
-			symbol->SymbolNameKr("�ڽ���200");
+			symbol->SymbolNameKr("�ڽ���200");
 			symbol->SymbolNameEn("Kospi200");
 		}
 	}
@@ -3657,12 +3657,12 @@ void DarkHorse::ViClient::on_dm_symbol_code(const CString& sTrCode, const LONG& 
 
 void DarkHorse::ViClient::on_account_list(const CString& sTrCode, const LONG& nRqID) 
 {
-	// ���� ���� �߰�. - 20140331 sivas
+	// ???? ???? ???. - 20140331 sivas
 	typedef	struct
 	{
-		char 	szAcctNo[11];		// ���¹�ȣ
-		char	szAcctNm[30];		// ���¸�
-		char	szAcctGb[01];		// ���±���  '1': �ؿ�, '2': FX, '9':����
+		char 	szAcctNo[11];		// ???��??
+		char	szAcctNm[30];		// ???��?
+		char	szAcctGb[01];		// ???��???  '1': ???, '2': FX, '9':????
 	}HDF_ACCOUNT_UNIT;
 
 	typedef struct
@@ -3681,7 +3681,7 @@ void DarkHorse::ViClient::on_account_list(const CString& sTrCode, const LONG& nR
 		pHdfAccUnit = (HDF_ACCOUNT_UNIT*)(pHdfAccInfo->szCount + sizeof(pHdfAccInfo->szCount) + (sizeof(HDF_ACCOUNT_UNIT) * i));
 		CString strAcctNo(pHdfAccUnit->szAcctNo, sizeof(pHdfAccUnit->szAcctNo));
 		CString strAcctNm(pHdfAccUnit->szAcctNm, sizeof(pHdfAccUnit->szAcctNm));
-		CString strAcctGb(pHdfAccUnit->szAcctGb, sizeof(pHdfAccUnit->szAcctGb));// ���� ���� �߰�. - 20140331 sivas
+		CString strAcctGb(pHdfAccUnit->szAcctGb, sizeof(pHdfAccUnit->szAcctGb));// ???? ???? ???. - 20140331 sivas
 			
 		nlohmann::json account_info;
 		account_info["account_no"] = static_cast<const char*>(strAcctNo.Trim());
@@ -3699,20 +3699,20 @@ void DarkHorse::ViClient::on_account_list(const CString& sTrCode, const LONG& nR
 void DarkHorse::ViClient::on_dm_symbol_master(const CString& sTrCode, const LONG& nRqID)
 {
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
-	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����ڵ�");
-	CString	strFullCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����ڵ�");
-	CString	strSymbolNameKr = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ѱ�������");
-	CString strDeltaDay = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���ϴ���");
-	CString strUpdownRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "������");
+	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����ڵ�");
+	CString	strFullCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����ڵ�");
+	CString	strSymbolNameKr = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ѱ������");
+	CString strDeltaDay = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���ϴ��");
+	CString strUpdownRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����");
 
-	CString	strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "ü���ð�");
-	CString	strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���簡");
-	CString	strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ð�");
-	CString	strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "����");
-	CString	strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "����");
-	CString strPreClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��������");
-	CString strPreHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���ϰ���");
-	CString strPreLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��������");
+	CString	strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "ü��ð�");
+	CString	strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���簡");
+	CString	strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ð�");
+	CString	strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "����");
+	CString	strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "����");
+	CString strPreClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��������");
+	CString strPreHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���ϰ���");
+	CString strPreLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��������");
 
 	nlohmann::json quote;
 
@@ -3741,48 +3741,48 @@ void DarkHorse::ViClient::on_dm_symbol_master(const CString& sTrCode, const LONG
 		wp->OnDmSymbolMaster(symbol_code);
 	}
 
-	CString	strHogaTime   = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "ȣ�����Žð�");
-	CString	strSellPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��1");
-	CString	strBuyPrice1  = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��1");
-	CString	strSellQty1   = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������1");
-	CString	strBuyQty1    = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������1");
-	CString	strSellCnt1   = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�1");
-	CString	strBuyCnt1    = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�1");
+	CString	strHogaTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "ȣ�����Žð�");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�1");
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�2");
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�3");
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�4");
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�5");
+	CString	strSellPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ������5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ������5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�5");
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ѽ���");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ѽ���");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���ѰǼ�");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���ѰǼ�");
+	CString	strTotSellQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ѽ���");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ѽ���");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���ѰǼ�");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���ѰǼ�");
 
-	
+
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -3840,9 +3840,9 @@ void ViClient::on_dm_symbol_master_file(const CString& server_trade_code, const 
 	if (it == request_map_.end()) return;
 	const std::string file_name = it->second.parameter_map["file_name"];
 
-	long nFileSize = atol(m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "����ũ��"));
-	CString strFileNm = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "���ϸ�");
-	CString strProcCd = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�����ڵ�");
+	long nFileSize = atol(m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????"));
+	CString strFileNm = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????");
+	CString strProcCd = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
 
 	if (strProcCd == "REOK")
 	{
@@ -3864,7 +3864,7 @@ void ViClient::on_dm_symbol_master_file(const CString& server_trade_code, const 
 			if (commonfile.Open(strCommonFileName, CFile::modeCreate | CFile::modeWrite /*| CFile::typeBinary*/) == FALSE)
 			{
 				CString strMsg;
-				strMsg.Format("%sȭ�� ������ �����Ͽ����ϴ�. ", strCommonFileName);
+				strMsg.Format("%s??? ?????? ????????????. ", strCommonFileName);
 				return on_task_complete(server_request_id);
 			}
 		}
@@ -3878,20 +3878,20 @@ void ViClient::on_dm_symbol_master_file(const CString& server_trade_code, const 
 
 void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_code, const LONG& server_request_id)
 {
-	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź�Ѿ�");
-	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź����");
-	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�ֹ������Ѿ�");
-	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź���ű�_����");
-	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź���ű�_����");
-	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�򰡿�Ź�Ѿ�_���ڻ�");
-	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�������հ��ɱ�");
-	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�����Ѽ���");
-	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "���ϸŸż���");
-	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�����򰡼���");
-	CString strFutureFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "������Ź������");
-	CString strOptionFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�ɼ���Ź������");
-	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "���Ͽ�Ź�Ѿ�");
-	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "û�����ֹ������Ѿ�");
+	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????");
+	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
+	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????????");
+	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_????");
+	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_????");
+	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_?????");
+	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
+	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????????");
+	CString strFutureFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????????");
+	CString strOptionFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
+	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????????????");
 
 
 	CString strMsg = strData9 + strData10 + strData8 + _T("\n");
@@ -3903,7 +3903,7 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 	std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
 	if (!account) return on_task_complete(server_request_id);
 
-	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], �����Ѽ���[%s], ���ϸŸż���[%s], �����򰡼���[%s], ������Ź������[%s], �ɼ���Ź������[%s], ", account_no.c_str(), strData8, strData9, strData10, strFutureFee, strOptionFee);
+	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], ?????????[%s], ?????????[%s], ??????????[%s], ?????????????[%s], ????????????[%s], ", account_no.c_str(), strData8, strData9, strData10, strFutureFee, strOptionFee);
 
 
 	account->Asset.EntrustDeposit = _ttoi(strData1.TrimRight());
@@ -3919,22 +3919,22 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec2");
 	for (int i = 0; i < nRepeatCnt; i++) {
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�����ڵ�");
-		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�Ÿű���");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�ܰ�����");
-		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "���δܰ�");
-		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "���簡");
-		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�Ÿż���");
-		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "������");
-		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�Ѽ���");
-		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "���αݾ�");
-		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�򰡱ݾ�");
-		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "û�갡�ɼ���");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???????");
+		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???????");
+		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???��??");
+		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???��");
+		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
+		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
+		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "?????");
+		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???��??");
+		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "?????");
+		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??�M?????");
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
 
-		LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: symbol_code[%s], �Ÿż���[%s], ������[%s], �Ѽ���[%s]", strSymbolCode, strProfit, strFee, strTotalProfit);
+		LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: symbol_code[%s], ??????[%s], ??????[%s], ?????[%s]", strSymbolCode, strProfit, strFee, strTotalProfit);
 
 
 		nlohmann::json symbol_profit_loss;
@@ -3960,50 +3960,50 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 }
 
 /*
-���¹�ȣ	06
-���¸�	50
-��ȭ�ڵ�	10
-��Ź���Ѿ�	20
-��Ź���ܾ�	20
-�򰡱ݾ�	20
-�̼��ݾ�	20
-�����ݾ׺���	20
-�̰����������ű�	20
-���Ⱑ�ɱ�	20
-�ֹ����ɱ�	20
-�������ű�	20
-�ֹ����ű�	20
-��Ź���ű�	20
-�ŷ�������	20
-û������	20
-�򰡼���	20
-�̹߻�	01	'0':�̹߻�, '1':����, '2':����
-�߰����ű�	20
-�Ѱ����ڻ갡ġ	20
+???��??	06
+???��?	50
+??????	10
+????????	20
+????????	20
+?????	20
+??????	20
+??????????	20
+??????????????	20
+???????	20
+????????	20
+?????????	20
+????????	20
+????????	20
+?????????	20
+???????	20
+??????	20
+????	01	'0':????, '1':????, '2':????
+????????	20
+???????�M?	20
 ExcessMarginRate	20
-��ȯ����ȯ��	20
-�ɼǸŸŴ���	20
+??????????	20
+????????	20
 */
 void DarkHorse::ViClient::on_ab_account_profit_loss(const CString& server_trade_code, const LONG& server_request_id)
 {
-	CString strAccount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "���¹�ȣ");
-	CString strEntrustTotal = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź���Ѿ�");
-	CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź���ܾ�");
-	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź����");
-	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�ֹ����ɱ�");
-	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź���ű�");
-	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�������ű�");
-	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�򰡿�Ź�Ѿ�_���ڻ�");
-	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�������հ��ɱ�");
-	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�����Ѽ���");
-	CString strTradeProfitLoss = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "û������");
-	CString strOpenProfitLoss = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�򰡼���");
-	CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�ŷ�������");
-	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�ɼ���Ź������");
-	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "���Ͽ�Ź�Ѿ�");
-	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "û�����ֹ������Ѿ�");
+	CString strAccount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???��??");
+	CString strEntrustTotal = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????");
+	CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????");
+	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
+	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????");
+	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????");
+	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_?????");
+	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
+	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strTradeProfitLoss = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
+	CString strOpenProfitLoss = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????");
+	CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
+	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????????????");
 
-	LOGINFO(CMyLogger::getInstance(), "on_ab_account_profit_loss :: account_no[%s], �����Ѽ���[%s], û������[%s], �򰡼���[%s], �ŷ�������[%s], �ɼ���Ź������[%s], ", strAccount, strData8, strTradeProfitLoss, strOpenProfitLoss, strFee, strData12);
+	LOGINFO(CMyLogger::getInstance(), "on_ab_account_profit_loss :: account_no[%s], ?????????[%s], ???????[%s], ??????[%s], ?????????[%s], ????????????[%s], ", strAccount, strData8, strTradeProfitLoss, strOpenProfitLoss, strFee, strData12);
 
 
 	CString strMsg = strTradeProfitLoss + strOpenProfitLoss + strData8 + _T("\n");
@@ -4034,27 +4034,27 @@ void ViClient::on_ab_symbol_master(const CString& server_trade_code, const LONG&
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�����ڵ�");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
 
 		CString msg;
 
 
 
-		CString strLastTradeDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�����ŷ���");
-		CString strExchange = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ŷ���");
-		CString strExpireDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "������");
-		CString strPriceTag = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "����ǥ��");
-		CString strStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�����۽ð�(CME)");
-		CString strEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�������ð�(CME)");
-		CString strLocalStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�����۽ð�(�ѱ�)");
-		CString strLocalEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�������ð�(�ѱ�)");
-		CString strCurrency = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�ŷ���ȭ");
-		CString strProduct = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "��ǰ����");
+		CString strLastTradeDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "?????????");
+		CString strExchange = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "?????");
+		CString strExpireDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
+		CString strPriceTag = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????��?(CME)");
+		CString strEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????��?(CME)");
+		CString strLocalStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????��?(???)");
+		CString strLocalEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????��?(???)");
+		CString strCurrency = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
+		CString strProduct = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
 		CString strTickSize = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "ticksize");
 		CString strTickValue = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "tickvalue");
-		CString strNeedMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "���ű�");
-		CString strContractUnit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "��������");
-		CString strRemainMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "�������ű�");
+		CString strNeedMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "?????");
+		CString strContractUnit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
+		CString strRemainMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "?????????");
 
 		msg.Format("SymbolMaster strSymbolCode = %s, strLocalStartTime = %s, %s\n", strSymbolCode, strLocalStartTime, strLocalEndTime);
 		TRACE(msg);
@@ -4098,16 +4098,16 @@ int ViClient::ab_account_profit_loss(DhTaskArg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
-		// ��ȭ�ڵ�
+		// ??????
 		reqString.append("USD");
 
 
@@ -4142,14 +4142,14 @@ int ViClient::ab_accepted_order(DhTaskArg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ���̵� 
+		// ????? 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// �׷��� - ����
+		// ????? - ????
 		reqString.append("                    ");
 
 
@@ -4245,18 +4245,18 @@ int ViClient::dm_account_profit_loss(DhTaskArg arg)
 
 void DarkHorse::ViClient::on_ab_symbol_quote(const CString& sTrCode, const LONG& nRqID)
 {
-	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����ڵ�");
-	CString	strSymbolNameKr = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ѱ�������");
-	CString strDeltaDay = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���ϴ���");
-	CString strDeltaDaySign = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���ϴ��񱸺�");
-	CString strUpdownRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���ϴ���������");
-	CString	strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "ü���ð�");
-	CString	strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���簡");
-	CString	strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ð�");
-	CString	strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "����");
-	CString	strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "����");
-	CString	strCumulativeAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����ŷ���");
-	CString strPreDayVolume = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���ϰŷ���");
+	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
+	CString	strSymbolNameKr = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
+	CString strDeltaDay = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
+	CString strDeltaDaySign = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
+	CString strUpdownRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????????");
+	CString	strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????��?");
+	CString	strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???��");
+	CString	strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?��?");
+	CString	strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????");
+	CString	strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????");
+	CString	strCumulativeAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
+	CString strPreDayVolume = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
 
 	CString msg;
 
@@ -4289,7 +4289,7 @@ void DarkHorse::ViClient::on_ab_symbol_quote(const CString& sTrCode, const LONG&
 
 void DarkHorse::ViClient::on_ab_symbol_hoga(const CString& sTrCode, const LONG& nRqID)
 {
-	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����ڵ�");
+	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
 
 
 	CString msg;
@@ -4297,48 +4297,48 @@ void DarkHorse::ViClient::on_ab_symbol_hoga(const CString& sTrCode, const LONG& 
 	msg.Format("OnSymbolHoga strSymbolCode = %s\n", strSymbolCode);
 	TRACE(msg);
 
-	CString	strHogaTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "ȣ���ð�");
+	CString	strHogaTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????��?");
 
-	CString	strSellPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��1");
-	CString	strBuyPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��1");
-	CString	strSellQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���ܷ�1");
-	CString	strBuyQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���ܷ�1");
-	CString	strSellCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�1");
-	CString	strBuyCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�1");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????1");
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���ܷ�2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���ܷ�2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????2");
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���ܷ�3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���ܷ�3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????3");
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���ܷ�4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���ܷ�4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????4");
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ��5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ��5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���ܷ�5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���ܷ�5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���Ǽ�5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���Ǽ�5");
+	CString	strSellPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????5");
 	
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ�����ܷ�");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ�����ܷ�");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ŵ�ȣ���ѰǼ�");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ż�ȣ���ѰǼ�");
+	CString	strTotSellQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????????");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????????");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????????");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????????");
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -4396,24 +4396,24 @@ void DarkHorse::ViClient::on_ab_account_asset(const CString& sTrCode, const LONG
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strCurrency = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��ȭ����");
-		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��Ź���Ѿ�");
+		CString strCurrency = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
+		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
 		strEntrustTotal.Trim();
 		if (strEntrustTotal.Compare("0") == 0) {
 			continue;
 		}
 
-		CString strBalance = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��Ź���ܾ�");
-		CString strUnsettledMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�̰������ű�");
-		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ֹ����ű�");
-		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��Ź���ű�");
-		CString strMaintenaceMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�������ű�");
-		CString strSettledProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "û������");
-		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�����ɼǼ�����");
-		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�򰡼���");
-		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�򰡿�Ź�Ѿ�");
-		CString strAdditionalMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�߰����ű�");
-		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ֹ����ɱݾ�");
+		CString strBalance = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strUnsettledMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????????");
+		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strMaintenaceMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
+		CString strSettledProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
+		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????????");
+		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????");
+		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strAdditionalMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
 
 		std::string account_no;
 		auto found = request_map_.find(nRqID);
@@ -4454,18 +4454,18 @@ void DarkHorse::ViClient::on_dm_account_asset(const CString& sTrCode, const LONG
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��Ź�Ѿ�");
+		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????");
 		strEntrustTotal.Trim();
 		//if (strEntrustTotal.Compare("0") == 0) {
 		//	continue;
 		//}
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���¹�ȣ");
-		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ֹ����ű�");
-		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "��Ź���ű�");
-		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "���߼����ɼǼ�����");
-		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�򰡼���");
-		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�򰡿�Ź�Ѿ�");
-		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "�ֹ����ɱݾ�");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???��??");
+		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????????????");
+		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????");
+		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
 
 		
 
@@ -4498,7 +4498,7 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 	std::string account_no;
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++) {
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���¹�ȣ");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???��??");
 
 
 		CString msg;
@@ -4506,15 +4506,15 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 		msg.Format("on_ab_symbol_profit_loss strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
-		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���¸�");
-		CString strCurrency = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "��ȭ�ڵ�");
-		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strSymbolSettledProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "û������");
-		CString strSymbolSettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "û��������");
-		CString strSymbolFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "û��������");
-		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�򰡼���");
-		CString strSymbolUnsettledFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�̰���������");
-		CString strSymbolUnsettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�̰���������");
+		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???��?");
+		CString strCurrency = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strSymbolSettledProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
+		CString strSymbolSettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????????");
+		CString strSymbolFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????????");
+		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strSymbolUnsettledFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????????");
+		CString strSymbolUnsettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????????");
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
@@ -4550,22 +4550,22 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 	std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
 	if (!account) return on_task_complete(server_request_id);
 
-	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź�Ѿ�");
-	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź����");
-	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�ֹ������Ѿ�");
-	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź���ű�_����");
-	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "��Ź���ű�_����");
-	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�򰡿�Ź�Ѿ�_���ڻ�");
-	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�������հ��ɱ�");
-	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�����Ѽ���");
-	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "���ϸŸż���");
-	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�����򰡼���");
-	CString strData11 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "������Ź������");
-	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "�ɼ���Ź������");
-	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "���Ͽ�Ź�Ѿ�");
-	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "û�����ֹ������Ѿ�");
+	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????");
+	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
+	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????????");
+	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_????");
+	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_????");
+	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_?????");
+	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
+	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????????");
+	CString strData11 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????????");
+	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
+	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
+	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????????????");
 
-	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], �����Ѽ���[%s], ���ϸŸż���[%s], �����򰡼���[%s], ������Ź������[%s], �ɼ���Ź������[%s], ", account_no.c_str(), strData8, strData9, strData10, strData11, strData12);
+	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], ?????????[%s], ?????????[%s], ??????????[%s], ?????????????[%s], ????????????[%s], ", account_no.c_str(), strData8, strData9, strData10, strData11, strData12);
 
 
 	account->Asset.EntrustDeposit = _ttoi(strData1.TrimRight());
@@ -4577,22 +4577,22 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec2");
 	for (int i = 0; i < nRepeatCnt; i++) {
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�����ڵ�");
-		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�Ÿű���");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�ܰ�����");
-		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "���δܰ�");
-		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "���簡");
-		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�Ÿż���");
-		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "������");
-		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�Ѽ���");
-		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "���αݾ�");
-		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "�򰡱ݾ�");
-		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "û�갡�ɼ���");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???????");
+		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???????");
+		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???��??");
+		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???��");
+		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
+		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
+		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "?????");
+		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???��??");
+		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "?????");
+		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??�M?????");
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
 
-		LOGINFO(CMyLogger::getInstance(), "on_dm_symbol_profit_loss :: account_no[%s], symbolcode[%s], �Ÿż���[%s], �򰡱ݾ�[%s], ������[%s], �Ѽ���[%s], ", account_no.c_str(), strSymbolCode, strProfit, strOpenProfit, strFee, strTotalProfit);
+		LOGINFO(CMyLogger::getInstance(), "on_dm_symbol_profit_loss :: account_no[%s], symbolcode[%s], ??????[%s], ?????[%s], ??????[%s], ?????[%s], ", account_no.c_str(), strSymbolCode, strProfit, strOpenProfit, strFee, strTotalProfit);
 
 
 		nlohmann::json symbol_profit_loss;
@@ -4624,21 +4624,21 @@ void DarkHorse::ViClient::on_ab_symbol_position(const CString& sTrCode, const LO
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���¹�ȣ");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???��??");
 
 		CString msg;
 
 		msg.Format("on_ab_symbol_position strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
-		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���¸�");
-		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�Ÿű���");
-		CString strSymbolPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���Ϲ̰�������");
-		CString strSymbolOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���ϼ� �̰�������");
-		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���մܰ�");
-		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���մܰ�(�Ҽ����ݿ�)");
-		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�򰡼���");
+		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???��?");
+		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strSymbolPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????????");
+		CString strSymbolOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????? ?????????");
+		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????(????????)");
+		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
 
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
@@ -4672,21 +4672,21 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���¹�ȣ");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???��??");
 
 		CString msg;
 
 		msg.Format("on_dm_symbol_position strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
-		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���¸�");
-		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�Ÿű���");
-		CString strSymbolPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���Ϲ̰�������");
-		CString strSymbolTodayOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���Ϲ̰�������");
-		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���մܰ�");
-		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���δܰ�");
-		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�򰡼���");
+		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???��?");
+		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strSymbolPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????????");
+		CString strSymbolTodayOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????????");
+		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???��??");
+		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
 
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
@@ -4719,30 +4719,30 @@ void DarkHorse::ViClient::on_ab_filled_order_list(const CString& sTrCode, const 
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = nRepeatCnt - 1; i >= 0; --i)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���¹�ȣ");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???��??");
 
 
 		CString msg;
 
 		
 
-		CString strOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ֹ���ȣ");
-		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "������");
-		CString strOrderPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ֹ�����");
-		CString strOrderAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ֹ�����");
-		CString strOrderPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�Ÿű���");
-		CString strPriceType = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "��������");
-		CString strOriOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���ֹ���ȣ");
-		CString strFirstOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "���ʿ��ֹ���ȣ");
+		CString strOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strOrderPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
+		CString strOrderAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
+		CString strOrderPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strPriceType = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????");
+		CString strOriOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????????");
 
-		CString strOrderDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ֹ�����");
-		CString strOrderTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ֹ��ð�");
+		CString strOrderDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
+		CString strOrderTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????��?");
 
-		CString strFilledPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "ü�ᰡ��");
-		CString strFilledAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "ü������");
+		CString strFilledPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????");
+		CString strFilledAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
 
-		CString strFilledDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "ü������");
-		CString strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "ü���ð�");
+		CString strFilledDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
+		CString strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????��?");
 
 		strOrderPrice.Trim();
 		strFilledPrice.Trim();
@@ -4808,19 +4808,19 @@ void DarkHorse::ViClient::on_ab_chart_data_long(const CString& sTrCode, const LO
 	int milisecond_time = 0;
 	int cur_time = 0;
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
-	// ���� �ֱٰ��� ���� ���� �´�. ������ ���� ������ �����͸� ���� �����´�.
+	// ???? ?????? ???? ???? ?��?. ?????? ???? ?????? ??????? ???? ?????��?.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�ð�");
-		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "��������");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�����ð�");
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�ð�");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "ü�ᷮ");
-		CString strCumulVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�����ŷ���");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?��?");
+		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????????");
+		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????��?");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?��?");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "???");
+		CString strCumulVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????????");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strDate, strTime);
 		TRACE(msg);
@@ -4878,18 +4878,18 @@ void DarkHorse::ViClient::on_ab_chart_data_short(const CString& sTrCode, const L
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
 	int milisecond_time = 0;
 	int cur_time = 0;
-	// ���� �ֱٰ��� ���� ���� �´�. ������ ���� ������ �����͸� ���� �����´�.
+	// ???? ?????? ???? ???? ?��?. ?????? ???? ?????? ??????? ???? ?????��?.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ð�");
-		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "��������");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�����ð�");
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ð�");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "ü�ᷮ");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?��?");
+		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????");
+		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????��?");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?��?");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strDate, strTime);
 		TRACE(msg);
@@ -4955,10 +4955,10 @@ void DarkHorse::ViClient::on_dm_chart_data(const CString& sTrCode, const LONG& n
 	int cur_time = 0;
 
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
-	// ���� �ֱٰ��� ���� ���� �´�. ������ ���� ������ �����͸� ���� �����´�.
+	// ???? ?????? ???? ???? ?��?. ?????? ???? ?????? ??????? ???? ?????��?.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "��¥�ð�");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????��?");
 		
 		if (chart_type == SmChartType::MIN)
 			strCurDate.Append(_T("00"));
@@ -4968,11 +4968,11 @@ void DarkHorse::ViClient::on_dm_chart_data(const CString& sTrCode, const LONG& n
 		CString strTime = strCurDate.Right(6);
 		CString strDate = strCurDate.Left(8);
 
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�ð�");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�ŷ���");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?��?");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strCurDate);
 		TRACE(msg);
@@ -5040,19 +5040,19 @@ void DarkHorse::ViClient::OnChartDataLong_Init(const CString& sTrCode, const LON
 	int milisecond_time = 0;
 	int cur_time = 0;
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
-	// ���� �ֱٰ��� ���� ���� �´�. ������ ���� ������ �����͸� ���� �����´�.
+	// ???? ?????? ???? ???? ?��?. ?????? ???? ?????? ??????? ???? ?????��?.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�ð�");
-		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "��������");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�����ð�");
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�ð�");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "ü�ᷮ");
-		CString strCumulVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�����ŷ���");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?��?");
+		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????????");
+		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????��?");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?��?");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "???");
+		CString strCumulVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????????");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strDate, strTime);
 		TRACE(msg);
@@ -5125,18 +5125,18 @@ void DarkHorse::ViClient::OnChartDataShort_Init(const CString& sTrCode, const LO
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
 	int milisecond_time = 0;
 	int cur_time = 0;
-	// ���� �ֱٰ��� ���� ���� �´�. ������ ���� ������ �����͸� ���� �����´�.
+	// ???? ?????? ???? ???? ?��?. ?????? ???? ?????? ??????? ???? ?????��?.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ð�");
-		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "��������");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�����ð�");
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "�ð�");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "����");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "ü�ᷮ");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?��?");
+		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????");
+		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????��?");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?��?");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strDate, strTime);
 		TRACE(msg);
@@ -5187,8 +5187,8 @@ void DarkHorse::ViClient::OnChartDataShort_Init(const CString& sTrCode, const LO
 
 void DarkHorse::ViClient::on_dm_expected(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strExpected = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����ü�ᰡ��");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strExpected = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????");
 	CString msg;
 	msg.Format("on_dm_expected = symbol [%s], expected [%s]\n",strSymbolCode, strExpected);
 	TRACE(msg);
@@ -5205,16 +5205,16 @@ void DarkHorse::ViClient::on_dm_expected(const CString& strKey, const LONG& nRea
 
 void DarkHorse::ViClient::on_dm_commodity_future_quote(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü���ð�");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᱸ��");
-	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᷮ");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
 
 
-	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���簡");
-	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ð�");
-	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
-	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
+	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��");
+	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?��?");
+	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
 
 	nlohmann::json quote;
 
@@ -5341,17 +5341,17 @@ void DarkHorse::ViClient::on_dm_commodity_future_hoga(const CString& strKey, con
 
 void DarkHorse::ViClient::on_dm_option_quote(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü���ð�");
-	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᷮ");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᱸ��");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
 
 	
 
-	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���簡");
-	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ð�");
-	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
-	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
+	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��");
+	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?��?");
+	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
 
 	nlohmann::json quote;
 
@@ -5376,56 +5376,56 @@ void DarkHorse::ViClient::on_dm_option_quote(const CString& strKey, const LONG& 
 }
 void DarkHorse::ViClient::on_dm_option_hoga(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
 
 
 
-	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��1");
-	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��1");
-	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������1");
-	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������1");
-	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�1");
-	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�1");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
 
 
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
 
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
 
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
 
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�5");
+	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
 
-	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ȣ���ð�");
+	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ѽ���");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ѽ���");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���ѰǼ�");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���ѰǼ�");
+	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -5500,10 +5500,10 @@ void DarkHorse::ViClient::OnDomesticChartData_Init(const CString& sTrCode, const
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
 	int milisecond_time = 0;
 	int cur_time = 0;
-	// ���� �ֱٰ��� ���� ���� �´�. ������ ���� ������ �����͸� ���� �����´�.
+	// ???? ?????? ???? ???? ?��?. ?????? ???? ?????? ??????? ???? ?????��?.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "��¥�ð�");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????��?");
 
 		if (chart_type == SmChartType::MIN)
 			strCurDate.Append(_T("00"));
@@ -5513,11 +5513,11 @@ void DarkHorse::ViClient::OnDomesticChartData_Init(const CString& sTrCode, const
 		CString strTime = strCurDate.Right(6);
 		CString strDate = strCurDate.Left(8);
 
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�ð�");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "����");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "�ŷ���");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?��?");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strCurDate);
 		TRACE(msg);
@@ -5566,38 +5566,38 @@ void DarkHorse::ViClient::OnDomesticChartData_Init(const CString& sTrCode, const
 
 void DarkHorse::ViClient::on_ab_order_accepted(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���¹�ȣ");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ���ȣ");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����������ʵ�");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�Ÿű���");
-	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ݱ���");
-	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ֹ���ȣ");
-	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ʿ��ֹ���ȣ");
-	CString strOrderDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ��ð�");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��??");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
+	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString strOrderDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
 	
 
 	//LOG_F(INFO, _T(" OnOrderAcceptedHd Custoem = %s"), strCustom);
 
 	CString strMsg;
-	strMsg.Format("OnOrderAcceptedHd ����[%s]�ֹ���ȣ[%s] �ֹ�����[%s], �ֹ�����[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
+	strMsg.Format("OnOrderAcceptedHd ????[%s]??????[%s] ???????[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 	
-	LOGINFO(CMyLogger::getInstance(), "OnOrderAcceptedHd ����[%s]�ֹ���ȣ[%s], �ֹ�����[%s], �ֹ�����[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
+	LOGINFO(CMyLogger::getInstance(), "OnOrderAcceptedHd ????[%s]??????[%s], ???????[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 
 	//TRACE(strMsg);
 	strCustom.Trim();
-	strAccountNo.TrimRight(); // ���� ��ȣ
-	strOrderNo.TrimLeft('0'); // �ֹ� ��ȣ
-	strSymbolCode.TrimRight(); // �ɺ� �ڵ�
-	strOrderPrice = strOrderPrice.Trim(); // �ֹ� ���� Ʈ��
+	strAccountNo.TrimRight(); // ???? ???
+	strOrderNo.TrimLeft('0'); // ??? ???
+	strSymbolCode.TrimRight(); // ??? ???
+	strOrderPrice = strOrderPrice.Trim(); // ??? ???? ???
 	
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
-	// �ֹ� ���� Ʈ��
+	// ??? ???? ???
 	strOrderAmount.TrimRight();
 
 	nlohmann::json order_info;
@@ -5628,55 +5628,55 @@ void DarkHorse::ViClient::on_ab_order_accepted(const CString& strKey, const LONG
 
 void DarkHorse::ViClient::on_ab_order_unfilled(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���¹�ȣ");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ���ȣ");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�Ÿű���");
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����������ʵ�");
-	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���۱���");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��??");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
 	CString strCancelCnt = strOrderAmount;
 	CString strModyCnt = strOrderAmount;
-	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü������");
-	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ܷ�");
+	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
 
-	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ֹ���ȣ");
-	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ʿ��ֹ���ȣ");
-	CString strOrderSeq = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
+	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
+	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString strOrderSeq = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
 
 	CString strMsg;
-	strMsg.Format("OnOrderUnfilled ����[%s]�ֹ���ȣ[%s][���ֹ���ȣ[%s], ���� ���ֹ� ��ȣ[%s] ,�ֹ�����[%s], �ֹ�����[%s], �ܷ�[%s], ü������[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
-	LOGINFO(CMyLogger::getInstance(), "OnOrderUnfilled ����[%s] �ֹ���ȣ[%s][���ֹ���ȣ[%s], ���� ���ֹ� ��ȣ[%s], �ֹ�����[%s], �ֹ�����[%s], ü������[%s], �ܷ�[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount, strFilledCnt, strRemain);
+	strMsg.Format("OnOrderUnfilled ????[%s]??????[%s][????????[%s], ???? ????? ???[%s] ,???????[%s], ???????[%s], ???[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+	LOGINFO(CMyLogger::getInstance(), "OnOrderUnfilled ????[%s] ??????[%s][????????[%s], ???? ????? ???[%s], ???????[%s], ???????[%s], ???????[%s], ???[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount, strFilledCnt, strRemain);
 
 	//TRACE(strMsg);
 
 	strCustom.Trim();
-	// �ֹ� ����
+	// ??? ????
 	strOrderPrice.Trim();
 	
 
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
-	// ���� ��ȣ Ʈ��
+	// ???? ??? ???
 	strAccountNo.TrimRight();
-	// �ֹ� ��ȣ Ʈ��
+	// ??? ??? ???
 	strOrderNo.TrimLeft('0');
-	// ���ֹ� ��ȣ Ʈ��
+	// ????? ??? ???
 	strOriOrderNo.TrimLeft('0');
-	// ù�ֹ� ��ȣ Ʈ��
+	// ???? ??? ???
 	strFirstOrderNo.TrimLeft('0');
-	// �ɺ� �ڵ� Ʈ��
+	// ??? ??? ???
 	strSymbolCode.TrimRight();
-	// �ֹ� ���� Ʈ��
+	// ??? ???? ???
 	strOrderAmount.TrimRight();
-	// �����̳� ���ҽ� ó���� ���� Ʈ��
+	// ??????? ????? ????? ???? ???
 	strRemain.TrimRight();
-	// ������ �̷����� ����
+	// ?????? ??????? ????
 	strModyCnt.TrimRight();
-	// ü���� ����
+	// ????? ????
 	strFilledCnt.TrimRight();
-	// ���ҵ� ����
+	// ????? ????
 	strCancelCnt.TrimRight();
 
 	nlohmann::json order_info;
@@ -5713,33 +5713,33 @@ void DarkHorse::ViClient::on_ab_order_unfilled(const CString& strKey, const LONG
 
 void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���¹�ȣ");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ���ȣ");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�Ÿű���");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��??");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
 
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
 
 
-	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᰡ��");
-	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü������");
-	CString strFilledDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü������");
-	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü���ð�");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����������ʵ�");
+	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
+	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strFilledDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
 
-	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���۱���");
+	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
 
-	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "������");
+	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
 
 	CString strMsg;
-	strMsg.Format("on_ab_order_filled ����[%s]�ֹ���ȣ[%s]\n", strSymbolCode, strOrderNo);
-	//strMsg.Format(_T("OnOrderFilledHd ������ = %s\n"), strFee);
+	strMsg.Format("on_ab_order_filled ????[%s]??????[%s]\n", strSymbolCode, strOrderNo);
+	//strMsg.Format(_T("OnOrderFilledHd ?????? = %s\n"), strFee);
 	//TRACE(strMsg);
 
 	//LOG_F(INFO, _T(" OnOrderFilledHd Custoem = %s"), strCustom);
 
-	// �ɺ� �ڵ�
+	// ??? ???
 	strSymbolCode.Trim();
 
 	strCustom.Trim();
@@ -5748,15 +5748,15 @@ void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& 
 	if (order_price < 0) return;
 	const int filled_price = convert_to_int(strSymbolCode, strFilledPrice);
 	if (filled_price < 0) return;
-	// ���� ��ȣ Ʈ��
+	// ???? ??? ???
 	strAccountNo.TrimRight();
-	// �ֹ� ��ȣ Ʈ��
+	// ??? ??? ???
 	strOrderNo.TrimLeft('0');
 	
 	
-	// ü�� ����
+	// ??? ????
 	strFilledAmount.TrimLeft();
-	// ü���� �ð�
+	// ????? ?��?
 	strFilledTime.TrimRight();
 
 	nlohmann::json order_info;
@@ -5789,36 +5789,36 @@ void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& 
 
 void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���¹�ȣ");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ���ȣ");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����������ʵ�");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�Ÿű���");
-	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ݱ���");
-	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���۱���");
-	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ֹ���ȣ");
-	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ʿ��ֹ���ȣ");
-	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ð�");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��??");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
+	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????��?");
 
 
 	//LOG_F(INFO, _T(" OnOrderAcceptedHd Custoem = %s"), strCustom);
 
 	CString strMsg;
-	strMsg.Format("on_dm_order_accepted ����[%s]�ֹ���ȣ[%s], �ֹ�����[%s], �ֹ�����[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
+	strMsg.Format("on_dm_order_accepted ????[%s]??????[%s], ???????[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 
 	//TRACE(strMsg);
 	strCustom.Trim();
-	strAccountNo.TrimRight(); // ���� ��ȣ
-	strOrderNo.TrimLeft('0'); // �ֹ� ��ȣ
-	strSymbolCode.TrimRight(); // �ɺ� �ڵ�
-	strOrderPrice = strOrderPrice.Trim(); // �ֹ� ���� Ʈ��
+	strAccountNo.TrimRight(); // ???? ???
+	strOrderNo.TrimLeft('0'); // ??? ???
+	strSymbolCode.TrimRight(); // ??? ???
+	strOrderPrice = strOrderPrice.Trim(); // ??? ???? ???
 
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
-	// �ֹ� ���� Ʈ��
+	// ??? ???? ???
 	strOrderAmount.TrimRight();
 
 	nlohmann::json order_info;
@@ -5851,54 +5851,54 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 
 void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���¹�ȣ");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ���ȣ");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�Ÿű���");
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ�����");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����������ʵ�");
-	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���۱���");
-	CString strCancelCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���Ҽ���");
-	CString strModyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "��������");
-	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü������");
-	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ܷ�");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��??");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strCancelCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strModyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
+	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
 
-	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ֹ���ȣ");
-	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ʿ��ֹ���ȣ");
+	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
+	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
 	CString strOrderSeq = "0";
 
 	CString strMsg;
-	strMsg.Format("on_dm_order_unfilled ����[%s]�ֹ���ȣ[%s][���ֹ���ȣ[%s], ���� ���ֹ� ��ȣ[%s] ,�ֹ�����[%s], �ֹ�����[%s], �ܷ�[%s], ü������[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+	strMsg.Format("on_dm_order_unfilled ????[%s]??????[%s][????????[%s], ???? ????? ???[%s] ,???????[%s], ???????[%s], ???[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
 
 	//TRACE(strMsg);
 
 	strCustom.Trim();
-	// �ֹ� ����
+	// ??? ????
 	strOrderPrice.Trim();
 
 
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
-	// ���� ��ȣ Ʈ��
+	// ???? ??? ???
 	strAccountNo.TrimRight();
-	// �ֹ� ��ȣ Ʈ��
+	// ??? ??? ???
 	strOrderNo.TrimLeft('0');
-	// ���ֹ� ��ȣ Ʈ��
+	// ????? ??? ???
 	strOriOrderNo.TrimLeft('0');
-	// ù�ֹ� ��ȣ Ʈ��
+	// ???? ??? ???
 	strFirstOrderNo.TrimLeft('0');
-	// �ɺ� �ڵ� Ʈ��
+	// ??? ??? ???
 	strSymbolCode.TrimRight();
-	// �ֹ� ���� Ʈ��
+	// ??? ???? ???
 	strOrderAmount.TrimRight();
-	// �����̳� ���ҽ� ó���� ���� Ʈ��
+	// ??????? ????? ????? ???? ???
 	strRemain.TrimRight();
-	// ������ �̷����� ����
+	// ?????? ??????? ????
 	strModyCnt.TrimRight();
-	// ü���� ����
+	// ????? ????
 	strFilledCnt.TrimRight();
-	// ���ҵ� ����
+	// ????? ????
 	strCancelCnt.TrimRight();
 
 	nlohmann::json order_info;
@@ -5936,32 +5936,32 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 
 void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���¹�ȣ");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ֹ���ȣ");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�Ÿű���");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��??");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
 
 	CString strOrderPrice = "0";
 	CString strOrderAmount = "0";
 
 
-	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᰡ��");
-	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü������");
-	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü���ð�");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����������ʵ�");
+	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
+	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
 
-	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���۱���");
+	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
 
-	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "������");
+	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
 
 	CString strMsg;
-	strMsg.Format("on_dm_order_filled ����[%s]�ֹ���ȣ[%s]\n", strSymbolCode, strOrderNo);
-	//strMsg.Format(_T("OnOrderFilledHd ������ = %s\n"), strFee);
+	strMsg.Format("on_dm_order_filled ????[%s]??????[%s]\n", strSymbolCode, strOrderNo);
+	//strMsg.Format(_T("OnOrderFilledHd ?????? = %s\n"), strFee);
 	//TRACE(strMsg);
 
 	//LOG_F(INFO, _T(" OnOrderFilledHd Custoem = %s"), strCustom);
 
-	// �ɺ� �ڵ�
+	// ??? ???
 	strSymbolCode.Trim();
 
 	strCustom.Trim();
@@ -5970,15 +5970,15 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 	if (order_price < 0) return;
 	const int filled_price = convert_to_int(strSymbolCode, strFilledPrice);
 	if (filled_price < 0) return;
-	// ���� ��ȣ Ʈ��
+	// ???? ??? ???
 	strAccountNo.TrimRight();
-	// �ֹ� ��ȣ Ʈ��
+	// ??? ??? ???
 	strOrderNo.TrimLeft('0');
 
 
-	// ü�� ����
+	// ??? ????
 	strFilledAmount.TrimLeft();
-	// ü���� �ð�
+	// ????? ?��?
 	strFilledTime.TrimRight();
 
 	nlohmann::json order_info;
@@ -6011,18 +6011,18 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 
 void DarkHorse::ViClient::on_ab_future_quote(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����ü���ð�");
-	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᰡ");
-	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ð�");
-	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
-	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
-	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᷮ");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᱸ��");
-	CString strCumulativeAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ŷ���");
-	CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ϴ���");
-	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ϴ���������");
-	// ���ϴ���������
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????��?");
+	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
+	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?��?");
+	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
+	CString strCumulativeAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????");
+	CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
+	// ?????????????
 
 	//m_edSeriesO.SetWindowText(strSeries);
 	//m_edTimeO.SetWindowText(strTime);
@@ -6056,56 +6056,56 @@ void DarkHorse::ViClient::on_ab_future_quote(const CString& strKey, const LONG& 
 
 void DarkHorse::ViClient::on_ab_future_hoga(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
 
 
 
-	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��1");
-	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��1");
-	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������1");
-	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������1");
-	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�1");
-	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�1");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
 
 
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
 
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
 
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
 
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�5");
+	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
 
-	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ȣ���ð�");
+	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ѽ���");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ѽ���");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���ѰǼ�");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���ѰǼ�");
+	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -6158,17 +6158,17 @@ void DarkHorse::ViClient::on_ab_future_hoga(const CString& strKey, const LONG& n
 void DarkHorse::ViClient::on_dm_future_quote(const CString& strKey, const LONG& nRealType)
 {
 
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
-	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü���ð�");
-	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���簡");
-	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ð�");
-	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
-	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "����");
-	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᷮ");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ü�ᱸ��");
-	CString strCumulativeAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ŷ���");
-	CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "���ϴ���");
-	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "������");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
+	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???��");
+	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?��?");
+	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
+	CString strCumulativeAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????");
+	CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
 
 
 	nlohmann::json quote;
@@ -6196,56 +6196,56 @@ void DarkHorse::ViClient::on_dm_future_quote(const CString& strKey, const LONG& 
 
 void DarkHorse::ViClient::on_dm_future_hoga(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�����ڵ�");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
 
 
 
-	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��1");
-	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��1");
-	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������1");
-	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������1");
-	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�1");
-	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�1");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
 
 
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
 
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
 
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
 
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ��5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ��5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ������5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ������5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ǽ�5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ǽ�5");
+	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
 
-	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "ȣ���ð�");
+	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????��?");
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���Ѽ���");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���Ѽ���");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ŵ�ȣ���ѰǼ�");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "�ż�ȣ���ѰǼ�");
+	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -6305,10 +6305,10 @@ int DarkHorse::ViClient::ab_account_asset(DhTaskArg arg)
 
 		std::string reqString;
 		std::string temp;
-		// ���� ��ȣ
+		// ???? ???
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
-		// ���й�ȣ
+		// ???��??
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 

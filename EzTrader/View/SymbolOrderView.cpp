@@ -1097,7 +1097,7 @@ int SymbolOrderView::RecalRowCount(const int& height)
 	update_buy_stop_order();
 	update_sell_stop_order();
 
-	//Invalidate(FALSE);
+	Invalidate(FALSE);
 
 	//DmAccountOrderCenterWindow::DeltaOrderArea = extra_height;
 
@@ -1155,6 +1155,18 @@ void SymbolOrderView::CancelSellStop()
 	enable_sell_stop_order_show_ = true;
 }
 
+int SymbolOrderView::GetMaxValueRowCount()
+{
+	RECT rect;
+	GetClientRect(&rect);
+
+	double pureHeight = rect.bottom - rect.top - CellHeight();
+
+	int count = (int)(pureHeight / _CellHeight);
+
+	return count;
+}
+
 void SymbolOrderView::set_order_area()
 {
 	for (int i = 1; i < _Grid->RowCount(); i++) {
@@ -1185,8 +1197,12 @@ void SymbolOrderView::trigger_resize_event()
 
 void SymbolOrderView::reset_row_info()
 {
-	if (!win_info_) return;
-	const int height = win_info_->rc_new.bottom - win_info_->rc_new.top;
+	//if (!win_info_) return;
+	//const int height = win_info_->rc_new.bottom - win_info_->rc_new.top;
+	RECT rect;
+	GetClientRect(&rect);
+
+	long height = rect.bottom - rect.top;
 
 	_Grid->SetDefaultRowHeight(order_set_.grid_height);
 	_Grid->MakeRowHeightMap();
@@ -1281,26 +1297,7 @@ bool SymbolOrderView::SetColumnWidth(int col, int width)
 
 void SymbolOrderView::Init()
 {
-	ClearOldQuote();
-	ClearOldHoga();
-	ClearOrders();
-	ClearStopOrders();
-	clear_buy_stop_order();
-	clear_sell_stop_order();
-
-	_Grid->ReleaseOrderButtons(_ButtonMap);
-	price_start_row_ = 2;
-	price_end_row_ = _Grid->RowCount() - 2;
-	_Grid->CreateGrids();
-	_Grid->RegisterOrderButtons(_ButtonMap);
-	index_row_ = get_center_row();
-	SetCenterValues();
-	set_order_area();
-	update_quote();
-	update_hoga();
-	draw_order();
-	update_buy_stop_order();
-	update_sell_stop_order();
+	reset_row_info();
 }
 
 void SymbolOrderView::ResetByCenterRow()
