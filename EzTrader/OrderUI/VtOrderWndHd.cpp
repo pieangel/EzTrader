@@ -227,7 +227,7 @@ BOOL VtOrderWndHd::OnInitDialog()
 	if (!_OrderConfigMgr)
 		return FALSE;
 	_EnableOnSizeEvent = false;
-
+	_WindowHeight = 1000;
 	// TODO:  Add extra initialization here
 	SaveControlPos();
 	CreateChildWindows();
@@ -276,6 +276,7 @@ BOOL VtOrderWndHd::OnInitDialog()
 	_YPos = 0;
 
 	_LeftWnd.OnResizeWnd();
+
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
