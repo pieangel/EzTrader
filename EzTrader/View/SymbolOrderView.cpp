@@ -2570,15 +2570,15 @@ void SymbolOrderView::OnPaint()
 		m_pGM->Clear();
 
 		m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
-		//rect.right -= 1;
-		//rect.bottom -= 1;
+		rect.right -= 1;
+		rect.bottom -= 1;
 		_Grid->SetColHeaderTitles(_OrderTableHeader);
 		_Grid->DrawGrid(m_pGM, rect);
 		set_moving_rect();
 		set_fixed_selected_cell();
 		_Grid->draw_cells(m_pGM, rect);
-		rect.right += 2;
-		rect.bottom += 2;
+		//rect.right += 2;
+		//rect.bottom += 2;
 		_Grid->DrawBorder(m_pGM, rect, _Selected);
 		DrawMovingOrder();
 
