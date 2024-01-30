@@ -545,11 +545,10 @@ void DarkHorse::SmGrid::MakeRowHeightMap()
 		}
 	}
 }
-// This function should not use anymore. 
-void DarkHorse::SmGrid::MakeRowHeightMap(const int row_height)
+void DarkHorse::SmGrid::ResetAllHeightMap()
 {
 	for (int i = 0; i < _RowCount; i++) {
-		_RowHeightMap[i] = row_height;
+		_RowHeightMap[i] = _defaultRowHeight;
 	}
 }
 

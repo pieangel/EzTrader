@@ -1204,7 +1204,8 @@ void SymbolOrderView::reset_row_info()
 	long height = rect.bottom - rect.top;
 
 	_Grid->SetDefaultRowHeight(order_set_.grid_height);
-	_Grid->MakeRowHeightMap();
+	//_Grid->MakeRowHeightMap();
+	_Grid->ResetAllHeightMap();
 	_Grid->RecalRowCount(height, true);
 	RecalRowCount(height);
 }
@@ -1238,6 +1239,7 @@ void SymbolOrderView::ResizeGrid(int cellHeight, int orderAreaWidth)
 {
 	_CellHeight = cellHeight;
 	_OrderWidth = orderAreaWidth;
+	order_set_.grid_height = _CellHeight;
 	Init();
 }
 
