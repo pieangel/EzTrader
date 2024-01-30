@@ -52,7 +52,6 @@ SmOrderPanel::SmOrderPanel(CWnd* pParent /*=NULL*/)
 	_FixedCenter = false;
 	_StopVal = 2;
 	_Activated = false;
-	_RealTickWnd = nullptr;
 	_ConfigDlg = nullptr;
 	_Init = false;
 	_TickWndPos = 0;
@@ -1095,6 +1094,7 @@ BOOL SmOrderPanel::OnInitDialog()
 
 	//m_Grid.OrderConfigMgr(_OrderConfigMgr);
 	m_Grid.SetUp();
+	_TickGrid.SetUp();
 	_TickGrid.SetOrderConfigMgr(_OrderConfigMgr);
 	_TickGrid.CenterWnd(this);
 	ShowHideCtrl();
@@ -1365,7 +1365,7 @@ void SmOrderPanel::BlockEvent()
 	//mainApp.CallbackMgr().UnsubscribeMasterCallback((long)this);
 	//m_Grid.UnregisterAllCallback();
 	_ProductRemainGrid.UnregisterAllCallback();
-	_TickGrid.UnregisterAllCallback();
+	//_TickGrid.UnregisterAllCallback();
 }
 
 void SmOrderPanel::ChangeAccount(account_p acnt)
@@ -1392,7 +1392,7 @@ void SmOrderPanel::ChangeSymbol(symbol_p symbol)
 {
 	if (!symbol)
 		return;
-	_TickGrid.ClearValues();
+	_TickGrid.Clear();
 	ClearPosition();
 	// 실시간 시세와 호가 등록을 해지해 준다.
 	//UnregisterRealtimeSymbol();

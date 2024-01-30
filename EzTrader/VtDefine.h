@@ -11,7 +11,7 @@ const int BithumbTimerID = WM_USER + 1001;
 
 const int ConfigHeight = 94;
 const int ConfigWidth = 480;
-const int TickWndWidth = 155;
+const int TickWndWidth = 173;
 
 const int MinOrderWndSize = 200;
 const int CenterWndWidth = 486;

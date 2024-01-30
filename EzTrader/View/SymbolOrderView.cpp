@@ -65,7 +65,6 @@ using namespace std;
 using namespace std::placeholders;
 
 constexpr int Round(double x) { return static_cast<int>(x + 0.5f); }
-
 using namespace DarkHorse;
 
 BEGIN_MESSAGE_MAP(SymbolOrderView, CBCGPStatic)
@@ -234,10 +233,10 @@ SymbolOrderView::SymbolOrderView()
 	grid_header_vector_.push_back(header_info);
 
 
-	_GridColMap[DarkHorse::SmOrderGridCol::STOP] = 48;
-	_GridColMap[DarkHorse::SmOrderGridCol::ORDER] = 60;
-	_GridColMap[DarkHorse::SmOrderGridCol::COUNT] = 45;
-	_GridColMap[DarkHorse::SmOrderGridCol::QUANTITY] = 45;
+	_GridColMap[DarkHorse::SmOrderGridCol::STOP] = 40;
+	_GridColMap[DarkHorse::SmOrderGridCol::ORDER] = 55;
+	_GridColMap[DarkHorse::SmOrderGridCol::COUNT] = 35;
+	_GridColMap[DarkHorse::SmOrderGridCol::QUANTITY] = 35;
 	_GridColMap[DarkHorse::SmOrderGridCol::CENTER] = 80;
 }
 
@@ -1230,8 +1229,10 @@ int SymbolOrderView::GetGridWidth(std::vector<bool>& colOptions)
 		}
 	}
 
-	return totalWidth + 5;
+	return totalWidth + 12;
 }
+
+
 
 void SymbolOrderView::ResizeGrid(int cellHeight, int orderAreaWidth)
 {
@@ -1510,15 +1511,15 @@ std::pair<int, int> SymbolOrderView::get_order_count(const std::shared_ptr<DarkH
 
 void SymbolOrderView::ResetHeaderWidth(const int& wnd_width)
 {
-	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_STOP, grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_ORDER, grid_header_vector_[DarkHorse::OrderHeader::SELL_ORDER].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_CNT, grid_header_vector_[DarkHorse::OrderHeader::SELL_CNT].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_QTY, grid_header_vector_[DarkHorse::OrderHeader::SELL_QTY].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::QUOTE, grid_header_vector_[DarkHorse::OrderHeader::QUOTE].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_QTY, grid_header_vector_[DarkHorse::OrderHeader::BUY_QTY].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_CNT, grid_header_vector_[DarkHorse::OrderHeader::BUY_CNT].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_ORDER, grid_header_vector_[DarkHorse::OrderHeader::BUY_ORDER].width);
-	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_STOP, grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_STOP, _GridColMap[DarkHorse::SmOrderGridCol::STOP]);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_ORDER, _GridColMap[DarkHorse::SmOrderGridCol::ORDER]);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_CNT, _GridColMap[DarkHorse::SmOrderGridCol::COUNT]);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::SELL_QTY, _GridColMap[DarkHorse::SmOrderGridCol::QUANTITY]);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::QUOTE, _GridColMap[DarkHorse::SmOrderGridCol::CENTER]);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_QTY, _GridColMap[DarkHorse::SmOrderGridCol::QUANTITY]);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_CNT, _GridColMap[DarkHorse::SmOrderGridCol::COUNT]);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_ORDER, _GridColMap[DarkHorse::SmOrderGridCol::ORDER]);
+	_Grid->SetColWidth(DarkHorse::OrderHeader::BUY_STOP, _GridColMap[DarkHorse::SmOrderGridCol::STOP]);
 }
 
 void SymbolOrderView::SetCenterValues(const bool& make_row_map /*= true*/)

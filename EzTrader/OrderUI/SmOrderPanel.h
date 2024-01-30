@@ -18,6 +18,7 @@
 #include "../Time/cpptime.h"
 #include "../Symbol/SmSymbol.h"
 #include "../View/SymbolOrderView.h"
+#include "../View/SymbolTickView.h"
 
 namespace DarkHorse {
 	class SmSymbol;
@@ -236,12 +237,10 @@ private:
 	VtOrderWndHd* _ParentDlg = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::vector<VtOrderGridConfig*> _ConfigDlgVector;
-	//VtRealtimeTickQuoteGrid _TickGrid;
-	SmTickGrid _TickGrid;
+	SymbolTickView _TickGrid;
 	VtProductRemainGrid _ProductRemainGrid;
 	VtConfigGrid _ConfigGrid;
 	bool _FixedCenter;
-	VtRealTickWnd* _RealTickWnd = nullptr;
 	bool _Init = false;
 	bool _ShowRemainConfig = true;
 	bool _ShowOrderCountArea = true;

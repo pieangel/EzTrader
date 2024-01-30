@@ -17,6 +17,8 @@ namespace DarkHorse {
 	class SymbolTickControl;
 }
 struct WinInfo;
+class VtOrderConfigManager;
+class SmOrderPanel;
 class SymbolTickView : public CBCGPStatic
 {
 public:
@@ -27,6 +29,7 @@ public:
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
+	void Init();
 	int get_id() {
 		return id_;
 	}
@@ -42,7 +45,17 @@ public:
 	}
 	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
 	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
+	int GetGridWidth();
+	void SetOrderConfigMgr(VtOrderConfigManager* val);
+	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
+	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
+	int MaxRow();
+	void MaxRow(int val);
 private:
+	int colWidth[3] = { 60, 55, 58 };
+	int _RowCount = 26;
+	SmOrderPanel* _CenterWnd = nullptr;
+	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	int center_window_id_{0};
 	int id_{0};

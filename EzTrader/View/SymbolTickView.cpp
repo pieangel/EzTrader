@@ -23,6 +23,9 @@ using namespace std::placeholders;
 
 using namespace DarkHorse;
 
+const int fixed_tick_wnd_width = 173;
+
+
 BEGIN_MESSAGE_MAP(SymbolTickView, CBCGPStatic)
 	//{{AFX_MSG_MAP(CBCGPTextPreviewCtrl)
 	ON_WM_PAINT()
@@ -41,6 +44,30 @@ SymbolTickView::~SymbolTickView()
 {
 	//KillTimer(1);
 	if (m_pGM != NULL) delete m_pGM;
+}
+
+int SymbolTickView::GetGridWidth()
+{
+	int width_sum = 0;
+	for (int i = 0; i < 3; i++) {
+		width_sum += colWidth[i];
+	}
+	return width_sum;
+}
+
+void SymbolTickView::SetOrderConfigMgr(VtOrderConfigManager* val)
+{
+	_OrderConfigMgr = val;
+}
+
+void SymbolTickView::MaxRow(int val)
+{
+	_RowCount = val;
+}
+
+int SymbolTickView::MaxRow()
+{
+	return _RowCount;
 }
 
 void SymbolTickView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)
@@ -65,15 +92,15 @@ void SymbolTickView::SetUp()
 	CreateResource();
 	//InitHeader();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
-	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 26, 3);
-	int colWidth[3] = { 60, 55, 41 };
+	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, _RowCount, 3);
+	//int colWidth[3] = { 60, 55, 58 };
 	int width_sum = 0;
 	for (int i = 0; i < 3; i++) {
 		_Grid->SetColWidth(i, colWidth[i]);
 		width_sum += colWidth[i];
 	}
-	width_sum -= colWidth[2];
-	_Grid->SetColWidth(2, rect.Width() - width_sum);
+	//width_sum -= colWidth[2];
+	//_Grid->SetColWidth(2, rect.Width() - width_sum);
 
 	_Grid->MakeRowHeightMap();
 	_Grid->MakeColWidthMap();
@@ -103,14 +130,14 @@ void SymbolTickView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 	//InitHeader();
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
 	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 26, 3);
-	int colWidth[3] = { 60, 55, 41 };
+	//int colWidth[3] = { 60, 55, 58 };
 	int width_sum = 0;
 	for (int i = 0; i < 3; i++) {
 		_Grid->SetColWidth(i, colWidth[i]);
 		width_sum += colWidth[i];
 	}
-	width_sum -= colWidth[2];
-	_Grid->SetColWidth(2, rect.Width() - width_sum);
+	//width_sum -= colWidth[2];
+	//_Grid->SetColWidth(2, rect.Width() - width_sum);
 
 	_Grid->MakeRowHeightMap();
 	_Grid->MakeColWidthMap();
@@ -152,6 +179,10 @@ void SymbolTickView::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+}
+
+void SymbolTickView::Init()
+{
 }
 
 void SymbolTickView::Clear()
