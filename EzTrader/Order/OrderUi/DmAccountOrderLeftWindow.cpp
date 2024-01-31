@@ -27,14 +27,14 @@
 IMPLEMENT_DYNAMIC(DmAccountOrderLeftWindow, CBCGPDialog)
 
 DmAccountOrderLeftWindow::DmAccountOrderLeftWindow(CWnd* pParent /*=nullptr*/)
-	: CBCGPDialog(IDD_ORDER_LEFT, pParent)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_LEFT, pParent)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 	EnableLayout();
 }
 
 DmAccountOrderLeftWindow::DmAccountOrderLeftWindow(CWnd* pParent, std::shared_ptr<WinInfo> parent_win_info)
-	: CBCGPDialog(IDD_ORDER_LEFT, pParent)
+	: CBCGPDialog(IDD_DM_ACNT_ORDER_LEFT, pParent)
 {
 	win_info_ = std::make_shared<WinInfo>(parent_win_info, 0, 0, 0, 0, 0);
 	win_info_->name_ = "left";
@@ -105,6 +105,25 @@ END_MESSAGE_MAP()
 
 // DmAccountOrderLeftWindow message handlers
 
+
+void DmAccountOrderLeftWindow::OnResizeWnd()
+{
+	CRect rcWnd;
+	if (GetSafeHwnd()) {
+// 		if (!_OrderConfigMgr->_HdCenterWnd->GetSafeHwnd())
+// 			return;
+// 		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
+// 		CRect rcGrid;
+// 		_SymbolOptionGrid.GetWindowRect(rcGrid);
+// 		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - FixedHeight, SWP_NOMOVE);
+// 		_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
+// 		//_SymbolOptionGrid.GetSymbolMaster();
+// 		_SymbolFutureGrid.InitGrid();
+// 		_ProfitLossGrid.InitGrid();
+// 		_AssetGrid.InitGrid();
+		int i = 0;
+	}
+}
 
 void DmAccountOrderLeftWindow::SetMainWnd(DmAccountOrderWindow* main_wnd)
 {

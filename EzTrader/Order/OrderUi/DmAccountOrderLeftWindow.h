@@ -32,6 +32,7 @@ namespace DarkHorse {
 	class SmAccount;
 	class SmFund;
 }
+class VtOrderConfigManager;
 struct WinInfo;
 class SmSymbolTableDialog;
 class DmAccountOrderWindow;
@@ -55,6 +56,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::shared_ptr<WinInfo> win_info_{ nullptr };
 	void set_option_view();
 	// key : option year-month combo index, value : year-month name
@@ -68,7 +70,16 @@ private:
 	DmOptionView option_view_;
 	DmFutureView future_view_;
 	int order_window_id_{ 0 };
+	int _DefaultWidth = 200;
+	int _DefaultHeight = 774;
 public:
+	int DefaultWidth() const { return _DefaultWidth; }
+	void DefaultWidth(int val) { _DefaultWidth = val; }
+	int DefaultHeight() const { return _DefaultHeight; }
+	void DefaultHeight(int val) { _DefaultHeight = val; }
+	void OnResizeWnd();
+	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
+	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
 	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
 	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
 

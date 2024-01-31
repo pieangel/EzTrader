@@ -26,7 +26,8 @@ namespace DarkHorse {
 }
 
 using order_p = std::shared_ptr<DarkHorse::Order>;
-
+class VtOrderLeftWndHd;
+class VtOrderConfigManager;
 class DmOptionView : public CBCGPStatic
 {
 public:
@@ -58,7 +59,13 @@ public:
 	void set_view_mode(ViewMode view_mode);
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
+	VtOrderLeftWndHd* LeftWnd() const { return _LeftWnd; }
+	void LeftWnd(VtOrderLeftWndHd* val) { _LeftWnd = val; }
+	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
+	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
 private:
+	VtOrderLeftWndHd* _LeftWnd = nullptr;
+	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::string get_position_text(const DarkHorse::VmOption& option_info);
 	void get_option_info(DarkHorse::VmOption& option_info);
 	void get_init_accepted_order_count(DarkHorse::VmOption& option_info);

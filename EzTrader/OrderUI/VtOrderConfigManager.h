@@ -33,6 +33,7 @@ class VtOrderCenterWndHd;
 class VtOrderWndHd;
 class VtFund;
 class SmOrderPanel;
+class DmAccountOrderLeftWindow;
 enum class VtSpaceByOrderType
 {
 	NONE = 0,
@@ -159,7 +160,8 @@ public:
 	int centerWidth = 0;
 	int rightWidth = 0;
 
-	VtOrderLeftWndHd* _HdLeftWnd = nullptr;
+	//VtOrderLeftWndHd* _HdLeftWnd = nullptr;
+	DmAccountOrderLeftWindow* _HdLeftWnd = nullptr;
 	VtOrderRightWndHd* _HdRightWnd = nullptr;
 	SmOrderPanel* _HdCenterWnd = nullptr;
 	VtOrderWndHd*       _HdOrderWnd = nullptr;

@@ -9,6 +9,7 @@
 #include "../Xml/pugixml.hpp"
 #include "../Fund/SmFund.h"
 #include "../Account/SmAccount.h"
+#include "../Order/OrderUi/DmAccountOrderLeftWindow.h"
 
 namespace DarkHorse {
 	class SmFund;
@@ -130,7 +131,8 @@ private:
 	void UnregisterRealtimeAccount(account_p acnt);
 	account_p _Account = nullptr;
 	fund_p _Fund = nullptr;
-	VtOrderLeftWndHd _LeftWnd;
+	//VtOrderLeftWndHd _LeftWnd;
+	DmAccountOrderLeftWindow _LeftWnd;
 	VtOrderRightWndHd _RightWnd;
 	std::vector<SmOrderPanel*> _CenterWndVector;
 	//std::map<VtRealTickWnd*, VtRealTickWnd*> _RealTickWndVector;
