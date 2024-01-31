@@ -23,6 +23,7 @@
 #include "../Symbol/MarketDefine.h"
 #include "../Util/IdGenerator.h"
 #include "../Event/EventHub.h"
+#include "../Client/ViClient.h"
 #include <functional>
 using namespace std::placeholders;
 
@@ -953,7 +954,7 @@ void SmOrderPanel::RegisterRealtimeSymbol()
 {
 	if (!_Symbol)
 		return;
-	//mainApp.RealtimeRegisterMgr().RegisterProduct(_Symbol->ShortCode, 0);
+	mainApp.Client()->RegisterSymbol(_Symbol->SymbolCode());
 }
 
 void SmOrderPanel::UnregisterRealtimeSymbol()

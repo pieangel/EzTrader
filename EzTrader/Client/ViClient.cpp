@@ -39,7 +39,6 @@
 #include "ClientConst.h"
 #include "../Quote/SmQuoteManager.h"
 #include "../Order/OrderProcess/TotalOrderManager.h"
-#include "../Archieve/SmSaveManager.h"
 #include <format>
 
 #define ROUNDING(x, dig)	( floor((x) * pow(float(10), dig) + 0.5f) / pow(float(10), dig) )
@@ -53,7 +52,6 @@ const int AbroadFileDownloadCode = 332;
 const int DomesticMasterFileDownloadCode = 331;
 
 BEGIN_MESSAGE_MAP(ViClient, CDialog)
-	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(ViClient, CDialog)
@@ -70,7 +68,7 @@ IMPLEMENT_DYNAMIC(ViClient, CDialog)
 ViClient::ViClient(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_VI_CLIENT, pParent)
 {
-	
+
 }
 
 ViClient::~ViClient()
@@ -149,7 +147,7 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 		on_ab_filled_order_list(code, req_id);
 	}
 	else if (code == DefAbChartData) {
-		
+
 		auto it_arg = _ReqMap.find(nRqID);
 		if (it_arg != _ReqMap.end())
 			OnChartDataShort_Init(code, req_id);
@@ -158,7 +156,7 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 	}
 	else if (code == DefAbsChartData2) {
 		auto it_arg = _ReqMap.find(nRqID);
-		if (it_arg != _ReqMap.end()) 
+		if (it_arg != _ReqMap.end())
 			OnChartDataLong_Init(code, req_id);
 		else
 			on_ab_chart_data_long(code, req_id);
@@ -168,7 +166,7 @@ void ViClient::OnDataRecv(LPCTSTR sTrRcvCode, LONG nRqID)
 	}
 	else if (code == DefChartData) {
 		auto it_arg = _ReqMap.find(nRqID);
-		if (it_arg != _ReqMap.end()) 
+		if (it_arg != _ReqMap.end())
 			OnDomesticChartData_Init(code, req_id);
 		else
 			on_dm_chart_data(code, req_id);
@@ -182,27 +180,27 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 	//LOGINFO(CMyLogger::getInstance(), strRecvKey);
 	switch (nRealType)
 	{
-	//case 196:
- 	case 296: // ??? ??? ????
- 		on_ab_order_accepted(strRecvKey, nRealType); break;
-	//case 186:
- 	case 286: // ??? ??? ?????
- 		on_ab_order_unfilled(strRecvKey, nRealType);	break;
-	//case 189:
- 	case 289: // ??? ??? ???
- 		on_ab_order_filled(strRecvKey, nRealType); break;
-	case 76: // ??? ??ð? ???
+		//case 196:
+	case 296: // 해외 주문 접수
+		on_ab_order_accepted(strRecvKey, nRealType); break;
+		//case 186:
+	case 286: // 해외 주문 미체결
+		on_ab_order_unfilled(strRecvKey, nRealType);	break;
+		//case 189:
+	case 289: // 해외 주문 체결
+		on_ab_order_filled(strRecvKey, nRealType); break;
+	case 76: // 해외 실시간 호가
 		on_ab_future_hoga(strRecvKey, nRealType); break;
-	case 82: // ??? ??ð? ???
+	case 82: // 해외 실시간 체결
 		on_ab_future_quote(strRecvKey, nRealType); break;
-	case 51: // ???? ???? ???
+	case 51: // 국내 선물 호가
 	case 75:
 		on_dm_future_hoga(strRecvKey, nRealType); break;
 	case 52: // dm option hoga
 		on_dm_option_hoga(strRecvKey, nRealType); break;
 	case 58: // dm commodity future hoga
 		on_dm_commodity_future_hoga(strRecvKey, nRealType); break;
-	case 65: // ???? ???? ???
+	case 65: // 국내 선물 시세
 	case 77:
 		on_dm_future_quote(strRecvKey, nRealType); break;
 	case 66:
@@ -211,11 +209,11 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 		on_dm_commodity_future_quote(strRecvKey, nRealType); break;
 	case 310:
 		on_dm_expected(strRecvKey, nRealType); break;
-	case 261: // ???? ??? ????
+	case 261: // 국내 주문 접수
 		on_dm_order_accepted(strRecvKey, nRealType); break;
-	case 262: // ???? ??? ?????
+	case 262: // 국내 주문 미체결
 		on_dm_order_unfilled(strRecvKey, nRealType); break;
-	case 265: // ??? ??? ???
+	case 265: // 해외 주문 체결
 		on_dm_order_filled(strRecvKey, nRealType); break;
 	case 183:
 		on_dm_order_position(strRecvKey, nRealType); break;
@@ -236,31 +234,31 @@ void ViClient::on_ab_accepted_order(const CString& server_trade_code, const LONG
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???¹??");
+		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계좌번호");
 
 		CString msg;
 
 		msg.Format("OnAccountAsset strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
-		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
-		CString strPriceType = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
-		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
-		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????????");
+		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문번호");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "종목코드");
+		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문가격");
+		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문수량");
+		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "매매구분");
+		CString strPriceType = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "가격조건");
+		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "원주문번호");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "최초원주문번호");
 
-		CString strOrderDate = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strOrderTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????ð?");
+		CString strOrderDate = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문일자");
+		CString strOrderTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문시간");
 
 		CString strCancelCnt = strOrderAmount;
 		CString strModyCnt = strOrderAmount;
-		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???");
+		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "체결수량");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "잔량");
 
-		// ??? ????
+		// 주문 가격
 		strOrderPrice.Trim();
 
 
@@ -307,53 +305,53 @@ void ViClient::on_dm_accepted_order(const CString& server_trade_code, const LONG
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???¹??");
-		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
-		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strMan = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strCancelCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strModyCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
-		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???");
+		CString strAccountNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계좌번호");
+		CString strOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문번호");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "종목코드");
+		CString strOrderPosition = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "매매구분");
+		CString strOrderPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문가격");
+		CString strOrderAmount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "주문수량");
+		CString strMan = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "조작구분");
+		CString strCancelCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "취소수량");
+		CString strModyCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "정정수량");
+		CString strFilledCnt = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "체결수량");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "잔량");
 
-		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
-		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????????");
+		CString strOriOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "원주문번호");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "최초원주문번호");
 		CString strOrderSeq = "0";
 
 		CString strMsg;
-		strMsg.Format("OnOrderUnfilled ????[%s]??????[%s][????????[%s], ???? ????? ???[%s] ,???????[%s], ???????[%s], ???[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+		strMsg.Format("OnOrderUnfilled 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s] ,주문순서[%s], 주문수량[%s], 잔량[%s], 체결수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
 
 		//TRACE(strMsg);
 
-	
-		// ??? ????
+
+		// 주문 가격
 		strOrderPrice.Trim();
 
 
 		const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 		if (order_price < 0) continue;
-		// ???? ??? ???
+		// 계좌 번호 트림
 		strAccountNo.TrimRight();
-		// ??? ??? ???
+		// 주문 번호 트림
 		strOrderNo.TrimLeft('0');
-		// ????? ??? ???
+		// 원주문 번호 트림
 		strOriOrderNo.TrimLeft('0');
-		// ???? ??? ???
+		// 첫주문 번호 트림
 		strFirstOrderNo.TrimLeft('0');
-		// ??? ??? ???
+		// 심볼 코드 트림
 		strSymbolCode.TrimRight();
-		// ??? ???? ???
+		// 주문 수량 트림
 		strOrderAmount.TrimRight();
-		// ??????? ????? ????? ???? ???
+		// 정정이나 취소시 처리할 수량 트림
 		strRemain.TrimRight();
-		// ?????? ??????? ????
+		// 정정이 이루어진 수량
 		strModyCnt.TrimRight();
-		// ????? ????
+		// 체결된 수량
 		strFilledCnt.TrimRight();
-		// ????? ????
+		// 취소된 수량
 		strCancelCnt.TrimRight();
 
 		nlohmann::json order_info;
@@ -387,8 +385,8 @@ void ViClient::on_dm_accepted_order(const CString& server_trade_code, const LONG
 		//mainApp.order_processor()->add_order_event(std::move(order_info));
 		handle_order_event(std::move(order_info));
 
-		
-		
+
+
 	}
 
 	on_task_complete(server_request_id);
@@ -411,9 +409,9 @@ void ViClient::OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg)
 		if (result_code == 332) {
 			on_task_complete(0);
 		}
-		else if (nRqId < 0 
+		else if (nRqId < 0
 			|| result_code == 99997
-			|| result_code == -9002 
+			|| result_code == -9002
 			|| result_code == 91001
 			|| result_code == -6000) {
 			on_task_error(nRqId, -1);
@@ -467,15 +465,15 @@ int ViClient::connect_to_server()
 
 int DarkHorse::ViClient::Login(const std::string& id, const std::string& pwd, const std::string& cert)
 {
-	const char* pLoginSuccess[] = { "?α??? ????"	, "Login Successful" };
-	const char* pLoginFail[] = { "?α??? ????"	, "Login Failure" };
+	const char* pLoginSuccess[] = { "로그인 성공"	, "Login Successful" };
+	const char* pLoginFail[] = { "로그인 실패"	, "Login Failure" };
 
 	int nRet = m_CommAgent.CommLogin(id.c_str(), pwd.c_str(), cert.c_str());
 	if (nRet > 0) {
 		//AfxMessageBox(pLoginSuccess[0]);
 
-		//?α??? ????? ???...
-		// ???? ?????? ?????´?.
+		//로긴후 반드시 호출...
+		// 계좌 정보를 가져온다.
 		m_CommAgent.CommAccInfo();
 		//LOG_F(INFO, pLoginSuccess[0]);
 		LOGINFO(CMyLogger::getInstance(), pLoginSuccess[0]);
@@ -506,14 +504,12 @@ int DarkHorse::ViClient::Login(task_arg&& arg)
 			mainApp.LoginMgr()->SaveUserInfo(id, pwd, cert);
 			mainApp.LoginMgr()->IsLoggedIn(true);
 
-			LOGINFO(CMyLogger::getInstance(), "?α??? ???? ?????? ???? user id = %s", id.c_str());
-
-			mainApp.SaveMgr()->create_config_path(std::string(id));
+			LOGINFO(CMyLogger::getInstance(), "로그인 성공 사용자 저장 user id = %s", id.c_str());
 
 			((CMainFrame*)AfxGetMainWnd())->SetAccountInfo();
 		}
 	}
-	catch (const std::exception & e) {
+	catch (const std::exception& e) {
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
@@ -530,10 +526,10 @@ int DarkHorse::ViClient::dm_check_account_password(task_arg&& arg)
 
 		std::string reqString;
 		std::string temp;
-		// ???? ???
+		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 11);
 		reqString.append(temp);
-		// ???й??
+		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 
@@ -566,10 +562,10 @@ int DarkHorse::ViClient::check_account_password(task_arg&& arg)
 		std::string temp;
 
 		if (type == "1") {
-			// ???? ???
+			// 계좌 번호
 			temp = VtStringUtil::PadRight(account_no, ' ', 6);
 			reqString.append(temp);
-			// ???й??
+			// 비밀번호
 			temp = VtStringUtil::PadRight(password, ' ', 8);
 			reqString.append(temp);
 
@@ -582,10 +578,10 @@ int DarkHorse::ViClient::check_account_password(task_arg&& arg)
 			_CheckPwdReqId = nRqID;
 		}
 		else if (type == "9") {
-			// ???? ???
+			// 계좌 번호
 			temp = VtStringUtil::PadRight(account_no, ' ', 11);
 			reqString.append(temp);
-			// ???й??
+			// 비밀번호
 			temp = VtStringUtil::PadRight(password, ' ', 8);
 			reqString.append(temp);
 
@@ -611,10 +607,10 @@ int DarkHorse::ViClient::dm_check_account_password(const std::string& account_no
 {
 	std::string reqString;
 	std::string temp;
-	// ???? ???
+	// 계좌 번호
 	temp = VtStringUtil::PadRight(account_no, ' ', 11);
 	reqString.append(temp);
-	// ???й??
+	// 비밀번호
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	reqString.append(temp);
 
@@ -632,10 +628,10 @@ int DarkHorse::ViClient::ab_check_account_password(const std::string& account_no
 {
 	std::string reqString;
 	std::string temp;
-	// ???? ???
+	// 계좌 번호
 	temp = VtStringUtil::PadRight(account_no, ' ', 6);
 	reqString.append(temp);
-	// ???й??
+	// 비밀번호
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	reqString.append(temp);
 
@@ -728,7 +724,7 @@ int DarkHorse::ViClient::ab_symbol_master(task_arg&& arg)
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
-	
+
 	return -1;
 }
 
@@ -849,14 +845,14 @@ int DarkHorse::ViClient::ab_account_asset(task_arg&& arg)
 
 		std::string reqString;
 		std::string temp;
-		// ???? ???
+		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
-		// ???й??
+		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 
-		
+
 
 		const CString sInput = reqString.c_str();
 		//LOG_F(INFO, _T("AbGetAsset code = %s, input = %s"), DEF_Ab_Asset, sInput);
@@ -884,16 +880,16 @@ int DarkHorse::ViClient::ab_account_deposit(task_arg&& arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
-		// ??????
+		// 통화코드
 		reqString.append("USD");
 
 
@@ -923,16 +919,16 @@ int DarkHorse::ViClient::ab_account_profit_loss(task_arg&& arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
-		// ??????
+		// 통화코드
 		reqString.append("USD");
 
 
@@ -951,24 +947,6 @@ int DarkHorse::ViClient::ab_account_profit_loss(task_arg&& arg)
 	return -1;
 }
 
-void ViClient::stop_timer()
-{
-	KillTimer(1);
-}
-
-void ViClient::start_timer()
-{
-	SetTimer(1, 10, NULL);
-}
-
-void ViClient::OnTimer(UINT_PTR nIDEvent)
-{
-	//LOGINFO(CMyLogger::getInstance(), _T("OnTimer:: "));
-	simul_kospi();
-	simul_kosdaq();
-	simul_option();
-}
-
 int DarkHorse::ViClient::ab_symbol_profit_loss(task_arg&& arg)
 {
 	try {
@@ -979,14 +957,14 @@ int DarkHorse::ViClient::ab_symbol_profit_loss(task_arg&& arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
 
 
@@ -1015,14 +993,14 @@ int DarkHorse::ViClient::ab_accepted_order_list(task_arg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
 
 
@@ -1294,11 +1272,11 @@ int ViClient::dm_symbol_profit_loss(DhTaskArg arg)
 
 		std::string reqString;
 		std::string temp;
-		// ???? ???
+		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 11);
 		reqString.append(temp);
 		//reqString.append(_T("001"));
-		// ???й??
+		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 
@@ -1333,14 +1311,14 @@ int ViClient::ab_symbol_position(DhTaskArg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
 
 
@@ -1373,14 +1351,14 @@ int ViClient::ab_symbol_profit_loss(DhTaskArg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
 		reqString.append("USD");
 
@@ -1407,11 +1385,11 @@ int DarkHorse::ViClient::dm_symbol_code(task_arg&& arg)
 {
 	try {
 		const std::string product_code = std::any_cast<std::string>(arg["product_code"]);
-		
+
 		CString sTrCode = DefSymbolCode;
 		CString sInput = product_code.c_str();
 		CString strNextKey = _T("");
-		
+
 		const int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 		_ReqMap[nRqID] = arg;
 
@@ -1428,13 +1406,13 @@ int DarkHorse::ViClient::dm_symbol_code(task_arg&& arg)
 int DarkHorse::ViClient::ab_filled_order_list(const std::string& account_no, const std::string& password)
 {
 	try {
-		
+
 
 		std::string reqString;
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		//const std::string cur_date = VtStringUtil::getCurentDate();
@@ -1447,7 +1425,7 @@ int DarkHorse::ViClient::ab_filled_order_list(const std::string& account_no, con
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
 
 
@@ -1478,7 +1456,7 @@ int DarkHorse::ViClient::ab_filled_order_list(task_arg&& arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		//const std::string cur_date = VtStringUtil::getCurentDate();
@@ -1491,7 +1469,7 @@ int DarkHorse::ViClient::ab_filled_order_list(task_arg&& arg)
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
 
 
@@ -1678,7 +1656,7 @@ int ViClient::dm_symbol_master(DhTaskArg arg)
 		CString sReqFidInput = _T("000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061062063064065066067068069070071072073074075076077078079080081082083084085086087088089090091092093094095096097098099100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190191192193194195196197198199200201202203204205206207208209210211212213214215216217218219220221222223224225226227228229230231232");
 		CString strNextKey = _T("");
 		int nRqID = m_CommAgent.CommFIDRqData(DefDmSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
-		
+
 		LOGINFO(CMyLogger::getInstance(), "dm_symbol_master::code = [%s], request [%s]", DefDmSymbolMaster, sInput);
 
 		request_map_[nRqID] = arg;
@@ -1701,262 +1679,6 @@ void ViClient::handle_order_event(order_event&& order_info_item)
 	mainApp.total_order_manager()->on_order_event(std::move(order_info_item));
 }
 
-void ViClient::simul_kospi()
-{
-	std::random_device rd;
-	std::mt19937 mt(rd());
-	std::uniform_int_distribution<int> dist(32295 / 5, 32450 / 5);
-
-	int random_number = dist(mt) * 5;
-
-	nlohmann::json quote;
-
-	quote["symbol_code"] = "101V3000";
-	quote["symbol_name_kr"] = "101V3000";
-	quote["delta_day"] = 5;
-	//quote["delta_day_sign"] = static_cast<const char*>(strDeltaDaySign.Trim());
-	quote["updown_rate"] = "-0.1";
-	quote["time"] = "20230907";
-	quote["close"] = random_number;
-	quote["open"] = 32355;
-	quote["high"] = 32355;
-	quote["low"] = 32355;
-	quote["pre_day_close"] = 32360;
-	quote["cumulative_amount"] = 0;
-	quote["volume"] = 0;
-	quote["up_down"] = 1;
-	quote["preday_volume"] = 0;
-
-
-	//OnSymbolQuote(std::move(quote));
-
-	if (auto wp = _Client.lock()) {
-		wp->on_dm_option_quote(std::move(quote));
-	}
-
-
-	
-	nlohmann::json hoga;
-	hoga["symbol_code"] = "101V3000";
-	hoga["hoga_time"] = "10:24:35";
-	hoga["tot_buy_qty"] = 100;
-	hoga["tot_sell_qty"] = 200;
-	hoga["tot_buy_cnt"] = 300;
-	hoga["tot_sell_cnt"] = 400;
-
-	hoga["hoga_items"][0]["sell_price"] = random_number;
-	hoga["hoga_items"][0]["buy_price"] = random_number;
-	hoga["hoga_items"][0]["sell_qty"] = 1;
-	hoga["hoga_items"][0]["buy_qty"] = 2;
-	hoga["hoga_items"][0]["sell_cnt"] = 3;
-	hoga["hoga_items"][0]["buy_cnt"] = 4;
-
-	hoga["hoga_items"][1]["sell_price"] = random_number - 5 * 1;
-	hoga["hoga_items"][1]["buy_price"] = random_number + 5 * 1;
-	hoga["hoga_items"][1]["sell_qty"] = 1;
-	hoga["hoga_items"][1]["buy_qty"] = 2;
-	hoga["hoga_items"][1]["sell_cnt"] = 3;
-	hoga["hoga_items"][1]["buy_cnt"] = 4;
-
-	hoga["hoga_items"][2]["sell_price"] = random_number - 5 * 2;
-	hoga["hoga_items"][2]["buy_price"] = random_number + 5 * 2;
-	hoga["hoga_items"][2]["sell_qty"] = 16;
-	hoga["hoga_items"][2]["buy_qty"] = 25;
-	hoga["hoga_items"][2]["sell_cnt"] = 45;
-	hoga["hoga_items"][2]["buy_cnt"] = 34;
-
-	hoga["hoga_items"][3]["sell_price"] = random_number - 5 * 3;
-	hoga["hoga_items"][3]["buy_price"] = random_number + 5 * 3;
-	hoga["hoga_items"][3]["sell_qty"] = 34;
-	hoga["hoga_items"][3]["buy_qty"] = 45;
-	hoga["hoga_items"][3]["sell_cnt"] = 56;
-	hoga["hoga_items"][3]["buy_cnt"] = 67;
-
-	hoga["hoga_items"][4]["sell_price"] = random_number - 5 * 4;
-	hoga["hoga_items"][4]["buy_price"] = random_number + 5 * 4;
-	hoga["hoga_items"][4]["sell_qty"] = 23;
-	hoga["hoga_items"][4]["buy_qty"] = 90;
-	hoga["hoga_items"][4]["sell_cnt"] = 34;
-	hoga["hoga_items"][4]["buy_cnt"] = 45;
-
-	//OnDmSymbolHoga(std::move(hoga));
-
-	if (auto wp = _Client.lock()) {
-		wp->on_dm_option_hoga(std::move(hoga));
-	}
-}
-
-void ViClient::simul_kosdaq()
-{
-	std::random_device rd;
-	std::mt19937 mt(rd());
-	std::uniform_int_distribution<int> dist(32295 / 5, 32450 / 5);
-
-	int random_number = dist(mt) * 5;
-
-	nlohmann::json quote;
-
-	
-
-	quote["symbol_code"] = "105V2000";
-	quote["symbol_name_kr"] = "105V2000";
-	quote["delta_day"] = 5;
-	//quote["delta_day_sign"] = static_cast<const char*>(strDeltaDaySign.Trim());
-	quote["updown_rate"] = "-0.1";
-	quote["time"] = "20230907";
-	quote["close"] = random_number;
-	quote["open"] = 32355;
-	quote["high"] = 32355;
-	quote["low"] = 32355;
-	quote["pre_day_close"] = 32360;
-	quote["cumulative_amount"] = 0;
-	quote["volume"] = 0;
-	quote["up_down"] = 1;
-	quote["preday_volume"] = 0;
-
-
-	//OnSymbolQuote(std::move(quote));
-
-	if (auto wp = _Client.lock()) {
-		wp->on_dm_option_quote(std::move(quote));
-	}
-
-	nlohmann::json hoga;
-	hoga["symbol_code"] = "105V2000";
-	hoga["hoga_time"] = "10:24:35";
-	hoga["tot_buy_qty"] = 100;
-	hoga["tot_sell_qty"] = 200;
-	hoga["tot_buy_cnt"] = 300;
-	hoga["tot_sell_cnt"] = 400;
-
-	hoga["hoga_items"][0]["sell_price"] = random_number;
-	hoga["hoga_items"][0]["buy_price"] = random_number;
-	hoga["hoga_items"][0]["sell_qty"] = 1;
-	hoga["hoga_items"][0]["buy_qty"] = 2;
-	hoga["hoga_items"][0]["sell_cnt"] = 3;
-	hoga["hoga_items"][0]["buy_cnt"] = 4;
-
-	hoga["hoga_items"][1]["sell_price"] = random_number - 5 * 1;
-	hoga["hoga_items"][1]["buy_price"] = random_number + 5 * 1;
-	hoga["hoga_items"][1]["sell_qty"] = 1;
-	hoga["hoga_items"][1]["buy_qty"] = 2;
-	hoga["hoga_items"][1]["sell_cnt"] = 3;
-	hoga["hoga_items"][1]["buy_cnt"] = 4;
-
-	hoga["hoga_items"][2]["sell_price"] = random_number - 5 * 2;
-	hoga["hoga_items"][2]["buy_price"] = random_number + 5 * 2;
-	hoga["hoga_items"][2]["sell_qty"] = 16;
-	hoga["hoga_items"][2]["buy_qty"] = 25;
-	hoga["hoga_items"][2]["sell_cnt"] = 45;
-	hoga["hoga_items"][2]["buy_cnt"] = 34;
-
-	hoga["hoga_items"][3]["sell_price"] = random_number - 5 * 3;
-	hoga["hoga_items"][3]["buy_price"] = random_number + 5 * 3;
-	hoga["hoga_items"][3]["sell_qty"] = 34;
-	hoga["hoga_items"][3]["buy_qty"] = 45;
-	hoga["hoga_items"][3]["sell_cnt"] = 56;
-	hoga["hoga_items"][3]["buy_cnt"] = 67;
-
-	hoga["hoga_items"][4]["sell_price"] = random_number - 5 * 4;
-	hoga["hoga_items"][4]["buy_price"] = random_number + 5 * 4;
-	hoga["hoga_items"][4]["sell_qty"] = 23;
-	hoga["hoga_items"][4]["buy_qty"] = 90;
-	hoga["hoga_items"][4]["sell_cnt"] = 34;
-	hoga["hoga_items"][4]["buy_cnt"] = 45;
-
-	//OnDmSymbolHoga(std::move(hoga));
-
-	if (auto wp = _Client.lock()) {
-		wp->on_dm_option_hoga(std::move(hoga));
-	}
-}
-
-void ViClient::simul_option()
-{
-	std::random_device rd;
-	std::mt19937 mt(rd());
-	std::uniform_int_distribution<int> dist(32295 / 5, 32450 / 5);
-
-	int random_number = dist(mt) * 5;
-
-	nlohmann::json quote;
-
-	quote["symbol_code"] = "301V2340";
-	quote["symbol_name_kr"] = "301V2340";
-	quote["delta_day"] = 5;
-	//quote["delta_day_sign"] = static_cast<const char*>(strDeltaDaySign.Trim());
-	quote["updown_rate"] = "-0.1";
-	quote["time"] = "20230907";
-	quote["close"] = random_number;
-	quote["open"] = 32355;
-	quote["high"] = 32355;
-	quote["low"] = 32355;
-	quote["pre_day_close"] = 32360;
-	quote["cumulative_amount"] = 0;
-	quote["volume"] = 0;
-	quote["up_down"] = 1;
-	quote["preday_volume"] = 0;
-
-
-	//OnSymbolQuote(std::move(quote));
-
-	if (auto wp = _Client.lock()) {
-		wp->on_dm_option_quote(std::move(quote));
-	}
-
-
-	
-
-	nlohmann::json hoga;
-	hoga["symbol_code"] = "301V2340";
-	hoga["hoga_time"] = "10:24:35";
-	hoga["tot_buy_qty"] = 100;
-	hoga["tot_sell_qty"] = 200;
-	hoga["tot_buy_cnt"] = 300;
-	hoga["tot_sell_cnt"] = 400;
-
-	hoga["hoga_items"][0]["sell_price"] = random_number;
-	hoga["hoga_items"][0]["buy_price"] = random_number;
-	hoga["hoga_items"][0]["sell_qty"] = 1;
-	hoga["hoga_items"][0]["buy_qty"] = 2;
-	hoga["hoga_items"][0]["sell_cnt"] = 3;
-	hoga["hoga_items"][0]["buy_cnt"] = 4;
-
-	hoga["hoga_items"][1]["sell_price"] = random_number - 5 * 1;
-	hoga["hoga_items"][1]["buy_price"] = random_number + 5 * 1;
-	hoga["hoga_items"][1]["sell_qty"] = 1;
-	hoga["hoga_items"][1]["buy_qty"] = 2;
-	hoga["hoga_items"][1]["sell_cnt"] = 3;
-	hoga["hoga_items"][1]["buy_cnt"] = 4;
-
-	hoga["hoga_items"][2]["sell_price"] = random_number - 5 * 2;
-	hoga["hoga_items"][2]["buy_price"] = random_number + 5 * 2;
-	hoga["hoga_items"][2]["sell_qty"] = 16;
-	hoga["hoga_items"][2]["buy_qty"] = 25;
-	hoga["hoga_items"][2]["sell_cnt"] = 45;
-	hoga["hoga_items"][2]["buy_cnt"] = 34;
-
-	hoga["hoga_items"][3]["sell_price"] = random_number - 5 * 3;
-	hoga["hoga_items"][3]["buy_price"] = random_number + 5 * 3;
-	hoga["hoga_items"][3]["sell_qty"] = 34;
-	hoga["hoga_items"][3]["buy_qty"] = 45;
-	hoga["hoga_items"][3]["sell_cnt"] = 56;
-	hoga["hoga_items"][3]["buy_cnt"] = 67;
-
-	hoga["hoga_items"][4]["sell_price"] = random_number - 5 * 4;
-	hoga["hoga_items"][4]["buy_price"] = random_number + 5 * 4;
-	hoga["hoga_items"][4]["sell_qty"] = 23;
-	hoga["hoga_items"][4]["buy_qty"] = 90;
-	hoga["hoga_items"][4]["sell_cnt"] = 34;
-	hoga["hoga_items"][4]["buy_cnt"] = 45;
-
-	//OnDmSymbolHoga(std::move(hoga));
-
-	if (auto wp = _Client.lock()) {
-		wp->on_dm_option_hoga(std::move(hoga));
-	}
-}
-
 void DarkHorse::ViClient::ab_new_order(task_arg&& arg)
 {
 	try {
@@ -1972,28 +1694,28 @@ void DarkHorse::ViClient::ab_new_order(task_arg&& arg)
 
 		std::string orderString;
 		std::string temp;
-		// ???? ???
+		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		orderString.append(temp);
-		// ???й??
+		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		orderString.append(temp);
-		// ???? ???
+		// 종목 코드
 		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 		orderString.append(temp);
 
-		// ??????
+		// 매매구분
 		if (static_cast<SmPositionType>(position_type) == SmPositionType::Buy)
 			orderString.append(_T("1"));
 		else if (static_cast<SmPositionType>(position_type) == SmPositionType::Sell)
 			orderString.append(_T("2"));
 
-		// ???? ????
+		// 가격 조건
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			orderString.append(_T("1"));
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			orderString.append(_T("2"));
-		// ??? ????
+		// 체결 조건
 		if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fas)
 			orderString.append(_T("1"));
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fok)
@@ -2003,17 +1725,17 @@ void DarkHorse::ViClient::ab_new_order(task_arg&& arg)
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Day)
 			orderString.append(_T("0"));
 
-		// ??? ????
+		// 주문 가격
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			temp = VtStringUtil::PadRight(order_price, ' ', 15);
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			temp = VtStringUtil::PadRight(0, ' ', 15);
 		orderString.append(temp);
 
-		// ??? ????
+		// 주문 수량
 		temp = VtStringUtil::PadRight(order_amount, ' ', 10);
 		orderString.append(temp);
-		// ??? ????
+		// 기타 설정
 		temp = VtStringUtil::PadRight(1, ' ', 35);
 		orderString.append(temp);
 
@@ -2071,28 +1793,28 @@ void DarkHorse::ViClient::ab_new_order(const std::shared_ptr<SmOrderRequest>& or
 
 	std::string orderString;
 	std::string temp;
-	// ???? ???
+	// 계좌 번호
 	temp = VtStringUtil::PadRight(account_no, ' ', 6);
 	orderString.append(temp);
-	// ???й??
+	// 비밀번호
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	orderString.append(temp);
-	// ???? ???
+	// 종목 코드
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ??????
+	// 매매구분
 	if ((position_type) == SmPositionType::Buy)
 		orderString.append(_T("1"));
 	else if ((position_type) == SmPositionType::Sell)
 		orderString.append(_T("2"));
 
-	// ???? ????
+	// 가격 조건
 	if ((price_type) == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if ((price_type) == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ??? ????
+	// 체결 조건
 	if ((filled_condition) == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if ((filled_condition) == SmFilledCondition::Fok)
@@ -2102,17 +1824,17 @@ void DarkHorse::ViClient::ab_new_order(const std::shared_ptr<SmOrderRequest>& or
 	else if ((filled_condition) == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// ??? ????
+	// 주문 가격
 	if ((price_type) == SmPriceType::Price)
 		temp = VtStringUtil::PadRight(order_price, ' ', 15);
 	else if ((price_type) == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 15);
 	orderString.append(temp);
 
-	// ??? ????
+	// 주문 수량
 	temp = VtStringUtil::PadRight(order_amount, ' ', 10);
 	orderString.append(temp);
-	// ??? ????
+	// 기타 설정
 	temp = VtStringUtil::PadRight(1, ' ', 35);
 	orderString.append(temp);
 
@@ -2126,7 +1848,7 @@ void DarkHorse::ViClient::ab_new_order(const std::shared_ptr<SmOrderRequest>& or
 	mac_address = SmUtil::GetMacAddress();
 	userDefined.append(mac_address);
 	userDefined.append("m");
-	
+
 	temp = VtStringUtil::PadRight(userDefined, '0', 60);
 
 	orderString.append(temp);
@@ -2155,22 +1877,22 @@ void DarkHorse::ViClient::ab_change_order(task_arg&& arg)
 
 		std::string orderString;
 		std::string temp;
-		// ???? ???
+		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		orderString.append(temp);
-		// ???й??
+		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		orderString.append(temp);
-		// ???? ???
+		// 종목 코드
 		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 		orderString.append(temp);
 
-		// ???? ????
+		// 가격 조건
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			orderString.append(_T("1"));
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			orderString.append(_T("2"));
-		// ??? ????
+		// 체결 조건
 		if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fas)
 			orderString.append(_T("1"));
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fok)
@@ -2180,20 +1902,20 @@ void DarkHorse::ViClient::ab_change_order(task_arg&& arg)
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Day)
 			orderString.append(_T("0"));
 
-		// ??? ????
+		// 주문 가격
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			temp = VtStringUtil::PadRight(order_price, ' ', 15);
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			temp = VtStringUtil::PadRight(0, ' ', 15);
 		orderString.append(temp);
 
-		// ???? ????
+		// 정정 수량
 		temp = VtStringUtil::PadRight(order_amount, ' ', 10);
 		orderString.append(temp);
-		// ??????? ????? ????? ???
+		// 정정이나 취소시 원주문 번호
 		temp = VtStringUtil::PadRight(ori_order_no, ' ', 10);
 		orderString.append(temp);
-		// ???????
+		// 기타설정
 		temp = VtStringUtil::PadRight(1, ' ', 26);
 		orderString.append(temp);
 
@@ -2215,7 +1937,7 @@ void DarkHorse::ViClient::ab_change_order(task_arg&& arg)
 		CString sTrCode = "g12003.AO0402%";
 		CString sInput = orderString.c_str();
 		int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
-		
+
 		_ReqMap[nRqID] = arg;
 	}
 	catch (const std::exception& e) {
@@ -2252,22 +1974,22 @@ void DarkHorse::ViClient::ab_change_order(const std::shared_ptr<SmOrderRequest>&
 
 	std::string orderString;
 	std::string temp;
-	// ???? ???
+	// 계좌 번호
 	temp = VtStringUtil::PadRight(account_no, ' ', 6);
 	orderString.append(temp);
-	// ???й??
+	// 비밀번호
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	orderString.append(temp);
-	// ???? ???
+	// 종목 코드
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ???? ????
+	// 가격 조건
 	if ((price_type) == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if ((price_type) == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ??? ????
+	// 체결 조건
 	if ((filled_condition) == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if ((filled_condition) == SmFilledCondition::Fok)
@@ -2277,20 +1999,20 @@ void DarkHorse::ViClient::ab_change_order(const std::shared_ptr<SmOrderRequest>&
 	else if ((filled_condition) == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// ??? ????
+	// 주문 가격
 	if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 		temp = VtStringUtil::PadRight(order_price, ' ', 15);
 	else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 15);
 	orderString.append(temp);
 
-	// ???? ????
+	// 정정 수량
 	temp = VtStringUtil::PadRight(order_amount, ' ', 10);
 	orderString.append(temp);
-	// ??????? ????? ????? ???
+	// 정정이나 취소시 원주문 번호
 	temp = VtStringUtil::PadRight(ori_order_no, ' ', 10);
 	orderString.append(temp);
-	// ???????
+	// 기타설정
 	temp = VtStringUtil::PadRight(1, ' ', 26);
 	orderString.append(temp);
 
@@ -2332,22 +2054,22 @@ void DarkHorse::ViClient::ab_cancel_order(task_arg&& arg)
 
 		std::string orderString;
 		std::string temp;
-		// ???? ???
+		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		orderString.append(temp);
-		// ???й??
+		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		orderString.append(temp);
-		// ???? ???
+		// 종목 코드
 		temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 		orderString.append(temp);
 
-		// ???? ????
+		// 가격 조건
 		if (static_cast<SmPriceType>(price_type) == SmPriceType::Price)
 			orderString.append(_T("1"));
 		else if (static_cast<SmPriceType>(price_type) == SmPriceType::Market)
 			orderString.append(_T("2"));
-		// ??? ????
+		// 체결 조건
 		if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fas)
 			orderString.append(_T("1"));
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Fok)
@@ -2357,17 +2079,17 @@ void DarkHorse::ViClient::ab_cancel_order(task_arg&& arg)
 		else if (static_cast<SmFilledCondition>(filled_condition) == SmFilledCondition::Day)
 			orderString.append(_T("0"));
 
-		// ??? ???? 15
+		// 주문 가격 15
 		temp = "               ";
 		orderString.append(temp);
 
-		// ???? ???? 10
+		// 정정 수량 10
 		temp = "          ";
 		orderString.append(temp);
-		// ??????? ????? ????? ???
+		// 정정이나 취소시 원주문 번호
 		temp = VtStringUtil::PadRight(ori_order_no, ' ', 10);
 		orderString.append(temp);
-		// ??????? 26
+		// 기타설정 26
 		temp = "                          ";
 		orderString.append(temp);
 
@@ -2403,28 +2125,28 @@ void ViClient::ab_new_order(order_request_p order_req)
 {
 	std::string orderString;
 	std::string temp;
-	// ???? ???
+	// 계좌 번호
 	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
 	orderString.append(temp);
-	// ???й??
+	// 비밀번호
 	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
 	orderString.append(temp);
-	// ???? ???
+	// 종목 코드
 	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ??????
+	// 매매구분
 	if (order_req->position_type == SmPositionType::Buy)
 		orderString.append("1");
 	else if (order_req->position_type == SmPositionType::Sell)
 		orderString.append("2");
 
-	// ???? ????
+	// 가격 조건
 	if (order_req->price_type == SmPriceType::Price)
 		orderString.append("1");
 	else if (order_req->price_type == SmPriceType::Market)
 		orderString.append("2");
-	// ??? ????
+	// 체결 조건
 	if (order_req->fill_condition == SmFilledCondition::Fas)
 		orderString.append("1");
 	else if (order_req->fill_condition == SmFilledCondition::Fok)
@@ -2434,17 +2156,17 @@ void ViClient::ab_new_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Day)
 		orderString.append("0");
 
-	// ??? ????
+	// 주문 가격
 	if (order_req->price_type == SmPriceType::Price)
 		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 15);
 	else if (order_req->price_type == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 15);
 	orderString.append(temp);
 
-	// ??? ????
+	// 주문 수량
 	temp = VtStringUtil::PadRight(order_req->order_amount, ' ', 10);
 	orderString.append(temp);
-	// ??? ????
+	// 기타 설정
 	temp = VtStringUtil::PadRight(1, ' ', 35);
 	orderString.append(temp);
 
@@ -2464,22 +2186,22 @@ void ViClient::ab_change_order(order_request_p order_req)
 {
 	std::string orderString;
 	std::string temp;
-	// ???? ???
+	// 계좌 번호
 	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
 	orderString.append(temp);
-	// ???й??
+	// 비밀번호
 	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
 	orderString.append(temp);
-	// ???? ???
+	// 종목 코드
 	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ???? ????
+	// 가격 조건
 	if (order_req->price_type == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if (order_req->price_type == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ??? ????
+	// 체결 조건
 	if (order_req->fill_condition == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if (order_req->fill_condition == SmFilledCondition::Fok)
@@ -2489,20 +2211,20 @@ void ViClient::ab_change_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// ??? ????
+	// 주문 가격
 	if (order_req->price_type == SmPriceType::Price)
 		temp = VtStringUtil::PadRight(order_req->order_price, ' ', 15);
 	else if (order_req->price_type == SmPriceType::Market)
 		temp = VtStringUtil::PadRight(0, ' ', 15);
 	orderString.append(temp);
 
-	// ???? ????
+	// 정정 수량
 	temp = VtStringUtil::PadRight(order_req->order_amount, ' ', 10);
 	orderString.append(temp);
-	// ??????? ????? ????? ???
+	// 정정이나 취소시 원주문 번호
 	temp = VtStringUtil::PadRight(order_req->original_order_no, ' ', 10);
 	orderString.append(temp);
-	// ???????
+	// 기타설정
 	temp = VtStringUtil::PadRight(1, ' ', 26);
 	orderString.append(temp);
 
@@ -2522,22 +2244,22 @@ void ViClient::ab_cancel_order(order_request_p order_req)
 {
 	std::string orderString;
 	std::string temp;
-	// ???? ???
+	// 계좌 번호
 	temp = VtStringUtil::PadRight(order_req->account_no, ' ', 6);
 	orderString.append(temp);
-	// ???й??
+	// 비밀번호
 	temp = VtStringUtil::PadRight(order_req->password, ' ', 8);
 	orderString.append(temp);
-	// ???? ???
+	// 종목 코드
 	temp = VtStringUtil::PadRight(order_req->symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ???? ????
+	// 가격 조건
 	if (order_req->price_type == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if (order_req->price_type == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ??? ????
+	// 체결 조건
 	if (order_req->fill_condition == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if (order_req->fill_condition == SmFilledCondition::Fok)
@@ -2547,18 +2269,18 @@ void ViClient::ab_cancel_order(order_request_p order_req)
 	else if (order_req->fill_condition == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// ??? ???? 15
+	// 주문 가격 15
 	temp = "               ";
 	orderString.append(temp);
 
-	// ???? ???? 10
+	// 정정 수량 10
 	temp = "          ";
 	orderString.append(temp);
-	// ??????? ????? ????? ???
+	// 정정이나 취소시 원주문 번호
 	temp = VtStringUtil::PadRight(order_req->original_order_no, ' ', 10);
 	orderString.append(temp);
 
-	// ??????? 26
+	// 기타설정 26
 	temp = "                          ";
 	orderString.append(temp);
 
@@ -2693,7 +2415,7 @@ void ViClient::dm_change_order(order_request_p order_req)
 	make_custom_order_info(order_req, userDefined);
 	temp = VtStringUtil::PadRight(userDefined, '0', 60);
 	orderString.append(temp);
-	
+
 	CString sTrCode = "g12001.DO1901&";
 	CString sInput = orderString.c_str();
 	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
@@ -2803,22 +2525,22 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 
 	std::string orderString;
 	std::string temp;
-	// ???? ???
+	// 계좌 번호
 	temp = VtStringUtil::PadRight(account_no, ' ', 6);
 	orderString.append(temp);
-	// ???й??
+	// 비밀번호
 	temp = VtStringUtil::PadRight(password, ' ', 8);
 	orderString.append(temp);
-	// ???? ???
+	// 종목 코드
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 	orderString.append(temp);
 
-	// ???? ????
+	// 가격 조건
 	if ((price_type) == SmPriceType::Price)
 		orderString.append(_T("1"));
 	else if ((price_type) == SmPriceType::Market)
 		orderString.append(_T("2"));
-	// ??? ????
+	// 체결 조건
 	if ((filled_condition) == SmFilledCondition::Fas)
 		orderString.append(_T("1"));
 	else if ((filled_condition) == SmFilledCondition::Fok)
@@ -2828,17 +2550,17 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 	else if ((filled_condition) == SmFilledCondition::Day)
 		orderString.append(_T("0"));
 
-	// ??? ???? 15
+	// 주문 가격 15
 	temp = "               ";
 	orderString.append(temp);
 
-	// ???? ???? 10
+	// 정정 수량 10
 	temp = "          ";
 	orderString.append(temp);
-	// ??????? ????? ????? ???
+	// 정정이나 취소시 원주문 번호
 	temp = VtStringUtil::PadRight(ori_order_no, ' ', 10);
 	orderString.append(temp);
-	// ??????? 26
+	// 기타설정 26
 	temp = "                          ";
 	orderString.append(temp);
 
@@ -2892,16 +2614,16 @@ int ViClient::ab_account_profit_loss(DarkHorse::AccountProfitLossReq arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
-		// ??????
+		// 통화코드
 		reqString.append("USD");
 
 
@@ -2990,9 +2712,9 @@ void DarkHorse::ViClient::register_symbol(task_arg&& arg)
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
 		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // ???
+		int nRealType = 76; // 시세
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-		nRealType = 82; // ???
+		nRealType = 82; // 호가
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
 	}
 }
@@ -3050,9 +2772,9 @@ void DarkHorse::ViClient::unregister_symbol(const std::string& symbol_code)
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
 		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // ???
+		int nRealType = 76; // 시세
 		m_CommAgent.CommRemoveBroad(key.c_str(), nRealType);
-		nRealType = 82; // ???
+		nRealType = 82; // 호가
 		m_CommAgent.CommRemoveBroad(key.c_str(), nRealType);
 	}
 }
@@ -3107,9 +2829,9 @@ void ViClient::register_symbol(DhTaskArg&& arg)
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
 		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // ???
+		int nRealType = 76; // 시세
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-		nRealType = 82; // ???
+		nRealType = 82; // 호가
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
 	}
 }
@@ -3201,9 +2923,9 @@ void DarkHorse::ViClient::register_symbol(const std::string& symbol_code)
 	else {
 		std::string code = static_cast<const char*>(strSymbolCode);
 		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // ???
+		int nRealType = 76; // 시세
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-		nRealType = 82; // ???
+		nRealType = 82; // 호가
 		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
 	}
 }
@@ -3360,7 +3082,7 @@ int DarkHorse::ViClient::ab_chart_data_long(SmTaskArg&& arg)
 
 		std::string temp;
 		std::string reqString;
-		// ???? ??? 32 ???
+		// 종목 코드 32 자리
 		temp = VtStringUtil::PadRight(req.SymbolCode, ' ', 32);
 		reqString.append(temp);
 
@@ -3420,7 +3142,7 @@ int DarkHorse::ViClient::ab_chart_data_short(SmTaskArg&& arg)
 
 		std::string temp;
 		std::string reqString;
-		// ???? ????? 18??? ????
+		// 최초 요청시 18자리 공백
 		reqString.append("                  ");
 
 		temp = VtStringUtil::PadRight(req.SymbolCode, ' ', 32);
@@ -3497,7 +3219,7 @@ int DarkHorse::ViClient::ab_chart_data_long(task_arg&& arg)
 	const int next = std::any_cast<int>(arg["next"]);
 	std::string temp;
 	std::string reqString;
-	// ???? ??? 32 ???
+	// 종목 코드 32 자리
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
 	reqString.append(temp);
 
@@ -3552,7 +3274,7 @@ int DarkHorse::ViClient::ab_chart_data_short(task_arg&& arg)
 
 	std::string temp;
 	std::string reqString;
-	// ???? ????? 18??? ????
+	// 최초 요청시 18자리 공백
 	reqString.append("                  ");
 
 	temp = VtStringUtil::PadRight(symbol_code, ' ', 32);
@@ -3655,14 +3377,14 @@ void DarkHorse::ViClient::on_dm_symbol_code(const CString& sTrCode, const LONG& 
 	on_task_complete(nRqID);
 }
 
-void DarkHorse::ViClient::on_account_list(const CString& sTrCode, const LONG& nRqID) 
+void DarkHorse::ViClient::on_account_list(const CString& sTrCode, const LONG& nRqID)
 {
-	// ???? ???? ???. - 20140331 sivas
+	// 계좌 구분 추가. - 20140331 sivas
 	typedef	struct
 	{
-		char 	szAcctNo[11];		// ???¹??
-		char	szAcctNm[30];		// ???¸?
-		char	szAcctGb[01];		// ???±???  '1': ???, '2': FX, '9':????
+		char 	szAcctNo[11];		// 계좌번호
+		char	szAcctNm[30];		// 계좌명
+		char	szAcctGb[01];		// 계좌구분  '1': 해외, '2': FX, '9':국내
 	}HDF_ACCOUNT_UNIT;
 
 	typedef struct
@@ -3681,8 +3403,8 @@ void DarkHorse::ViClient::on_account_list(const CString& sTrCode, const LONG& nR
 		pHdfAccUnit = (HDF_ACCOUNT_UNIT*)(pHdfAccInfo->szCount + sizeof(pHdfAccInfo->szCount) + (sizeof(HDF_ACCOUNT_UNIT) * i));
 		CString strAcctNo(pHdfAccUnit->szAcctNo, sizeof(pHdfAccUnit->szAcctNo));
 		CString strAcctNm(pHdfAccUnit->szAcctNm, sizeof(pHdfAccUnit->szAcctNm));
-		CString strAcctGb(pHdfAccUnit->szAcctGb, sizeof(pHdfAccUnit->szAcctGb));// ???? ???? ???. - 20140331 sivas
-			
+		CString strAcctGb(pHdfAccUnit->szAcctGb, sizeof(pHdfAccUnit->szAcctGb));// 계좌 구분 추가. - 20140331 sivas
+
 		nlohmann::json account_info;
 		account_info["account_no"] = static_cast<const char*>(strAcctNo.Trim());
 		account_info["account_name"] = static_cast<const char*>(strAcctNm.Trim());
@@ -3840,9 +3562,9 @@ void ViClient::on_dm_symbol_master_file(const CString& server_trade_code, const 
 	if (it == request_map_.end()) return;
 	const std::string file_name = it->second.parameter_map["file_name"];
 
-	long nFileSize = atol(m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????"));
-	CString strFileNm = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????");
-	CString strProcCd = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
+	long nFileSize = atol(m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "파일크기"));
+	CString strFileNm = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "파일명");
+	CString strProcCd = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "응답코드");
 
 	if (strProcCd == "REOK")
 	{
@@ -3864,7 +3586,7 @@ void ViClient::on_dm_symbol_master_file(const CString& server_trade_code, const 
 			if (commonfile.Open(strCommonFileName, CFile::modeCreate | CFile::modeWrite /*| CFile::typeBinary*/) == FALSE)
 			{
 				CString strMsg;
-				strMsg.Format("%s??? ?????? ????????????. ", strCommonFileName);
+				strMsg.Format("%s화일 생성에 실패하였습니다. ", strCommonFileName);
 				return on_task_complete(server_request_id);
 			}
 		}
@@ -3878,20 +3600,20 @@ void ViClient::on_dm_symbol_master_file(const CString& server_trade_code, const 
 
 void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_code, const LONG& server_request_id)
 {
-	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????");
-	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
-	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????????");
-	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_????");
-	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_????");
-	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_?????");
-	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
-	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????????");
-	CString strFutureFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????????");
-	CString strOptionFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
-	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????????????");
+	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁총액");
+	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁현금");
+	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "주문가능총액");
+	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "위탁증거금_당일");
+	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "위탁증거금_익일");
+	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "평가예탁총액_순자산");
+	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "오버나잇가능금");
+	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일총손익");
+	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일매매손익");
+	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일평가손익");
+	CString strFutureFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "선물위탁수수료");
+	CString strOptionFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "옵션위탁수수료");
+	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "익일예탁총액");
+	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "청산후주문가능총액");
 
 
 	CString strMsg = strData9 + strData10 + strData8 + _T("\n");
@@ -3903,7 +3625,7 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 	std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
 	if (!account) return on_task_complete(server_request_id);
 
-	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], ?????????[%s], ?????????[%s], ??????????[%s], ?????????????[%s], ????????????[%s], ", account_no.c_str(), strData8, strData9, strData10, strFutureFee, strOptionFee);
+	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], 당일총손익[%s], 당일매매손익[%s], 당일평가손익[%s], 선물위탁수수료[%s], 옵션위탁수수료[%s], ", account_no.c_str(), strData8, strData9, strData10, strFutureFee, strOptionFee);
 
 
 	account->Asset.EntrustDeposit = _ttoi(strData1.TrimRight());
@@ -3919,22 +3641,22 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec2");
 	for (int i = 0; i < nRepeatCnt; i++) {
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???????");
-		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???????");
-		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???δ??");
-		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???簡");
-		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
-		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
-		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "?????");
-		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???α??");
-		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "?????");
-		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??갡?????");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "종목코드");
+		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매구분");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "잔고수량");
+		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부단가");
+		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "현재가");
+		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매손익");
+		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "수수료");
+		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "총손익");
+		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부금액");
+		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "평가금액");
+		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "청산가능수량");
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
 
-		LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: symbol_code[%s], ??????[%s], ??????[%s], ?????[%s]", strSymbolCode, strProfit, strFee, strTotalProfit);
+		LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: symbol_code[%s], 매매손익[%s], 수수료[%s], 총손익[%s]", strSymbolCode, strProfit, strFee, strTotalProfit);
 
 
 		nlohmann::json symbol_profit_loss;
@@ -3960,50 +3682,50 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 }
 
 /*
-???¹??	06
-???¸?	50
-??????	10
-????????	20
-????????	20
-?????	20
-??????	20
-??????????	20
-??????????????	20
-???????	20
-????????	20
-?????????	20
-????????	20
-????????	20
-?????????	20
-???????	20
-??????	20
-????	01	'0':????, '1':????, '2':????
-????????	20
-???????갡?	20
+계좌번호	06
+계좌명	50
+통화코드	10
+예탁금총액	20
+예탁금잔액	20
+평가금액	20
+미수금액	20
+결제금액부족	20
+미결제약정증거금	20
+인출가능금	20
+주문가능금	20
+유지증거금	20
+주문증거금	20
+위탁증거금	20
+거래수수료	20
+청산손익	20
+평가손익	20
+미발생	01	'0':미발생, '1':현금, '2':변제
+추가증거금	20
+총계정자산가치	20
 ExcessMarginRate	20
-??????????	20
-????????	20
+외환고시환율	20
+옵션매매대금	20
 */
 void DarkHorse::ViClient::on_ab_account_profit_loss(const CString& server_trade_code, const LONG& server_request_id)
 {
-	CString strAccount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???¹??");
-	CString strEntrustTotal = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????");
-	CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????");
-	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
-	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????");
-	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????");
-	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_?????");
-	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
-	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strTradeProfitLoss = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
-	CString strOpenProfitLoss = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????");
-	CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
-	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????????????");
+	CString strAccount = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "계좌번호");
+	CString strEntrustTotal = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁금총액");
+	CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁금잔액");
+	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁현금");
+	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "주문가능금");
+	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "위탁증거금");
+	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "유지증거금");
+	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "평가예탁총액_순자산");
+	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "오버나잇가능금");
+	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일총손익");
+	CString strTradeProfitLoss = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "청산손익");
+	CString strOpenProfitLoss = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "평가손익");
+	CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "거래수수료");
+	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "옵션위탁수수료");
+	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "익일예탁총액");
+	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "청산후주문가능총액");
 
-	LOGINFO(CMyLogger::getInstance(), "on_ab_account_profit_loss :: account_no[%s], ?????????[%s], ???????[%s], ??????[%s], ?????????[%s], ????????????[%s], ", strAccount, strData8, strTradeProfitLoss, strOpenProfitLoss, strFee, strData12);
+	LOGINFO(CMyLogger::getInstance(), "on_ab_account_profit_loss :: account_no[%s], 당일총손익[%s], 청산손익[%s], 평가손익[%s], 거래수수료[%s], 옵션위탁수수료[%s], ", strAccount, strData8, strTradeProfitLoss, strOpenProfitLoss, strFee, strData12);
 
 
 	CString strMsg = strTradeProfitLoss + strOpenProfitLoss + strData8 + _T("\n");
@@ -4034,27 +3756,27 @@ void ViClient::on_ab_symbol_master(const CString& server_trade_code, const LONG&
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "종목코드");
 
 		CString msg;
 
 
 
-		CString strLastTradeDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "?????????");
-		CString strExchange = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "?????");
-		CString strExpireDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
-		CString strPriceTag = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
-		CString strStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????ð?(CME)");
-		CString strEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????ð?(CME)");
-		CString strLocalStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????ð?(???)");
-		CString strLocalEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????ð?(???)");
-		CString strCurrency = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "??????");
-		CString strProduct = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "???????");
+		CString strLastTradeDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "최종거래일");
+		CString strExchange = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "거래소");
+		CString strExpireDay = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "만기일");
+		CString strPriceTag = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "가격표시");
+		CString strStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "장시작시간(CME)");
+		CString strEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "장종료시간(CME)");
+		CString strLocalStartTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "장시작시간(한국)");
+		CString strLocalEndTime = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "장종료시간(한국)");
+		CString strCurrency = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "거래통화");
+		CString strProduct = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "상품구분");
 		CString strTickSize = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "ticksize");
 		CString strTickValue = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "tickvalue");
-		CString strNeedMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "?????");
-		CString strContractUnit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "????????");
-		CString strRemainMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "?????????");
+		CString strNeedMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "증거금");
+		CString strContractUnit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "계약단위");
+		CString strRemainMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", i, "유지증거금");
 
 		msg.Format("SymbolMaster strSymbolCode = %s, strLocalStartTime = %s, %s\n", strSymbolCode, strLocalStartTime, strLocalEndTime);
 		TRACE(msg);
@@ -4098,16 +3820,16 @@ int ViClient::ab_account_profit_loss(DhTaskArg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
-		// ??????
+		// 통화코드
 		reqString.append("USD");
 
 
@@ -4142,14 +3864,14 @@ int ViClient::ab_accepted_order(DhTaskArg arg)
 		std::string temp;
 		reqString.append("1");
 		temp = VtStringUtil::PadRight(mainApp.LoginMgr()->id(), ' ', 8);
-		// ????? 
+		// 아이디 
 		reqString.append(temp);
 
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
-		// ????? - ????
+		// 그룹명 - 공백
 		reqString.append("                    ");
 
 
@@ -4245,18 +3967,18 @@ int ViClient::dm_account_profit_loss(DhTaskArg arg)
 
 void DarkHorse::ViClient::on_ab_symbol_quote(const CString& sTrCode, const LONG& nRqID)
 {
-	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
-	CString	strSymbolNameKr = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
-	CString strDeltaDay = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
-	CString strDeltaDaySign = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
-	CString strUpdownRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????????");
-	CString	strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????ð?");
-	CString	strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???簡");
-	CString	strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?ð?");
-	CString	strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????");
-	CString	strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????");
-	CString	strCumulativeAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
-	CString strPreDayVolume = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
+	CString	strSymbolNameKr = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "한글종목명");
+	CString strDeltaDay = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비");
+	CString strDeltaDaySign = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비구분");
+	CString strUpdownRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비등락율");
+	CString	strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "체결시간");
+	CString	strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "현재가");
+	CString	strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "시가");
+	CString	strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "고가");
+	CString	strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "저가");
+	CString	strCumulativeAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "누적거래량");
+	CString strPreDayVolume = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일거래량");
 
 	CString msg;
 
@@ -4289,7 +4011,7 @@ void DarkHorse::ViClient::on_ab_symbol_quote(const CString& sTrCode, const LONG&
 
 void DarkHorse::ViClient::on_ab_symbol_hoga(const CString& sTrCode, const LONG& nRqID)
 {
-	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
+	CString	strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
 
 
 	CString msg;
@@ -4297,48 +4019,48 @@ void DarkHorse::ViClient::on_ab_symbol_hoga(const CString& sTrCode, const LONG& 
 	msg.Format("OnSymbolHoga strSymbolCode = %s\n", strSymbolCode);
 	TRACE(msg);
 
-	CString	strHogaTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????ð?");
+	CString	strHogaTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "호가시간");
 
-	CString	strSellPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????1");
-	CString	strBuyPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????1");
-	CString	strSellQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????1");
-	CString	strBuyQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????1");
-	CString	strSellCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????1");
-	CString	strBuyCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????1");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가잔량1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가잔량1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수1");
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가잔량2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가잔량2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수2");
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가잔량3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가잔량3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수3");
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가잔량4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가잔량4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수4");
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????5");
-	
+	CString	strSellPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가잔량5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가잔량5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가건수5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가건수5");
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????????");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????????");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????????");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????????");
+
+	CString	strTotSellQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가총잔량");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가총잔량");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매도호가총건수");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매수호가총건수");
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -4396,24 +4118,24 @@ void DarkHorse::ViClient::on_ab_account_asset(const CString& sTrCode, const LONG
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strCurrency = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
-		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
+		CString strCurrency = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "통화구분");
+		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "예탁금총액");
 		strEntrustTotal.Trim();
 		if (strEntrustTotal.Compare("0") == 0) {
 			continue;
 		}
 
-		CString strBalance = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
-		CString strUnsettledMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????????");
-		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
-		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
-		CString strMaintenaceMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
-		CString strSettledProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????");
-		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????????");
-		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????");
-		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
-		CString strAdditionalMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
-		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
+		CString strBalance = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "예탁금잔액");
+		CString strUnsettledMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "미결제증거금");
+		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문증거금");
+		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "위탁증거금");
+		CString strMaintenaceMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "유지증거금");
+		CString strSettledProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "청산손익");
+		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "선물옵션수수료");
+		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "평가손익");
+		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "평가예탁총액");
+		CString strAdditionalMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "추가증거금");
+		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문가능금액");
 
 		std::string account_no;
 		auto found = request_map_.find(nRqID);
@@ -4447,6 +4169,7 @@ void DarkHorse::ViClient::on_ab_account_asset(const CString& sTrCode, const LONG
 	}
 
 	on_task_complete(nRqID);
+
 }
 
 void DarkHorse::ViClient::on_dm_account_asset(const CString& sTrCode, const LONG& nRqID)
@@ -4454,20 +4177,20 @@ void DarkHorse::ViClient::on_dm_account_asset(const CString& sTrCode, const LONG
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????");
+		CString strEntrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "예탁총액");
 		strEntrustTotal.Trim();
 		//if (strEntrustTotal.Compare("0") == 0) {
 		//	continue;
 		//}
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???¹??");
-		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
-		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
-		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "???????????????");
-		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "??????");
-		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "????????");
-		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "?????????");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "계좌번호");
+		CString strOrderMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문증거금");
+		CString strEntrustMargin = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "위탁증거금");
+		CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "장중선물옵션수수료");
+		CString strOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "평가손익");
+		CString strOpenTrustTotal = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "평가예탁총액");
+		CString strOrderableAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문가능금액");
 
-		
+
 
 		CString msg;
 		nlohmann::json account_asset;
@@ -4498,7 +4221,7 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 	std::string account_no;
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++) {
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???¹??");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
 
 
 		CString msg;
@@ -4506,19 +4229,19 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 		msg.Format("on_ab_symbol_profit_loss strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
-		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???¸?");
-		CString strCurrency = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strSymbolSettledProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
-		CString strSymbolSettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????????");
-		CString strSymbolFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????????");
-		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strSymbolUnsettledFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????????");
-		CString strSymbolUnsettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????????");
+		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
+		CString strCurrency = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "통화코드");
+		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목");
+		CString strSymbolSettledProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "청산손익");
+		CString strSymbolSettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "청산순손익");
+		CString strSymbolFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "청산수수료");
+		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
+		CString strSymbolUnsettledFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "미결제수수료");
+		CString strSymbolUnsettledPureProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "미결제순손익");
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
-	
+
 		account_no = strAccountNo.Trim();
 		nlohmann::json symbol_profit_loss;
 		symbol_profit_loss["account_no"] = static_cast<const char*>(strAccountNo.Trim());
@@ -4531,7 +4254,7 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 		symbol_profit_loss["open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
 		symbol_profit_loss["unsettled_fee"] = _ttof(strSymbolUnsettledFee.Trim());
 		symbol_profit_loss["pure_unsettled_profit_loss"] = _ttof(strSymbolUnsettledPureProfitLoss.Trim());
-		
+
 
 		mainApp.total_position_manager()->on_symbol_profit_loss(std::move(symbol_profit_loss));
 	}
@@ -4550,22 +4273,22 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 	std::shared_ptr<SmAccount> account = mainApp.AcntMgr()->FindAccount(account_no);
 	if (!account) return on_task_complete(server_request_id);
 
-	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????");
-	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????");
-	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????????");
-	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_????");
-	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_????");
-	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????_?????");
-	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
-	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "??????????");
-	CString strData11 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????????");
-	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "????????????");
-	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "?????????");
-	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "???????????????");
+	CString strData1 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁총액");
+	CString strData2 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "예탁현금");
+	CString strData3 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "주문가능총액");
+	CString strData4 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "위탁증거금_당일");
+	CString strData5 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "위탁증거금_익일");
+	CString strData6 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "평가예탁총액_순자산");
+	CString strData7 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "오버나잇가능금");
+	CString strData8 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일총손익");
+	CString strData9 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일매매손익");
+	CString strData10 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "당일평가손익");
+	CString strData11 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "선물위탁수수료");
+	CString strData12 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "옵션위탁수수료");
+	CString strData13 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "익일예탁총액");
+	CString strData14 = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec1", 0, "청산후주문가능총액");
 
-	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], ?????????[%s], ?????????[%s], ??????????[%s], ?????????????[%s], ????????????[%s], ", account_no.c_str(), strData8, strData9, strData10, strData11, strData12);
+	LOGINFO(CMyLogger::getInstance(), "on_dm_account_profit_loss :: account_no[%s], 당일총손익[%s], 당일매매손익[%s], 당일평가손익[%s], 선물위탁수수료[%s], 옵션위탁수수료[%s], ", account_no.c_str(), strData8, strData9, strData10, strData11, strData12);
 
 
 	account->Asset.EntrustDeposit = _ttoi(strData1.TrimRight());
@@ -4577,22 +4300,22 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(server_trade_code, -1, "OutRec2");
 	for (int i = 0; i < nRepeatCnt; i++) {
-		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???????");
-		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
-		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???????");
-		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???δ??");
-		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???簡");
-		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
-		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??????");
-		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "?????");
-		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "???α??");
-		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "?????");
-		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "??갡?????");
+		CString strSymbolCode = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "종목코드");
+		CString strPos = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매구분");
+		CString strRemain = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "잔고수량");
+		CString strUnitPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부단가");
+		CString strCurPrice = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "현재가");
+		CString strProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "매매손익");
+		CString strFee = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "수수료");
+		CString strTotalProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "총손익");
+		CString strMoney = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "장부금액");
+		CString strOpenProfit = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "평가금액");
+		CString strSettle = m_CommAgent.CommGetData(server_trade_code, -1, "OutRec2", i, "청산가능수량");
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
 		if (!symbol) continue;
 
-		LOGINFO(CMyLogger::getInstance(), "on_dm_symbol_profit_loss :: account_no[%s], symbolcode[%s], ??????[%s], ?????[%s], ??????[%s], ?????[%s], ", account_no.c_str(), strSymbolCode, strProfit, strOpenProfit, strFee, strTotalProfit);
+		LOGINFO(CMyLogger::getInstance(), "on_dm_symbol_profit_loss :: account_no[%s], symbolcode[%s], 매매손익[%s], 평가금액[%s], 수수료[%s], 총손익[%s], ", account_no.c_str(), strSymbolCode, strProfit, strOpenProfit, strFee, strTotalProfit);
 
 
 		nlohmann::json symbol_profit_loss;
@@ -4609,11 +4332,11 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 
 
 		mainApp.total_position_manager()->on_symbol_profit_loss(std::move(symbol_profit_loss));
-		
+
 	}
 
 	mainApp.total_position_manager()->update_account_profit_loss(account_no);
-	
+
 	on_task_complete(server_request_id);
 }
 
@@ -4624,21 +4347,21 @@ void DarkHorse::ViClient::on_ab_symbol_position(const CString& sTrCode, const LO
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???¹??");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
 
 		CString msg;
 
 		msg.Format("on_ab_symbol_position strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
-		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???¸?");
-		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strSymbolPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????????");
-		CString strSymbolOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????? ?????????");
-		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????(????????)");
-		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
+		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목");
+		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "매매구분");
+		CString strSymbolPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "전일미결제수량");
+		CString strSymbolOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "당일순 미결제수량");
+		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가");
+		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가(소수점반영)");
+		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
 
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
@@ -4672,21 +4395,21 @@ void ViClient::on_dm_symbol_position(const CString& sTrCode, const LONG& nRqID)
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = 0; i < nRepeatCnt; i++)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???¹??");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
 
 		CString msg;
 
 		msg.Format("on_dm_symbol_position strAccountNo = %s\n", strAccountNo);
 		TRACE(msg);
 
-		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???¸?");
-		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strSymbolPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????????");
-		CString strSymbolTodayOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????????");
-		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???δ??");
-		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
+		CString strAccountName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
+		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목");
+		CString strSymbolPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "매매구분");
+		CString strSymbolPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "전일미결제수량");
+		CString strSymbolTodayOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "당일미결제수량");
+		CString strSymbolAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가");
+		CString strSymbolUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "장부단가");
+		CString strSymbolOpenProfitLoss = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
 
 		const std::string symbol_code(strSymbolCode.Trim());
 		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
@@ -4719,30 +4442,30 @@ void DarkHorse::ViClient::on_ab_filled_order_list(const CString& sTrCode, const 
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	for (int i = nRepeatCnt - 1; i >= 0; --i)
 	{
-		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???¹??");
+		CString strAccountNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
 
 
 		CString msg;
 
-		
 
-		CString strOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strOrderPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
-		CString strOrderAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
-		CString strOrderPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "??????");
-		CString strPriceType = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????");
-		CString strOriOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????");
-		CString strFirstOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????????");
 
-		CString strOrderDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
-		CString strOrderTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????ð?");
+		CString strOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문번호");
+		CString strSymbolCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목명");
+		CString strOrderPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문가격");
+		CString strOrderAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문수량");
+		CString strOrderPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "매매구분");
+		CString strPriceType = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "가격조건");
+		CString strOriOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "원주문번호");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "최초원주문번호");
 
-		CString strFilledPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????");
-		CString strFilledAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
+		CString strOrderDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문일자");
+		CString strOrderTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문시간");
 
-		CString strFilledDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???????");
-		CString strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????ð?");
+		CString strFilledPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "체결가격");
+		CString strFilledAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "체결수량");
+
+		CString strFilledDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "체결일자");
+		CString strFilledTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "체결시간");
 
 		strOrderPrice.Trim();
 		strFilledPrice.Trim();
@@ -4752,7 +4475,7 @@ void DarkHorse::ViClient::on_ab_filled_order_list(const CString& sTrCode, const 
 		strOrderAmount.Trim();
 		strFilledAmount.Trim();
 
-		msg.Format("on_ab_filled_order_list:: strAccountNo = [%s] symbolcode = [%s], orderno = [%s], filldate = [%s], filltime = [%s], filledcount = [%s], orderprice = [%s], filledprice = [%s]\n", strAccountNo, strSymbolCode, strOrderNo, strFilledDate, strFilledTime, strFilledAmount, strOrderPrice,  strFilledPrice);
+		msg.Format("on_ab_filled_order_list:: strAccountNo = [%s] symbolcode = [%s], orderno = [%s], filldate = [%s], filltime = [%s], filledcount = [%s], orderprice = [%s], filledprice = [%s]\n", strAccountNo, strSymbolCode, strOrderNo, strFilledDate, strFilledTime, strFilledAmount, strOrderPrice, strFilledPrice);
 		//TRACE(msg);
 
 
@@ -4808,19 +4531,19 @@ void DarkHorse::ViClient::on_ab_chart_data_long(const CString& sTrCode, const LO
 	int milisecond_time = 0;
 	int cur_time = 0;
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
-	// ???? ?????? ???? ???? ?´?. ?????? ???? ?????? ??????? ???? ?????´?.
+	// 가장 최근것이 가장 먼저 온다. 따라서 가장 과거의 데이터를 먼저 가져온다.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?ð?");
-		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????????");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????ð?");
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?ð?");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "???");
-		CString strCumulVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????????");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "일자");
+		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시간");
+		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "국내일자");
+		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "국내시간");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시가");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "고가");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "저가");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "종가");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "체결량");
+		CString strCumulVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "누적거래량");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strDate, strTime);
 		TRACE(msg);
@@ -4831,7 +4554,7 @@ void DarkHorse::ViClient::on_ab_chart_data_long(const CString& sTrCode, const LO
 		close.push_back(_ttoi(strClose));
 		volume.push_back(_ttoi(strVol));
 
-		
+
 		if (cur_time == _ttoi(strTime)) {
 			milisecond_time++;
 		}
@@ -4878,18 +4601,18 @@ void DarkHorse::ViClient::on_ab_chart_data_short(const CString& sTrCode, const L
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
 	int milisecond_time = 0;
 	int cur_time = 0;
-	// ???? ?????? ???? ???? ?´?. ?????? ???? ?????? ??????? ???? ?????´?.
+	// 가장 최근것이 가장 먼저 온다. 따라서 가장 과거의 데이터를 먼저 가져온다.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?ð?");
-		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????ð?");
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?ð?");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "일자");
+		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "시간");
+		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내일자");
+		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내시간");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "시가");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "고가");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "저가");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종가");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "체결량");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strDate, strTime);
 		TRACE(msg);
@@ -4901,7 +4624,7 @@ void DarkHorse::ViClient::on_ab_chart_data_short(const CString& sTrCode, const L
 		l = _ttoi(strLow);
 		c = _ttoi(strClose);
 		v = _ttoi(strVol);
-		
+
 		chart_data->AppendChartData(h, l, o, c, v, _ttoi(strDate), _ttoi(strTime));
 		*/
 		open.push_back(_ttoi(strOpen));
@@ -4955,24 +4678,24 @@ void DarkHorse::ViClient::on_dm_chart_data(const CString& sTrCode, const LONG& n
 	int cur_time = 0;
 
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
-	// ???? ?????? ???? ???? ?´?. ?????? ???? ?????? ??????? ???? ?????´?.
+	// 가장 최근것이 가장 먼저 온다. 따라서 가장 과거의 데이터를 먼저 가져온다.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????ð?");
-		
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "날짜시간");
+
 		if (chart_type == SmChartType::MIN)
 			strCurDate.Append(_T("00"));
 		else
 			strCurDate.Append(_T("000000"));
-		
+
 		CString strTime = strCurDate.Right(6);
 		CString strDate = strCurDate.Left(8);
 
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?ð?");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시가");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "고가");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "저가");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "종가");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "거래량");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strCurDate);
 		TRACE(msg);
@@ -5040,19 +4763,19 @@ void DarkHorse::ViClient::OnChartDataLong_Init(const CString& sTrCode, const LON
 	int milisecond_time = 0;
 	int cur_time = 0;
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
-	// ???? ?????? ???? ???? ?´?. ?????? ???? ?????? ??????? ???? ?????´?.
+	// 가장 최근것이 가장 먼저 온다. 따라서 가장 과거의 데이터를 먼저 가져온다.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?ð?");
-		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????????");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????ð?");
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?ð?");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "???");
-		CString strCumulVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????????");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "일자");
+		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시간");
+		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "국내일자");
+		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "국내시간");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시가");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "고가");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "저가");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "종가");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "체결량");
+		CString strCumulVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "누적거래량");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strDate, strTime);
 		TRACE(msg);
@@ -5125,18 +4848,18 @@ void DarkHorse::ViClient::OnChartDataShort_Init(const CString& sTrCode, const LO
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
 	int milisecond_time = 0;
 	int cur_time = 0;
-	// ???? ?????? ???? ???? ?´?. ?????? ???? ?????? ??????? ???? ?????´?.
+	// 가장 최근것이 가장 먼저 온다. 따라서 가장 과거의 데이터를 먼저 가져온다.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?ð?");
-		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????????");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?????ð?");
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "?ð?");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "????");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "???");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "일자");
+		CString strCurTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "시간");
+		CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내일자");
+		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내시간");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "시가");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "고가");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "저가");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종가");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "체결량");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strDate, strTime);
 		TRACE(msg);
@@ -5187,10 +4910,10 @@ void DarkHorse::ViClient::OnChartDataShort_Init(const CString& sTrCode, const LO
 
 void DarkHorse::ViClient::on_dm_expected(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strExpected = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strExpected = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "예상체결가격");
 	CString msg;
-	msg.Format("on_dm_expected = symbol [%s], expected [%s]\n",strSymbolCode, strExpected);
+	msg.Format("on_dm_expected = symbol [%s], expected [%s]\n", strSymbolCode, strExpected);
 	TRACE(msg);
 	//LOGINFO(CMyLogger::getInstance(), "%s", msg);
 	nlohmann::json quote;
@@ -5205,16 +4928,16 @@ void DarkHorse::ViClient::on_dm_expected(const CString& strKey, const LONG& nRea
 
 void DarkHorse::ViClient::on_dm_commodity_future_quote(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
-	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
 
 
-	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???簡");
-	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?ð?");
-	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
-	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
 
 	nlohmann::json quote;
 
@@ -5341,17 +5064,17 @@ void DarkHorse::ViClient::on_dm_commodity_future_hoga(const CString& strKey, con
 
 void DarkHorse::ViClient::on_dm_option_quote(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
-	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
 
-	
 
-	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???簡");
-	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?ð?");
-	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
-	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
+
+	CString	strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
 
 	nlohmann::json quote;
 
@@ -5376,56 +5099,56 @@ void DarkHorse::ViClient::on_dm_option_quote(const CString& strKey, const LONG& 
 }
 void DarkHorse::ViClient::on_dm_option_hoga(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 
 
 
-	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
-	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
-	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
-	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
-	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
-	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수1");
 
 
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수2");
 
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수3");
 
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수4");
 
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
+	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수5");
 
-	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
+	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "호가시간");
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
+	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가총수량");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가총수량");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가총건수");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가총건수");
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -5500,10 +5223,10 @@ void DarkHorse::ViClient::OnDomesticChartData_Init(const CString& sTrCode, const
 	std::shared_ptr<SmChartData> chart_data = mainApp.ChartDataMgr()->FindAddChartData(symbol_code, static_cast<SmChartType>(chart_type), cycle);
 	int milisecond_time = 0;
 	int cur_time = 0;
-	// ???? ?????? ???? ???? ?´?. ?????? ???? ?????? ??????? ???? ?????´?.
+	// 가장 최근것이 가장 먼저 온다. 따라서 가장 과거의 데이터를 먼저 가져온다.
 	// Received the chart data first.
 	for (int i = nRepeatCnt - 1; i >= 0; --i) {
-		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????ð?");
+		CString strCurDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "날짜시간");
 
 		if (chart_type == SmChartType::MIN)
 			strCurDate.Append(_T("00"));
@@ -5513,11 +5236,11 @@ void DarkHorse::ViClient::OnDomesticChartData_Init(const CString& sTrCode, const
 		CString strTime = strCurDate.Right(6);
 		CString strDate = strCurDate.Left(8);
 
-		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?ð?");
-		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "????");
-		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "?????");
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시가");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "고가");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "저가");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "종가");
+		CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "거래량");
 
 		msg.Format("OnChartData = index = %d, close = %d, %s, %s\n", i, _ttoi(strClose), symbol_code.c_str(), strCurDate);
 		TRACE(msg);
@@ -5566,38 +5289,38 @@ void DarkHorse::ViClient::OnDomesticChartData_Init(const CString& sTrCode, const
 
 void DarkHorse::ViClient::on_ab_order_accepted(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???¹??");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
-	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString strOrderDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
-	
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
+	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "가격구분");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문구분");
+	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
+	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	CString strOrderDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문일자");
+	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문시간");
+
 
 	//LOG_F(INFO, _T(" OnOrderAcceptedHd Custoem = %s"), strCustom);
 
 	CString strMsg;
-	strMsg.Format("OnOrderAcceptedHd ????[%s]??????[%s] ???????[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
-	
-	LOGINFO(CMyLogger::getInstance(), "OnOrderAcceptedHd ????[%s]??????[%s], ???????[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
+	strMsg.Format("OnOrderAcceptedHd 종목[%s]주문번호[%s] 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
+
+	LOGINFO(CMyLogger::getInstance(), "OnOrderAcceptedHd 종목[%s]주문번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 
 	//TRACE(strMsg);
 	strCustom.Trim();
-	strAccountNo.TrimRight(); // ???? ???
-	strOrderNo.TrimLeft('0'); // ??? ???
-	strSymbolCode.TrimRight(); // ??? ???
-	strOrderPrice = strOrderPrice.Trim(); // ??? ???? ???
-	
+	strAccountNo.TrimRight(); // 계좌 번호
+	strOrderNo.TrimLeft('0'); // 주문 번호
+	strSymbolCode.TrimRight(); // 심볼 코드
+	strOrderPrice = strOrderPrice.Trim(); // 주문 가격 트림
+
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
-	// ??? ???? ???
+	// 주문 수량 트림
 	strOrderAmount.TrimRight();
 
 	nlohmann::json order_info;
@@ -5628,55 +5351,55 @@ void DarkHorse::ViClient::on_ab_order_accepted(const CString& strKey, const LONG
 
 void DarkHorse::ViClient::on_ab_order_unfilled(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???¹??");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
-	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
 	CString strCancelCnt = strOrderAmount;
 	CString strModyCnt = strOrderAmount;
-	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
+	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결수량");
+	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "잔량");
 
-	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
-	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString strOrderSeq = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
+	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	CString strOrderSeq = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문순서");
 
 	CString strMsg;
-	strMsg.Format("OnOrderUnfilled ????[%s]??????[%s][????????[%s], ???? ????? ???[%s] ,???????[%s], ???????[%s], ???[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
-	LOGINFO(CMyLogger::getInstance(), "OnOrderUnfilled ????[%s] ??????[%s][????????[%s], ???? ????? ???[%s], ???????[%s], ???????[%s], ???????[%s], ???[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount, strFilledCnt, strRemain);
+	strMsg.Format("OnOrderUnfilled 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s] ,주문순서[%s], 주문수량[%s], 잔량[%s], 체결수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+	LOGINFO(CMyLogger::getInstance(), "OnOrderUnfilled 종목[%s] 주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s], 주문구분[%s], 주문수량[%s], 체결수량[%s], 잔량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strMan, strOrderAmount, strFilledCnt, strRemain);
 
 	//TRACE(strMsg);
 
 	strCustom.Trim();
-	// ??? ????
+	// 주문 가격
 	strOrderPrice.Trim();
-	
+
 
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
-	// ???? ??? ???
+	// 계좌 번호 트림
 	strAccountNo.TrimRight();
-	// ??? ??? ???
+	// 주문 번호 트림
 	strOrderNo.TrimLeft('0');
-	// ????? ??? ???
+	// 원주문 번호 트림
 	strOriOrderNo.TrimLeft('0');
-	// ???? ??? ???
+	// 첫주문 번호 트림
 	strFirstOrderNo.TrimLeft('0');
-	// ??? ??? ???
+	// 심볼 코드 트림
 	strSymbolCode.TrimRight();
-	// ??? ???? ???
+	// 주문 수량 트림
 	strOrderAmount.TrimRight();
-	// ??????? ????? ????? ???? ???
+	// 정정이나 취소시 처리할 수량 트림
 	strRemain.TrimRight();
-	// ?????? ??????? ????
+	// 정정이 이루어진 수량
 	strModyCnt.TrimRight();
-	// ????? ????
+	// 체결된 수량
 	strFilledCnt.TrimRight();
-	// ????? ????
+	// 취소된 수량
 	strCancelCnt.TrimRight();
 
 	nlohmann::json order_info;
@@ -5713,50 +5436,50 @@ void DarkHorse::ViClient::on_ab_order_unfilled(const CString& strKey, const LONG
 
 void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???¹??");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
 
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
 
 
-	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
-	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strFilledDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
+	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결가격");
+	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결수량");
+	CString strFilledDate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결일자");
+	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
 
-	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
 
-	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "수수료");
 
 	CString strMsg;
-	strMsg.Format("on_ab_order_filled ????[%s]??????[%s]\n", strSymbolCode, strOrderNo);
-	//strMsg.Format(_T("OnOrderFilledHd ?????? = %s\n"), strFee);
+	strMsg.Format("on_ab_order_filled 종목[%s]주문번호[%s]\n", strSymbolCode, strOrderNo);
+	//strMsg.Format(_T("OnOrderFilledHd 수수료 = %s\n"), strFee);
 	//TRACE(strMsg);
 
 	//LOG_F(INFO, _T(" OnOrderFilledHd Custoem = %s"), strCustom);
 
-	// ??? ???
+	// 심볼 코드
 	strSymbolCode.Trim();
 
 	strCustom.Trim();
-	
+
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
 	const int filled_price = convert_to_int(strSymbolCode, strFilledPrice);
 	if (filled_price < 0) return;
-	// ???? ??? ???
+	// 계좌 번호 트림
 	strAccountNo.TrimRight();
-	// ??? ??? ???
+	// 주문 번호 트림
 	strOrderNo.TrimLeft('0');
-	
-	
-	// ??? ????
+
+
+	// 체결 수량
 	strFilledAmount.TrimLeft();
-	// ????? ?ð?
+	// 체결된 시각
 	strFilledTime.TrimRight();
 
 	nlohmann::json order_info;
@@ -5789,36 +5512,36 @@ void DarkHorse::ViClient::on_ab_order_filled(const CString& strKey, const LONG& 
 
 void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???¹??");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
-	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????ð?");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
+	//CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "가격구분");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
+	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문구분");
+	//CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
+	//CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	CString strOrderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "접수시간");
 
 
 	//LOG_F(INFO, _T(" OnOrderAcceptedHd Custoem = %s"), strCustom);
 
 	CString strMsg;
-	strMsg.Format("on_dm_order_accepted ????[%s]??????[%s], ???????[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
+	strMsg.Format("on_dm_order_accepted 종목[%s]주문번호[%s], 주문구분[%s], 주문수량[%s]\n", strSymbolCode, strOrderNo, strMan, strOrderAmount);
 
 	//TRACE(strMsg);
 	strCustom.Trim();
-	strAccountNo.TrimRight(); // ???? ???
-	strOrderNo.TrimLeft('0'); // ??? ???
-	strSymbolCode.TrimRight(); // ??? ???
-	strOrderPrice = strOrderPrice.Trim(); // ??? ???? ???
+	strAccountNo.TrimRight(); // 계좌 번호
+	strOrderNo.TrimLeft('0'); // 주문 번호
+	strSymbolCode.TrimRight(); // 심볼 코드
+	strOrderPrice = strOrderPrice.Trim(); // 주문 가격 트림
 
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
-	// ??? ???? ???
+	// 주문 수량 트림
 	strOrderAmount.TrimRight();
 
 	nlohmann::json order_info;
@@ -5851,54 +5574,54 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 
 void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???¹??");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
-	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strCancelCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strModyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
-	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
+	CString strOrderPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
+	CString strOrderAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
+	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
+	CString strCancelCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "취소수량");
+	CString strModyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "정정수량");
+	CString strFilledCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결수량");
+	CString strRemain = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "잔량");
 
-	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????");
-	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
+	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
+	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
 	CString strOrderSeq = "0";
 
 	CString strMsg;
-	strMsg.Format("on_dm_order_unfilled ????[%s]??????[%s][????????[%s], ???? ????? ???[%s] ,???????[%s], ???????[%s], ???[%s], ???????[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
+	strMsg.Format("on_dm_order_unfilled 종목[%s]주문번호[%s][원주문번호[%s], 최초 원주문 번호[%s] ,주문순서[%s], 주문수량[%s], 잔량[%s], 체결수량[%s]\n", strSymbolCode, strOrderNo, strOriOrderNo, strFirstOrderNo, strOrderSeq, strOrderAmount, strRemain, strFilledCnt);
 
 	//TRACE(strMsg);
 
 	strCustom.Trim();
-	// ??? ????
+	// 주문 가격
 	strOrderPrice.Trim();
 
 
 	const int order_price = convert_to_int(strSymbolCode, strOrderPrice);
 	if (order_price < 0) return;
-	// ???? ??? ???
+	// 계좌 번호 트림
 	strAccountNo.TrimRight();
-	// ??? ??? ???
+	// 주문 번호 트림
 	strOrderNo.TrimLeft('0');
-	// ????? ??? ???
+	// 원주문 번호 트림
 	strOriOrderNo.TrimLeft('0');
-	// ???? ??? ???
+	// 첫주문 번호 트림
 	strFirstOrderNo.TrimLeft('0');
-	// ??? ??? ???
+	// 심볼 코드 트림
 	strSymbolCode.TrimRight();
-	// ??? ???? ???
+	// 주문 수량 트림
 	strOrderAmount.TrimRight();
-	// ??????? ????? ????? ???? ???
+	// 정정이나 취소시 처리할 수량 트림
 	strRemain.TrimRight();
-	// ?????? ??????? ????
+	// 정정이 이루어진 수량
 	strModyCnt.TrimRight();
-	// ????? ????
+	// 체결된 수량
 	strFilledCnt.TrimRight();
-	// ????? ????
+	// 취소된 수량
 	strCancelCnt.TrimRight();
 
 	nlohmann::json order_info;
@@ -5936,32 +5659,32 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 
 void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& nRealType)
 {
-	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???¹??");
-	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
+	CString strOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strOrderPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
 
 	CString strOrderPrice = "0";
 	CString strOrderAmount = "0";
 
 
-	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
-	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
-	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
+	CString strFilledPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결가격");
+	CString strFilledAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결수량");
+	CString strFilledTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strCustom = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "사용자정의필드");
 
-	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	//CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
 
-	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	//CString strFee = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "수수료");
 
 	CString strMsg;
-	strMsg.Format("on_dm_order_filled ????[%s]??????[%s]\n", strSymbolCode, strOrderNo);
-	//strMsg.Format(_T("OnOrderFilledHd ?????? = %s\n"), strFee);
+	strMsg.Format("on_dm_order_filled 종목[%s]주문번호[%s]\n", strSymbolCode, strOrderNo);
+	//strMsg.Format(_T("OnOrderFilledHd 수수료 = %s\n"), strFee);
 	//TRACE(strMsg);
 
 	//LOG_F(INFO, _T(" OnOrderFilledHd Custoem = %s"), strCustom);
 
-	// ??? ???
+	// 심볼 코드
 	strSymbolCode.Trim();
 
 	strCustom.Trim();
@@ -5970,15 +5693,15 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 	if (order_price < 0) return;
 	const int filled_price = convert_to_int(strSymbolCode, strFilledPrice);
 	if (filled_price < 0) return;
-	// ???? ??? ???
+	// 계좌 번호 트림
 	strAccountNo.TrimRight();
-	// ??? ??? ???
+	// 주문 번호 트림
 	strOrderNo.TrimLeft('0');
 
 
-	// ??? ????
+	// 체결 수량
 	strFilledAmount.TrimLeft();
-	// ????? ?ð?
+	// 체결된 시각
 	strFilledTime.TrimRight();
 
 	nlohmann::json order_info;
@@ -6011,18 +5734,18 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 
 void DarkHorse::ViClient::on_ab_future_quote(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????????ð?");
-	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
-	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?ð?");
-	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
-	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
-	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
-	CString strCumulativeAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????");
-	CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????????");
-	// ?????????????
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "기준체결시간");
+	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결가");
+	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+	CString strCumulativeAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "누적거래량");
+	CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
+	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비등락율");
+	// 전일대비등락율
 
 	//m_edSeriesO.SetWindowText(strSeries);
 	//m_edTimeO.SetWindowText(strTime);
@@ -6056,56 +5779,56 @@ void DarkHorse::ViClient::on_ab_future_quote(const CString& strKey, const LONG& 
 
 void DarkHorse::ViClient::on_ab_future_hoga(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 
 
 
-	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
-	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
-	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
-	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
-	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
-	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수1");
 
 
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수2");
 
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수3");
 
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수4");
 
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
+	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수5");
 
-	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
+	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "호가시간");
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
+	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가총수량");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가총수량");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가총건수");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가총건수");
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -6158,17 +5881,17 @@ void DarkHorse::ViClient::on_ab_future_hoga(const CString& strKey, const LONG& n
 void DarkHorse::ViClient::on_dm_future_quote(const CString& strKey, const LONG& nRealType)
 {
 
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
-	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???簡");
-	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?ð?");
-	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
-	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????");
-	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???");
-	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????");
-	CString strCumulativeAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????");
-	CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
-	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
+	CString strClose = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "현재가");
+	CString strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
+	CString strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
+	CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+	CString strCumulativeAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "누적거래량");
+	CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
+	CString strUpRate = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "등락율");
 
 
 	nlohmann::json quote;
@@ -6196,56 +5919,56 @@ void DarkHorse::ViClient::on_dm_future_quote(const CString& strKey, const LONG& 
 
 void DarkHorse::ViClient::on_dm_future_hoga(const CString& strKey, const LONG& nRealType)
 {
-	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????");
+	CString strSymbolCode = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
 
 
 
-	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
-	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????1");
-	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
-	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????1");
-	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
-	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????1");
+	CString	strSellPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가1");
+	CString	strBuyPrice1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가1");
+	CString	strSellQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량1");
+	CString	strBuyQty1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량1");
+	CString	strSellCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수1");
+	CString	strBuyCnt1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수1");
 
 
 
-	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
-	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????2");
-	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
-	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????2");
-	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
-	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????2");
+	CString	strSellPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가2");
+	CString	strBuyPrice2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가2");
+	CString	strSellQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량2");
+	CString	strBuyQty2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량2");
+	CString	strSellCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수2");
+	CString	strBuyCnt2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수2");
 
 
-	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
-	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????3");
-	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
-	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????3");
-	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
-	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????3");
+	CString	strSellPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가3");
+	CString	strBuyPrice3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가3");
+	CString	strSellQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량3");
+	CString	strBuyQty3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량3");
+	CString	strSellCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수3");
+	CString	strBuyCnt3 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수3");
 
 
-	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
-	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????4");
-	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
-	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????4");
-	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
-	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????4");
+	CString	strSellPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가4");
+	CString	strBuyPrice4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가4");
+	CString	strSellQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량4");
+	CString	strBuyQty4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량4");
+	CString	strSellCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수4");
+	CString	strBuyCnt4 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수4");
 
 
-	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
-	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????5");
-	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
-	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????5");
-	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
-	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "?????????5");
+	CString	strSellPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가5");
+	CString	strBuyPrice5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가5");
+	CString	strSellQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가수량5");
+	CString	strBuyQty5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가수량5");
+	CString	strSellCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가건수5");
+	CString	strBuyCnt5 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가건수5");
 
-	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "????ð?");
+	CString strHogaTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "호가시간");
 
-	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "???????????");
-	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
-	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "??????????");
+	CString	strTotSellQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가총수량");
+	CString	strTotBuyQty = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가총수량");
+	CString	strTotSellCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도호가총건수");
+	CString	strTotBuyCnt = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수호가총건수");
 
 	nlohmann::json hoga;
 	hoga["symbol_code"] = static_cast<const char*>(strSymbolCode.Trim());
@@ -6305,10 +6028,10 @@ int DarkHorse::ViClient::ab_account_asset(DhTaskArg arg)
 
 		std::string reqString;
 		std::string temp;
-		// ???? ???
+		// 계좌 번호
 		temp = VtStringUtil::PadRight(account_no, ' ', 6);
 		reqString.append(temp);
-		// ???й??
+		// 비밀번호
 		temp = VtStringUtil::PadRight(password, ' ', 8);
 		reqString.append(temp);
 

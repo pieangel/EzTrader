@@ -54,15 +54,12 @@ namespace DarkHorse {
 	public:
 		int Login(const std::string& id, const std::string& pwd, const std::string& cert);
 		int Login(task_arg&& arg);
-		
+
 	protected:
 		virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 		DECLARE_MESSAGE_MAP()
 	public:
-		afx_msg void OnTimer(UINT_PTR nIDEvent);
-		void start_timer();
-		void stop_timer();
 		int ab_symbol_profit_loss(DhTaskArg arg);
 		int dm_symbol_profit_loss(DhTaskArg arg);
 		int dm_symbol_position(DhTaskArg arg);
@@ -85,16 +82,16 @@ namespace DarkHorse {
 		void remove_task(const int& task_id);
 		int download_file(task_arg&& arg);
 		int download_symbol_master_file(task_arg&& arg);
-		int ab_symbol_master(task_arg&& arg) ;
-		int ab_symbol_quote(task_arg&& arg) ;
-		int ab_symbol_hoga(task_arg&& arg) ;
-		int ab_account_asset(task_arg&& arg) ;
+		int ab_symbol_master(task_arg&& arg);
+		int ab_symbol_quote(task_arg&& arg);
+		int ab_symbol_hoga(task_arg&& arg);
+		int ab_account_asset(task_arg&& arg);
 		int ab_account_asset(DhTaskArg arg);
 		int dm_account_asset(DhTaskArg arg);
-		int ab_account_deposit(task_arg&& arg) ;
-		int ab_account_profit_loss(task_arg&& arg) ;
-		int ab_symbol_profit_loss(task_arg&& arg) ;
-		int ab_accepted_order_list(task_arg&& arg) ;
+		int ab_account_deposit(task_arg&& arg);
+		int ab_account_profit_loss(task_arg&& arg);
+		int ab_symbol_profit_loss(task_arg&& arg);
+		int ab_accepted_order_list(task_arg&& arg);
 
 		//int ab_symbol_quote(DhTaskArg arg);
 		//int ab_symbol_hoga(DhTaskArg arg);
@@ -102,8 +99,8 @@ namespace DarkHorse {
 		int ab_symbol_hoga(DhTaskArg&& arg);
 
 
-		int ab_filled_order_list(task_arg&& arg) ;
-		int ab_chart_data(task_arg&& arg) ;
+		int ab_filled_order_list(task_arg&& arg);
+		int ab_chart_data(task_arg&& arg);
 		int ab_chart_data(SmTaskArg&& arg);
 		int chart_data(DhTaskArg&& arg);
 		//int dm_symbol_master(DhTaskArg&& arg);
@@ -112,13 +109,13 @@ namespace DarkHorse {
 		int ab_account_profit_loss(DarkHorse::AccountProfitLossReq arg);
 		int dm_account_profit_loss(DarkHorse::AccountProfitLossReq arg);
 		void register_symbol(DhTaskArg&& arg);
-		void ab_new_order(task_arg&& arg) ;
-		void ab_change_order(task_arg&& arg) ;
-		void ab_cancel_order(task_arg&& arg) ;
-		void register_symbol(task_arg&& arg) ;
-		void unregister_symbol(task_arg&& arg) ;
-		void register_account(task_arg&& arg) ;
-		void unregister_account(task_arg&& arg) ;
+		void ab_new_order(task_arg&& arg);
+		void ab_change_order(task_arg&& arg);
+		void ab_cancel_order(task_arg&& arg);
+		void register_symbol(task_arg&& arg);
+		void unregister_symbol(task_arg&& arg);
+		void register_account(task_arg&& arg);
+		void unregister_account(task_arg&& arg);
 
 		void register_symbol(const std::string& symbol_code);
 		void register_account(const std::string& account_no);
@@ -147,9 +144,6 @@ namespace DarkHorse {
 		bool Enable() const { return _Enable; }
 		void Enable(bool val) { _Enable = val; }
 	private:
-		void simul_kospi();
-		void simul_kosdaq();
-		void simul_option();
 		void handle_order_event(order_event&& order_info_item);
 		void dm_new_order(order_request_p order_req);
 		void dm_change_order(order_request_p order_req);
@@ -175,7 +169,7 @@ namespace DarkHorse {
 		int dm_chart_data(SmTaskArg&& arg);
 		int ab_chart_data_long(SmTaskArg&& arg);
 		int ab_chart_data_short(SmTaskArg&& arg);
-	
+
 		/// <summary>
 		/// 클라이언트 객체
 		/// </summary>
@@ -185,7 +179,7 @@ namespace DarkHorse {
 		/// </summary>
 		CHDFCommAgent m_CommAgent;
 		void on_dm_symbol_code(const CString& sTrCode, const LONG& nRqID);
-		void on_account_list(const CString& sTrCode, const LONG& nRqID) ;
+		void on_account_list(const CString& sTrCode, const LONG& nRqID);
 		void on_ab_symbol_master(const CString& server_trade_code, const LONG& server_request_id);
 		void on_dm_symbol_master(const CString& sTrCode, const LONG& nRqID);
 		void on_dm_symbol_master_file(const CString& server_trade_code, const LONG& server_request_id);

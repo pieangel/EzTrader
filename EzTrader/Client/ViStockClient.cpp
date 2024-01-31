@@ -348,12 +348,12 @@ DarkHorse::ViStockClient::~ViStockClient()
 
 void ViStockClient::start_timer()
 {
-	_ViCtrol->start_timer();
+	//_ViCtrol->start_timer();
 }
 
 void ViStockClient::stop_timer()
 {
-	_ViCtrol->stop_timer();
+	//_ViCtrol->stop_timer();
 }
 
 void DarkHorse::ViStockClient::CreateControl()
