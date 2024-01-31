@@ -314,7 +314,7 @@ void VtOrderWndHd::BlockEvent()
 		SmOrderPanel* curWnd = *it;
 		curWnd->BlockEvent();
 	}
-	//_LeftWnd.BlockEvent();
+	_LeftWnd.BlockEvent();
 }
 
 void VtOrderWndHd::SetDefaultCenterWnd()
@@ -463,7 +463,7 @@ void VtOrderWndHd::CreateChildWindows()
 	}
 
 	// 자식 윈도우들을 만든다.
-	_LeftWnd.Create(IDD_DM_ACNT_ORDER_LEFT, this);
+	_LeftWnd.Create(IDD_ORDER_LEFT_HD, this);
 	_RightWnd.Create(IDD_ORDER_RIGHT_HD, this);
 }
 
@@ -1044,8 +1044,8 @@ bool VtOrderWndHd::InitFund()
 	_ComboAcnt.SetCurSel(selIndex);
 	if (_OrderConfigMgr->Fund()) {
 		_StaticAcntName.SetWindowText(_OrderConfigMgr->Fund()->Name().c_str());
-		//_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
-		//_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
+		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
+		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
 	}
 	
 	return true;
@@ -1119,8 +1119,8 @@ void VtOrderWndHd::InitAccount()
 
 	if (_OrderConfigMgr->Account()) {
 		_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->Name().c_str());
-		//_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
-		//_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
+		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
+		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
 		CString pwd;
 		pwd.Format(_T("%s"), _OrderConfigMgr->Account()->Pwd().c_str());
 		_EditPwd.SetWindowText(pwd);
@@ -1143,17 +1143,17 @@ void VtOrderWndHd::OnReceiveQuote(symbol_p sym)
 	if (!sym)
 		return;
 
-	//_LeftWnd.OnReceiveQuote(sym);
+	_LeftWnd.OnReceiveQuote(sym);
 }
 
 void VtOrderWndHd::OnExpected(symbol_p sym)
 {
-	//_LeftWnd.OnExpected(sym);
+	_LeftWnd.OnExpected(sym);
 }
 
 void VtOrderWndHd::OnReceiveAccountInfo()
 {
-	//_LeftWnd.OnReceiveAccountInfo();
+	_LeftWnd.OnReceiveAccountInfo();
 }
 
 void VtOrderWndHd::OnReceiveMsg(CString msg)
@@ -1194,7 +1194,7 @@ void VtOrderWndHd::GetOptionSymbolMaster()
 
 void VtOrderWndHd::OnOutstanding()
 {
-	//_LeftWnd.OnOutstanding();
+	_LeftWnd.OnOutstanding();
 }
 
 
@@ -1402,27 +1402,27 @@ void VtOrderWndHd::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
 void VtOrderWndHd::OnSymbolMaster(symbol_p sym)
 {
-	//_LeftWnd.OnSymbolMaster(sym);
+	_LeftWnd.OnSymbolMaster(sym);
 }
 
 void VtOrderWndHd::OnRemain(VtPosition* posi)
 {
-	//_LeftWnd.OnRemain(posi);
+	_LeftWnd.OnRemain(posi);
 }
 
 void VtOrderWndHd::OnOrderAccepted(VtOrder* order)
 {
-	//_LeftWnd.OnOrderAccepted(order);
+	_LeftWnd.OnOrderAccepted(order);
 }
 
 void VtOrderWndHd::OnOrderUnfilled(VtOrder* order)
 {
-	//_LeftWnd.OnOrderUnfilled(order);
+	_LeftWnd.OnOrderUnfilled(order);
 }
 
 void VtOrderWndHd::OnOrderFilled(VtOrder* order)
 {
-	//_LeftWnd.OnOrderFilled(order);
+	_LeftWnd.OnOrderFilled(order);
 }
 
 void VtOrderWndHd::ChangeAccount(account_p acnt)
@@ -1508,9 +1508,9 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 		}
 	}
 
-// 	if (_LeftWnd) {
-// 		_LeftWnd.OnAccountChanged();
-// 	}
+	if (_LeftWnd) {
+		_LeftWnd.OnAccountChanged();
+	}
 }
 
 
