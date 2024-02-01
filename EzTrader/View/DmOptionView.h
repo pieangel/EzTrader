@@ -59,8 +59,13 @@ public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	void set_option_info(
+		const size_t index, 
+		VmOption& option_info, 
+		std::shared_ptr<DarkHorse::SmSymbol> symbol, 
+		std::shared_ptr<DarkHorse::SmQuote> quote);
 	std::string get_position_text(const DarkHorse::VmOption& option_info);
-	void get_option_info(DarkHorse::VmOption& option_info);
+	void get_option_position_info(DarkHorse::VmOption& option_info);
 	void get_init_accepted_order_count(DarkHorse::VmOption& option_info);
 	void set_call_put_area();
 	int order_window_id_ = 0;

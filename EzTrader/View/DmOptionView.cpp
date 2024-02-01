@@ -129,7 +129,7 @@ std::string DmOptionView::get_position_text(const DarkHorse::VmOption& option_in
 	else return "";
 }
 
-void DmOptionView::get_option_info(DarkHorse::VmOption& option_info)
+void DmOptionView::get_option_position_info(DarkHorse::VmOption& option_info)
 {
 	get_init_accepted_order_count(option_info);
 	if (order_type_ == OrderType::None) return;
@@ -441,11 +441,11 @@ void DmOptionView::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 	order_type_ = OrderType::Fund;
 	position_control_->set_fund(_Fund);
 	for (auto& option_info : call_symbol_vector_) {
-		get_option_info(option_info);
+		get_option_position_info(option_info);
 		update_value_cell(option_info.symbol_id, option_info);
 	}
 	for (auto& option_info : put_symbol_vector_) {
-		get_option_info(option_info);
+		get_option_position_info(option_info);
 		update_value_cell(option_info.symbol_id, option_info);
 	}
 	enable_show_ = true;
@@ -461,11 +461,11 @@ void DmOptionView::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 		order_type_ = OrderType::MainAccount;
 
 	for (auto& option_info : call_symbol_vector_) {
-		get_option_info(option_info);
+		get_option_position_info(option_info);
 		update_value_cell(option_info.symbol_id, option_info);
 	}
 	for (auto& option_info : put_symbol_vector_) {
-		get_option_info(option_info);
+		get_option_position_info(option_info);
 		update_value_cell(option_info.symbol_id, option_info);
 	}
 	enable_show_ = true;
@@ -623,6 +623,27 @@ void DmOptionView::set_option_info(const int option_market_index, const std::str
 	year_month_name_ = year_month_name;
 }
 
+void DmOptionView::set_option_info(
+	const size_t index, 
+	VmOption& option_info, 
+	std::shared_ptr<DarkHorse::SmSymbol> symbol, 
+	std::shared_ptr<DarkHorse::SmQuote> quote)
+{
+	if (!symbol || !quote) return;
+
+	option_info.strike = symbol->Strike();
+	option_info.atm = symbol->AtmType();
+	option_info.decimal = symbol->decimal();
+	if (option_info.atm == 1) atm_index_ = index;
+	option_info.close = quote->close;
+	option_info.expected = quote->expected;
+	option_info.ordered = false;
+	option_info.position = 0;
+	option_info.symbol_id = symbol->Id();
+	option_info.symbol_p = symbol;
+	option_info.symbol_code = symbol->SymbolCode();
+}
+
 void DmOptionView::make_symbol_vec(bool call_side)
 {
 	std::vector<DarkHorse::DmOption>& option_vec = mainApp.SymMgr()->get_dm_option_vec();
@@ -642,6 +663,7 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		auto symbol = symbol_vec[i];
 		auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
 		VmOption option_info;
+		/*
 		option_info.strike = symbol->Strike();
 		option_info.atm = symbol->AtmType();
 		option_info.decimal = symbol->decimal();
@@ -653,11 +675,13 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		option_info.symbol_id = symbol->Id();
 		option_info.symbol_p = symbol;
 		option_info.symbol_code = symbol->SymbolCode();
+		*/
+		set_option_info(i, option_info, symbol, quote);
 		const std::string& symbol_code = symbol->SymbolCode();
 		const std::string option_code = symbol_code.substr(1, symbol_code.length() - 1);
 		symbol_vector_index_map_[option_code] = i;
 		option_info.call_put = call_side ? 1 : 2;
-		get_option_info(option_info);
+		get_option_position_info(option_info);
 		if (call_side) call_symbol_vector_.push_back(option_info);
 		else put_symbol_vector_.push_back(option_info);
 	}
