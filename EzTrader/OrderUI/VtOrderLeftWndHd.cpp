@@ -125,15 +125,16 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	else {
 		_AssetGrid.ShowWindow(SW_HIDE);
 	}
-	//_SymbolOptionGrid.AttachGrid(this, IDC_SYMBOL_OPTION);
+	//future_view_.init_dm_future();
 	_SymbolOptionGrid.Init();
 	_SymbolFutureGrid.Init();
 	_ProfitLossGrid.Init();
 	_AssetGrid.Init();
+	//_SymbolOptionGrid.InitGrid();
 
-	//future_view_.init_dm_future();
 	init_option_market();
 	set_option_view();
+
 
 	if (_FutureSymbolMode == 0)
 	{
@@ -163,7 +164,7 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 void VtOrderLeftWndHd::OnReceiveQuote(symbol_p sym)
 {
 	_SymbolFutureGrid.OnReceiveQuote(sym);
-	_SymbolOptionGrid.OnReceiveQuote(sym);
+	//_SymbolOptionGrid.OnReceiveQuote(sym);
 	_ProfitLossGrid.OnReceiveQuote(sym);
 }
 
@@ -175,13 +176,13 @@ void VtOrderLeftWndHd::OnOutstanding()
 void VtOrderLeftWndHd::OnExpected(symbol_p sym)
 {
 	_SymbolFutureGrid.OnExpected(sym);
-	_SymbolOptionGrid.OnExpected(sym);
+	//_SymbolOptionGrid.OnExpected(sym);
 }
 
 void VtOrderLeftWndHd::BlockEvent()
 {
 	_SymbolFutureGrid.UnregisterAllCallback();
-	_SymbolOptionGrid.UnregisterAllCallback();
+	//_SymbolOptionGrid.UnregisterAllCallback();
 }
 
 void VtOrderLeftWndHd::Begin()
@@ -223,7 +224,7 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboProduct()
 {
 	// TODO: Add your control notification handler code here
 	
-	_SymbolOptionGrid.Mode(_Mode);
+	//_SymbolOptionGrid.Mode(_Mode);
 	/*
 	_SymbolOptionGrid.SetProductSection();
 	_SymbolOptionGrid.SetYearMonth();
@@ -251,7 +252,7 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboProduct()
 		option_yearmonth_index_map[index] = name;
 	}
 	year_month_index = 0;
-	combo_option_month_.SetCurSel(year_month_index);
+	//combo_option_month_.SetCurSel(year_month_index);
 	set_option_view();
 }
 
@@ -260,7 +261,7 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboOption()
 {
 	// TODO: Add your control notification handler code here
 	
-	_SymbolOptionGrid.Mode(_Mode);
+	//_SymbolOptionGrid.Mode(_Mode);
 	/*
 	if (GetSafeHwnd()) {
 		CRect rcWnd;
@@ -273,10 +274,10 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboOption()
 			_SymbolOptionGrid.GetSymbolMaster();
 	}
 	*/
-	if (option_market_index < 0) return;
+	//if (option_market_index < 0) return;
 
-	year_month_index = combo_option_month_.GetCurSel();
-	set_option_view();
+	//year_month_index = combo_option_month_.GetCurSel();
+	//set_option_view();
 }
 
 
@@ -294,8 +295,8 @@ void VtOrderLeftWndHd::OnBnClickedRadioBalance()
 	_Mode = 0;
 	_SymbolFutureGrid.Mode(0);
 	_SymbolFutureGrid.InitGrid();
-	_SymbolOptionGrid.Mode(0);
-	_SymbolOptionGrid.RefreshMode();
+	//_SymbolOptionGrid.Mode(0);
+	//_SymbolOptionGrid.RefreshMode();
 }
 
 
@@ -305,10 +306,10 @@ void VtOrderLeftWndHd::OnBnClickedRadioCurrent()
 	_Mode = 1;
 	_SymbolFutureGrid.Mode(1);
 	_SymbolFutureGrid.InitGrid();
-	_SymbolOptionGrid.Mode(1);
-	_SymbolOptionGrid.RefreshMode();
-	_SymbolOptionGrid.GetSymbolMaster();
-	_SymbolOptionGrid.SetCurrent2();
+	//_SymbolOptionGrid.Mode(1);
+	//_SymbolOptionGrid.RefreshMode();
+	//_SymbolOptionGrid.GetSymbolMaster();
+	//_SymbolOptionGrid.SetCurrent2();
 }
 
 
@@ -406,10 +407,10 @@ void VtOrderLeftWndHd::OnAccountChanged()
 			return;
 		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
 		CRect rcGrid;
-		_SymbolOptionGrid.GetWindowRect(rcGrid);
-		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - FixedHeight, SWP_NOMOVE);
-		_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
-		_SymbolOptionGrid.GetSymbolMaster();
+		//_SymbolOptionGrid.GetWindowRect(rcGrid);
+		//_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - FixedHeight, SWP_NOMOVE);
+		//_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
+		//_SymbolOptionGrid.GetSymbolMaster();
 		_SymbolFutureGrid.InitGrid();
 		_ProfitLossGrid.InitGrid();
 		_AssetGrid.InitGrid();

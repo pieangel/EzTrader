@@ -101,6 +101,10 @@ public:
 	void SetRemain(VtOrder* order);
 
 	void InitGrid(int height);
+	void calcMaxRow(const int height);
+	void calcMaxSymbol();
+	int findAtmIndex();
+	int calcStartIndex();
 	void SetRemain2();
 	void SetCurrent2();
 	void SetExpected2();
@@ -158,7 +162,6 @@ public:
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
 	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
 	void UpdateSymbolInfo();
-	void UpdateAssetInfo();
 	void OnQuoteEvent(const std::string& symbol_code);
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void set_view_mode(ViewMode view_mode);
@@ -234,5 +237,9 @@ private:
 	std::shared_ptr<DarkHorse::SmAccount> _Account = nullptr;
 	std::shared_ptr<DarkHorse::SmFund> _Fund = nullptr;
 
+	int _maxRow{ 0 };
+	int _maxSymbol{ 0 };
+	int _startIndex{ 0 };
+	int _atmIndex{ 0 };
 };
 

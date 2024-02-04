@@ -213,6 +213,8 @@ void SmOptionGrid::Init()
 
 	SetColTitle();
 
+	//InitGrid();
+
 	//_RunInfo = mainApp.SymbolMgr().MrktMgr().GetOptionRunVector();
 
 	//InitSymbol();
@@ -244,31 +246,14 @@ void SmOptionGrid::OnRButtonDown(UINT nFlags, CPoint point)
 
 BOOL SmOptionGrid::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	int distance = (zDelta / 60);
+	int distance = zDelta / 60;
 	if (abs(zDelta) > 120)
 		distance = zDelta / 120;
 	else
 		distance = zDelta / 40;
-	_ValueStartRow = _ValueStartRow + -1 * (distance);
-	if (_ValueStartRow > _MaxIndex - (_MaxRow - 2))
-		_ValueStartRow = _MaxIndex - _MaxRow + 2;
-	if (_ValueStartRow < 0)
-		_ValueStartRow = 0;
-
-	
-	// 기존맵을 삭제한다.
-	_SymbolRowMap.clear();
-	// 새로운 맵을 만든다.
-	MakeSymbolRowMap(_ValueStartRow, _ValueMaxRow);
-
-	if (_Mode == 0)
-		SetRemain2();
-	else if (_Mode == 1)
-		SetCurrent2();
-	else
-		SetExpected2();
-	
-	//InitGrid();
+	set_strike_start_index(distance);
+	set_option_view();
+	Invalidate();
 	return CGridCtrl::OnMouseWheel(nFlags, zDelta, pt);
 }
 
@@ -327,6 +312,10 @@ void SmOptionGrid::InitGrid()
 
 void SmOptionGrid::InitGrid(int height)
 {
+	calcMaxRow(height);
+	calcMaxSymbol();
+	calcStartIndex();
+	/*
 	std::pair<int, int> start_max = FindValueStartRow(height);
 	_ValueStartRow = start_max.first;
 	_ValueMaxRow = start_max.second;
@@ -368,6 +357,64 @@ void SmOptionGrid::InitGrid(int height)
 		SetCurrent2();
 	else
 		SetExpected2();
+		*/
+}
+
+void SmOptionGrid::calcMaxRow(const int height)
+{
+	_maxRow = (int)(height / _CellHeight);
+}
+
+void SmOptionGrid::calcMaxSymbol()
+{
+	_maxSymbol = call_symbol_vector_.size();
+}
+
+int SmOptionGrid::findAtmIndex()
+{
+	_atmIndex = (int)(_maxSymbol / 2);
+	for (size_t i = 0; i < call_symbol_vector_.size(); i++) {
+		if (call_symbol_vector_[i].atm == 1) {
+			_atmIndex = i;
+			break;
+		}
+	}
+
+	return _atmIndex;
+}
+
+int SmOptionGrid::calcStartIndex()
+{
+	if (_maxSymbol > _maxRow) {
+		int atmIndex = findAtmIndex();
+		int symbolCenterIndex  = (int)(call_symbol_vector_.size() / 2);
+		int gridCenterIndex = (int)(_maxRow / 2);
+		// 등가 인덱스가 값의 중앙보다 클때 
+		if (atmIndex > symbolCenterIndex) {
+			if (atmIndex + gridCenterIndex > _maxSymbol) {
+				// 맨위 한줄은 제목이므로 1을 더해 준다.
+				// 인덱스는 원래 0에서 시작하는데 우리는 1에서 시작하므로 1을 다시한번 더해준다.
+				_startIndex = _maxSymbol - _maxRow + 2;
+			}
+			else {
+				_startIndex = atmIndex - gridCenterIndex;
+			}
+			if (_startIndex < 0)
+				_startIndex = 0;
+		}
+		else { // 등가 인덱스가 값의 중앙보다 작을 때
+			if (atmIndex - gridCenterIndex < 0) {
+				_startIndex = 0;
+			}
+			else {
+				_startIndex = atmIndex - gridCenterIndex;
+			}
+		}
+	}
+	else
+		_startIndex = 0;
+
+	return _startIndex;
 }
 
 void SmOptionGrid::InitSymbol()
@@ -387,11 +434,7 @@ void SmOptionGrid::InitSymbol()
 
 void SmOptionGrid::InitYearMonth()
 {
-	if (!_LeftWnd)
-		return;
 	
-	SetYearMonth();
-	_LeftWnd->combo_option_month_.SetCurSel(0);
 }
 
 void SmOptionGrid::SetYearMonth()
@@ -416,7 +459,7 @@ void SmOptionGrid::SetYearMonth()
 	}
 	*/
 
-	_LeftWnd->combo_option_month_.SetCurSel(0);
+	
 }
 
 void SmOptionGrid::SetProductSection()
@@ -431,64 +474,7 @@ void SmOptionGrid::GetSymbolMaster()
 	if (_EqualIndex == -1)
 		return;
 
-	int selMon = _LeftWnd->combo_option_month_.GetCurSel();
-	/*
-	std::pair<SmProduct*, SmProduct*> product_pair = mainApp.SymbolMgr().MrktMgr().GetProductPair(_RunInfo[_SelectedProduct]);
-	if (!product_pair.first || !product_pair.second)
-		return;
-
-	CString curYearMon;
-	_LeftWnd->_ComboOptionMonth.GetLBText(selMon, curYearMon);
-	SmProductYearMonth* call_year_month = product_pair.first->GetYearMonth((LPCTSTR)curYearMon);
-	SmProductYearMonth* put_year_month = product_pair.second->GetYearMonth((LPCTSTR)curYearMon);
-	if (!call_year_month || !put_year_month)
-		return;
 	
-	if (call_year_month && put_year_month) {
-		std::vector<symbol_p> call_symbol_list = call_year_month->SymbolList();
-		std::vector<symbol_p> put_symbol_list = put_year_month->SymbolList();
-		size_t startIndex = 0;
-		size_t endIndex = call_symbol_list.size() - 1;
-		int addNum = 0;
-		size_t curIndex = _EqualIndex;
-		bool upRange = false, downRange = false;
-		while (1) {
-			if (addNum % 2 == 0)
-				curIndex = curIndex + addNum;
-			else
-				curIndex = curIndex - addNum;
-
-			if (curIndex < startIndex)
-				upRange = true;
-			if (curIndex > endIndex)
-				downRange = true;
-
-			if (curIndex >= startIndex && curIndex <= endIndex) {
-				symbol_p sym =nullptr;
-				if (curIndex < call_symbol_list.size()) {
-					sym = call_symbol_list[curIndex];
-					if (sym->Quote.intClose == 0) {
-						sym->GetSymbolMaster();
-						//VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
-					}
-				}
-		
-				if (curIndex < put_symbol_list.size()) {
-					sym = put_symbol_list[curIndex];
-					if (sym->Quote.intClose == 0) {
-						sym->GetSymbolMaster();
-						//VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
-					}
-				}
-			}
-
-			if (upRange && downRange)
-				break;
-
-			addNum++;
-		}
-	}
-	*/
 }
 
 void SmOptionGrid::RefreshMode()
@@ -508,90 +494,8 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 	if (selMon == -1)
 		return std::make_pair(0, 0);
 
-	int eIndex = 0;
-	int delta = 0;
-	int minVal = 1000000;
-	int intCenter = 0;
-	int eCenter = 0;
-	// 값을 표시하는 시작 인덱스
-	int start_index = 0;
-	int max_row = height / 21;// DefaultCellHeight;
-	_MaxRow = max_row;
-	CString curYearMon;
-	_LeftWnd->combo_option_month_.GetLBText(selMon, curYearMon);
-	/*
-	SmProduct* product = mainApp.SymbolMgr().MrktMgr().FindProductFromMap(_RunInfo[_SelectedProduct].CallCode);
-	if (!product)
-		return std::make_pair(0, 0);
 	
-	std::map<std::string, SmProductYearMonth*>& year_month_map = product->GetYearMonthMap();
-
-	SmProductYearMonth* year_month = product->GetYearMonth((LPCTSTR)curYearMon);
-	if (year_month) {
-		std::vector<symbol_p> symbol_list = year_month->SymbolList();
-		for (size_t i = 0; i < symbol_list.size(); ++i) {
-			symbol_p sym = symbol_list[i];
-			// 코스닥은 실제값과 표시값이 다르다.
-			if (product->Code().compare("206") == 0) {
-				if (sym->Name.length() > 0) {
-					std::string centerVal = sym->Name.substr(18, 6);
-					centerVal.erase(std::remove(centerVal.begin(), centerVal.end(), ','), centerVal.end());
-					intCenter = std::stoi(centerVal) * (int)(std::pow(10, 2));
-					delta = std::abs(mainApp.SymbolMgr().Kosdaq150Current - intCenter);
-					if (delta < minVal) {
-						minVal = delta;
-						eCenter = intCenter;
-						eIndex = i;
-					}
-				}
-			}
-			else {
-				std::string centerVal = sym->ShortCode.substr(5, 3);
-				char centerTip = sym->ShortCode.at(7);
-				intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->Decimal));
-				// 행사가가 2나 7로 끝나면 .5가 붙는다. 그래서 자릿수를 감안하여 정수로 환산해서 50을 더해 준다.
-				if (centerTip == '2' || centerTip == '7')
-					intCenter += 50;
-				delta = std::abs(mainApp.SymbolMgr().Kospi200Current - intCenter);
-				if (delta < minVal) {
-					minVal = delta;
-					eCenter = intCenter;
-					eIndex = i;
-				}
-			}
-		}
-		int center_index = (int)(symbol_list.size() / 2);
-		_MaxIndex = symbol_list.size() - 1;
-		// 등가 인덱스를 저장한다.
-		_EqualIndex = eIndex;
-		// 등가 심볼을 저장한다.
-		_EqualSymbol = symbol_list[eIndex];
-		int half = (int)(max_row / 2);
-		// 등가 인덱스가 값의 중앙보다 클때 
-		if (eIndex > center_index) {
-			if (eIndex + half > _MaxIndex) {
-				// 맨위 한줄은 제목이므로 1을 더해 준다.
-				// 인덱스는 원래 0에서 시작하는데 우리는 1에서 시작하므로 1을 다시한번 더해준다.
-				start_index = _MaxIndex - max_row + 1 + 1;
-			}
-			else {
-				start_index = eIndex - half;
-			}
-			if (start_index < 0)
-				start_index = 0;
-		}
-		else { // 등가 인덱스가 값의 중앙보다 작을 때
-			if (eIndex - half < 0) {
-				start_index = 0;
-			}
-			else {
-				start_index = eIndex - half;
-			}
-		}
-	}
-	*/
-
-	return std::make_pair(start_index, max_row);
+	return std::make_pair(0, 0);
 }
 
 void SmOptionGrid::ClearAllText()
@@ -1000,109 +904,7 @@ int SmOptionGrid::GetMaxRow()
 
 void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 {
-	int selMon = _LeftWnd->combo_option_month_.GetCurSel();
-	if (selMon == -1)
-		return;
-	/*
-	std::pair<SmProduct*, SmProduct*> product_pair = mainApp.SymbolMgr().MrktMgr().GetProductPair(_RunInfo[_SelectedProduct]);
-	if (!product_pair.first || !product_pair.second)
-		return;
-
-	CString curYearMon;
-	_LeftWnd->_ComboOptionMonth.GetLBText(selMon, curYearMon);
-	SmProductYearMonth* call_year_month = product_pair.first->GetYearMonth((LPCTSTR)curYearMon);	
-	SmProductYearMonth* put_year_month = product_pair.second->GetYearMonth((LPCTSTR)curYearMon);
-	if (!call_year_month || !put_year_month)
-		return;
-
-	// 기존 등가 색을 지운다.
-	if (_EqualCell.IsValid()) {
-		CGridCellBase* pCell = GetCell(_EqualCell.row, _EqualCell.col);
-		if (pCell) {
-			pCell->SetBackClr(RGB(255, 255, 255));
-			InvalidateCellRect(_EqualCell.row, _EqualCell.col);
-		}
-	}
-
-	int eIndex = 0;
-	int delta = 0;
-	int minVal = 1000000;
-	if (call_year_month) {
-		std::vector<symbol_p> call_symbol_list = call_year_month->SymbolList();
-		// 콜과 풋의 심볼을 순회한다.
-		for (size_t i = start_index, j = 1; i < call_symbol_list.size(); ++i, ++j) {
-			// 행의 끝에 도달하면 탈출한다.
-			if (i < 0 || j >= _MaxRow)
-				break;
-			symbol_p call_sym = call_symbol_list[i];
-			_SymbolRowMap[call_sym->ShortCode] = std::make_tuple(j, 0, call_sym);
-			// 여기서 종목 실시간 시세 등록을 해준다.
-			mainApp.RealtimeRegisterMgr().RegisterProduct(call_sym->ShortCode, 1);
-			std::string strVal = "";
-			// 코스닥일때 
-			if (product_pair.first->Code().compare("206") == 0) {
-				std::string centerVal = call_sym->Name.substr(18, 6);
-				centerVal.erase(std::remove(centerVal.begin(), centerVal.end(), ' '), centerVal.end());
-				// 중앙값을 설정한다.
-				strVal = centerVal;
-			}
-			else { // 코스피 일때
-				std::string centerVal = call_sym->ShortCode.substr(5, 3);
-				char centerTip = call_sym->ShortCode.at(7);
-				int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, call_sym->Decimal));
-				// 행사가가 2나 7로 끝나면 .5가 붙기 때문에 50을 더해준다.
-				// 나머지 행사가는 0으로 끝나기 때문에 더해 주지 않아도 된다.
-				if (centerTip == '2' || centerTip == '7')
-					intCenter += 50;
-
-				// 중앙값을 설정한다.
-				strVal = fmt::format("{:.{}f}", intCenter / std::pow(10, call_sym->Decimal), call_sym->Decimal);
-			}
-
-			
-			CGridCellBase* pCell = GetCell(j, 1);
-			if (pCell) {
-				// 새로운 등가를 설정한다.
-				if (call_sym == _EqualSymbol) {
-					pCell->SetBackClr(RGB(255, 255, 0));
-					_EqualCell.row = j;
-					_EqualCell.col = 1;
-				}
-				pCell->SetText(strVal.c_str());
-				InvalidateCellRect(j, 1);
-			}
-			pCell = GetCell(j, 0);
-			if (pCell) {
-				pCell->SetText("");
-				pCell->SetData((LPARAM)call_sym);
-				pCell->SetBackClr(RGB(252, 226, 228));
-				InvalidateCellRect(j, 0);
-			}
-		}
-	}
-
-	if (put_year_month) {
-		std::vector<symbol_p> put_symbol_list = put_year_month->SymbolList();
-		// 콜과 풋의 심볼을 순회한다.
-		for (size_t i = start_index, j = 1; i < put_symbol_list.size(); ++i, ++j) {
-			// 행의 끝에 도달하면 탈출한다.
-			if (i < 0 || j >= _MaxRow)
-				break;
-			symbol_p put_sym = put_symbol_list[i];
-			_SymbolRowMap[put_sym->ShortCode] = std::make_tuple(j, 2, put_sym);
-			// 여기서 종목 실시간 시세 등록을 해준다.
-			mainApp.RealtimeRegisterMgr().RegisterProduct(put_sym->ShortCode, 1);
-
-			CGridCellBase* pCell = GetCell(j, 2);
-			if (pCell) {
-				pCell->SetText("");
-				pCell->SetData((LPARAM)put_sym);
-				pCell->SetBackClr(RGB(218, 226, 245));
-				InvalidateCellRect(j, 2);
-			}
-		}
-	}
-	*/
+	
 }
 
 void SmOptionGrid::OnSymbolMaster(symbol_p sym)
@@ -1249,18 +1051,10 @@ void SmOptionGrid::get_init_accepted_order_count(DarkHorse::VmOption& option_inf
 
 void SmOptionGrid::set_call_put_area()
 {
-	/*
-	for (int i = 1; i < _Grid->RowCount(); i++) {
-		auto cell = _Grid->FindCell(i, 0);
-		if (cell) {
-			cell->CellType(SmCellType::CT_PD);
-		}
-		cell = _Grid->FindCell(i, 2);
-		if (cell) {
-			cell->CellType(SmCellType::CT_CD);
-		}
+	for (int i = 1; i < _RowCount; i++) {
+		QuickSetBackColor(i, 0, RGB(252, 226, 228));
+		QuickSetBackColor(i, 2, RGB(218, 226, 245));
 	}
-	*/
 }
 
 void SmOptionGrid::update_expected(std::shared_ptr<DarkHorse::SmQuote> quote)
@@ -1398,12 +1192,14 @@ void SmOptionGrid::set_option_view(
 	make_symbol_vec(true);
 	make_symbol_vec(false);
 	register_symbols(option_market_index);
+	InitGrid();
 	init_strike_index();
 	set_option_view();
 }
 
 void SmOptionGrid::set_option_view()
 {
+	set_call_put_area();
 	set_strike();
 	show_values();
 	//register_symbols_to_server();
@@ -1515,11 +1311,11 @@ void SmOptionGrid::set_strike_start_index(const int distance)
 	strike_start_index_ += distance;
 	if (strike_start_index_ < 1)
 		strike_start_index_ = 1;
-// 	if (max_symbol_count <= static_cast<size_t>(_Grid->RowCount()))
-// 		strike_start_index_ = 1;
-// 	const size_t diff = max_symbol_count - _Grid->RowCount();
-// 	if (strike_start_index_ >= static_cast<int>(diff))
-// 		strike_start_index_ = diff - 2;
+	if (max_symbol_count <= static_cast<size_t>(_RowCount))
+		strike_start_index_ = 1;
+	const size_t diff = max_symbol_count - _RowCount;
+	if (strike_start_index_ >= static_cast<int>(diff))
+		strike_start_index_ = diff - 2;
 }
 
 void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
@@ -1557,23 +1353,24 @@ void SmOptionGrid::register_symbol(const std::string symbol_code)
 
 void SmOptionGrid::show_value(const int row, const int col, const DarkHorse::VmOption& option_info)
 {
-// 	auto cell = _Grid->FindCell(row, col);
-// 	if (!cell) return;
-// 
-// 	std::string value;
-// 	if (view_mode_ == ViewMode::VM_Close) {
-// 		value = std::to_string(option_info.close);
-// 		SmUtil::insert_decimal(value, option_info.decimal);
-// 	}
-// 	else if (view_mode_ == ViewMode::VM_Expected) {
-// 		value = std::to_string(option_info.expected);
-// 		SmUtil::insert_decimal(value, option_info.decimal);
-// 	}
-// 	else {
-// 		value = get_position_text(option_info);
-// 	}
-// 	set_background_color(cell, option_info);
-// 	cell->Text(value);
+	//auto cell = FindCell(row, col);
+	//if (!cell) return;
+
+	std::string value;
+	if (view_mode_ == ViewMode::VM_Close) {
+		value = std::to_string(option_info.close);
+		DarkHorse::SmUtil::insert_decimal(value, option_info.decimal);
+	}
+	else if (view_mode_ == ViewMode::VM_Expected) {
+		value = std::to_string(option_info.expected);
+		DarkHorse::SmUtil::insert_decimal(value, option_info.decimal);
+	}
+	else {
+		value = get_position_text(option_info);
+	}
+	//set_background_color(cell, option_info);
+	//cell->Text(value);
+	QuickSetText(row, col, value.c_str());
 }
 
 // set the background color of the cell according to the order status
@@ -1593,32 +1390,30 @@ void SmOptionGrid::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell,
 
 void SmOptionGrid::show_strike(const int row, const int col, const DarkHorse::VmOption& option_info)
 {
-// 	auto cell = _Grid->FindCell(row, col);
-// 	if (!cell) return;
-// 
-// 	if (option_info.atm == 1)
-// 		cell->CellType(CT_BUTTON_BUY);
-// 	else
-// 		cell->CellType(CT_NORMAL);
-// 	cell->Text(option_info.strike.c_str());
+	if (option_info.atm == 1)
+		QuickSetBackColor(row, col, RGB(255, 0, 0));
+	else
+		QuickSetBackColor(row, col, RGB(255, 255, 255));
+
+	QuickSetText(row, col, option_info.strike.c_str());
 }
 
 void SmOptionGrid::show_values()
 {
 	if (call_symbol_vector_.empty() || put_symbol_vector_.empty()) return;
 
-// 	for (int i = 1; i < _Grid->RowCount(); i++) {
-// 		int new_strike_index = strike_start_index_ + i - 1;
-// 		const int vec_size = static_cast<int>(call_symbol_vector_.size());
-// 		if (new_strike_index >= vec_size)
-// 			new_strike_index = vec_size - 1;
-// 		if (new_strike_index < 0)
-// 			new_strike_index = 0;
-// 		const VmOption& call_info = call_symbol_vector_[new_strike_index];
-// 		const VmOption& put_info = put_symbol_vector_[new_strike_index];
-// 		show_value(i, 0, call_info);
-// 		show_value(i, 2, put_info);
-// 	}
+	for (int i = 1; i < _RowCount; i++) {
+		int new_strike_index = strike_start_index_ + i - 1;
+		const int vec_size = static_cast<int>(call_symbol_vector_.size());
+		if (new_strike_index >= vec_size)
+			new_strike_index = vec_size - 1;
+		if (new_strike_index < 0)
+			new_strike_index = 0;
+		const DarkHorse::VmOption& call_info = call_symbol_vector_[new_strike_index];
+		const DarkHorse::VmOption& put_info = put_symbol_vector_[new_strike_index];
+		show_value(i, 0, call_info);
+		show_value(i, 2, put_info);
+	}
 }
 
 void SmOptionGrid::set_option_info(const int option_market_index, const std::string& year_month_name)
@@ -1680,9 +1475,10 @@ void SmOptionGrid::make_symbol_vec(bool call_side)
 
 void SmOptionGrid::init_strike_index()
 {
-	//strike_start_index_ = atm_index_ - static_cast<int>(_Grid->RowCount() / 2);
-	//if (strike_start_index_ < 1) strike_start_index_ = 1;
+	strike_start_index_ = calcStartIndex();
 }
+
+
 
 void SmOptionGrid::register_symbols_to_server()
 {
@@ -1701,23 +1497,23 @@ void SmOptionGrid::set_strike()
 
 	symbol_map_.clear();
 	row_col_map_.clear();
-// 	for (int i = 1; i < _Grid->RowCount(); i++) {
-// 		int new_strike_index = strike_start_index_ + i - 1;
-// 		const int vec_size = static_cast<int>(call_symbol_vector_.size());
-// 		if (new_strike_index >= vec_size)
-// 			new_strike_index = vec_size - 1;
-// 		if (new_strike_index < 0)
-// 			new_strike_index = 0;
-// 
-// 		show_strike(i, 1, call_symbol_vector_[new_strike_index]);
-// 
-// 		auto call_symbol = call_symbol_vector_[new_strike_index].symbol_p;
-// 		auto put_symbol = put_symbol_vector_[new_strike_index].symbol_p;
-// 		symbol_map_[std::make_pair(i, 0)] = call_symbol;
-// 		symbol_map_[std::make_pair(i, 2)] = put_symbol;
-// 		row_col_map_[call_symbol->Id()] = std::make_pair(i, 0);
-// 		row_col_map_[put_symbol->Id()] = std::make_pair(i, 2);
-// 	}
+	for (int i = 1; i < _RowCount; i++) {
+		int new_strike_index = strike_start_index_ + i - 1;
+		const int vec_size = static_cast<int>(call_symbol_vector_.size());
+		if (new_strike_index >= vec_size)
+			new_strike_index = vec_size - 1;
+		if (new_strike_index < 0)
+			new_strike_index = 0;
+
+		show_strike(i, 1, call_symbol_vector_[new_strike_index]);
+
+		auto call_symbol = call_symbol_vector_[new_strike_index].symbol_p;
+		auto put_symbol = put_symbol_vector_[new_strike_index].symbol_p;
+		symbol_map_[std::make_pair(i, 0)] = call_symbol;
+		symbol_map_[std::make_pair(i, 2)] = put_symbol;
+		row_col_map_[call_symbol->Id()] = std::make_pair(i, 0);
+		row_col_map_[put_symbol->Id()] = std::make_pair(i, 2);
+	}
 	msg.Format("set_strike end\n");
 	//TRACE(msg);
 }
