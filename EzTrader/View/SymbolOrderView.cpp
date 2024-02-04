@@ -56,6 +56,9 @@
 #include "../Event/EventHub.h"
 #include "../Account/SmAccountManager.h"
 #include "../Fund/SmFund.h"
+#include "../OrderUI/VtOrderConfigManager.h"
+#include "../OrderUI/VtOrderWndHd.h"
+#include "../OrderUI/SmOrderPanel.h"
 
 #include <sstream>
 #include <format>
@@ -1219,16 +1222,16 @@ void SymbolOrderView::RefreshOrderPosition()
 
 int SymbolOrderView::GetGridWidth(/*std::vector<bool>& colOptions*/)
 {
-	int totalWidth = _GridColMap[SmOrderGridCol::CENTER] + _GridColMap[SmOrderGridCol::QUANTITY] * 2;
+	int totalWidth = _GridColMap[DarkHorse::SmOrderGridCol::CENTER] + _GridColMap[DarkHorse::SmOrderGridCol::QUANTITY] * 2;
 	for (size_t i = 0; i < _OrderGridColOption.size(); ++i) {
 		if (i == 0) { // for order
-			totalWidth += _OrderGridColOption[i] ? _GridColMap[SmOrderGridCol::ORDER] * 2 : 0;
+			totalWidth += _OrderGridColOption[i] ? _GridColMap[DarkHorse::SmOrderGridCol::ORDER] * 2 : 0;
 		}
 		else if (i == 1) { // for stop
-			totalWidth += _OrderGridColOption[i] ? _GridColMap[SmOrderGridCol::STOP] * 2 : 0;
+			totalWidth += _OrderGridColOption[i] ? _GridColMap[DarkHorse::SmOrderGridCol::STOP] * 2 : 0;
 		}
 		else if (i == 2) { // for count and quantity.
-			totalWidth += _OrderGridColOption[i] ? _GridColMap[SmOrderGridCol::COUNT] * 2 : 0;
+			totalWidth += _OrderGridColOption[i] ? _GridColMap[DarkHorse::SmOrderGridCol::COUNT] * 2 : 0;
 		}
 	}
 
@@ -1240,7 +1243,7 @@ int SymbolOrderView::GetGridWidth(/*std::vector<bool>& colOptions*/)
 void SymbolOrderView::ResizeGrid(int cellHeight, int orderAreaWidth)
 {
 	_CellHeight = cellHeight;
-	_GridColMap[SmOrderGridCol::ORDER] = orderAreaWidth;
+	_GridColMap[DarkHorse::SmOrderGridCol::ORDER] = orderAreaWidth;
 	order_set_.grid_height = _CellHeight;
 	Init();
 }
@@ -1253,10 +1256,10 @@ void SymbolOrderView::ResizeGrid()
 void SymbolOrderView::SetOrderArea(int height, int width)
 {
 	_CellHeight = height;
-	_GridColMap[SmOrderGridCol::ORDER] = width;
+	_GridColMap[DarkHorse::SmOrderGridCol::ORDER] = width;
 	order_set_.grid_height = _CellHeight;
-	_Grid->SetColWidth(1, _GridColMap[SmOrderGridCol::ORDER]);
-	_Grid->SetColWidth(7, _GridColMap[SmOrderGridCol::ORDER]);
+	_Grid->SetColWidth(1, _GridColMap[DarkHorse::SmOrderGridCol::ORDER]);
+	_Grid->SetColWidth(7, _GridColMap[DarkHorse::SmOrderGridCol::ORDER]);
 }
 
 int SymbolOrderView::ShowHideOrderGrid(/*std::vector<bool>& colOptions*/)
@@ -1264,8 +1267,8 @@ int SymbolOrderView::ShowHideOrderGrid(/*std::vector<bool>& colOptions*/)
 	for (size_t i = 0; i < _OrderGridColOption.size(); ++i) {
 		if (i == 0) {
 			if (_OrderGridColOption[i]) { // for order column
-				SetColumnWidth(1, _GridColMap[SmOrderGridCol::ORDER]);
-				SetColumnWidth(7, _GridColMap[SmOrderGridCol::ORDER]);
+				SetColumnWidth(1, _GridColMap[DarkHorse::SmOrderGridCol::ORDER]);
+				SetColumnWidth(7, _GridColMap[DarkHorse::SmOrderGridCol::ORDER]);
 			}
 			else {
 				SetColumnWidth(1, 0);
@@ -1274,8 +1277,8 @@ int SymbolOrderView::ShowHideOrderGrid(/*std::vector<bool>& colOptions*/)
 		}
 		else if (i == 1) { // for stop column
 			if (_OrderGridColOption[1]) {
-				SetColumnWidth(0, _GridColMap[SmOrderGridCol::STOP]);
-				SetColumnWidth(8, _GridColMap[SmOrderGridCol::STOP]);
+				SetColumnWidth(0, _GridColMap[DarkHorse::SmOrderGridCol::STOP]);
+				SetColumnWidth(8, _GridColMap[DarkHorse::SmOrderGridCol::STOP]);
 			}
 			else {
 				SetColumnWidth(0, 0);
@@ -1284,8 +1287,8 @@ int SymbolOrderView::ShowHideOrderGrid(/*std::vector<bool>& colOptions*/)
 		}
 		else if (i == 2) { // for order count column
 			if (_OrderGridColOption[2]) {
-				SetColumnWidth(2, _GridColMap[SmOrderGridCol::COUNT]);
-				SetColumnWidth(6, _GridColMap[SmOrderGridCol::COUNT]);
+				SetColumnWidth(2, _GridColMap[DarkHorse::SmOrderGridCol::COUNT]);
+				SetColumnWidth(6, _GridColMap[DarkHorse::SmOrderGridCol::COUNT]);
 			}
 			else {
 				SetColumnWidth(2, 1);
@@ -1589,13 +1592,6 @@ void SymbolOrderView::PutOrderBySpaceBar()
 	_EnableOrderShow = true;
 	_EnableStopShow = true;
 }
-
-// void SymbolOrderView::PutOrderBySpaceBar(std::shared_ptr<DarkHorse::SmAccount> account)
-// {
-// 	if (!account || !symbol_) return;
-// 
-// 	if (!selected_cell_) return;
-// }
 
 void SymbolOrderView::ChangeOrderByKey(const int up_down)
 {
@@ -2687,6 +2683,9 @@ void SymbolOrderView::OnMouseLeave()
 void SymbolOrderView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	SetFocus();
+	if (_OrderConfigMgr && _OrderConfigMgr->_HdOrderWnd) {
+		_OrderConfigMgr->_HdOrderWnd->SetActiveCenterWnd(_centerWnd);
+	}
 	if (ProcesButtonClickByPos(point)) return;
 
 	if (account_)

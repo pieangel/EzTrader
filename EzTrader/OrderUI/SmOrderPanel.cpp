@@ -1097,6 +1097,7 @@ BOOL SmOrderPanel::OnInitDialog()
 	_BtnRemainFund.SetColor(BTNST_COLOR_BK_OUT, RGB(220, 220, 220), true);
 
 	//m_Grid.OrderConfigMgr(_OrderConfigMgr);
+	m_Grid.CenterWnd(this);
 	m_Grid.SetUp();
 	_TickGrid.SetUp();
 	_TickGrid.SetOrderConfigMgr(_OrderConfigMgr);
@@ -1203,6 +1204,8 @@ void SmOrderPanel::InitAll()
 	// 주문 그리드 셀들을 설정한다.
 	m_Grid.Init();
 	_TickGrid.Init();
+	m_Grid.Account(_OrderConfigMgr->Account());
+	m_Grid.fund(_OrderConfigMgr->Fund());
 	// 그리드 컬럼 옵션을 설정해 준다.
 	m_Grid.ShowHideOrderGrid();
 	_Init = true;
@@ -1367,6 +1370,7 @@ void SmOrderPanel::ChangeAccount(account_p acnt)
 {
 	if (!acnt)
 		return;
+	m_Grid.Account(acnt);
 	ClearPosition();
 	SetSymbol();
 	InitGridInfo();
@@ -1377,6 +1381,7 @@ void SmOrderPanel::ChangeFund(fund_p fund)
 {
 	if (!fund)
 		return;
+	m_Grid.fund(fund);
 	ClearPosition();
 	SetSymbol();
 	InitGridInfo();
@@ -1411,9 +1416,15 @@ BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 			OnEntered();
 			return TRUE;
 		}
-		else if (pMsg->wParam == VK_SPACE ) {
-			//m_Grid.OrderBySpaceBar();
+		else if (pMsg->wParam == VK_SPACE) {
+			m_Grid.PutOrderBySpaceBar();
 			return TRUE;
+		}
+		else if (pMsg->wParam == VK_DOWN) {
+			m_Grid.ChangeOrderByKey(-1);
+		}
+		else if (pMsg->wParam == VK_UP) {
+			m_Grid.ChangeOrderByKey(1);
 		}
 	}
 

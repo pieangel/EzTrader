@@ -51,6 +51,8 @@ struct WinInfo;
 class DmAccountOrderWindow;
 class DmFundOrderWindow;
 class VtOrderConfigManager;
+class SmOrderPanel;
+class SmOrderPanelOut;
 class SymbolOrderView : public CBCGPStatic
 {
 public:
@@ -107,8 +109,6 @@ public:
 	void CancelAllOrder();
 	void CancelBuyStop();
 	void CancelBuyOrder();
-	// �߾� ���� ���Ѵ�. �߾� ���� ���ʿ� �ɺ��� ������ �� �ѹ�, 
-	// �׸��� ��ü ũ�Ⱑ �þ�ų� �پ��鶧(��ȭ���ڸ� ���̰ų� ���϶�) �ٽ� ������ �ش�.
 	void SetCenterValues(const bool& make_row_map = true);
 	void set_center_values(const bool make_row_map = true);
 	int get_start_value();
@@ -131,7 +131,6 @@ public:
 	void reset_col_widths(const DarkHorse::OrderSetEvent& order_set_event);
 	int get_entire_width();
 	int get_width();
-	// ���� ���� �ʺ��� ������ ������ ��ƴ�� ���ֱ� ���Ͽ� ���� �ʺ��� �ٽ� �����Ѵ�.
 	void ResetHeaderWidth(const int& wnd_width);
 	bool FixedMode() const { return _FixedMode; }
 	void FixedMode(bool val);
@@ -218,7 +217,10 @@ public:
 	void SetCenterValue();
 	void RefreshAllValues();
 	std::vector<bool>& OrderGridColOption() { return _OrderGridColOption; }
+	SmOrderPanel* CenterWnd() const { return _centerWnd; }
+	void CenterWnd(SmOrderPanel* val) { _centerWnd = val; }
 private:
+	SmOrderPanel* _centerWnd = nullptr;
 	std::vector<bool> _OrderGridColOption;
 	// 현재 최대 행갯수 구하기
 	int GetMaxValueRowCount();

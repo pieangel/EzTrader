@@ -259,6 +259,8 @@ BOOL VtOrderWndHd::OnInitDialog()
 	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 		(*it)->InitAll();
 		(*it)->OrderConfigMgr(_OrderConfigMgr);
+		(*it)->ChangeAccount(_OrderConfigMgr->Account());
+		(*it)->ChangeFund(_OrderConfigMgr->Fund());
 	}
 
 	if (_OrderConfigMgr && _OrderConfigMgr->_HdRightWnd) {
