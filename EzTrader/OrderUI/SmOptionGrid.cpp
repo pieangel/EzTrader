@@ -215,8 +215,8 @@ void SmOptionGrid::Init()
 
 	//_RunInfo = mainApp.SymbolMgr().MrktMgr().GetOptionRunVector();
 
-	InitSymbol();
-	InitYearMonth();
+	//InitSymbol();
+	//InitYearMonth();
 }
 /*
 void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
@@ -381,7 +381,7 @@ void SmOptionGrid::InitSymbol()
 	}
 	*/
 
-	_LeftWnd->_ComboProduct.SetCurSel(0);
+	_LeftWnd->combo_option_market_.SetCurSel(0);
 	_SelectedProduct = 0;
 }
 
@@ -391,12 +391,12 @@ void SmOptionGrid::InitYearMonth()
 		return;
 	
 	SetYearMonth();
-	_LeftWnd->_ComboOptionMonth.SetCurSel(0);
+	_LeftWnd->combo_option_month_.SetCurSel(0);
 }
 
 void SmOptionGrid::SetYearMonth()
 {
-	int cur_sel = _LeftWnd->_ComboProduct.GetCurSel();
+	int cur_sel = _LeftWnd->combo_option_market_.GetCurSel();
 	if (cur_sel < 0)
 		return;
 	/*
@@ -416,14 +416,14 @@ void SmOptionGrid::SetYearMonth()
 	}
 	*/
 
-	_LeftWnd->_ComboOptionMonth.SetCurSel(0);
+	_LeftWnd->combo_option_month_.SetCurSel(0);
 }
 
 void SmOptionGrid::SetProductSection()
 {
 	if (!_LeftWnd)
 		return;
-	_SelectedProduct = _LeftWnd->_ComboProduct.GetCurSel();
+	_SelectedProduct = _LeftWnd->combo_option_market_.GetCurSel();
 }
 
 void SmOptionGrid::GetSymbolMaster()
@@ -431,7 +431,7 @@ void SmOptionGrid::GetSymbolMaster()
 	if (_EqualIndex == -1)
 		return;
 
-	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
+	int selMon = _LeftWnd->combo_option_month_.GetCurSel();
 	/*
 	std::pair<SmProduct*, SmProduct*> product_pair = mainApp.SymbolMgr().MrktMgr().GetProductPair(_RunInfo[_SelectedProduct]);
 	if (!product_pair.first || !product_pair.second)
@@ -504,7 +504,7 @@ void SmOptionGrid::RefreshMode()
 
 std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 {
-	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
+	int selMon = _LeftWnd->combo_option_month_.GetCurSel();
 	if (selMon == -1)
 		return std::make_pair(0, 0);
 
@@ -518,7 +518,7 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 	int max_row = height / 21;// DefaultCellHeight;
 	_MaxRow = max_row;
 	CString curYearMon;
-	_LeftWnd->_ComboOptionMonth.GetLBText(selMon, curYearMon);
+	_LeftWnd->combo_option_month_.GetLBText(selMon, curYearMon);
 	/*
 	SmProduct* product = mainApp.SymbolMgr().MrktMgr().FindProductFromMap(_RunInfo[_SelectedProduct].CallCode);
 	if (!product)
@@ -1000,7 +1000,7 @@ int SmOptionGrid::GetMaxRow()
 
 void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 {
-	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
+	int selMon = _LeftWnd->combo_option_month_.GetCurSel();
 	if (selMon == -1)
 		return;
 	/*

@@ -70,6 +70,8 @@ using namespace std::placeholders;
 constexpr int Round(double x) { return static_cast<int>(x + 0.5f); }
 using namespace DarkHorse;
 
+const int extra_margin = 10;
+
 BEGIN_MESSAGE_MAP(SymbolOrderView, CBCGPStatic)
 	//{{AFX_MSG_MAP(CBCGPTextPreviewCtrl)
 	ON_WM_PAINT()
@@ -1235,7 +1237,7 @@ int SymbolOrderView::GetGridWidth(/*std::vector<bool>& colOptions*/)
 		}
 	}
 
-	return totalWidth + 10;
+	return totalWidth + extra_margin;
 }
 
 

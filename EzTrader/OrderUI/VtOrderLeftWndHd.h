@@ -70,9 +70,15 @@ private:
 
 	int _FutureSymbolMode = 1;
 	int _Mode = 1;
+	void set_option_view();
+	// key : option year-month combo index, value : year-month name
+	std::map<int, std::string> option_yearmonth_index_map;
+	int year_month_index{ 0 };
+	int option_market_index{ 0 };
+	void init_option_market();
 public:
-	CComboBox _ComboProduct;
-	CComboBox _ComboOptionMonth;
+	CComboBox combo_option_market_;
+	CComboBox combo_option_month_;
 	afx_msg void OnCbnSelchangeComboProduct();
 	afx_msg void OnCbnSelchangeComboOption();
 	afx_msg void OnBnClickedButton2();

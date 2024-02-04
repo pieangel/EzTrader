@@ -663,19 +663,6 @@ void DmOptionView::make_symbol_vec(bool call_side)
 		auto symbol = symbol_vec[i];
 		auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
 		VmOption option_info;
-		/*
-		option_info.strike = symbol->Strike();
-		option_info.atm = symbol->AtmType();
-		option_info.decimal = symbol->decimal();
-		if (option_info.atm == 1) atm_index_ = i;
-		option_info.close = quote->close;
-		option_info.expected = quote->expected;
-		option_info.ordered = false;
-		option_info.position = 0;
-		option_info.symbol_id = symbol->Id();
-		option_info.symbol_p = symbol;
-		option_info.symbol_code = symbol->SymbolCode();
-		*/
 		set_option_info(i, option_info, symbol, quote);
 		const std::string& symbol_code = symbol->SymbolCode();
 		const std::string option_code = symbol_code.substr(1, symbol_code.length() - 1);

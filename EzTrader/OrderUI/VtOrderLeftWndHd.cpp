@@ -15,7 +15,12 @@
 //#include "../Task/SmCallbackManager.h"
 #include "../Global/SmTotalManager.h"
 #include "../MessageDefine.h"
-
+#include "../ViewModel/VmOption.h"
+#include "../Global/SmTotalManager.h"
+#include "../Symbol/SmSymbolManager.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Symbol/SmProduct.h"
+#include "../Symbol/SmProductYearMonth.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -75,8 +80,8 @@ VtOrderLeftWndHd::~VtOrderLeftWndHd()
 void VtOrderLeftWndHd::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO_PRODUCT, _ComboProduct);
-	DDX_Control(pDX, IDC_COMBO_OPTION, _ComboOptionMonth);
+	DDX_Control(pDX, IDC_COMBO_PRODUCT, combo_option_market_);
+	DDX_Control(pDX, IDC_COMBO_OPTION, combo_option_month_);
 	DDX_Control(pDX, IDC_CUSTOM_OPTION, _SymbolOptionGrid);
 	DDX_Control(pDX, IDC_CUSTOM_FUTURE, _SymbolFutureGrid);
 	DDX_Control(pDX, IDC_CUSTOM_PL, _ProfitLossGrid);
@@ -125,6 +130,11 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	_SymbolFutureGrid.Init();
 	_ProfitLossGrid.Init();
 	_AssetGrid.Init();
+
+	//future_view_.init_dm_future();
+	init_option_market();
+	set_option_view();
+
 	if (_FutureSymbolMode == 0)
 	{
 		((CButton*)GetDlgItem(IDC_RADIO_BALANCE))->SetCheck(BST_CHECKED);
@@ -139,9 +149,9 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	}
 
 	CRect rcRect;
-	_ComboProduct.SetDroppedWidth(150);
+	combo_option_market_.SetDroppedWidth(150);
 
-	_ComboProduct.GetWindowRect(&rcRect);
+	combo_option_market_.GetWindowRect(&rcRect);
 	ScreenToClient(&rcRect);
 
 	//mainApp.CallbackMgr().SubscribeAccountWndCallback(GetSafeHwnd());
@@ -185,10 +195,36 @@ void VtOrderLeftWndHd::End()
 }
 
 
+void VtOrderLeftWndHd::set_option_view()
+{
+	const std::string year_month_name = option_yearmonth_index_map[year_month_index];
+	_SymbolOptionGrid.set_option_view(option_market_index, year_month_name);
+}
+
+void VtOrderLeftWndHd::init_option_market()
+{
+	std::vector<DarkHorse::DmOption>& option_vec = mainApp.SymMgr()->get_dm_option_vec();
+	for (size_t i = 0; i < option_vec.size(); i++) {
+		int index = combo_option_market_.AddString(option_vec[i].option_name.c_str());
+	}
+	option_market_index = 0;
+	combo_option_market_.SetCurSel(option_market_index);
+	const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = option_vec[option_market_index].call_product->get_yearmonth_map();
+	for (auto it = year_month_map.begin(); it != year_month_map.end(); it++) {
+		const std::string& name = it->second->get_name();
+		int index = combo_option_month_.AddString(name.c_str());
+		option_yearmonth_index_map[index] = name;
+	}
+	year_month_index = 0;
+	combo_option_month_.SetCurSel(year_month_index);
+}
+
 void VtOrderLeftWndHd::OnCbnSelchangeComboProduct()
 {
 	// TODO: Add your control notification handler code here
+	
 	_SymbolOptionGrid.Mode(_Mode);
+	/*
 	_SymbolOptionGrid.SetProductSection();
 	_SymbolOptionGrid.SetYearMonth();
 	if (GetSafeHwnd()) {
@@ -201,13 +237,31 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboProduct()
 		if (_Mode == 1)
 			_SymbolOptionGrid.GetSymbolMaster();
 	}
+	*/
+	option_market_index = combo_option_market_.GetCurSel();
+	if (option_market_index < 0) return;
+
+	combo_option_month_.ResetContent();
+	option_yearmonth_index_map.clear();
+	std::vector<DarkHorse::DmOption>& option_vec = mainApp.SymMgr()->get_dm_option_vec();
+	const std::map<std::string, std::shared_ptr<DarkHorse::SmProductYearMonth>>& year_month_map = option_vec[option_market_index].call_product->get_yearmonth_map();
+	for (auto it = year_month_map.begin(); it != year_month_map.end(); it++) {
+		const std::string& name = it->second->get_name();
+		int index = combo_option_month_.AddString(name.c_str());
+		option_yearmonth_index_map[index] = name;
+	}
+	year_month_index = 0;
+	combo_option_month_.SetCurSel(year_month_index);
+	set_option_view();
 }
 
 
 void VtOrderLeftWndHd::OnCbnSelchangeComboOption()
 {
 	// TODO: Add your control notification handler code here
+	
 	_SymbolOptionGrid.Mode(_Mode);
+	/*
 	if (GetSafeHwnd()) {
 		CRect rcWnd;
 		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
@@ -218,6 +272,11 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboOption()
 		if (_Mode == 1)
 			_SymbolOptionGrid.GetSymbolMaster();
 	}
+	*/
+	if (option_market_index < 0) return;
+
+	year_month_index = combo_option_month_.GetCurSel();
+	set_option_view();
 }
 
 
