@@ -1171,7 +1171,7 @@ int SmOrderPanel::GetTickCount()
 void SmOrderPanel::SetOrderArea(int height, int width)
 {
 	m_Grid.SetOrderArea(height, width);
-	_OrderConfigMgr->_HdOrderWnd->RefreshLayout(true, true);
+	_OrderConfigMgr->_HdOrderWnd->RefreshLayout(false, true);
 }
 
 void SmOrderPanel::ShowOrderCountInGrid(bool flag)

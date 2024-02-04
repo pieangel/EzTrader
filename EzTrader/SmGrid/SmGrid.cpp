@@ -545,8 +545,9 @@ void DarkHorse::SmGrid::MakeRowHeightMap()
 		}
 	}
 }
-void DarkHorse::SmGrid::ResetAllHeightMap()
+void DarkHorse::SmGrid::ResetAllHeightMap(const int height)
 {
+	const int _RowCount = height / _defaultRowHeight;
 	for (int i = 0; i < _RowCount; i++) {
 		_RowHeightMap[i] = _defaultRowHeight;
 	}

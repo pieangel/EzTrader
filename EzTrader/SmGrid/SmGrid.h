@@ -34,7 +34,7 @@ namespace DarkHorse {
 		// �� ���� ���� ������. �����ڰ� ���� ���� ���� �����ϰ� 
 		// �����ڰ� �������� ���� ���� �⺻ ���̷� ���Ѵ�.
 		void MakeRowHeightMap();
-		void ResetAllHeightMap();
+		void ResetAllHeightMap(const int height);
 		// ������ ���� �����Ѵ�.
 		void SetMergeCells();
 		void AddMergeCell(const int& row, const int& col, const int& row_span, const int& col_span);
