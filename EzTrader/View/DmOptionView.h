@@ -61,7 +61,7 @@ public:
 private:
 	void set_option_info(
 		const size_t index, 
-		VmOption& option_info, 
+		DarkHorse::VmOption& option_info,
 		std::shared_ptr<DarkHorse::SmSymbol> symbol, 
 		std::shared_ptr<DarkHorse::SmQuote> quote);
 	std::string get_position_text(const DarkHorse::VmOption& option_info);

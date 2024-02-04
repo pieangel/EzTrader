@@ -128,7 +128,7 @@ public:
 		return m_Grid;
 	}
 	std::vector<bool>& GetGridColOptions() {
-		return _OrderGridColOption;
+		return m_Grid.OrderGridColOption();
 	}
 	void SetOrderArea(int height, int width);
 	void ShowOrderCountInGrid(bool flag);
@@ -266,7 +266,7 @@ private:
 	// 남은 잔고 만큼 주문을 낸다.
 	bool _OrderByRemain;
 	VtLayoutManager* _LayoutMgr;
-	std::vector<bool> _OrderGridColOption;
+	//std::vector<bool> _OrderGridColOption;
 
 	// key : combobox index, value : symbol object
 	std::map<int, symbol_p> index_to_symbol_;

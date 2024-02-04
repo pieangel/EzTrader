@@ -27,16 +27,16 @@ namespace DarkHorse {
 #define MAX_TEXT_BUFFER_SIZE 5120
 
 #define WRITELOG(logObj, level, fmt, ...)		logObj.LoggingData(level, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
-#define LOGINFO(logObj, fmt, ...)				logObj.LoggingDataInfo(LogLevel::Info, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
-#define LOGDEBUG(logObj, fmt, ...)				logObj.LoggingDataDebug(LogLevel::Debug, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
-#define LOGWARN(logObj, fmt, ...)				logObj.LoggingDataWarn(LogLevel::Warn, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
-#define LOGERROR(logObj, fmt, ...)				logObj.LoggingDataError(LogLevel::Error, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
+#define LOGINFO(logObj, fmt, ...)				logObj.LoggingDataInfo(DarkHorse::LogLevel::Info, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
+#define LOGDEBUG(logObj, fmt, ...)				logObj.LoggingDataDebug(DarkHorse::LogLevel::Debug, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
+#define LOGWARN(logObj, fmt, ...)				logObj.LoggingDataWarn(DarkHorse::LogLevel::Warn, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
+#define LOGERROR(logObj, fmt, ...)				logObj.LoggingDataError(DarkHorse::LogLevel::Error, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
 
 	//#define WRITELOGP(logObjPtr, level, fmt, ...)	if(logObjPtr != NULL) logObjPtr->LoggingData(level, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
-#define LOGINFOP(logObjPtr, fmt, ...)			if(logObjPtr != NULL) logObjPtr->LoggingDataInfo(LogLevel::Info, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
-#define LOGDEBUGP(logObjPtr, fmt, ...)			if(logObjPtr != NULL) logObjPtr->LoggingDataDebug(LogLevel::Debug, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
-#define LOGWARNP(logObjPtr, fmt, ...)			if(logObjPtr != NULL) logObjPtr->LoggingDataWarn(LogLevel::Warn, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
-#define LOGERRORP(logObjPtr, fmt, ...)			if(logObjPtr != NULL) logObjPtr->LoggingDataError(LogLevel::Error, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
+#define LOGINFOP(logObjPtr, fmt, ...)			if(logObjPtr != NULL) logObjPtr->LoggingDataInfo(DarkHorse::LogLevel::Info, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
+#define LOGDEBUGP(logObjPtr, fmt, ...)			if(logObjPtr != NULL) logObjPtr->LoggingDataDebug(DarkHorse::LogLevel::Debug, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
+#define LOGWARNP(logObjPtr, fmt, ...)			if(logObjPtr != NULL) logObjPtr->LoggingDataWarn(DarkHorse::LogLevel::Warn, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
+#define LOGERRORP(logObjPtr, fmt, ...)			if(logObjPtr != NULL) logObjPtr->LoggingDataError(DarkHorse::LogLevel::Error, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__);
 
 	class CMyLogger : public Runnable
 	{

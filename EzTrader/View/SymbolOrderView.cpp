@@ -238,6 +238,8 @@ SymbolOrderView::SymbolOrderView()
 	_GridColMap[DarkHorse::SmOrderGridCol::COUNT] = 35;
 	_GridColMap[DarkHorse::SmOrderGridCol::QUANTITY] = 35;
 	_GridColMap[DarkHorse::SmOrderGridCol::CENTER] = 80;
+
+	// 기본 너비 : 410, 마진 : 12
 }
 
 void SymbolOrderView::on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol)
@@ -1215,18 +1217,18 @@ void SymbolOrderView::RefreshOrderPosition()
 
 }
 
-int SymbolOrderView::GetGridWidth(std::vector<bool>& colOptions)
+int SymbolOrderView::GetGridWidth(/*std::vector<bool>& colOptions*/)
 {
 	int totalWidth = _GridColMap[SmOrderGridCol::CENTER] + _GridColMap[SmOrderGridCol::QUANTITY] * 2;
-	for (size_t i = 0; i < colOptions.size(); ++i) {
+	for (size_t i = 0; i < _OrderGridColOption.size(); ++i) {
 		if (i == 0) { // for order
-			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::ORDER] * 2 : 0;
+			totalWidth += _OrderGridColOption[i] ? _GridColMap[SmOrderGridCol::ORDER] * 2 : 0;
 		}
 		else if (i == 1) { // for stop
-			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::STOP] * 2 : 0;
+			totalWidth += _OrderGridColOption[i] ? _GridColMap[SmOrderGridCol::STOP] * 2 : 0;
 		}
 		else if (i == 2) { // for count and quantity.
-			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::COUNT] * 2 : 0;
+			totalWidth += _OrderGridColOption[i] ? _GridColMap[SmOrderGridCol::COUNT] * 2 : 0;
 		}
 	}
 
@@ -1238,7 +1240,7 @@ int SymbolOrderView::GetGridWidth(std::vector<bool>& colOptions)
 void SymbolOrderView::ResizeGrid(int cellHeight, int orderAreaWidth)
 {
 	_CellHeight = cellHeight;
-	_OrderWidth = orderAreaWidth;
+	_GridColMap[SmOrderGridCol::ORDER] = orderAreaWidth;
 	order_set_.grid_height = _CellHeight;
 	Init();
 }
@@ -1252,13 +1254,16 @@ void SymbolOrderView::SetOrderArea(int height, int width)
 {
 	_CellHeight = height;
 	_GridColMap[SmOrderGridCol::ORDER] = width;
+	order_set_.grid_height = _CellHeight;
+	_Grid->SetColWidth(1, _GridColMap[SmOrderGridCol::ORDER]);
+	_Grid->SetColWidth(7, _GridColMap[SmOrderGridCol::ORDER]);
 }
 
-int SymbolOrderView::ShowHideOrderGrid(std::vector<bool>& colOptions)
+int SymbolOrderView::ShowHideOrderGrid(/*std::vector<bool>& colOptions*/)
 {
-	for (size_t i = 0; i < colOptions.size(); ++i) {
+	for (size_t i = 0; i < _OrderGridColOption.size(); ++i) {
 		if (i == 0) {
-			if (colOptions[i]) { // for order column
+			if (_OrderGridColOption[i]) { // for order column
 				SetColumnWidth(1, _GridColMap[SmOrderGridCol::ORDER]);
 				SetColumnWidth(7, _GridColMap[SmOrderGridCol::ORDER]);
 			}
@@ -1268,7 +1273,7 @@ int SymbolOrderView::ShowHideOrderGrid(std::vector<bool>& colOptions)
 			}
 		}
 		else if (i == 1) { // for stop column
-			if (colOptions[1]) {
+			if (_OrderGridColOption[1]) {
 				SetColumnWidth(0, _GridColMap[SmOrderGridCol::STOP]);
 				SetColumnWidth(8, _GridColMap[SmOrderGridCol::STOP]);
 			}
@@ -1278,7 +1283,7 @@ int SymbolOrderView::ShowHideOrderGrid(std::vector<bool>& colOptions)
 			}
 		}
 		else if (i == 2) { // for order count column
-			if (colOptions[2]) {
+			if (_OrderGridColOption[2]) {
 				SetColumnWidth(2, _GridColMap[SmOrderGridCol::COUNT]);
 				SetColumnWidth(6, _GridColMap[SmOrderGridCol::COUNT]);
 			}
@@ -1651,7 +1656,9 @@ int SymbolOrderView::get_width()
 
 int SymbolOrderView::get_entire_width()
 {
+	/*
 	int width_sum = 0;
+	
 	width_sum += 2;
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::SELL_STOP].width;
 	width_sum += 1;
@@ -1671,8 +1678,10 @@ int SymbolOrderView::get_entire_width()
 	width_sum += 1;
 	width_sum += grid_header_vector_[DarkHorse::OrderHeader::BUY_STOP].width;
 	width_sum += 2;
-
+	
 	return width_sum;
+	*/
+	return GetGridWidth();
 }
 
 void SymbolOrderView::FixedMode(bool val)
