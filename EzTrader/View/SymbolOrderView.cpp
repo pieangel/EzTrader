@@ -1235,7 +1235,7 @@ int SymbolOrderView::GetGridWidth(/*std::vector<bool>& colOptions*/)
 		}
 	}
 
-	return totalWidth + 12;
+	return totalWidth + 10;
 }
 
 
@@ -1330,14 +1330,6 @@ void SymbolOrderView::RefreshAllValues()
 	ClearStopOrders();
 	clear_buy_stop_order();
 	clear_sell_stop_order();
-	/*
-	_Grid->ReleaseOrderButtons(_ButtonMap);
-	price_start_row_ = 2;
-	price_end_row_ = _Grid->RowCount() - 2;
-	_Grid->CreateGrids();
-	_Grid->RegisterOrderButtons(_ButtonMap);
-	index_row_ = get_center_row();
-	*/
 	SetCenterValues();
 	set_order_area();
 	update_quote();
