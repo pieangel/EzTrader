@@ -1240,7 +1240,11 @@ void SmOptionGrid::set_view_mode(ViewMode view_mode)
 void SmOptionGrid::set_strike_start_index(const int distance)
 {
 	const int oldStartIndex = _startIndex;
-	_startIndex += distance;
+	if (distance < 0)
+		_startIndex += 1;
+	else
+		_startIndex -= 1;
+	//_startIndex += distance;
 	if (_startIndex < 0)
 		_startIndex = 0;
 	if (_maxSymbol <= _maxRow)
