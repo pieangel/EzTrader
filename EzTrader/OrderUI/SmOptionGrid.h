@@ -168,6 +168,7 @@ public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	void showValues();
 	void set_option_info(
 		const size_t index,
 		DarkHorse::VmOption& option_info,

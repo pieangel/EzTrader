@@ -338,27 +338,10 @@ int SmOptionGrid::calcStartIndex()
 {
 	if (_maxSymbol > _maxRow) {
 		int atmIndex = findAtmIndex();
-		int symbolCenterIndex  = (int)(call_symbol_vector_.size() / 2);
 		int gridCenterIndex = (int)(_maxRow / 2);
-		// 등가 인덱스가 종목 크기의 중앙값보다 클 때 
-		if (atmIndex > symbolCenterIndex) {
-			if (atmIndex + gridCenterIndex > _maxSymbol) {
-				_startIndex = _maxSymbol - _maxRow;
-			}
-			else {
-				_startIndex = atmIndex - gridCenterIndex - 3;
-			}
-			if (_startIndex < 0)
-				_startIndex = 0;
-		}
-		else { // 등가 인덱스가 종목 크기의 중앙값보다 작을 때
-			if (atmIndex - gridCenterIndex < 0) {
-				_startIndex = 0;
-			}
-			else {
-				_startIndex = atmIndex - gridCenterIndex;
-			}
-		}
+		_startIndex = atmIndex - gridCenterIndex;
+		if (_startIndex < 0)
+			_startIndex = 0;
 	}
 	else
 		_startIndex = 0;
@@ -1149,8 +1132,10 @@ void SmOptionGrid::set_option_view(
 void SmOptionGrid::set_option_view()
 {
 	set_call_put_area();
-	set_strike();
-	show_values();
+	ClearAllText();
+	showValues();
+	//set_strike();
+	//show_values();
 	//register_symbols_to_server();
 	Invalidate();
 }
@@ -1256,14 +1241,14 @@ void SmOptionGrid::set_view_mode(ViewMode view_mode)
 
 void SmOptionGrid::set_strike_start_index(const int distance)
 {
-	strike_start_index_ += distance;
-	if (strike_start_index_ < 1)
-		strike_start_index_ = 1;
+	_startIndex += distance;
+	if (_startIndex < 1)
+		_startIndex = 1;
 	if (_maxSymbol <= _maxRow)
-		strike_start_index_ = 1;
+		_startIndex = 1;
 	const size_t diff = _maxSymbol - _maxRow;
-	if (strike_start_index_ >= static_cast<int>(diff))
-		strike_start_index_ = diff - 2;
+	if (_startIndex >= static_cast<int>(diff))
+		_startIndex = diff - 2;
 }
 
 void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
@@ -1361,6 +1346,34 @@ void SmOptionGrid::show_values()
 		const DarkHorse::VmOption& put_info = put_symbol_vector_[new_strike_index];
 		show_value(i, 0, call_info);
 		show_value(i, 2, put_info);
+	}
+}
+
+void SmOptionGrid::showValues()
+{
+	if (call_symbol_vector_.empty() || put_symbol_vector_.empty()) return;
+
+	symbol_map_.clear();
+	row_col_map_.clear();
+	for (int i = 1; i < _maxRow; i++) {
+		int newStartIndex = _startIndex + i - 1;
+		if (newStartIndex < 0) newStartIndex = 0;
+		//if (newStartIndex >= _maxSymbol ||
+		//	newStartIndex >= _maxRow) break;
+
+		const DarkHorse::VmOption& call_info = call_symbol_vector_[newStartIndex];
+		const DarkHorse::VmOption& put_info = put_symbol_vector_[newStartIndex];
+		show_value(i, 0, call_info);
+		show_value(i, 2, put_info);
+
+		show_strike(i, 1, call_symbol_vector_[newStartIndex]);
+
+		auto call_symbol = call_symbol_vector_[newStartIndex].symbol_p;
+		auto put_symbol = put_symbol_vector_[newStartIndex].symbol_p;
+		symbol_map_[std::make_pair(i, 0)] = call_symbol;
+		symbol_map_[std::make_pair(i, 2)] = put_symbol;
+		row_col_map_[call_symbol->Id()] = std::make_pair(i, 0);
+		row_col_map_[put_symbol->Id()] = std::make_pair(i, 2);
 	}
 }
 
