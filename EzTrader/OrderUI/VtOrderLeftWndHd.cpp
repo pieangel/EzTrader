@@ -377,7 +377,7 @@ void VtOrderLeftWndHd::OnAccountChanged()
 		CRect rcGrid;
 		//_SymbolOptionGrid.GetWindowRect(rcGrid);
 		//_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - FixedHeight, SWP_NOMOVE);
-		//_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
+		_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
 		//_SymbolOptionGrid.GetSymbolMaster();
 		_SymbolFutureGrid.InitGrid();
 		_ProfitLossGrid.InitGrid();

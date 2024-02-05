@@ -434,9 +434,7 @@ void SmOptionGrid::ClearAllText()
 {
 	for (int i = 1; i < _RowCount; ++i) {
 		for (int j = 0; j < _ColCount; ++j) {
-			CGridCellBase* pCell = GetCell(i, j);
-			pCell->SetText("");
-			InvalidateCellRect(i, j);
+			QuickSetText(i, j, "");
 		}
 	}
 }
@@ -1241,14 +1239,14 @@ void SmOptionGrid::set_view_mode(ViewMode view_mode)
 
 void SmOptionGrid::set_strike_start_index(const int distance)
 {
+	const int oldStartIndex = _startIndex;
 	_startIndex += distance;
-	if (_startIndex < 1)
-		_startIndex = 1;
+	if (_startIndex < 0)
+		_startIndex = 0;
 	if (_maxSymbol <= _maxRow)
-		_startIndex = 1;
-	const size_t diff = _maxSymbol - _maxRow;
-	if (_startIndex >= static_cast<int>(diff))
-		_startIndex = diff - 2;
+		_startIndex = 0;
+	if (_startIndex + _maxRow > _maxSymbol + 2)
+		_startIndex = oldStartIndex;
 }
 
 void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
@@ -1263,6 +1261,7 @@ void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
 
 void SmOptionGrid::register_symbols(const int option_market_index)
 {
+	/*
 	auto found = registered_map_.find(option_market_index_);
 	if (found != registered_map_.end()) return;
 
@@ -1273,6 +1272,7 @@ void SmOptionGrid::register_symbols(const int option_market_index)
 		register_symbol(symbol_code);
 	}
 	registered_map_[option_market_index] = option_market_index;
+	*/
 }
 
 void SmOptionGrid::register_symbol(const std::string symbol_code)
@@ -1358,14 +1358,13 @@ void SmOptionGrid::showValues()
 	for (int i = 1; i < _maxRow; i++) {
 		int newStartIndex = _startIndex + i - 1;
 		if (newStartIndex < 0) newStartIndex = 0;
-		//if (newStartIndex >= _maxSymbol ||
-		//	newStartIndex >= _maxRow) break;
+		if (newStartIndex >= _maxSymbol)
+			break;
 
 		const DarkHorse::VmOption& call_info = call_symbol_vector_[newStartIndex];
 		const DarkHorse::VmOption& put_info = put_symbol_vector_[newStartIndex];
 		show_value(i, 0, call_info);
 		show_value(i, 2, put_info);
-
 		show_strike(i, 1, call_symbol_vector_[newStartIndex]);
 
 		auto call_symbol = call_symbol_vector_[newStartIndex].symbol_p;
