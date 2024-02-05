@@ -277,7 +277,7 @@ BOOL VtOrderWndHd::OnInitDialog()
 	_XPos = 0;
 	_YPos = 0;
 
-	_LeftWnd.OnResizeWnd();
+	_LeftWnd.RefreshLayout();
 
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -1214,7 +1214,7 @@ void VtOrderWndHd::OnSize(UINT nType, int cx, int cy)
 		_WindowHeight = rcWnd.Height();
 		RefreshLayout(false, true);
 	}
-	_LeftWnd.OnResizeWnd();
+	_LeftWnd.RefreshLayout();
 }
 
 

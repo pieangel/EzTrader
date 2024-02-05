@@ -95,7 +95,7 @@ public:
 	void OnReceiveAccountInfo();
 	void RefreshProfitLoss();
 	void RefreshAsset();
-	void OnResizeWnd();
+	void RefreshLayout();
 	void OnAccountChanged();
 private:
 	int _EventSeq = 0;

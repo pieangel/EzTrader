@@ -212,13 +212,6 @@ void SmOptionGrid::Init()
 	RegisterOrderCallback();
 
 	SetColTitle();
-
-	//InitGrid();
-
-	//_RunInfo = mainApp.SymbolMgr().MrktMgr().GetOptionRunVector();
-
-	//InitSymbol();
-	//InitYearMonth();
 }
 /*
 void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
@@ -315,49 +308,7 @@ void SmOptionGrid::InitGrid(int height)
 	calcMaxRow(height);
 	calcMaxSymbol();
 	calcStartIndex();
-	/*
-	std::pair<int, int> start_max = FindValueStartRow(height);
-	_ValueStartRow = start_max.first;
-	_ValueMaxRow = start_max.second;
-	if (start_max.first == 0 && start_max.second == 0)
-		return;
-	_RowCount = start_max.second;
-	SetRowCount(_RowCount);
-	// 셀이 옵션을 다 표시하고도 남으면 그리드를 줄여준다.
-	if (_RowCount + 1 > _MaxIndex) {
-		int total_cell_height = _CellHeight * (_MaxIndex + 2);
-		CRect rcWnd;
-		GetWindowRect(&rcWnd);
-		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), total_cell_height + 4, SWP_NOMOVE);
-	}
-
-	for (int i = 1; i < _RowCount; i++) {
-		SetRowHeight(i, _CellHeight);
-		for (int j = 0; j < 3; ++j) {
-			CGridCellBase* pCell = GetCell(i, j);
-			if (pCell) {
-				// 텍스트 정렬
-				pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
-				InvalidateCellRect(i, j);
-			}
-		}
-	}
-
-	// 기존맵을 삭제한다.
-	_SymbolRowMap.clear();
-	// 모든 텍스트를 지운다.
-	ClearAllText();
-	// 새로운 맵을 만든다.
-	MakeSymbolRowMap(start_max.first, start_max.second);
-
-	
-	if (_Mode == 0)
-		SetRemain2();
-	else if (_Mode == 1)
-		SetCurrent2();
-	else
-		SetExpected2();
-		*/
+	set_option_view();
 }
 
 void SmOptionGrid::calcMaxRow(const int height)
@@ -389,20 +340,18 @@ int SmOptionGrid::calcStartIndex()
 		int atmIndex = findAtmIndex();
 		int symbolCenterIndex  = (int)(call_symbol_vector_.size() / 2);
 		int gridCenterIndex = (int)(_maxRow / 2);
-		// 등가 인덱스가 값의 중앙보다 클때 
+		// 등가 인덱스가 종목 크기의 중앙값보다 클 때 
 		if (atmIndex > symbolCenterIndex) {
 			if (atmIndex + gridCenterIndex > _maxSymbol) {
-				// 맨위 한줄은 제목이므로 1을 더해 준다.
-				// 인덱스는 원래 0에서 시작하는데 우리는 1에서 시작하므로 1을 다시한번 더해준다.
-				_startIndex = _maxSymbol - _maxRow + 2;
+				_startIndex = _maxSymbol - _maxRow;
 			}
 			else {
-				_startIndex = atmIndex - gridCenterIndex;
+				_startIndex = atmIndex - gridCenterIndex - 3;
 			}
 			if (_startIndex < 0)
 				_startIndex = 0;
 		}
-		else { // 등가 인덱스가 값의 중앙보다 작을 때
+		else { // 등가 인덱스가 종목 크기의 중앙값보다 작을 때
 			if (atmIndex - gridCenterIndex < 0) {
 				_startIndex = 0;
 			}
@@ -1307,13 +1256,12 @@ void SmOptionGrid::set_view_mode(ViewMode view_mode)
 
 void SmOptionGrid::set_strike_start_index(const int distance)
 {
-	size_t max_symbol_count = call_symbol_vector_.size();
 	strike_start_index_ += distance;
 	if (strike_start_index_ < 1)
 		strike_start_index_ = 1;
-	if (max_symbol_count <= static_cast<size_t>(_RowCount))
+	if (_maxSymbol <= _maxRow)
 		strike_start_index_ = 1;
-	const size_t diff = max_symbol_count - _RowCount;
+	const size_t diff = _maxSymbol - _maxRow;
 	if (strike_start_index_ >= static_cast<int>(diff))
 		strike_start_index_ = diff - 2;
 }
@@ -1402,7 +1350,7 @@ void SmOptionGrid::show_values()
 {
 	if (call_symbol_vector_.empty() || put_symbol_vector_.empty()) return;
 
-	for (int i = 1; i < _RowCount; i++) {
+	for (int i = 1; i < _maxRow; i++) {
 		int new_strike_index = strike_start_index_ + i - 1;
 		const int vec_size = static_cast<int>(call_symbol_vector_.size());
 		if (new_strike_index >= vec_size)
@@ -1497,13 +1445,12 @@ void SmOptionGrid::set_strike()
 
 	symbol_map_.clear();
 	row_col_map_.clear();
-	for (int i = 1; i < _RowCount; i++) {
+	for (int i = 1; i < _maxRow; i++) {
 		int new_strike_index = strike_start_index_ + i - 1;
 		const int vec_size = static_cast<int>(call_symbol_vector_.size());
-		if (new_strike_index >= vec_size)
-			new_strike_index = vec_size - 1;
-		if (new_strike_index < 0)
-			new_strike_index = 0;
+		if (new_strike_index >= vec_size || new_strike_index < 0) {
+			break;
+		}
 
 		show_strike(i, 1, call_symbol_vector_[new_strike_index]);
 
