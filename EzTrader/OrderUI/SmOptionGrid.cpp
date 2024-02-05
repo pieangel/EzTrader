@@ -1245,7 +1245,7 @@ void SmOptionGrid::set_strike_start_index(const int distance)
 		_startIndex = 0;
 	if (_maxSymbol <= _maxRow)
 		_startIndex = 0;
-	if (_startIndex + _maxRow > _maxSymbol + 2)
+	if (_startIndex + _maxRow > _maxSymbol)
 		_startIndex = oldStartIndex;
 }
 
