@@ -414,6 +414,9 @@ void SmSymbolManager::read_domestic_masterfile()
 			value = line.substr(index, 17); index += 17;
 			VtStringUtil::trim(value);
 			symbol->Strike(value);
+
+			//LOGINFO(CMyLogger::getInstance(), "symbol_code[%s], strike[%s]", symbol_code.c_str(), value.c_str());
+
 			value = line.substr(index, 1); index += 1;
 			VtStringUtil::trim(value);
 			symbol->AtmType(_ttoi(value.c_str()));

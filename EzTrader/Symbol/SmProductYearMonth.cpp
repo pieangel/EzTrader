@@ -2,6 +2,8 @@
 #include "SmProductYearMonth.h"
 #include "SmSymbol.h"
 #include <algorithm>
+#include "../Log/MyLogger.h"
+
 namespace DarkHorse {
 
 void SmProductYearMonth::sort_symbol_vector()
@@ -12,7 +14,11 @@ void SmProductYearMonth::sort_symbol_vector()
 
 	std::sort(_SymbolVec.begin(), _SymbolVec.end(), [](const std::shared_ptr<SmSymbol>& lhs, const std::shared_ptr<SmSymbol>& rhs)
 	{
-		return lhs->Strike() < rhs->Strike();
+		return std::stoi(lhs->Strike()) < std::stoi(rhs->Strike());
 	});
+
+	for (auto symbol : _SymbolVec) {
+		LOGINFO(CMyLogger::getInstance(), "symbol_code[%s], strike[%s]", symbol->SymbolCode().c_str(), symbol->Strike().c_str());
+	}
 }
 }

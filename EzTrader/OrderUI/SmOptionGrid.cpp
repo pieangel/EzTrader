@@ -435,6 +435,7 @@ void SmOptionGrid::ClearAllText()
 	for (int i = 1; i < _RowCount; ++i) {
 		for (int j = 0; j < _ColCount; ++j) {
 			QuickSetText(i, j, "");
+			InvalidateCellRect(i, j);
 		}
 	}
 }
@@ -1118,6 +1119,10 @@ void SmOptionGrid::set_option_view(
 	const int option_market_index,
 	const std::string& year_month_name)
 {
+	if (year_month_name.empty()) {
+		ClearAllText();
+		return;
+	}
 	set_option_info(option_market_index, year_month_name);
 	make_symbol_vec(true);
 	make_symbol_vec(false);
@@ -1249,7 +1254,7 @@ void SmOptionGrid::set_strike_start_index(const int distance)
 		_startIndex = 0;
 	if (_maxSymbol <= _maxRow)
 		_startIndex = 0;
-	if (_startIndex + _maxRow > _maxSymbol)
+	if (_startIndex + _maxRow - 1 > _maxSymbol)
 		_startIndex = oldStartIndex;
 }
 
@@ -1359,7 +1364,7 @@ void SmOptionGrid::showValues()
 
 	symbol_map_.clear();
 	row_col_map_.clear();
-	for (int i = 1; i < _maxRow; i++) {
+	for (int i = 1; i <= _maxRow; i++) {
 		int newStartIndex = _startIndex + i - 1;
 		if (newStartIndex < 0) newStartIndex = 0;
 		if (newStartIndex >= _maxSymbol)
