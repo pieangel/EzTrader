@@ -260,10 +260,8 @@ void VtOrderLeftWndHd::OnBnClickedButton2()
 void VtOrderLeftWndHd::OnBnClickedRadioBalance()
 {
 	_Mode = 0;
-	_SymbolFutureGrid.Mode(0);
-	_SymbolFutureGrid.InitGrid();
-	//_SymbolOptionGrid.Mode(0);
-	//_SymbolOptionGrid.RefreshMode();
+	_SymbolOptionGrid.set_view_mode(ViewMode::VM_Position);
+	_SymbolFutureGrid.set_view_mode(ViewMode::VM_Position);
 }
 
 
@@ -271,12 +269,8 @@ void VtOrderLeftWndHd::OnBnClickedRadioCurrent()
 {
 	// TODO: Add your control notification handler code here
 	_Mode = 1;
-	_SymbolFutureGrid.Mode(1);
-	_SymbolFutureGrid.InitGrid();
-	//_SymbolOptionGrid.Mode(1);
-	//_SymbolOptionGrid.RefreshMode();
-	//_SymbolOptionGrid.GetSymbolMaster();
-	//_SymbolOptionGrid.SetCurrent2();
+	_SymbolOptionGrid.set_view_mode(ViewMode::VM_Close);
+	_SymbolFutureGrid.set_view_mode(ViewMode::VM_Close);
 }
 
 
@@ -284,10 +278,8 @@ void VtOrderLeftWndHd::OnBnClickedRadioExpect()
 {
 	// TODO: Add your control notification handler code here
 	_Mode = 2;
-	_SymbolFutureGrid.Mode(2);
-	_SymbolFutureGrid.InitGrid();
-	_SymbolOptionGrid.Mode(2);
-	_SymbolOptionGrid.RefreshMode();
+	_SymbolOptionGrid.set_view_mode(ViewMode::VM_Expected);
+	_SymbolFutureGrid.set_view_mode(ViewMode::VM_Expected);
 }
 
 LRESULT VtOrderLeftWndHd::OnAccountChangedMessage(WPARAM wParam, LPARAM lParam)
