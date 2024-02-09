@@ -125,9 +125,9 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	else {
 		_AssetGrid.ShowWindow(SW_HIDE);
 	}
-	//future_view_.init_dm_future();
 	_SymbolOptionGrid.Init();
 	_SymbolFutureGrid.Init();
+	_SymbolFutureGrid.init_dm_future();
 	_ProfitLossGrid.Init();
 	_AssetGrid.Init();
 

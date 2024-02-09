@@ -40,6 +40,7 @@
 #include "../Position/AccountPositionManager.h"
 #include "../Position/Position.h"
 #include "../ViewModel/VmQuote.h"
+#include "../Util/IdGenerator.h"
 
 #pragma warning(disable:4018)
 
@@ -52,12 +53,33 @@ using namespace std;
 using namespace std::placeholders;
 
 SmOptionGrid::SmOptionGrid()
+	: id_(DarkHorse::IdGenerator::get_id())
 {
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->symbol_type(DarkHorse::SymbolType::Domestic);
+	quote_control_->set_event_handler(std::bind(&SmOptionGrid::on_update_quote, this));
+
+	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
+	position_control_->set_vm_option_event_handler(std::bind(&SmOptionGrid::on_update_position_vm, this, _1));
+
+	mainApp.event_hub()->subscribe_expected_event_handler
+	(
+		id_,
+		std::bind(&SmOptionGrid::update_expected, this, std::placeholders::_1)
+	);
+
+	mainApp.event_hub()->subscribe_order_event_handler
+	(
+		id_,
+		std::bind(&SmOptionGrid::update_order, this, std::placeholders::_1, std::placeholders::_2)
+	);
 }
 
 
 SmOptionGrid::~SmOptionGrid()
 {
+	mainApp.event_hub()->unsubscribe_order_event_handler(id_);
+	mainApp.event_hub()->unsubscribe_expected_event_handler(id_);
 }
 
 void SmOptionGrid::RegisterMasterCallback()
@@ -1328,6 +1350,24 @@ void SmOptionGrid::set_background_color(std::shared_ptr<DarkHorse::SmCell> cell,
 // 		cell->CellType(CT_CD);
 // 	else
 // 		cell->CellType(CT_PD);
+}
+
+void SmOptionGrid::set_background_color(const int row, const int col, const DarkHorse::VmOption& option_info)
+{
+	if (option_info.accepted_count > 0)
+		QuickSetBackColor(row, col, RGB(212, 186, 188));
+	else if (option_info.position != 0) {
+		if (option_info.accepted_count > 0)
+			QuickSetBackColor(row, col, RGB(212, 186, 188));
+		else
+			QuickSetBackColor(row, col, RGB(255, 255, 255));
+	}
+	else if (option_info.ordered)
+		QuickSetBackColor(row, col, RGB(255, 255, 255));
+	else if (option_info.call_put == 1)
+		QuickSetBackColor(row, col, RGB(252, 226, 228));
+	else
+		QuickSetBackColor(row, col, RGB(218, 226, 245));
 }
 
 void SmOptionGrid::show_strike(const int row, const int col, const DarkHorse::VmOption& option_info)

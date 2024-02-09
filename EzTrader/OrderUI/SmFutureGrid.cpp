@@ -1,36 +1,39 @@
 #include "stdafx.h"
 #include "SmFutureGrid.h"
-//#include "VtProductCategoryManager.h"
-//#include "VtProductSection.h"
-//#include "VtProductSubSection.h"
-//#include "../Symbol/VtSymbol.h"
 #include "VtOrderConfigManager.h"
-//#include "VtHdClient.h"
-//#include "VtChartDataRequest.h"
-//#include "../Position/VtPosition.h"
-//#include "../Account/VtAccount.h"
-//#include "../Order/VtOrderManager.h"
-//#include "../Order/VtOrderManagerSelector.h"
-//#include "../Order/VtProductOrderManagerSelector.h"
-//#include "../Order/VtProductOrderManager.h"
-//#include "../Fund/VtFund.h"
-//#include "../Symbol/VtSymbolManager.h"
-//#include "../Symbol/VtRealtimeRegisterManager.h"
-//#include "VtChartDataManager.h"
-//#include "VtChartData.h"
-//#include "../Global/MainBeetle.h"
-//#include "../Format/format.h"
-//#include "../Format/XFormatNumber.h"
-//#include "VtChartDataCollector.h"
 #include "SmOrderPanel.h"
 #include <functional>
-//#include "../Task/SmCallbackManager.h"
-//#include "../Symbol/SmMarketManager.h"
+#include "../Symbol/SmSymbol.h"
 #include "../Symbol/SmProduct.h"
 #include "../Symbol/SmProductYearMonth.h"
+#include "../SmGrid/SmCell.h"
+#include "../Account/SmAccount.h"
+
 #include "../Global/SmTotalManager.h"
-//#include "../Symbol/SmRunInfo.h"
-//#include "../Main/MainBeetle.h"
+#include "../Event/SmCallbackManager.h"
+#include "../Symbol/SmSymbolManager.h"
+#include <format>
+
+#include "../Fund/SmFund.h"
+#include "../Event/EventHub.h"
+
+#include "../Controller/QuoteControl.h"
+#include "../ViewModel/VmQuote.h"
+#include "../Util/SmUtil.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Util/IdGenerator.h"
+#include "../Controller/SymbolPositionControl.h"
+#include "../Log/MyLogger.h"
+#include "../Order/OrderProcess/TotalOrderManager.h"
+#include "../Order/OrderProcess/AccountOrderManager.h"
+#include "../Order/OrderProcess/SymbolOrderManager.h"
+#include "../Order/Order.h"
+
+#include "../Position/TotalPositionManager.h"
+#include "../Position/AccountPositionManager.h"
+#include "../Position/Position.h"
+#include "../Log/MyLogger.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,13 +42,40 @@
 using namespace std;
 using namespace std::placeholders;
 
+using namespace DarkHorse;
+
 SmFutureGrid::SmFutureGrid()
+	: id_(IdGenerator::get_id())
 {
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->symbol_type(SymbolType::Domestic);
+	quote_control_->set_event_handler(std::bind(&SmFutureGrid::on_update_quote, this));
+
+	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
+	position_control_->set_vm_fund_event_handler(std::bind(&SmFutureGrid::on_update_position_vm_future, this, _1));
+
+	CString strLog;
+	strLog.Format("DmFutureView futur_view id = [%d], position_control_id = [%d]", id_, position_control_->get_id());
+	//LOGINFO(CMyLogger::getInstance(), (const char*)strLog);
+
+	mainApp.event_hub()->subscribe_expected_event_handler
+	(
+		id_,
+		std::bind(&SmFutureGrid::update_expected, this, std::placeholders::_1)
+	);
+
+	mainApp.event_hub()->subscribe_order_event_handler
+	(
+		id_,
+		std::bind(&SmFutureGrid::update_order, this, std::placeholders::_1, std::placeholders::_2)
+	);
 }
 
 
 SmFutureGrid::~SmFutureGrid()
 {
+	mainApp.event_hub()->unsubscribe_order_event_handler(id_);
+	mainApp.event_hub()->unsubscribe_expected_event_handler(id_);
 }
 
 
@@ -622,4 +652,296 @@ void SmFutureGrid::ShowExpected(symbol_p sym, int row)
 	QuickSetBackColor(row, 2, RGB(255, 255, 255));
 	InvalidateCellRect(row, 2);
 	*/
+}
+
+void SmFutureGrid::update_expected(std::shared_ptr<DarkHorse::SmQuote> quote)
+{
+	if (view_mode_ != ViewMode::VM_Expected) return;
+
+	auto found = symbol_row_index_map_.find(quote->symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.expected = quote->expected;
+	show_value(found->second, 2, future_info);
+	enable_show_ = true;
+}
+
+void SmFutureGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	_Fund = val;
+	order_type_ = OrderType::Fund;
+	position_control_->set_fund(_Fund);
+	for (auto& future_info : symbol_vec_) {
+		get_future_info(future_info);
+		if (!future_info.symbol_p) continue;
+		auto found = symbol_row_index_map_.find(future_info.symbol_p->SymbolCode());
+		if (found == symbol_row_index_map_.end()) continue;
+		show_value(found->second, 2, future_info);
+	}
+
+	enable_show_ = true;
+}
+
+void SmFutureGrid::init_dm_future()
+{
+	const std::vector<DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
+	for (size_t i = 0; i < future_vec.size(); i++) {
+		const std::map<std::string, std::shared_ptr<SmProductYearMonth>>& year_month_map = future_vec[i].product->get_yearmonth_map();
+		std::shared_ptr<SmProductYearMonth> year_month = year_month_map.begin()->second;
+		auto symbol = year_month->get_first_symbol();
+		if (symbol) {
+			auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
+			VmFuture future_info;
+			future_info.decimal = symbol->decimal();
+			future_info.close = quote->close;
+			future_info.expected = quote->expected;
+			future_info.ordered = false;
+			future_info.position = 0;
+			future_info.symbol_id = symbol->Id();
+			future_info.symbol_p = symbol;
+			future_info.symbol_code = symbol->SymbolCode();
+			get_future_info(future_info);
+			symbol_vec_.push_back(future_info);
+			symbol_row_index_map_[symbol->SymbolCode()] = i;
+		}
+		std::string value = future_vec[i].future_name;
+		QuickSetText(i, 0, value.c_str());
+		value = future_vec[i].product_code;
+		QuickSetText(i, 1, value.c_str());
+	}
+	register_symbols();
+	show_values();
+	Invalidate();
+}
+
+void SmFutureGrid::update_quote()
+{
+	const VmQuote quote = quote_control_->get_quote();
+	CString msg;
+	msg.Format("DmFutureView::update_quote ::  close : %d\n", quote.close);
+	//TRACE(msg);
+	if (view_mode_ != ViewMode::VM_Close) return;
+	update_close(quote);
+}
+
+void SmFutureGrid::set_view_mode(ViewMode view_mode)
+{
+	view_mode_ = view_mode;
+	show_values();
+	Invalidate();
+}
+
+void SmFutureGrid::on_update_position_vm_future(const VmPosition& position)
+{
+	if (!position_control_) return;
+	if (position_control_ && position_control_->Position_type() != position.position_type) return;
+	auto found = symbol_row_index_map_.find(position.symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.position = position.open_quantity;
+	show_value(found->second, 2, future_info);
+}
+
+void SmFutureGrid::update_order(order_p order, DarkHorse::OrderEvent order_event)
+{
+	auto found = symbol_row_index_map_.find(order->symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	get_init_accepted_order_count(future_info);
+	show_value(found->second, 2, future_info);
+	enable_show_ = true;
+}
+
+void SmFutureGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	_Account = val;
+	position_control_->set_account(_Account);
+
+	if (_Account->is_subaccount())
+		order_type_ = OrderType::SubAccount;
+	else
+		order_type_ = OrderType::MainAccount;
+
+	for (auto& future_info : symbol_vec_) {
+		get_future_info(future_info);
+		if (!future_info.symbol_p) continue;
+		auto found = symbol_row_index_map_.find(future_info.symbol_p->SymbolCode());
+		if (found == symbol_row_index_map_.end()) continue;
+		show_value(found->second, 2, future_info);
+	}
+
+	enable_show_ = true;
+}
+
+std::string SmFutureGrid::get_position_text(const DarkHorse::VmFuture& future_info)
+{
+	if (future_info.position != 0)
+		return std::to_string(future_info.position);
+	else if (future_info.accepted_count > 0 ||
+		future_info.ordered)
+		return "0";
+	else return "";
+}
+
+void SmFutureGrid::get_future_info(DarkHorse::VmFuture& future_info)
+{
+	get_init_accepted_order_count(future_info);
+	if (order_type_ == OrderType::None) return;
+	if (order_type_ == OrderType::MainAccount) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_parent_account(future_info.account_no, future_info.symbol_code, position);
+		future_info.position = position.open_quantity;
+	}
+	else if (order_type_ == OrderType::SubAccount) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_account(future_info.account_no, future_info.symbol_code, position);
+		future_info.position = position.open_quantity;
+	}
+	else if (order_type_ == OrderType::Fund) {
+		VmPosition position;
+		mainApp.total_position_manager()->get_position_from_fund(future_info.fund_name, future_info.symbol_code, position);
+		future_info.position = position.open_quantity;
+	}
+}
+
+void SmFutureGrid::get_init_accepted_order_count(DarkHorse::VmFuture& future_info)
+{
+	if (order_type_ == OrderType::None) return;
+	if (order_type_ == OrderType::MainAccount) {
+		if (!_Account) return;
+		future_info.account_no = _Account->No();
+		future_info.fund_name = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_parent_account(future_info.account_no, future_info.symbol_code);
+		future_info.ordered = init_and_count.first;
+		future_info.accepted_count = init_and_count.second;
+	}
+	else if (order_type_ == OrderType::SubAccount) {
+		if (!_Account) return;
+		future_info.account_no = _Account->No();
+		future_info.fund_name = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_account(future_info.account_no, future_info.symbol_code);
+		future_info.ordered = init_and_count.first;
+		future_info.accepted_count = init_and_count.second;
+	}
+	else if (order_type_ == OrderType::Fund) {
+		if (!_Fund) return;
+		future_info.fund_name = _Fund->Name();
+		future_info.account_no = "";
+		auto init_and_count = mainApp.total_order_manager()->get_init_and_acpt_order_count_from_fund(future_info.fund_name, future_info.symbol_code);
+		future_info.ordered = init_and_count.first;
+		future_info.accepted_count = init_and_count.second;
+	}
+}
+
+void SmFutureGrid::set_position(DarkHorse::VmFuture& future_info)
+{
+	if (!_Account || !future_info.symbol_p) return;
+
+	auto account_position_manager = mainApp.total_position_manager()->get_account_position_manager(_Account->No());
+
+	auto position = account_position_manager->find_position(future_info.symbol_p->SymbolCode());
+	if (!position) return;
+	future_info.position = position->open_quantity;
+}
+
+void SmFutureGrid::update_position()
+{
+	if (!position_control_) return;
+
+	const VmPosition& position = position_control_->get_position();
+
+	auto found = symbol_row_index_map_.find(position.symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.position = position.open_quantity;
+	show_value(found->second, 2, future_info);
+}
+
+void SmFutureGrid::on_update_position()
+{
+	if (!position_control_) return;
+
+	const VmPosition& position = position_control_->get_position();
+
+	auto found = symbol_row_index_map_.find(position.symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.position = position.open_quantity;
+	show_value(found->second, 2, future_info);
+
+	enable_show_ = true;
+}
+
+void SmFutureGrid::on_update_quote()
+{
+	enable_show_ = true;
+}
+
+void SmFutureGrid::update_close(const DarkHorse::VmQuote& quote)
+{
+	auto found = symbol_row_index_map_.find(quote.symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.close = quote.close;
+	show_value(found->second, 2, future_info);
+}
+
+void SmFutureGrid::show_values()
+{
+	for (int i = 0; i < 5; i++) {
+		const VmFuture& future_info = symbol_vec_[i];
+		show_value(i, 2, future_info);
+	}
+}
+
+void SmFutureGrid::show_value(const int row, const int col, const DarkHorse::VmFuture& future_info)
+{
+	std::string value;
+	if (view_mode_ == ViewMode::VM_Close) {
+		value = std::to_string(future_info.close);
+		SmUtil::insert_decimal(value, future_info.decimal);
+	}
+	else if (view_mode_ == ViewMode::VM_Expected) {
+		value = std::to_string(future_info.expected);
+		SmUtil::insert_decimal(value, future_info.decimal);
+	}
+	else {
+		value = get_position_text(future_info);
+	}
+	set_background_color(row, col, future_info);
+	QuickSetText(row, col, value.c_str());
+}
+
+void SmFutureGrid::set_background_color(const int row, const int col, const DarkHorse::VmFuture& future_info)
+{
+	if (future_info.accepted_count > 0)
+		QuickSetBackColor(row, col, RGB(212, 186, 188));
+	else if (future_info.position != 0) {
+		if (future_info.accepted_count > 0)
+			QuickSetBackColor(row, col, RGB(212, 186, 188));
+		else
+			QuickSetBackColor(row, col, RGB(255, 255, 255));
+	}
+	else if (future_info.ordered)
+		QuickSetBackColor(row, col, RGB(255, 255, 255));
+// 	else if (future_info.call_put == 1)
+// 		QuickSetBackColor(row, col, RGB(252, 226, 228));
+	else
+		QuickSetBackColor(row, col, RGB(218, 226, 245));
+}
+
+void SmFutureGrid::register_symbol_to_server(std::shared_ptr<DarkHorse::SmSymbol> symbol)
+{
+	if (!symbol) return;
+	mainApp.SymMgr()->RegisterSymbolToServer(symbol->SymbolCode(), true);
+}
+
+void SmFutureGrid::register_symbols()
+{
+	if (registered_) return;
+
+	for (auto& symbol : symbol_vec_) {
+		register_symbol_to_server(symbol.symbol_p);
+	}
+	registered_ = true;
 }
