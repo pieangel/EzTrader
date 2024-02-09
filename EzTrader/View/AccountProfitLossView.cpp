@@ -238,6 +238,35 @@ void AccountProfitLossView::update_account_profit_loss()
 	enable_account_profit_loss_show_ = true;
 }
 
+void AccountProfitLossView::update_fund_profit_loss()
+{
+	if (!fund_) return;
+
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
+
+	double open_pl = 0.0, settled_pl = 0.0, fee = 0.0, pure_pl = 0.0;
+	for (auto it = account_vec.begin(); it != account_vec.end(); it++) {
+		open_pl += (*it)->Asset.OpenProfitLoss;
+		settled_pl += (*it)->Asset.TradeProfitLoss;
+		fee += (*it)->Asset.Fee;
+		pure_pl = open_pl + settled_pl - abs(fee);
+	}
+
+	auto cell = _Grid->FindCell(0, 1);
+	std::string value;
+	value = std::format("{0:.2f}", open_pl);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(1, 1);
+	value = std::format("{0:.2f}", settled_pl);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(2, 1);
+	value = std::format("{0:.2f}", fee);
+	if (cell) cell->Text(value);
+	cell = _Grid->FindCell(3, 1);
+	value = std::format("{0:.2f}", pure_pl);
+	if (cell) cell->Text(value);
+}
+
 void AccountProfitLossView::UpdateFundAssetInfo()
 {
 	if (!fund_) return;

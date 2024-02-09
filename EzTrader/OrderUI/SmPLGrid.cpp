@@ -1,15 +1,23 @@
 #include "stdafx.h"
 #include "SmPLGrid.h"
 #include "VtOrderConfigManager.h"
-//#include "../Account/VtAccount.h"
-//#include "../Symbol/VtSymbol.h"
-//#include "../Format/XFormatNumber.h"
-//#include "../Fund/VtFund.h"
-//#include "../Global/MainBeetle.h"
-//#include "../Task/SmCallbackManager.h"
-//#include "../Format/format.h"
 #include "../Global/SmTotalManager.h"
 #include "../MessageDefine.h"
+#include "../Account/SmAccount.h"
+
+#include "../Global/SmTotalManager.h"
+#include "../Event/SmCallbackManager.h"
+#include "../Controller/AccountProfitLossControl.h"
+#include <format>
+
+#include <functional>
+#include "../Fund/SmFund.h"
+#include "../Util/VtStringUtil.h"
+
+using namespace std;
+using namespace std::placeholders;
+
+using namespace DarkHorse;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,6 +25,8 @@
 
 SmPLGrid::SmPLGrid()
 {
+	account_profit_loss_control_ = std::make_shared<DarkHorse::AccountProfitLossControl>();
+	account_profit_loss_control_->set_event_handler(std::bind(&SmPLGrid::on_update_account_profit_loss, this));
 }
 
 
@@ -127,6 +137,170 @@ void SmPLGrid::QuickSetTextColor(int row, int col, COLORREF color)
 }
 
 
+void SmPLGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	if (!account_profit_loss_control_) return;
+	account_profit_loss_control_->set_fund(fund_);
+	enable_account_profit_loss_show_ = true;
+}
+
+void SmPLGrid::on_update_account_profit_loss()
+{
+	enable_account_profit_loss_show_ = true;
+}
+
+void SmPLGrid::Account(account_p val)
+{
+	account_ = val;
+
+	if (!account_profit_loss_control_) return;
+	account_profit_loss_control_->set_account(account_);
+	enable_account_profit_loss_show_ = true;
+}
+
+void SmPLGrid::OnQuoteEvent(const std::string& symbol_code)
+{
+	_EnableQuoteShow = true;
+}
+
+void SmPLGrid::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
+{
+	enable_account_profit_loss_show_ = true;
+}
+
+void SmPLGrid::update_account_profit_loss()
+{
+	if (!account_profit_loss_control_) return;
+	std::string format_type("0");
+	if (account_) format_type = account_->Type();
+	if (fund_) format_type = fund_->fund_type();
+
+	const VmAccountProfitLoss& account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
+	const int decimal = format_type == "1" ? 2 : 0;
+	std::string value;
+	value = VtStringUtil::get_format_value(account_profit_loss.open_profit_loss, decimal, true);
+	if (account_profit_loss.open_profit_loss > 0) {
+		QuickSetTextColor(0, 1, RGB(255, 0, 0));
+		QuickSetText(0, 1, value.c_str());
+	}
+	else if (account_profit_loss.open_profit_loss < 0) {
+		QuickSetTextColor(0, 1, RGB(0, 0, 255));
+		QuickSetText(0, 1, value.c_str());
+	}
+	else {
+		QuickSetTextColor(0, 1, RGB(0, 0, 0));
+		QuickSetNumber(0, 1, 0);
+	}
+
+	value = VtStringUtil::get_format_value(account_profit_loss.trade_profit_loss, decimal, true);
+	if (account_profit_loss.trade_profit_loss > 0) {
+		QuickSetTextColor(1, 1, RGB(255, 0, 0));
+		QuickSetText(1, 1, value.c_str());
+	}
+	else if (account_profit_loss.trade_profit_loss < 0) {
+		QuickSetTextColor(1, 1, RGB(0, 0, 255));
+		QuickSetText(1, 1, value.c_str());
+	}
+	else {
+		QuickSetTextColor(1, 1, RGB(0, 0, 0));
+		QuickSetNumber(1, 1, 0);
+	}
+
+	//value = VtStringUtil::get_format_value(account_profit_loss.trade_fee, decimal, true);
+	const double pure_profit = account_profit_loss.open_profit_loss + account_profit_loss.trade_profit_loss - abs(account_profit_loss.trade_fee);
+	value = VtStringUtil::get_format_value(pure_profit, decimal, true);
+	if (pure_profit > 0) {
+		QuickSetTextColor(2, 1, RGB(255, 0, 0));
+		QuickSetText(2, 1, value.c_str());
+	}
+	else if (pure_profit < 0) {
+		QuickSetTextColor(2, 1, RGB(0, 0, 255));
+		QuickSetText(2, 1, value.c_str());
+	}
+	else {
+		QuickSetTextColor(2, 1, RGB(0, 0, 0));
+		QuickSetNumber(2, 1, 0);
+	}
+	InvalidateCellRect(0, 1);
+	InvalidateCellRect(1, 1);
+	InvalidateCellRect(2, 1);
+	enable_account_profit_loss_show_ = true;
+}
+
+void SmPLGrid::update_fund_profit_loss()
+{
+	if (!fund_) return;
+
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
+
+	double open_profit_loss = 0.0, trade_profit_loss = 0.0, fee = 0.0, pure_profit = 0.0;
+	for (auto it = account_vec.begin(); it != account_vec.end(); it++) {
+		open_profit_loss += (*it)->Asset.OpenProfitLoss;
+		trade_profit_loss += (*it)->Asset.TradeProfitLoss;
+		fee += (*it)->Asset.Fee;
+		pure_profit = open_profit_loss + trade_profit_loss - abs(fee);
+	}
+
+	std::string value;
+	value = std::format("{0:.2f}", open_profit_loss);
+	if (open_profit_loss > 0) {
+		QuickSetTextColor(0, 1, RGB(255, 0, 0));
+		QuickSetText(0, 1, value.c_str());
+	}
+	else if (open_profit_loss < 0) {
+		QuickSetTextColor(0, 1, RGB(0, 0, 255));
+		QuickSetText(0, 1, value.c_str());
+	}
+	else {
+		QuickSetTextColor(0, 1, RGB(0, 0, 0));
+		QuickSetNumber(0, 1, 0);
+	}
+
+	value = std::format("{0:.2f}", trade_profit_loss);
+	if (trade_profit_loss > 0) {
+		QuickSetTextColor(1, 1, RGB(255, 0, 0));
+		QuickSetText(1, 1, value.c_str());
+	}
+	else if (trade_profit_loss < 0) {
+		QuickSetTextColor(1, 1, RGB(0, 0, 255));
+		QuickSetText(1, 1, value.c_str());
+	}
+	else {
+		QuickSetTextColor(1, 1, RGB(0, 0, 0));
+		QuickSetNumber(1, 1, 0);
+	}
+	//value = std::format("{0:.2f}", fee);
+	value = std::format("{0:.2f}", pure_profit);
+	if (pure_profit > 0) {
+		QuickSetTextColor(2, 1, RGB(255, 0, 0));
+		QuickSetText(2, 1, value.c_str());
+	}
+	else if (pure_profit < 0) {
+		QuickSetTextColor(2, 1, RGB(0, 0, 255));
+		QuickSetText(2, 1, value.c_str());
+	}
+	else {
+		QuickSetTextColor(2, 1, RGB(0, 0, 0));
+		QuickSetNumber(2, 1, 0);
+	}
+	InvalidateCellRect(0, 1);
+	InvalidateCellRect(1, 1);
+	InvalidateCellRect(2, 1);
+	enable_account_profit_loss_show_ = true;
+}
+
+std::string SmPLGrid::get_format_price(const double& value)
+{
+	std::string value_string;
+	CString format_price;
+	if (account_->Type() == "1")
+		format_price.Format("%.2f", value);
+	else
+		format_price.Format("%.0f", value);
+	return std::string(CT2CA(format_price));
+}
+
 void SmPLGrid::InitGrid()
 {
 	if (!_OrderConfigMgr)
@@ -170,58 +344,8 @@ void SmPLGrid::ShowAccountProfitLoss()
 	if (!acnt)
 		return;
 
-	/*
-	std::string temp = fmt::format("{:.{}f}", acnt->OpenPL, 0);
-	CString profitLoss = XFormatNumber(temp.c_str(), -1);
-
-	if (acnt->OpenPL > 0) {
-		QuickSetTextColor(0, 1, RGB(255, 0, 0));
-		QuickSetText(0, 1, profitLoss);
-	}
-	else if (acnt->OpenPL < 0) {
-		QuickSetTextColor(0, 1, RGB(0, 0, 255));
-		QuickSetText(0, 1, profitLoss);
-	}
-	else {
-		QuickSetTextColor(0, 1, RGB(0, 0, 0));
-		QuickSetNumber(0, 1, 0);
-	}
-
-	temp = fmt::format("{:.{}f}", acnt->TradePL, 0);
-	profitLoss = XFormatNumber(temp.c_str(), -1);
-
-	if (acnt->TradePL > 0) {
-		QuickSetTextColor(1, 1, RGB(255, 0, 0));
-		QuickSetText(1, 1, profitLoss);
-	}
-	else if (acnt->TradePL < 0) {
-		QuickSetTextColor(1, 1, RGB(0, 0, 255));
-		QuickSetText(1, 1, profitLoss);
-	}
-	else {
-		QuickSetTextColor(1, 1, RGB(0, 0, 0));
-		QuickSetNumber(1, 1, 0);
-	}
-
-	temp = fmt::format("{:.{}f}", acnt->TotalPL, 0);
-	profitLoss = XFormatNumber(temp.c_str(), -1);
-
-	if (acnt->TotalPL > 0) {
-		QuickSetTextColor(2, 1, RGB(255, 0, 0));
-		QuickSetText(2, 1, profitLoss);
-	}
-	else if (acnt->TotalPL < 0) {
-		QuickSetTextColor(2, 1, RGB(0, 0, 255));
-		QuickSetText(2, 1, profitLoss);
-	}
-	else {
-		QuickSetTextColor(2, 1, RGB(0, 0, 0));
-		QuickSetNumber(2, 1, 0);
-	}
-	InvalidateCellRect(0, 1);
-	InvalidateCellRect(1, 1);
-	InvalidateCellRect(2, 1);
-	*/
+	Account(acnt);
+	update_account_profit_loss();
 }
 
 void SmPLGrid::ShowFundProfitLoss()
@@ -229,65 +353,6 @@ void SmPLGrid::ShowFundProfitLoss()
 	fund_p fund = _OrderConfigMgr->Fund();
 	if (!fund)
 		return;
-	/*
-	std::string temp = fmt::format("{:.{}f}", fund->OpenPL, 0);
-	CString profitLoss = XFormatNumber(temp.c_str(), -1);
-
-	if (fund->OpenPL > 0)
-	{
-		QuickSetTextColor(0, 1, RGB(255, 0, 0));
-		QuickSetText(0, 1, profitLoss);
-	}
-	else if (fund->OpenPL < 0)
-	{
-		QuickSetTextColor(0, 1, RGB(0, 0, 255));
-		QuickSetText(0, 1, profitLoss);
-	}
-	else
-	{
-		QuickSetTextColor(0, 1, RGB(0, 0, 0));
-		QuickSetNumber(0, 1, 0);
-	}
-
-	temp = fmt::format("{:.{}f}", fund->TradePL, 0);
-	profitLoss = XFormatNumber(temp.c_str(), -1);
-
-	if (fund->TradePL > 0)
-	{
-		QuickSetTextColor(1, 1, RGB(255, 0, 0));
-		QuickSetText(1, 1, profitLoss);
-	}
-	else if (fund->TradePL < 0)
-	{
-		QuickSetTextColor(1, 1, RGB(0, 0, 255));
-		QuickSetText(1, 1, profitLoss);
-	}
-	else
-	{
-		QuickSetTextColor(1, 1, RGB(0, 0, 0));
-		QuickSetNumber(1, 1, 0);
-	}
-
-	temp = fmt::format("{:.{}f}", fund->TotalPL, 0);
-	profitLoss = XFormatNumber(temp.c_str(), -1);
-
-	if (fund->TotalPL > 0)
-	{
-		QuickSetTextColor(2, 1, RGB(255, 0, 0));
-		QuickSetText(2, 1, profitLoss);
-	}
-	else if (fund->TotalPL < 0)
-	{
-		QuickSetTextColor(2, 1, RGB(0, 0, 255));
-		QuickSetText(2, 1, profitLoss);
-	}
-	else
-	{
-		QuickSetTextColor(2, 1, RGB(0, 0, 0));
-		QuickSetNumber(2, 1, 0);
-	}
-	InvalidateCellRect(0, 1);
-	InvalidateCellRect(1, 1);
-	InvalidateCellRect(2, 1);
-	*/
+	Fund(fund);
+	update_fund_profit_loss();
 }

@@ -55,13 +55,9 @@ public:
 	void OnExpected(symbol_p sym);
 	void BlockEvent();
 private:
-	//HdSymbolFutureGrid _SymbolFutureGrid;
 	SmFutureGrid _SymbolFutureGrid;
-	//HdProfitLossGrid _ProfitLossGrid;
 	SmPLGrid _ProfitLossGrid;
-	//HdAssetGrid      _AssetGrid;
 	SmAssetGrid      _AssetGrid;
-	//HdSymbolOptionGrid _SymbolOptionGrid;
 	SmOptionGrid _SymbolOptionGrid;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 

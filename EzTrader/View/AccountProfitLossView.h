@@ -45,6 +45,7 @@ public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 	void update_account_profit_loss();
+	void update_fund_profit_loss();
 private:
 	bool updating_ = false;
 	int order_window_id_ = 0;
