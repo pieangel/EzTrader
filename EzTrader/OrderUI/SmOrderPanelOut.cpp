@@ -861,7 +861,7 @@ void SmOrderPanelOut::SetSymbol(symbol_p sym)
 
 	_Symbol = sym;
 	SetProductName(_Symbol);
-	_ProductRemainGrid.SetSymbol(sym);
+	_ProductRemainGrid.Symbol(sym);
 
 	// 좌우측 창의 심볼 정보를 설정해 준다.
 	_OrderConfigMgr->orderWnd->SetSymbolInfo(this);
@@ -880,7 +880,7 @@ void SmOrderPanelOut::SetSymbol()
 	if (!_Symbol || !_OrderConfigMgr)
 		return;
 
-	_ProductRemainGrid.SetSymbol(_Symbol);
+	_ProductRemainGrid.Symbol(_Symbol);
 	if (_OrderConfigMgr->Type() == 0)
 	{
 		if (_OrderConfigMgr->OrderMgr())

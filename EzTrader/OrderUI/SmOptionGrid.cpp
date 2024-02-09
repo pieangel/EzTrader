@@ -1006,6 +1006,7 @@ void SmOptionGrid::set_call_put_area()
 {
 	for (int i = 1; i < _RowCount; i++) {
 		QuickSetBackColor(i, 0, RGB(252, 226, 228));
+		QuickSetBackColor(i, 1, RGB(255, 255, 255));
 		QuickSetBackColor(i, 2, RGB(218, 226, 245));
 	}
 }

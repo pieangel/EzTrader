@@ -890,16 +890,9 @@ void SmOrderPanel::SetSymbol(symbol_p sym)
 	//_Symbol->SubscribeQuoteWndCallback(_TickGrid.GetSafeHwnd());
 	//_Symbol->SubscribeQuoteWndCallback(_ProductRemainGrid.GetSafeHwnd());
 	SetProductName(_Symbol);
-	_ProductRemainGrid.SetSymbol(sym);
+	_ProductRemainGrid.Symbol(sym);
 	m_Grid.Symbol(sym);
-	/*
-	if (_OrderConfigMgr->OrderMgr())
-	{
-		_OrderConfigMgr->OrderMgr()->CalcTotalProfitLoss(sym);
-		VtProductOrderManager* PrdtOrderMgr = _OrderConfigMgr->OrderMgr()->FindAddProductOrderManager(sym->ShortCode);
-		PrdtOrderMgr->OrderMgr(_OrderConfigMgr->OrderMgr());
-	}
-	*/
+	_TickGrid.Symbol(sym);
 }
 
 void SmOrderPanel::SetSymbol()
@@ -907,7 +900,7 @@ void SmOrderPanel::SetSymbol()
 	if (!_Symbol || !_OrderConfigMgr)
 		return;
 
-	_ProductRemainGrid.SetSymbol(_Symbol);
+	_ProductRemainGrid.Symbol(_Symbol);
 	/*
 	if (_OrderConfigMgr->Type() == 0)
 	{
@@ -953,6 +946,7 @@ void SmOrderPanel::SetProductName(symbol_p symbol)
 
 void SmOrderPanel::InitPosition()
 {
+	_ProductRemainGrid.Account(_OrderConfigMgr->Account());
 	_ProductRemainGrid.InitPosition();
 }
 
@@ -1374,6 +1368,7 @@ void SmOrderPanel::ChangeAccount(account_p acnt)
 	if (!acnt)
 		return;
 	m_Grid.Account(acnt);
+	_ProductRemainGrid.Account(acnt);
 	ClearPosition();
 	SetSymbol();
 	InitGridInfo();
@@ -1385,6 +1380,7 @@ void SmOrderPanel::ChangeFund(fund_p fund)
 	if (!fund)
 		return;
 	m_Grid.fund(fund);
+	_ProductRemainGrid.fund(fund);
 	ClearPosition();
 	SetSymbol();
 	InitGridInfo();

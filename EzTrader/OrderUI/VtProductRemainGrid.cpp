@@ -22,12 +22,36 @@
 #include "../Global/SmTotalManager.h"
 #include "../MessageDefine.h"
 #include "../Symbol/SmSymbol.h"
+
+
+#include "../Global/SmTotalManager.h"
+#include "../Position/SmTotalPositionManager.h"
+#include "../Position/SmPosition.h"
+#include "../Account/SmAccount.h"
+#include "../Global/SmTotalManager.h"
+#include "../Event/SmCallbackManager.h"
+#include "../Controller/QuoteControl.h"
+#include "../Quote/SmQuote.h"
+#include "../Quote/SmQuoteManager.h"
+#include "../Util/SmUtil.h"
+#include "../Controller/SymbolPositionControl.h"
+#include "../ViewModel/VmPosition.h"
+#include "../Account/SmAccountManager.h"
+#include "../Util/VtStringUtil.h"
+#include "../Util/SimpleTree.h"
+#include <format>
+
+#include <functional>
+
+using namespace std;
+using namespace std::placeholders;
+
+using namespace DarkHorse;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-using namespace std;
-using namespace std::placeholders;
 
 
 BEGIN_MESSAGE_MAP(VtProductRemainGrid, VtGrid)
@@ -60,6 +84,11 @@ void VtProductRemainGrid::OnQuoteEvent(const symbol_p symbol)
 		ShowSinglePosition();
 	else
 		ShowFundPosition();
+}
+
+void VtProductRemainGrid::OnQuoteEvent(const std::string& symbol_code)
+{
+
 }
 
 void VtProductRemainGrid::RegisterOrderallback()
@@ -102,10 +131,91 @@ void VtProductRemainGrid::OnOrderEvent(const VtOrder* order)
 	ShowPosition();
 }
 
+void VtProductRemainGrid::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
+{
+	enable_position_show_ = true;
+}
+
+void VtProductRemainGrid::on_update_quote()
+{
+	enable_quote_show_ = true;
+}
+
+void VtProductRemainGrid::on_update_position()
+{
+	enable_position_show_ = true;
+	enable_quote_show_ = true;
+}
+
+void VtProductRemainGrid::set_position()
+{
+	if (!position_control_ || !symbol_) return;
+	position_control_->reset_position();
+}
+
+void VtProductRemainGrid::update_position()
+{
+	if (!position_control_ || !symbol_) return;
+
+	const VmPosition& position = position_control_->get_position();
+
+	if (position.open_quantity == 0) {
+		ClearPosition();
+		return;
+	}
+	QuickSetText(0, 0, symbol_->SymbolCode().c_str());
+	QuickRedrawCell(0, 0);
+	if (position.open_quantity > 0) {
+		QuickSetText(1, 0, _T("매수"));
+		QuickSetTextColor(1, 0, RGB(255, 0, 0));
+		QuickSetTextColor(2, 0, RGB(255, 0, 0));
+		QuickSetTextColor(3, 0, RGB(255, 0, 0));
+	}
+	else if (position.open_quantity < 0) {
+		QuickSetText(1, 0, _T("매도"));
+		QuickSetTextColor(1, 0, RGB(0, 0, 255));
+		QuickSetTextColor(2, 0, RGB(0, 0, 255));
+		QuickSetTextColor(3, 0, RGB(0, 0, 255));
+	}
+	else {
+		QuickSetText(1, 0, _T(""));
+		QuickSetTextColor(1, 0, RGB(255, 255, 255));
+		QuickSetTextColor(2, 0, RGB(255, 255, 255));
+		QuickSetTextColor(3, 0, RGB(255, 255, 255));
+	}
+	QuickRedrawCell(1, 0);
+	QuickSetNumber(2, 0, std::abs(position.open_quantity));
+	QuickRedrawCell(2, 0);
+
+	const int decimal = symbol_type_ == DarkHorse::SymbolType::Abroad ? 2 : 0;
+	std::string value_string = VtStringUtil::get_format_value(position.average_price / pow(10, symbol_->decimal()), symbol_->decimal(), true);
+	QuickSetText(3, 0, value_string.c_str());
+	QuickRedrawCell(3, 0);
+	value_string = VtStringUtil::get_format_value(position.open_profit_loss, decimal, true);
+	if (position.open_profit_loss > 0) {
+		QuickSetTextColor(5, 0, RGB(255, 0, 0));
+		QuickSetText(5, 0, value_string.c_str());
+	}
+	else if (position.open_profit_loss < 0) {
+		QuickSetTextColor(5, 0, RGB(0, 0, 255));
+		QuickSetText(5, 0, value_string.c_str());
+	}
+	else {
+		QuickSetTextColor(5, 0, RGB(0, 0, 0));
+		QuickSetText(5, 0, value_string.c_str());
+	}
+	QuickRedrawCell(5, 0);
+}
+
 VtProductRemainGrid::VtProductRemainGrid()
 {
 	_CenterWnd = nullptr;
 	_OrderConfigMgr = nullptr;
+
+	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
+	quote_control_->set_event_handler(std::bind(&VtProductRemainGrid::on_update_quote, this));
+	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
+	position_control_->set_event_handler(std::bind(&VtProductRemainGrid::on_update_position, this));
 }
 
 
@@ -233,106 +343,14 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, symbol_p sym)
 {
 	if (!posi || !sym)
 		return;
-	/*
-	if (!posi) {
-		QuickSetText(0, 0, _T(""));
-		QuickSetText(1, 0, _T(""));
-		QuickSetText(2, 0, _T(""));
-		QuickSetText(3, 0, _T(""));
-		QuickSetText(4, 0, _T(""));
-		QuickSetText(5, 0, _T(""));
-
-		QuickRedrawCell(0, 0);
-		QuickRedrawCell(1, 0);
-		QuickRedrawCell(2, 0);
-		QuickRedrawCell(3, 0);
-		QuickRedrawCell(4, 0);
-		QuickRedrawCell(5, 0);
-		_CenterWnd->SetRemain(0);
-		return;
-	}
-
-
-	QuickSetText(0, 0, sym->ShortCode.c_str());
-	QuickRedrawCell(0, 0);
-
-	if (posi->OpenQty == 0) {
-		QuickSetText(0, 0, _T(""));
-		QuickSetText(1, 0, _T(""));
-		QuickSetText(2, 0, _T(""));
-		QuickSetText(3, 0, _T(""));
-		QuickSetText(4, 0, _T(""));
-		QuickSetText(5, 0, _T(""));
-
-		QuickRedrawCell(0, 0);
-		QuickRedrawCell(1, 0);
-		QuickRedrawCell(2, 0);
-		QuickRedrawCell(3, 0);
-		QuickRedrawCell(4, 0);
-		QuickRedrawCell(5, 0);
-		_CenterWnd->SetRemain(posi->OpenQty);
-		return;
-	}
-	if (posi->Position == VtPositionType::Buy) {
-		QuickSetText(1, 0, _T("매수"));
-		QuickSetTextColor(1, 0, RGB(255, 0, 0));
-		QuickSetTextColor(2, 0, RGB(255, 0, 0));
-		QuickSetTextColor(3, 0, RGB(255, 0, 0));
-	} else if (posi->Position == VtPositionType::Sell) {
-		QuickSetText(1, 0, _T("매도"));
-		QuickSetTextColor(1, 0, RGB(0, 0, 255));
-		QuickSetTextColor(2, 0, RGB(0, 0, 255));
-		QuickSetTextColor(3, 0, RGB(0, 0, 255));
-	}
-	QuickRedrawCell(1, 0);
-	QuickSetNumber(2, 0, std::abs(posi->OpenQty));
-	QuickRedrawCell(2, 0);
-	CString thVal;
-	std::string temp = fmt::format("{:.{}f}", posi->AvgPrice, sym->Decimal);
-
-	thVal = XFormatNumber(temp.c_str(), sym->Decimal);
-	QuickSetText(3, 0, thVal);
-	QuickRedrawCell(3, 0);
-
-
-	CUGCell cell;
-	GetCell(4, 0, &cell);
-	int curValue = sym->Quote.intClose;
-	cell.SetNumberDecimals(sym->Decimal);
-	temp = fmt::format("{:.{}f}", curValue / std::pow(10, sym->Decimal), sym->Decimal);
-	thVal = XFormatNumber(temp.c_str(), sym->Decimal);
-	cell.SetText(thVal);
-	cell.LongValue(curValue);
-	SetCell(4, 0, &cell);
-	QuickRedrawCell(4, 0);
-
-	temp = fmt::format("{:.{}f}", posi->OpenProfitLoss, 2);
-	CString profitLoss = XFormatNumber(temp.c_str(), -1);
-
-	if (posi->OpenProfitLoss > 0) {
-		QuickSetTextColor(5, 0, RGB(255, 0, 0));
-		QuickSetText(5, 0, profitLoss);
-	} else if (posi->OpenProfitLoss < 0) {
-		QuickSetTextColor(5, 0, RGB(0, 0, 255));
-		QuickSetText(5, 0, profitLoss);
-	} else {
-		QuickSetTextColor(5, 0, RGB(0, 0, 0));
-		QuickSetText(5, 0, profitLoss);
-	}
-	QuickRedrawCell(5, 0);
-	
-	_CenterWnd->SetRemain(posi->OpenQty);
-	_CenterWnd->RefreshOrderPositon();
-	*/
-	//LOG_F(INFO, _T("잔고그리드 갱신"));
 }
-
+/*
 void VtProductRemainGrid::SetSymbol(symbol_p sym)
 {
 	if (!sym || !_CenterWnd || !_OrderConfigMgr)
 		return;
 
-	/*
+	
 	account_p acnt = _OrderConfigMgr->Account();
 	if (!acnt)
 		return;
@@ -342,8 +360,9 @@ void VtProductRemainGrid::SetSymbol(symbol_p sym)
 
 	QuickSetText(0, 0, sym->ShortCode.c_str());
 	QuickRedrawCell(0, 0);
-	*/
+	
 }
+*/
 
 void VtProductRemainGrid::ShowSinglePosition()
 {
@@ -425,7 +444,8 @@ void VtProductRemainGrid::OnReceiveRealtimeQuote(VtQuote* quote)
 
 void VtProductRemainGrid::InitPosition()
 {
-	ShowPosition();
+	set_position();
+	update_position();
 }
 
 void VtProductRemainGrid::ClearPosition()
@@ -527,36 +547,70 @@ int VtProductRemainGrid::GetGridWidth(std::vector<bool>& colOptions)
 	return gridWidth;
 }
 
-/*
-LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
-	switch (message) {
-		case WM_USER: // Example message
-			{
-				// Retrieve the std::shared_ptr from lParam
-				std::shared_ptr<MyData>* pData = reinterpret_cast<std::shared_ptr<MyData>*>(lParam);
-				std::shared_ptr<MyData> data = *pData;
+void VtProductRemainGrid::Clear()
+{
 
-				// Use data...
-
-				// Clean up
-				delete pData;
-
-				return 0;
-			}
-		// Other cases...
-	}
-	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-void SendMyData(HWND hwnd, std::shared_ptr<MyData> data) {
-	// Allocate a new shared_ptr on the heap
-	std::shared_ptr<MyData>* pData = new std::shared_ptr<MyData>(data);
-
-	// Send the message with pData as LPARAM
-	SendMessage(hwnd, WM_USER, 0, reinterpret_cast<LPARAM>(pData));
+void VtProductRemainGrid::Symbol(symbol_p val)
+{
+	symbol_ = val;
+	auto quote = mainApp.QuoteMgr()->get_quote(symbol_->SymbolCode());
+	quote->symbol_id = symbol_->Id();
+	quote_control_->set_symbol_id(symbol_->Id());
+	quote_control_->update_quote(quote);
+	position_control_->set_symbol(symbol_);
+	update_quote();
+	set_position();
+	update_position();
+	enable_position_show_ = true;
 }
 
-*/
+
+void VtProductRemainGrid::update_quote()
+{
+	if (!quote_control_ || !symbol_) return;
+	//if (!position_control_) return;
+	const VmQuote& quote = quote_control_->get_quote();
+	//const VmPosition& position = position_control_->get_position();
+	std::string value = std::to_string(quote.close);
+	SmUtil::insert_decimal(value, symbol_->decimal());
+	CUGCell cell;
+	GetCell(4, 0, &cell);
+	cell.SetText(value.c_str());
+	//cell.LongValue(quote.close);
+	SetCell(4, 0, &cell);
+	QuickRedrawCell(4, 0);
+}
+
+void VtProductRemainGrid::Account(account_p val)
+{
+	account_ = val;
+	if (account_->is_subaccount())
+		position_type_ = PositionType::SubAccount;
+	else
+		position_type_ = PositionType::MainAccount;
+	position_control_->set_account(account_);
+	set_position();
+	update_position();
+	update_quote();
+	enable_position_show_ = true;
+}
+
+void VtProductRemainGrid::fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	position_type_ = PositionType::Fund;
+	position_control_->set_fund(fund_);
+	set_position();
+	update_position();
+	enable_position_show_ = true;
+}
+
+void VtProductRemainGrid::OnOrderChanged(const int& account_id, const int& symbol_id)
+{
+
+}
 
 LRESULT VtProductRemainGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 {
