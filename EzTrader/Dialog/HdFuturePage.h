@@ -29,7 +29,7 @@ public:
 	void OrderConfigMgr(VtOrderConfigManager* val) 
 	{ 
 		_OrderConfigMgr = val; 
-		//_FutureGrid.OrderConfigMgr(_OrderConfigMgr);
+		future_view_.OrderConfigMgr(_OrderConfigMgr);
 	}
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

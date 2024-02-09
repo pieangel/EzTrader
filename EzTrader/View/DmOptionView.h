@@ -26,7 +26,7 @@ namespace DarkHorse {
 }
 
 using order_p = std::shared_ptr<DarkHorse::Order>;
-
+class VtOrderConfigManager;
 class DmOptionView : public CBCGPStatic
 {
 public:
@@ -37,6 +37,8 @@ public:
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 public:
+	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
+	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
 	void set_option_view(
 		const int option_market_index,
 		const std::string& year_month_name
@@ -59,6 +61,7 @@ public:
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
 private:
+	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	void set_option_info(
 		const size_t index, 
 		DarkHorse::VmOption& option_info,

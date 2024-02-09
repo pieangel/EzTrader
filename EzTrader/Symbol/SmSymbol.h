@@ -147,7 +147,7 @@ namespace DarkHorse {
 	{
 		inline bool operator() (const std::shared_ptr<SmSymbol> struct1, const std::shared_ptr<SmSymbol> struct2)
 		{
-			return (struct1->Strike() < struct2->Strike());
+			return (std::stoi(struct1->Strike()) < std::stoi(struct2->Strike()));
 		}
 	};
 }

@@ -32,7 +32,7 @@ public:
 	void OrderConfigMgr(VtOrderConfigManager* val) 
 	{ 
 		_OrderConfigMgr = val;
-		//_OptionGrid.OrderConfigMgr(_OrderConfigMgr);
+		option_view_.OrderConfigMgr(_OrderConfigMgr);
 	}
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

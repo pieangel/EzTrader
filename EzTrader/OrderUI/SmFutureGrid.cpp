@@ -223,20 +223,15 @@ void SmFutureGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	SetFocus();
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pCell = GetCell(cell.row, cell.col);
-	/*
-	symbol_p sym = (symbol_p)pCell->GetData();
-	if (sym) {
-		if (sym->Quote.intClose == 0)
-			sym->GetSymbolMaster();
-		if (_OrderConfigMgr) {
-			_OrderConfigMgr->Symbol(sym);
 
-			if (_OrderConfigMgr->_HdCenterWnd) {
-				_OrderConfigMgr->_HdCenterWnd->ChangeSymbol(sym);
-			}
+
+	auto cell_pos = std::make_pair(cell.row, cell.col);
+	if (cell_pos.first < 0 || cell_pos.first > 4) return;
+	if (_OrderConfigMgr) {
+		if (_OrderConfigMgr->_HdCenterWnd) {
+			_OrderConfigMgr->_HdCenterWnd->ChangeSymbol(symbol_vec_[cell_pos.first].symbol_p);
 		}
 	}
-	*/
 }
 
 LRESULT SmFutureGrid::OnOrderChangedMessage(WPARAM wParam, LPARAM lParam)

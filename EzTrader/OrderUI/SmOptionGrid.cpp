@@ -1282,17 +1282,20 @@ void SmOptionGrid::set_strike_start_index(const int distance)
 
 void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
 {
-// 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
-// 	auto found = symbol_map_.find(cell_pos);
-// 	if (found == symbol_map_.end()) return;
-// 	mainApp.event_hub()->process_symbol_event(order_window_id_, found->second);
-// 
-// 	CBCGPStatic::OnLButtonDown(nFlags, point);
+	SetFocus();
+	CCellID cell = GetCellFromPt(point);
+	CGridCellBase* pCell = GetCell(cell.row, cell.col);
+	
+	auto cell_pos = std::make_pair(cell.row, cell.col);
+	auto found = symbol_map_.find(cell_pos);
+	if (found == symbol_map_.end()) return;
+	if (_OrderConfigMgr->_HdCenterWnd) {
+		_OrderConfigMgr->_HdCenterWnd->ChangeSymbol(found->second);
+	}
 }
 
 void SmOptionGrid::register_symbols(const int option_market_index)
 {
-	/*
 	auto found = registered_map_.find(option_market_index_);
 	if (found != registered_map_.end()) return;
 
@@ -1303,7 +1306,6 @@ void SmOptionGrid::register_symbols(const int option_market_index)
 		register_symbol(symbol_code);
 	}
 	registered_map_[option_market_index] = option_market_index;
-	*/
 }
 
 void SmOptionGrid::register_symbol(const std::string symbol_code)

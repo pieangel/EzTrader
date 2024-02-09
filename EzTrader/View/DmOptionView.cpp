@@ -40,6 +40,8 @@
 #include "../Position/TotalPositionManager.h"
 #include "../Position/AccountPositionManager.h"
 #include "../Position/Position.h"
+#include "../OrderUI/VtOrderConfigManager.h"
+#include "../OrderUI/SmOrderPanel.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -523,8 +525,10 @@ void DmOptionView::OnLButtonDown(UINT nFlags, CPoint point)
 	auto cell_pos = _Grid->FindRowCol(point.x, point.y);
 	auto found = symbol_map_.find(cell_pos);
 	if (found == symbol_map_.end()) return;
-	mainApp.event_hub()->process_symbol_event(order_window_id_, found->second);
-
+	//mainApp.event_hub()->process_symbol_event(order_window_id_, found->second);
+	if (_OrderConfigMgr->_HdCenterWnd) {
+		_OrderConfigMgr->_HdCenterWnd->ChangeSymbol(found->second);
+	}
 	CBCGPStatic::OnLButtonDown(nFlags, point);
 }
 

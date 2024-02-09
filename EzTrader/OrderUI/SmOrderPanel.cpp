@@ -26,7 +26,10 @@
 #include "../Client/ViClient.h"
 #include "../OrderUI/VtOrderConfigManager.h"
 #include "../OrderUI/VtOrderWndHd.h"
+#include "../Dialog/HdSymbolSelecter.h"
 #include <functional>
+#include "../Global/SmTotalManager.h"
+#include "../Task/SmTaskRequestManager.h"
 using namespace std::placeholders;
 
 
@@ -393,9 +396,9 @@ void SmOrderPanel::OnBnClickedBtnSelSymbol()
 	if (_OrderConfigMgr->_HdOrderWnd) {
 		_OrderConfigMgr->_HdOrderWnd->SetActiveCenterWnd(this);
 	}
-	//HdSymbolSelecter symSelecter;
-	//symSelecter.OrderConfigMgr(_OrderConfigMgr);
-	//symSelecter.DoModal();
+	HdSymbolSelecter symSelecter;
+	symSelecter.OrderConfigMgr(_OrderConfigMgr);
+	symSelecter.DoModal();
 }
 
 void SmOrderPanel::OnBnClickedButtonProfitLoss()
@@ -1394,6 +1397,12 @@ void SmOrderPanel::ChangeSymbol(symbol_p symbol)
 		return;
 	_TickGrid.Clear();
 	ClearPosition();
+	DhTaskArg arg;
+	arg.detail_task_description = symbol->SymbolCode();
+	arg.task_type = DhTaskType::DmSymbolMaster;
+	arg.parameter_map["symbol_code"] = symbol->SymbolCode();
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
+
 	// 실시간 시세와 호가 등록을 해지해 준다.
 	//UnregisterRealtimeSymbol();
 	// 호가 콜백을 해제해 준다.
