@@ -1020,6 +1020,7 @@ void SmOrderPanel::UnregisterRealtimeAccount()
 BOOL SmOrderPanel::OnInitDialog()
 {
 	CDialog::OnInitDialog();
+	ShowWindow(SW_HIDE);
 	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
 
 

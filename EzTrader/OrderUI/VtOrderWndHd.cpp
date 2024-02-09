@@ -6,28 +6,14 @@
 #include "VtOrderWndHd.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
-//#include "VtOrderDialogManager.h"
-//#include "../Symbol/VtSymbol.h"
 #include "VtOrderLeftWndHd.h"
 #include "../MainFrm.h"
-//#include "../Global/MainBeetle.h"
-//#include "../Account/VtAccountManager.h"
-//#include "../Account/VtAccount.h"
-//#include "../Symbol/VtRealtimeRegisterManager.h"
-//#include "../Fund/VtFundManager.h"
-//#include "../Fund/VtFund.h"
-//#include "VtFundDesigner.h"
-//#include "../Order/VtOrderManagerSelector.h"
-//#include "../Order/VtFundOrderManagerSelecter.h"
-//#include "Poco/Delegate.h"
 #include <set>
 #include <tuple>
 #include <vector>
 #include "VtLayoutManager.h"
 #include <libloaderapi.h>
 #include <map>
-//#include "../Format/format.h"
-//using Poco::Delegate;
 #include "../Global/SmTotalManager.h"
 #include "../Fund/SmFundManager.h"
 #include "../Fund/SmFund.h"
@@ -482,7 +468,7 @@ void VtOrderWndHd::AddWindow()
 	centerWnd->ParentDlg(this);
 	centerWnd->OrderConfigMgr(_OrderConfigMgr);
 	centerWnd->Create(IDD_ORDER_PANEL, this);
-	centerWnd->ShowWindow(SW_HIDE);
+	//centerWnd->ShowWindow(SW_HIDE);
 	SetActiveCenterWnd(centerWnd);
 	_OrderConfigMgr->_HdCenterWnd = centerWnd;
 	centerWnd->InitAll();

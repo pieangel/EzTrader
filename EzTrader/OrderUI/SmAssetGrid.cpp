@@ -1,16 +1,25 @@
 #include "stdafx.h"
 #include "SmAssetGrid.h"
 #include "VtOrderConfigManager.h"
-//#include "../Account/VtAccount.h"
-//#include "Poco/NumberFormatter.h"
-//#include "../Symbol/VtSymbol.h"
-//#include "../Format/XFormatNumber.h"
-//#include "../Fund/VtFund.h"
-//#include "../Global/MainBeetle.h"
-//#include "../Format/format.h"
-//using Poco::NumberFormatter;
-//#include "../Main/MainBeetle.h"
 #include "../Global/SmTotalManager.h"
+#include "../Account/SmAccount.h"
+#include "../Global/SmTotalManager.h"
+#include "../Account/SmAccountManager.h"
+
+#include "../Global/SmTotalManager.h"
+#include "../Event/SmCallbackManager.h"
+#include "../Fund/SmFund.h"
+#include "../Controller/AccountAssetControl.h"
+#include "../Controller/AccountProfitLossControl.h"
+#include "../Util/VtStringUtil.h"
+#include <format>
+
+#include <functional>
+
+using namespace std;
+using namespace std::placeholders;
+
+using namespace DarkHorse;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,6 +28,11 @@
 SmAssetGrid::SmAssetGrid()
 {
 	_OrderConfigMgr = nullptr;
+	account_profit_loss_control_ = std::make_shared<DarkHorse::AccountProfitLossControl>();
+	account_profit_loss_control_->set_event_handler(std::bind(&SmAssetGrid::on_update_account_profit_loss, this));
+
+	asset_control_ = std::make_shared<DarkHorse::AccountAssetControl>();
+	asset_control_->set_event_handler(std::bind(&SmAssetGrid::on_update_account_profit_loss, this));
 }
 
 
@@ -91,47 +105,15 @@ void SmAssetGrid::InitGrid()
 		account_p acnt = _OrderConfigMgr->Account();
 		if (!acnt)
 			return;
-		/*
-		std::string temp = fmt::format("{:.{}f}", acnt->OpenDeposit, 0);
-		CString profitLoss = XFormatNumber(temp.c_str(), -1);
-
-		QuickSetText(0, 1, profitLoss);
-
-		temp = fmt::format("{:.{}f}", acnt->OrdableAmt, 0);
-		profitLoss = XFormatNumber(temp.c_str(), -1);
-
-		QuickSetText(1, 1, profitLoss);
-
-		InvalidateCellRect(0, 1);
-		InvalidateCellRect(1, 1);
-		*/
+		Account(acnt);
+		SetAccountAssetInfo();
 	}
 	else {
 		fund_p fund = _OrderConfigMgr->Fund();
 		if (!fund)
 			return;
-		/*
-		const std::vector<VtAccount*>& acntVec = fund->GetFundAccountVector();
-		if (acntVec.size() == 0)
-			return;
-		// 대표 계좌 정보를 보여주는 것으로 한다.
-		VtAccount* acnt = acntVec.front();
-		acnt = acnt->ParentAccount();
-		if (!acnt)
-			return;
-		std::string temp = fmt::format("{:.{}f}", acnt->OpenDeposit, 0);
-		CString profitLoss = XFormatNumber(temp.c_str(), -1);
-
-		QuickSetText(0, 1, profitLoss);
-
-		temp = fmt::format("{:.{}f}", acnt->OrdableAmt, 0);
-		profitLoss = XFormatNumber(temp.c_str(), -1);
-
-		QuickSetText(1, 1, profitLoss);
-
-		InvalidateCellRect(0, 1);
-		InvalidateCellRect(1, 1);
-		*/
+		Fund(fund);
+		SetFundAssetInfo();
 	}
 }
 
@@ -173,4 +155,110 @@ void SmAssetGrid::QuickSetTextColor(int row, int col, COLORREF color)
 	if (pCell) {
 		pCell->SetTextClr(color);
 	}
+}
+
+void SmAssetGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+	_Mode = 1;
+
+	if (!account_profit_loss_control_) return;
+
+	account_profit_loss_control_->set_fund(fund_);
+	asset_control_->set_fund(fund_);
+	enable_account_profit_loss_show_ = true;
+	SetFundAssetInfo();
+}
+
+void SmAssetGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	account_ = val;
+	_Mode = 0;
+
+	if (!account_profit_loss_control_) return;
+
+	account_profit_loss_control_->set_account(account_);
+	asset_control_->set_account(account_);
+	enable_account_profit_loss_show_ = true;
+	SetAccountAssetInfo();
+}
+
+void SmAssetGrid::SetAssetInfo()
+{
+	_Mode == 0 ? SetAccountAssetInfo() : SetFundAssetInfo();
+}
+
+void SmAssetGrid::OnQuoteEvent(const std::string& symbol_code)
+{
+	_EnableQuoteShow = true;
+}
+
+void SmAssetGrid::OnOrderEvent(const std::string& account_no, const std::string& symbol_code)
+{
+	enable_account_profit_loss_show_ = true;
+}
+
+void SmAssetGrid::on_update_account_profit_loss()
+{
+	enable_account_profit_loss_show_ = true;
+}
+
+void SmAssetGrid::update_account_profit_loss()
+{
+
+}
+
+void SmAssetGrid::SetAccountAssetInfo()
+{
+	if (!account_) return;
+
+	std::string format_type("0");
+	if (account_) format_type = account_->Type();
+	const int decimal = format_type == "1" ? 2 : 0;
+	std::string value;
+	value = std::format("{0:.2f}", account_->Asset.Balance);
+	value = VtStringUtil::get_format_value(account_->Asset.Balance, decimal, true);
+	QuickSetText(0, 1, value.c_str());
+	value = std::format("{0:.2f}", account_->Asset.OpenProfitLoss);
+	value = std::format("{0:.2f}", account_->Asset.TradeProfitLoss);
+	value = std::format("{0:.2f}", account_->Asset.Fee);
+	value = std::format("{0:.2f}", account_->Asset.OrderMargin);
+	value = VtStringUtil::get_format_value(account_->Asset.OrderMargin, decimal, true);
+	QuickSetText(1, 1, value.c_str());
+
+	InvalidateCellRect(0, 1);
+	InvalidateCellRect(1, 1);
+}
+
+void SmAssetGrid::SetFundAssetInfo()
+{
+	if (!fund_) return;
+	std::string format_type("0");
+	if (fund_) format_type = fund_->fund_type();
+	const int decimal = format_type == "1" ? 2 : 0;
+
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
+
+	double balance = 0.0, order_margin = 0.0, open_pl = 0.0, settled_pl = 0.0, fee = 0.0, pure_pl = 0.0;
+	for (auto it = account_vec.begin(); it != account_vec.end(); it++) {
+		open_pl += (*it)->Asset.OpenProfitLoss;
+		settled_pl += (*it)->Asset.TradeProfitLoss;
+		fee += (*it)->Asset.Fee;
+		pure_pl = open_pl + settled_pl - abs(fee);
+		balance += (*it)->Asset.Balance;
+		order_margin += (*it)->Asset.OrderMargin;
+	}
+
+	std::string value;
+	value = std::format("{0:.2f}", balance);
+	value = VtStringUtil::get_format_value(balance, decimal, true);
+	QuickSetText(0, 1, value.c_str());
+	value = std::format("{0:.2f}", open_pl);
+	value = std::format("{0:.2f}", settled_pl);
+	value = std::format("{0:.2f}", fee);
+	value = std::format("{0:.2f}", order_margin);
+	value = VtStringUtil::get_format_value(order_margin, decimal, true);
+	QuickSetText(1, 1, value.c_str());
+	InvalidateCellRect(0, 1);
+	InvalidateCellRect(1, 1);
 }
