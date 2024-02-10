@@ -24,8 +24,9 @@ namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
 	class SmFund;
+	class SymbolPositionControl;
 }
-
+using position_control_p = std::shared_ptr<DarkHorse::SymbolPositionControl>;
 using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
 using account_p = std::shared_ptr<DarkHorse::SmAccount>;
 using fund_p = std::shared_ptr<DarkHorse::SmFund>;
@@ -155,6 +156,7 @@ public:
 	void ChangeSymbol(symbol_p symbol);
 	void ResetRemainFund();
 public:
+	void on_update_position();
 	void set_default_symbol();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -210,6 +212,7 @@ public:
 	afx_msg void OnBnClickedBtnRemainFund();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 private:
+	position_control_p position_control_{ nullptr };
 	void AddItemToComboBox(CComboBox& comboBox, symbol_p item)
 	{
 		// Add the std::shared_ptr to the vector
@@ -232,7 +235,6 @@ private:
 		return nullptr;
 	}
 	std::vector<symbol_p> combo_symbol_vector;
-	//Timer* timer = nullptr;
 	bool _BlockEvent = true;
 	VtOrderWndHd* _ParentDlg = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
@@ -260,13 +262,9 @@ private:
 	bool _ShowStopArea = true;
 	bool _ShowTickWnd = false;
 
-	VtRefreshManager* _RefreshManager = nullptr;
-	bool _Unregistered = false;
-	//VtCutManager* _CutMgr;
 	// 남은 잔고 만큼 주문을 낸다.
 	bool _OrderByRemain;
 	VtLayoutManager* _LayoutMgr;
-	//std::vector<bool> _OrderGridColOption;
 
 	// key : combobox index, value : symbol object
 	std::map<int, symbol_p> index_to_symbol_;

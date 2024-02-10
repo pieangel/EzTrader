@@ -1341,6 +1341,36 @@ void SymbolOrderView::RefreshAllValues()
 	update_sell_stop_order();
 }
 
+void SymbolOrderView::orderCutEnabledByLoss(bool enable)
+{
+	_OrderSettings.LossCut = enable;
+}
+
+void SymbolOrderView::orderCutEnabledByProfit(bool enable)
+{
+	_OrderSettings.ProfitCut = enable;
+}
+
+void SymbolOrderView::setOrderLossCutTick(int tick)
+{
+	_OrderSettings.LossCutTick = tick;
+}
+
+void SymbolOrderView::setOrderProfitCutTick(int tick)
+{
+	_OrderSettings.ProfitCutTick = tick;
+}
+
+void SymbolOrderView::setCutOrderType(DarkHorse::SmPriceType price_type)
+{
+	_OrderSettings.PriceType = price_type;
+}
+
+void SymbolOrderView::setCutOrderSlipTick(int tick)
+{
+	_OrderSettings.SlipTick = tick;
+}
+
 void SymbolOrderView::CancelSellOrder()
 {
 	if (account_)

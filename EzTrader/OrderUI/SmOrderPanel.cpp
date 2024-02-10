@@ -30,6 +30,8 @@
 #include <functional>
 #include "../Global/SmTotalManager.h"
 #include "../Task/SmTaskRequestManager.h"
+#include "../Order/SmOrderSettings.h"
+#include "../Controller/SymbolPositionControl.h"
 using namespace std::placeholders;
 
 
@@ -70,7 +72,6 @@ SmOrderPanel::SmOrderPanel(CWnd* pParent /*=NULL*/)
 	// test
 	//m_Grid.CenterWnd(this);
 	//_ProductRemainGrid.CenterWnd(this);
-	_Unregistered = false;
 	_OrderByRemain = false;
 	_LayoutMgr = new VtLayoutManager((CWnd*)this);
 
@@ -96,6 +97,9 @@ SmOrderPanel::SmOrderPanel(CWnd* pParent /*=NULL*/)
 
 	// 호가는 타이머로 한다.
 	_UseHogaSiseFilter = true;
+
+	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
+	position_control_->set_event_handler(std::bind(&SmOrderPanel::on_update_position, this));
 }
 
 SmOrderPanel::~SmOrderPanel()
@@ -809,6 +813,15 @@ void SmOrderPanel::ResetRemainFund()
 	_BtnRemainFund.SetColor(BTNST_COLOR_BK_FOCUS, RGB(220, 220, 220), true);
 }
 
+void SmOrderPanel::on_update_position()
+{
+	if (!position_control_) return;
+
+	const VmPosition& position = position_control_->get_position();
+
+	SetRemain(std::abs(position.open_quantity));
+}
+
 CRect SmOrderPanel::GetClientArea(int resourceID)
 {
 	CWnd* wnd = (CWnd*)GetDlgItem(resourceID);
@@ -893,6 +906,7 @@ void SmOrderPanel::SetSymbol(symbol_p sym)
 	_ProductRemainGrid.Symbol(sym);
 	m_Grid.Symbol(sym);
 	_TickGrid.Symbol(sym);
+	position_control_->set_symbol(sym);
 }
 
 void SmOrderPanel::SetSymbol()
@@ -901,6 +915,7 @@ void SmOrderPanel::SetSymbol()
 		return;
 
 	_ProductRemainGrid.Symbol(_Symbol);
+	position_control_->set_symbol(_Symbol);
 	/*
 	if (_OrderConfigMgr->Type() == 0)
 	{
@@ -948,6 +963,8 @@ void SmOrderPanel::InitPosition()
 {
 	_ProductRemainGrid.Account(_OrderConfigMgr->Account());
 	_ProductRemainGrid.InitPosition();
+	position_control_->set_account(_OrderConfigMgr->Account());
+	on_update_position();
 }
 
 void SmOrderPanel::RegisterRealtimeSymbol()
@@ -1441,13 +1458,12 @@ BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 
 bool SmOrderPanel::EnableCutProfit() const
 {
-	//return m_Grid.CutMgr()->EnableCutProfit();
 	return false;
 }
 
 void SmOrderPanel::EnableCutProfit(bool val)
 {
-	//m_Grid.CutMgr()->EnableCutProfit(val);
+	m_Grid.orderCutEnabledByLoss(val);
 }
 
 bool SmOrderPanel::EnableCutLoss() const
@@ -1458,7 +1474,7 @@ bool SmOrderPanel::EnableCutLoss() const
 
 void SmOrderPanel::EnableCutLoss(bool val)
 {
-	//m_Grid.CutMgr()->EnableCutLoss(val);
+	m_Grid.orderCutEnabledByLoss(val);
 }
 
 int SmOrderPanel::CutProfit() const
@@ -1469,7 +1485,7 @@ int SmOrderPanel::CutProfit() const
 
 void SmOrderPanel::CutProfit(int val)
 {
-	//m_Grid.CutMgr()->CutProfit(val);
+	m_Grid.setOrderProfitCutTick(val);
 }
 
 int SmOrderPanel::CutLoss() const
@@ -1480,7 +1496,7 @@ int SmOrderPanel::CutLoss() const
 
 void SmOrderPanel::CutLoss(int val)
 {
-	//m_Grid.CutMgr()->CutLoss(val);
+	m_Grid.setOrderLossCutTick(val);
 }
 
 int SmOrderPanel::OrderType() const
@@ -1491,7 +1507,7 @@ int SmOrderPanel::OrderType() const
 
 void SmOrderPanel::OrderType(int val)
 {
-	//m_Grid.CutMgr()->OrderType(val);
+	m_Grid.setCutOrderType(val == 0 ? DarkHorse::SmPriceType::Market : DarkHorse::SmPriceType::Price);
 }
 
 int SmOrderPanel::OrderTypeSlip() const
@@ -1502,7 +1518,7 @@ int SmOrderPanel::OrderTypeSlip() const
 
 void SmOrderPanel::OrderTypeSlip(int val)
 {
-	//m_Grid.CutMgr()->OrderTypeSlip(val);
+	m_Grid.setCutOrderSlipTick(val);
 }
 
 void SmOrderPanel::ApplyProfitLossForPosition()
