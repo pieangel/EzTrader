@@ -98,4 +98,6 @@ private:
 	void OnOrderEvent(VtOrder* order);
 	int _DefaultWidth = 174;
 	int _DefaultHeight = 774;
+public:
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

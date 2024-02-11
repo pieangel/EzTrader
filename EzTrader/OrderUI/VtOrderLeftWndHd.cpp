@@ -97,6 +97,7 @@ BEGIN_MESSAGE_MAP(VtOrderLeftWndHd, CDialog)
 	ON_BN_CLICKED(IDC_RADIO_CURRENT, &VtOrderLeftWndHd::OnBnClickedRadioCurrent)
 	ON_BN_CLICKED(IDC_RADIO_EXPECT, &VtOrderLeftWndHd::OnBnClickedRadioExpect)
 	ON_MESSAGE(WM_ACCOUNT_CHANGED, OnAccountChangedMessage)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -153,6 +154,8 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 
 	combo_option_market_.GetWindowRect(&rcRect);
 	ScreenToClient(&rcRect);
+
+	SetTimer(1, 50, NULL);
 
 	//mainApp.CallbackMgr().SubscribeAccountWndCallback(GetSafeHwnd());
 
@@ -391,3 +394,13 @@ void VtOrderLeftWndHd::OnOrderEvent(VtOrder* order)
 	*/
 }
 
+
+
+void VtOrderLeftWndHd::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: Add your message handler code here and/or call default
+	_ProfitLossGrid.refresh_profitloss();
+	_SymbolFutureGrid.refresh_values();
+	_SymbolOptionGrid.refresh_values();
+	CDialog::OnTimer(nIDEvent);
+}

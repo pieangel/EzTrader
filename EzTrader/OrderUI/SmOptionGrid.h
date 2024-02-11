@@ -121,6 +121,7 @@ private:
 	std::map<std::string, std::tuple<int, int, symbol_p>> _SymbolRowMap;
 	void MakeSymbolRowMap(int start_index, int max_row);
 public:
+	void refresh_values();
 	void OnSymbolMaster(symbol_p sym);
 	void OnOrderFilled(VtOrder* order);
 	void OnReceiveQuote(symbol_p sym);

@@ -1120,7 +1120,7 @@ BOOL SmOrderPanel::OnInitDialog()
 	ShowHideCtrl();
 	RepositionProductGrid();
 
-	//SetTimer(1, 50, NULL);
+	SetTimer(1, 50, NULL);
 
 	// 화면 업데이트 타이머 동작
 	//timer = new Timer(3000, 100);
@@ -1148,8 +1148,9 @@ void SmOrderPanel::OnTimer(UINT_PTR nIDEvent)
  	//for(int i = 0; i < 1000; ++i)
 	// 호가 시세 필터를 적용했을 경우에 작동
 	//if (_UseHogaSiseFilter)
- 	m_Grid.RefreshAllValues();
+ 	// m_Grid.RefreshAllValues();
 	//_TickGrid.RefreshValues();
+	_ProductRemainGrid.refresh_position();
 	CDialog::OnTimer(nIDEvent);
 }
 

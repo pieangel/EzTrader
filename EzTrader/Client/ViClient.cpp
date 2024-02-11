@@ -39,6 +39,8 @@
 #include "ClientConst.h"
 #include "../Quote/SmQuoteManager.h"
 #include "../Order/OrderProcess/TotalOrderManager.h"
+#include "../Symbol/SmProduct.h"
+#include "../Symbol/SmProductYearMonth.h"
 #include <format>
 
 #define ROUNDING(x, dig)	( floor((x) * pow(float(10), dig) + 0.5f) / pow(float(10), dig) )
@@ -52,6 +54,7 @@ const int AbroadFileDownloadCode = 332;
 const int DomesticMasterFileDownloadCode = 331;
 
 BEGIN_MESSAGE_MAP(ViClient, CDialog)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 BEGIN_EVENTSINK_MAP(ViClient, CDialog)
@@ -81,6 +84,104 @@ ViClient::~ViClient()
 
 		m_CommAgent.CommTerminate(TRUE);
 		m_CommAgent.DestroyWindow();
+	}
+}
+
+void ViClient::OnTimer(UINT_PTR nIDEvent)
+{
+	const int max_range = 5;
+	std::random_device rd;
+	std::mt19937 mt(rd());
+
+	std::uniform_int_distribution<> distrib_symbol(0, 4);
+
+	std::string symbol_code;
+	int close = 0;
+	int int_tick_size = 0;
+	const std::vector<DmFuture>& future_vec = mainApp.SymMgr()->get_dm_future_vec();
+	const std::map<std::string, std::shared_ptr<SmProductYearMonth>>& year_month_map = future_vec[distrib_symbol(mt)].product->get_yearmonth_map();
+	std::shared_ptr<SmProductYearMonth> year_month = year_month_map.begin()->second;
+	auto symbol = year_month->get_first_symbol();
+	if (symbol) {
+		auto quote = mainApp.QuoteMgr()->get_quote(symbol->SymbolCode());
+		symbol_code = symbol->SymbolCode();
+		int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
+		close = quote->close;
+	}
+
+	
+	std::uniform_int_distribution<int> dist((close - int_tick_size * max_range) / int_tick_size, (close + int_tick_size * max_range) / int_tick_size);
+
+	int random_number = dist(mt) * int_tick_size;
+
+	nlohmann::json quote;
+
+	quote["symbol_code"] = symbol_code;
+	quote["symbol_name_kr"] = symbol_code;
+	quote["delta_day"] = int_tick_size;
+	quote["updown_rate"] = "-0.1";
+	quote["time"] = "20230907";
+	quote["close"] = random_number;
+	quote["open"] = close + int_tick_size * 3;
+	quote["high"] = close + int_tick_size * 5;
+	quote["low"] = close - int_tick_size * 5;
+	quote["pre_day_close"] = close - int_tick_size * 10;
+	quote["cumulative_amount"] = 0;
+	quote["volume"] = 0;
+	quote["up_down"] = 1;
+	quote["preday_volume"] = 0;
+
+	if (auto wp = _Client.lock()) {
+		wp->OnSymbolQuote(std::move(quote));
+	}
+
+	std::uniform_int_distribution<> distrib(0, 100);
+
+	nlohmann::json hoga;
+	hoga["symbol_code"] = symbol_code;
+	hoga["hoga_time"] = "10:24:35";
+	hoga["tot_buy_qty"] = distrib(mt);
+	hoga["tot_sell_qty"] = distrib(mt);
+	hoga["tot_buy_cnt"] = distrib(mt);
+	hoga["tot_sell_cnt"] = distrib(mt);
+
+	hoga["hoga_items"][0]["sell_price"] = random_number;
+	hoga["hoga_items"][0]["buy_price"] = random_number;
+	hoga["hoga_items"][0]["sell_qty"] = distrib(mt);
+	hoga["hoga_items"][0]["buy_qty"] = distrib(mt);
+	hoga["hoga_items"][0]["sell_cnt"] = distrib(mt);
+	hoga["hoga_items"][0]["buy_cnt"] = distrib(mt);
+
+	hoga["hoga_items"][1]["sell_price"] = random_number - int_tick_size * 1;
+	hoga["hoga_items"][1]["buy_price"] = random_number + int_tick_size * 1;
+	hoga["hoga_items"][1]["sell_qty"] = distrib(mt);
+	hoga["hoga_items"][1]["buy_qty"] = distrib(mt);
+	hoga["hoga_items"][1]["sell_cnt"] = distrib(mt);
+	hoga["hoga_items"][1]["buy_cnt"] = distrib(mt);
+
+	hoga["hoga_items"][2]["sell_price"] = random_number - int_tick_size * 2;
+	hoga["hoga_items"][2]["buy_price"] = random_number + int_tick_size * 2;
+	hoga["hoga_items"][2]["sell_qty"] = distrib(mt);
+	hoga["hoga_items"][2]["buy_qty"] = distrib(mt);
+	hoga["hoga_items"][2]["sell_cnt"] = distrib(mt);
+	hoga["hoga_items"][2]["buy_cnt"] = distrib(mt);
+
+	hoga["hoga_items"][3]["sell_price"] = random_number - int_tick_size * 3;
+	hoga["hoga_items"][3]["buy_price"] = random_number + int_tick_size * 3;
+	hoga["hoga_items"][3]["sell_qty"] = distrib(mt);
+	hoga["hoga_items"][3]["buy_qty"] = distrib(mt);
+	hoga["hoga_items"][3]["sell_cnt"] = distrib(mt);
+	hoga["hoga_items"][3]["buy_cnt"] = distrib(mt);
+
+	hoga["hoga_items"][4]["sell_price"] = random_number - int_tick_size * 4;
+	hoga["hoga_items"][4]["buy_price"] = random_number + int_tick_size * 4;
+	hoga["hoga_items"][4]["sell_qty"] = distrib(mt);
+	hoga["hoga_items"][4]["buy_qty"] = distrib(mt);
+	hoga["hoga_items"][4]["sell_cnt"] = distrib(mt);
+	hoga["hoga_items"][4]["buy_cnt"] = distrib(mt);
+
+	if (auto wp = _Client.lock()) {
+		wp->OnDmSymbolHoga(std::move(hoga));
 	}
 }
 
@@ -945,6 +1046,16 @@ int DarkHorse::ViClient::ab_account_profit_loss(task_arg&& arg)
 	}
 
 	return -1;
+}
+
+void ViClient::start_timer()
+{
+	SetTimer(1, 10, NULL);
+}
+
+void ViClient::stop_timer()
+{
+	KillTimer(1);
 }
 
 int DarkHorse::ViClient::ab_symbol_profit_loss(task_arg&& arg)

@@ -1,23 +1,9 @@
 #include "stdafx.h"
 #include "VtProductRemainGrid.h"
-//#include "../Position/VtPosition.h"
-//#include "../Account/VtAccount.h"
-//#include "../Symbol/VtSymbol.h"
-//#include "../Symbol/VtSymbolManager.h"
-//#include "../Symbol/VtSymbolMaster.h"
-//#include "../Quote/VtQuote.h"
-//#include "../Global/VtDefine.h"
 #include "VtOrderConfigManager.h"
-//#include "../Format/XFormatNumber.h"
-//#include "../Format/format.h"
-//#include "../Fund/VtFund.h"
 #include <array>
 #include <numeric>
 #include <functional>
-//#include "../Global/MainBeetle.h"
-//#include "SmOrderPanel.h"
-//#include "../Task/SmCallbackManager.h"
-//#include "../Order/VtOrder.h"
 #include "SmOrderPanelOut.h"
 #include "../Global/SmTotalManager.h"
 #include "../MessageDefine.h"
@@ -145,6 +131,12 @@ void VtProductRemainGrid::on_update_position()
 {
 	enable_position_show_ = true;
 	enable_quote_show_ = true;
+}
+
+void VtProductRemainGrid::refresh_position()
+{
+	update_quote();
+	update_position();
 }
 
 void VtProductRemainGrid::set_position()

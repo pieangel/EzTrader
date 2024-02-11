@@ -145,6 +145,17 @@ void SmPLGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 	enable_account_profit_loss_show_ = true;
 }
 
+void SmPLGrid::refresh_profitloss()
+{
+	if (!_OrderConfigMgr) return;
+	if (_OrderConfigMgr->Type() == 0) {
+		update_account_profit_loss();
+	}
+	else {
+		update_fund_profit_loss();
+	}
+}
+
 void SmPLGrid::on_update_account_profit_loss()
 {
 	enable_account_profit_loss_show_ = true;

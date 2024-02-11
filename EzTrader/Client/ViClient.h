@@ -42,7 +42,7 @@ namespace DarkHorse {
 		afx_msg void OnGetBroadData(LPCTSTR strKey, LONG nRealType);
 		afx_msg void OnGetMsg(LPCTSTR strCode, LPCTSTR strMsg);
 		afx_msg void OnGetMsgWithRqId(int nRqId, LPCTSTR strCode, LPCTSTR strMsg);
-
+		afx_msg void OnTimer(UINT_PTR nIDEvent);
 	public:
 		ViClient(CWnd* pParent = nullptr);   // standard constructor
 		virtual ~ViClient();
@@ -60,6 +60,8 @@ namespace DarkHorse {
 
 		DECLARE_MESSAGE_MAP()
 	public:
+		void start_timer();
+		void stop_timer();
 		int ab_symbol_profit_loss(DhTaskArg arg);
 		int dm_symbol_profit_loss(DhTaskArg arg);
 		int dm_symbol_position(DhTaskArg arg);

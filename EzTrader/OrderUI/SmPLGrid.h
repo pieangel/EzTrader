@@ -61,6 +61,7 @@ public:
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return fund_; }
 	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
 public:
+	void refresh_profitloss();
 	void on_update_account_profit_loss();
 	account_p Account() const { return account_; }
 	void Account(account_p val);

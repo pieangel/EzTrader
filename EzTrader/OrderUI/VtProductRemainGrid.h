@@ -106,6 +106,7 @@ public:
 	void position_type(DarkHorse::PositionType val) { position_type_ = val; }
 	DarkHorse::SymbolType symbol_type() const { return symbol_type_; }
 	void symbol_type(DarkHorse::SymbolType val) { symbol_type_ = val; }
+	void refresh_position();
 private:
 	DarkHorse::SymbolType symbol_type_{ DarkHorse::SymbolType::None };
 	void set_position();

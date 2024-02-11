@@ -860,6 +860,23 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 	
 }
 
+void SmOptionGrid::refresh_values()
+{
+	bool needDraw = false;
+	if (enable_show_) {
+		if (view_mode_ == VM_Close) {
+			update_quote();
+			update_position();
+		}
+		else
+			update_position();
+		enable_show_ = false;
+		needDraw = true;
+	}
+
+	if (needDraw) Invalidate();
+}
+
 void SmOptionGrid::OnSymbolMaster(symbol_p sym)
 {
 	ShowCurrent(sym);
@@ -924,11 +941,6 @@ void SmOptionGrid::update_quote()
 		//TRACE(msg);
 		if (view_mode_ != ViewMode::VM_Close) return;
 		update_close(quote);
-	}
-	catch (const std::out_of_range& e) {
-		// Handling the exception
-		const std::string error = e.what();
-		LOGINFO(DarkHorse::CMyLogger::getInstance(), "Caught std::out_of_range exception: %s", error.c_str());
 	}
 	catch (const std::exception& e) {
 		// Handling other exceptions derived from std::exception

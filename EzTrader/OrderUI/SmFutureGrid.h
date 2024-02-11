@@ -111,6 +111,7 @@ public:
 	void set_view_mode(ViewMode view_mode);
 	void on_update_position_vm_future(const VmPosition& position);
 public:
+	void refresh_values();
 	void update_order(order_p order, DarkHorse::OrderEvent order_event);
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return _Account; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);

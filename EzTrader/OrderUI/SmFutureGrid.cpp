@@ -386,6 +386,7 @@ void SmFutureGrid::QuickSetText(int row, int col, LPCTSTR text)
 	CGridCellBase* pCell = GetCell(row, col);
 	if (pCell) {
 		pCell->SetText(text);
+		InvalidateCellRect(row, col);
 	}
 }
 
@@ -735,6 +736,22 @@ void SmFutureGrid::on_update_position_vm_future(const VmPosition& position)
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.position = position.open_quantity;
 	show_value(found->second, 2, future_info);
+}
+
+void SmFutureGrid::refresh_values()
+{
+	bool needDraw = false;
+	if (enable_show_) {
+		if (view_mode_ == ViewMode::VM_Close) {
+			update_quote();
+			update_position();
+		}
+		else
+			update_position();
+
+		enable_show_ = false;
+		needDraw = true;
+	}
 }
 
 void SmFutureGrid::update_order(order_p order, DarkHorse::OrderEvent order_event)
