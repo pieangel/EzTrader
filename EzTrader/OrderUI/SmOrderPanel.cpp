@@ -32,6 +32,13 @@
 #include "../Task/SmTaskRequestManager.h"
 #include "../Order/SmOrderSettings.h"
 #include "../Controller/SymbolPositionControl.h"
+#include "../Position/TotalPositionManager.h""
+#include "../Position/AccountPositionManager.h"
+#include "../Position/GroupPositionManager.h"
+#include "../Fund/SmFund.h"
+#include "../Position/Position.h"
+#include "../Account/SmAccountManager.h"
+#include "../Account/SmAccount.h"
 using namespace std::placeholders;
 
 
@@ -135,8 +142,8 @@ void SmOrderPanel::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_MSG, _StaticMsg);
 	DDX_Control(pDX, IDC_EDIT_ORDER_AMOUNT, _EditOrderAmount);
 	DDX_Control(pDX, IDC_SPIN_ORDER_AMOUNT, _ScOrderAmount);
-	DDX_Control(pDX, IDC_SPIN_STOPVAL, _ScStopVal);
-	DDX_Control(pDX, IDC_EDIT_STOPVAL, _EditStopVal);
+	//DDX_Control(pDX, IDC_SPIN_STOP, _ScStopVal);
+	//DDX_Control(pDX, IDC_EDIT_STOP, _EditStopVal);
 	DDX_Control(pDX, IDC_BTN_AVAIL, _BtnAvail);
 	DDX_Control(pDX, IDC_BTN_REMAIN, _BtnRemain);
 	DDX_Control(pDX, IDC_STATIC_PRODUCT_NAME, _StaticProductName);
@@ -147,7 +154,7 @@ void SmOrderPanel::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_ORDER_AMT5, _BtnAmt5);
 	DDX_Control(pDX, IDC_BTN_ORDER_AMT6, _BtnAmt6);
 	DDX_Control(pDX, IDC_EDIT_AMT, _EditAmt);
-	DDX_Control(pDX, IDC_STATIC_STOP, _StaticStop);
+	//DDX_Control(pDX, IDC_STATIC_STOP, _StaticStop);
 	DDX_Control(pDX, IDC_CK_FIXED_CENTER, _CheckFixedCenter);
 	DDX_Control(pDX, IDC_BTN_REMAIN_FUND, _BtnRemainFund);
 	DDX_Control(pDX, IDC_BTN_SEL_SYMBOL, _BtnSearch);
@@ -326,53 +333,53 @@ void SmOrderPanel::OnEnChangeEditOrderAmount()
 
 void SmOrderPanel::OnEnChangeEditStopval()
 {
-	if (!_EditStopVal.GetSafeHwnd())
-		return;
-
-	CString strVal;
-	_EditStopVal.GetWindowText(strVal);
-	char* stop;
-	_StopVal = strtol(strVal, &stop, 10);
+// 	if (!_EditStopVal.GetSafeHwnd())
+// 		return;
+// 
+// 	CString strVal;
+// 	_EditStopVal.GetWindowText(strVal);
+// 	char* stop;
+// 	m_Grid.setStopOrderSlipTick(strtol(strVal, &stop, 10));
 }
 
 void SmOrderPanel::OnBnClickedBtnLiq()
 {
-	//m_Grid.LiqudAll(VtPriceType::Market, 0);
-	/*
-	if (!symbol_) return;
-	std::map<std::string, std::shared_ptr<Position>> active_position_vector_;
-	if (position_type_ == OrderType::SubAccount) {
-		if (!account_) return;
-		auto position_manager = mainApp.total_position_manager()->find_position_manager(account_->No());
-		if (!position_manager) return;
-		active_position_vector_.clear();
-		position_manager->get_active_positions(active_position_vector_);
-	}
-	else if (position_type_ == OrderType::Fund) {
-		if (!fund_) return;
-		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund_->Name());
-		if (!position_manager) return;
-		active_position_vector_.clear();
-		position_manager->get_active_positions(active_position_vector_);
+	if (!_OrderConfigMgr || !_Symbol) return;
+	std::map<std::string, std::shared_ptr<DarkHorse::Position>> active_position_vector_;
+	if (_OrderConfigMgr->Type() == 0) {
+		auto account = _OrderConfigMgr->Account();
+		if (!account) return;
+		if (account->is_subaccount()) {
+			auto position_manager = mainApp.total_position_manager()->find_position_manager(account->No());
+			if (!position_manager) return;
+			active_position_vector_.clear();
+			position_manager->get_active_positions(active_position_vector_);
+		}
+		else {
+			auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account->No());
+			if (!position_manager) return;
+			active_position_vector_.clear();
+			position_manager->get_active_positions(active_position_vector_);
+		}
 	}
 	else {
-		if (!account_) return;
-		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_->No());
+		auto fund = _OrderConfigMgr->Fund();
+		if (!fund) return;
+		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(fund->Name());
 		if (!position_manager) return;
 		active_position_vector_.clear();
 		position_manager->get_active_positions(active_position_vector_);
 	}
-
 	for (auto it = active_position_vector_.begin(); it != active_position_vector_.end(); it++) {
 		auto position = it->second;
+		auto account = mainApp.AcntMgr()->FindAccount(position->order_source_type == DarkHorse::OrderType::MainAccount ? position->account_no : position->parent_account_no);
 		if (position->open_quantity > 0) {
-			symbol_order_view_.put_order(account_, position->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(position->open_quantity), SmPriceType::Market);
+			m_Grid.put_order(account, position->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(position->open_quantity), DarkHorse::SmPriceType::Market);
 		}
 		else if (position->open_quantity < 0) {
-			symbol_order_view_.put_order(account_, position->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(position->open_quantity), SmPriceType::Market);
+			m_Grid.put_order(account, position->symbol_code, DarkHorse::SmPositionType::Buy, 0, abs(position->open_quantity), DarkHorse::SmPriceType::Market);
 		}
 	}
-	*/
 	ResetRemainFund();
 }
 
@@ -642,10 +649,10 @@ void SmOrderPanel::SaveControlPos()
 	CRect rcWnd;
 	_LayoutMgr->AddWindow(_T("모두청산"), IDC_BTN_LIQ, GetClientArea(IDC_BTN_LIQ));
 	_LayoutMgr->AddWindow(_T("체결된잔고"), IDC_BTN_REMAIN_FUND, GetClientArea(IDC_BTN_REMAIN_FUND));
-	_LayoutMgr->AddWindow(_T("스탑스핀"), IDC_SPIN_STOPVAL, GetClientArea(IDC_SPIN_STOPVAL));
+	//_LayoutMgr->AddWindow(_T("스탑스핀"), IDC_SPIN_STOP, GetClientArea(IDC_SPIN_STOP));
 	_LayoutMgr->AddWindow(_T("호가고정"), IDC_CK_FIXED_CENTER, GetClientArea(IDC_CK_FIXED_CENTER));
-	_LayoutMgr->AddWindow(_T("스탑레이블"), IDC_STATIC_STOP, GetClientArea(IDC_STATIC_STOP));
-	_LayoutMgr->AddWindow(_T("스탑입력"), IDC_EDIT_STOPVAL, GetClientArea(IDC_EDIT_STOPVAL));
+	//_LayoutMgr->AddWindow(_T("스탑레이블"), IDC_STATIC_STOP, GetClientArea(IDC_STATIC_STOP));
+	//_LayoutMgr->AddWindow(_T("스탑입력"), IDC_EDIT_STOP, GetClientArea(IDC_EDIT_STOP));
 	_LayoutMgr->AddWindow(_T("잔고그리드"), IDC_STATIC_PRODUCT_REMAIN, GetClientArea(IDC_STATIC_PRODUCT_REMAIN));
 	_LayoutMgr->AddWindow(_T("주문창그리드"), IDC_ORDER_GRID, GetClientArea(IDC_ORDER_GRID));
 	_LayoutMgr->AddWindow(_T("틱그리드"), IDC_STATIC_REAL_TICK, GetClientArea(IDC_STATIC_REAL_TICK));
@@ -704,21 +711,21 @@ void SmOrderPanel::CalcLayout()
 	rcRemainFund.left = rcRemain.right;
 	rcRemainFund.right = rcRemainFund.left + fundRemainWidth;
 	// 스탑 위치, 호가고정 위치 설정
-	CRect& rcStaticStop = _LayoutMgr->GetRect(IDC_STATIC_STOP);
-	CRect& rcEditStop = _LayoutMgr->GetRect(IDC_EDIT_STOPVAL);
-	CRect& rcSpinStop = _LayoutMgr->GetRect(IDC_SPIN_STOPVAL);
+	//CRect& rcStaticStop = _LayoutMgr->GetRect(IDC_STATIC_STOP);
+	//CRect& rcEditStop = _LayoutMgr->GetRect(IDC_EDIT_STOP);
+	//CRect& rcSpinStop = _LayoutMgr->GetRect(IDC_SPIN_STOP);
 	CRect& rcFixedCenter = _LayoutMgr->GetRect(IDC_CK_FIXED_CENTER);
 	int gap = 0;
 	int ctrlWidth = rcFixedCenter.Width();
 	int ctrlHeight = rcFixedCenter.Height();
 	rcFixedCenter.left = remainGridWidth + gap;
 	rcFixedCenter.right = rcFixedCenter.left + ctrlWidth;
-
+	/*
 	ctrlWidth = rcStaticStop.Width();
 	ctrlHeight = rcStaticStop.Height();
 	rcStaticStop.left = remainGridWidth + gap;
 	rcStaticStop.right = rcStaticStop.left + ctrlWidth;
-
+	
 	ctrlWidth = rcEditStop.Width();
 	ctrlHeight = rcEditStop.Height();
 	rcEditStop.left = rcStaticStop.right + gap;
@@ -728,6 +735,7 @@ void SmOrderPanel::CalcLayout()
 	ctrlHeight = rcSpinStop.Height();
 	rcSpinStop.left = rcEditStop.right + gap;
 	rcSpinStop.right = rcSpinStop.left + ctrlWidth;
+	*/
 }
 
 int SmOrderPanel::GetParentHeight()
@@ -1045,7 +1053,7 @@ BOOL SmOrderPanel::OnInitDialog()
 	_ConfigDlg->CenterWnd(this);
 	_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
 
-	//_ConfigGrid.CenterWnd(this);
+	_ConfigGrid.CenterWndDm(this);
 	_ProductRemainGrid.AttachGrid(this, IDC_STATIC_PRODUCT_REMAIN);
 	//_TickGrid.AttachGrid(this, IDC_STATIC_REAL_TICK);
 	_ConfigGrid.AttachGrid(this, IDC_STATIC_SET);
@@ -1092,7 +1100,7 @@ BOOL SmOrderPanel::OnInitDialog()
 
 
 	_ScOrderAmount.SetRange32(1, 100);
-	_ScStopVal.SetRange32(0, 100);
+	//_ScStopVal.SetRange32(0, 100);
 
 	CString strValue;
 	//strValue.Format(_T("%d"), m_Grid.CutMgr()->CutLoss());
@@ -1103,7 +1111,8 @@ BOOL SmOrderPanel::OnInitDialog()
 	_EditOrderAmount.SetWindowText(strValue);
 
 	strValue.Format(_T("%d"), _StopVal);
-	_EditStopVal.SetWindowText(strValue);
+	//_EditStopVal.SetWindowText(strValue);
+	m_Grid.setStopOrderSlipTick(_StopVal);
 
 	_BtnRemainFund.DrawBorder(TRUE, TRUE);
 	_BtnRemainFund.SetAlign(ST_ALIGN_VERT | ST_ALIGN_HORIZ);
@@ -1369,6 +1378,12 @@ int SmOrderPanel::GetCountOrderGridEnabledCol()
 	return std::count_if(m_Grid.OrderGridColOption().begin(), m_Grid.OrderGridColOption().end(), [](auto i) { return i; });
 }
 
+void SmOrderPanel::StopVal(int val)
+{
+	_StopVal = val;
+	m_Grid.setStopOrderSlipTick(_StopVal);
+}
+
 bool SmOrderPanel::ShowTickWnd()
 {
 	return _ShowTickWnd;
@@ -1531,6 +1546,7 @@ void SmOrderPanel::FixedCenter(bool val)
 {
 	ResetByCenterRow();
 	_FixedCenter = val;
+	m_Grid.FixedMode(val);
 	m_Grid.SetCenterValue();
 }
 

@@ -226,6 +226,7 @@ public:
 	void setOrderProfitCutTick(int tick);
 	void setCutOrderType(DarkHorse::SmPriceType price_type);
 	void setCutOrderSlipTick(int tick);
+	void setStopOrderSlipTick(int tick);
 private:
 	SmOrderPanel* _centerWnd = nullptr;
 	std::vector<bool> _OrderGridColOption;
@@ -386,10 +387,6 @@ private:
 
 	CBCGPGraphicsManager* m_pGM{ nullptr };
 	DarkHorse::MouseMode _MouseMode{ DarkHorse::MouseMode::Normal };
-	// ���� ǥ�� ������. �� �������� �������� ���簡�� �������� ������ ������.
-	// ���簡�� ���ص� �� ���� ��ȭ�� ���� ���콺 ���� �����Ͽ� �� ���� ���� ��
-	// �ٽ� ���簡�� �������� �ٽ� ������. ���콺 ���� ������ �� �� ���� �׻� ���簡�� ����Ű����
-	// ���콺 ���� ������ ���� ���̻� ���簡�� �ִ� ���� ����Ű�� �ʴ´�. 
 	int index_row_{ 13 };
 	std::set<int> _OldHogaBuyRowIndex;
 	std::set<int> _OldHogaSellRowIndex;

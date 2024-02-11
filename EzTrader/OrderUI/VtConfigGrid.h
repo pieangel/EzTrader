@@ -21,12 +21,18 @@ public:
 	int OnCheckbox(long ID, int col, long row, long msg, long param);
 	int OnSpinButton(long ID, int col, long row, long msg, long param);
 	int OnPushButton(long ID, int col, long row, long msg, long param);
-	SmOrderPanelOut* CenterWnd() const { return _CenterWnd; }
-	void CenterWnd(SmOrderPanelOut* val) { _CenterWnd = val; }
+	SmOrderPanelOut* CenterWndAb() const { return _CenterWndAb; }
+	void CenterWndAb(SmOrderPanelOut* val) { _Mode = 1;  _CenterWndAb = val; }
 	virtual void OnMouseLeaveFromMainGrid();
 	virtual void OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed = 0);
 	void RestoreButtonCell();
+	int Mode() const { return _Mode; }
+	void Mode(int val) { _Mode = val; }
+	SmOrderPanel* CenterWndDm() const { return _CenterWndDm; }
+	void CenterWndDm(SmOrderPanel* val) { _Mode = 0; _CenterWndDm = val; }
 private:
+	// 0 : Domestic, 1 : Abroad.
+	int _Mode = 0;
 	int _OldBtnCol = -2;
 	int _OldBtnRow = -2;
 	void SetRowTitle();
@@ -45,6 +51,7 @@ private:
 	CUGButtonType		m_button;
 	int					m_nButtonIndex;
 
-	SmOrderPanelOut* _CenterWnd = nullptr;
+	SmOrderPanelOut* _CenterWndAb = nullptr;
+	SmOrderPanel* _CenterWndDm = nullptr;
 };
 

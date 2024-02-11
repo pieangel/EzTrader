@@ -542,7 +542,7 @@ void SymbolOrderView::update_hoga()
 {
 	if (!hoga_control_ || price_to_row_.empty()) return;
 
-	const VmHoga hoga = hoga_control_->get_hoga();
+	const VmHoga& hoga = hoga_control_->get_hoga();
 
 	std::shared_ptr<SmCell> pCell = nullptr;
 
@@ -616,7 +616,18 @@ void SymbolOrderView::update_hoga()
 
 	const int delta_hoga = hoga.TotBuyQty - hoga.TotSellQty;
 	pCell = _Grid->FindCell(price_end_row_, DarkHorse::OrderHeader::QUOTE);
-	if (pCell) pCell->Text(std::to_string(delta_hoga));
+	if (pCell) {
+		pCell->Text(std::to_string(delta_hoga));
+		if (delta_hoga > 0) {
+			pCell->CellType(SmCellType::CT_SP_PROFIT);
+		}
+		else if (delta_hoga < 0) {
+			pCell->CellType(SmCellType::CT_SP_LOSS);
+		}
+		else {
+			pCell->CellType(SmCellType::CT_DEFAULT);
+		}
+	}
 
 	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderHeader::SELL_CNT));
 	_TotalHogaMap.insert(std::make_pair(price_end_row_, DarkHorse::OrderHeader::SELL_QTY));
@@ -662,7 +673,6 @@ void SymbolOrderView::ClearOldHoga(DarkHorse::Hoga_Type hoga_type) const noexcep
 
 void SymbolOrderView::ClearOldHoga()
 {
-	// ���� ȣ���� ������.
 	ClearOldHoga(Hoga_Type::SELL);
 	ClearOldHoga(Hoga_Type::BUY);
 	_OldHogaSellRowIndex.clear();
@@ -1371,6 +1381,11 @@ void SymbolOrderView::setCutOrderSlipTick(int tick)
 	_OrderSettings.SlipTick = tick;
 }
 
+void SymbolOrderView::setStopOrderSlipTick(int tick)
+{
+	_OrderSettings.StopOrderSlipTick = tick;
+}
+
 void SymbolOrderView::CancelSellOrder()
 {
 	if (account_)
@@ -1941,7 +1956,6 @@ int SymbolOrderView::find_start_value()
 		int zeroRow = price_end_row_;
 		if (index_row_ < endRow) {
 			for (int r = index_row_; r < endRow; ++r) {
-				// 0.01 ������ �ȳ����� ��
 				if (/*endValue == 1 ||*/ endValue == 0) {
 					zeroRow = r;
 					break;
@@ -2101,7 +2115,7 @@ void SymbolOrderView::put_stop_order(const DarkHorse::SmPositionType& type, cons
 			type,
 			price,
 			_OrderAmount,
-			_OrderSettings.SlipTick
+			_OrderSettings.StopOrderSlipTick
 		);
 	else buy_stop_order_control_->add_stop_order_request(
 		account_,
@@ -2109,7 +2123,7 @@ void SymbolOrderView::put_stop_order(const DarkHorse::SmPositionType& type, cons
 		type,
 		price,
 		_OrderAmount,
-		_OrderSettings.SlipTick
+		_OrderSettings.StopOrderSlipTick
 	);
 }
 
@@ -2925,6 +2939,13 @@ LRESULT SymbolOrderView::OnUmOrderChanged(WPARAM wParam, LPARAM lParam)
 void SymbolOrderView::OnTimer(UINT_PTR nIDEvent)
 {
 	bool needDraw = false;
+	if (_FixedMode) {
+		center_valued_ = false;
+		ArrangeCenterValue();
+		update_position();
+		Invalidate(FALSE);
+		return;
+	}
 	if (_EnableQuoteShow && symbol_) {
 		ClearOldQuote();
 		update_quote();

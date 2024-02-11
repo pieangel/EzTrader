@@ -3,6 +3,7 @@
 #include <numeric>
 //#include "../Global/MainBeetle.h"
 #include "SmOrderPanelOut.h"
+#include "SmOrderPanel.h"
 #include "../Global/SmTotalManager.h"
 
 #ifdef _DEBUG
@@ -60,10 +61,14 @@ void VtConfigGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL 
 void VtConfigGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
 	if (updn == TRUE) { // for clicked down only
-		if (!_CenterWnd)
-			return ;
-		if (col == 4 && row == 0)
-			_CenterWnd->OnBnClickedBtnLiq();
+		if (_Mode == 0) {
+			if (_CenterWndDm && col == 4 && row == 0)
+				_CenterWndDm->OnBnClickedBtnLiq();
+		}
+		else {
+			if (_CenterWndAb && col == 4 && row == 0)
+				_CenterWndAb->OnBnClickedBtnLiq();
+		}
 	}
 }
 
@@ -82,28 +87,28 @@ int VtConfigGrid::OnCellTypeNotify(long ID, int col, long row, long msg, long pa
 
 int VtConfigGrid::OnCheckbox(long ID, int col, long row, long msg, long param)
 {
-	if (!_CenterWnd)
-		return FALSE;
 
 	if (ID == UGCT_CHECKBOX) {
 		CUGCell cell;
 		GetCell(col, row, &cell);
 		VtChartData* data = (VtChartData*)cell.Tag();
 		double num = cell.GetNumber();
+		bool fixed = false;
 		if (num == 0.0){ // 체크박스 해제 - 호가 고정 안함
-			_CenterWnd->FixedCenter(false);
+			fixed = false;
 		} else { // 체크박스 설정 - 호가 고정 함
-			_CenterWnd->FixedCenter(true);
+			fixed = true;
 		}
+		if (_Mode == 0)
+			if (_CenterWndDm) _CenterWndDm->FixedCenter(fixed);
+		else
+			if (_CenterWndAb) _CenterWndAb->FixedCenter(fixed);
 	}
 	return TRUE;
 }
 
 int VtConfigGrid::OnSpinButton(long ID, int col, long row, long msg, long param)
 {
-	if (!_CenterWnd)
-		return FALSE;
-
 	CUGCell cell;
 	GetCell(col, row, &cell);
 	int nCellTypeIndex = cell.GetCellType();
@@ -125,16 +130,20 @@ int VtConfigGrid::OnSpinButton(long ID, int col, long row, long msg, long param)
 		str.Format("%ld", num);
 		cell.SetText(str);
 		SetCell(col, row, &cell);
-		_CenterWnd->StopVal(num);
+		if (_Mode == 0)
+			if (_CenterWndDm) _CenterWndDm->StopVal(num);
+		else
+			if (_CenterWndAb) _CenterWndAb->StopVal(num);
 	}
 	return TRUE;
 }
 
 int VtConfigGrid::OnPushButton(long ID, int col, long row, long msg, long param)
 {
-	if (!_CenterWnd)
-		return FALSE;
-	_CenterWnd->OnBnClickedBtnLiq();
+	if (_Mode == 0)
+		if (_CenterWndDm) _CenterWndDm->OnBnClickedBtnLiq();
+	else
+		if (_CenterWndAb) _CenterWndAb->OnBnClickedBtnLiq();
 	return TRUE;
 }
 
@@ -203,7 +212,7 @@ void VtConfigGrid::SetRowTitle()
 
 	CUGCell cell;
 	GetCell(6, 0, &cell);
-	cell.SetText("1");
+	cell.SetText("2");
 	cell.SetCellType(m_nSpinIndex);
 	cell.SetParam(SPIN_TYPE1);
 	SetCell(6, 0, &cell);

@@ -44,6 +44,7 @@ void VtOrderConfigManager::Account(account_p val)
 {
 	_OldAccount = _Account;
 	_Account = val;
+	_Type = 0;
 	//_OrderMgr = mainApp.TotalOrderMgr().FindAddAccountOrderManger(_Account->AccountNo);
 }
 
@@ -87,7 +88,7 @@ void VtOrderConfigManager::Fund(fund_p val)
 
 	_OldFund = _Fund;
 	_Fund = val;
-
+	_Type = 1;
 	//_OrderMgr = mainApp.TotalOrderMgr().FindAddFundOrderManager(_Fund->Name);
 	//((VtFundOrderManager*)_OrderMgr)->UpdateOrderManagers();
 }

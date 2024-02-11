@@ -1016,7 +1016,7 @@ BOOL SmOrderPanelOut::OnInitDialog()
 	//_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
 
 	// 설정 그리드에 중앙창 설정
-	_ConfigGrid.CenterWnd(this);
+	_ConfigGrid.CenterWndAb(this);
 	// 해외 선물을 위한 모드로 바꾼다.
 	_ProductRemainGrid.Mode(1);
 	_ProductRemainGrid.AttachGrid(this, IDC_STATIC_PRODUCT_REMAIN);

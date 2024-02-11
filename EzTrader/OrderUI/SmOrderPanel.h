@@ -69,7 +69,7 @@ public:
 	symbol_p Symbol() const { return _Symbol; }
 	void Symbol(symbol_p val) { _Symbol = val; }
 	int StopVal() const { return _StopVal; }
-	void StopVal(int val) { _StopVal = val; }
+	void StopVal(int val);// { _StopVal = val; }
 	int TickWndPos() const { return _TickWndPos; }
 	void TickWndPos(int val) { _TickWndPos = val; }
 	bool ShowTickWnd() const { return _ShowTickWnd; }
@@ -163,7 +163,7 @@ public:
 	CComboBox _ComboSymbol;
 	CEdit _EditOrderAmount;
 	CSpinButtonCtrl _ScOrderAmount;
-	CSpinButtonCtrl _ScStopVal;
+	//CSpinButtonCtrl _ScStopVal;
 	CEdit _EditStopVal;
 	CButton _BtnAvail;
 	CShadeButtonST _BtnRemain;

@@ -12,6 +12,8 @@ struct SmOrderSettings {
 	int ProfitCutTick{ 2 };
 	// When Order Type is at-price, this value is used
 	int SlipTick{ 2 };
+	// Slipage for the stop order
+	int StopOrderSlipTick{ 2 };
 	// Loss Cut / Profit Cut Price Type
 	SmPriceType PriceType = SmPriceType::Price;
 };
