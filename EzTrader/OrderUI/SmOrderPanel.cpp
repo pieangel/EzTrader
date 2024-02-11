@@ -1450,7 +1450,11 @@ void SmOrderPanel::ChangeSymbol(symbol_p symbol)
 
 BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 {
-	if (pMsg->message == WM_KEYDOWN) {
+	// Check if the message is a key-down message for the Alt key plus another key
+	if (pMsg->message == WM_SYSKEYDOWN) {
+		m_Grid.ResetByCenterRow();
+	}
+	else if (pMsg->message == WM_KEYDOWN) {
 		if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE) {
 			OnEntered();
 			return TRUE;

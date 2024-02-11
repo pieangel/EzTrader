@@ -562,9 +562,11 @@ void VtProductRemainGrid::Symbol(symbol_p val)
 void VtProductRemainGrid::update_quote()
 {
 	if (!quote_control_ || !symbol_) return;
-	//if (!position_control_) return;
+	if (!position_control_) return;
 	const VmQuote& quote = quote_control_->get_quote();
-	//const VmPosition& position = position_control_->get_position();
+	const VmPosition& position = position_control_->get_position();
+	if (position.open_quantity == 0) return;
+
 	std::string value = std::to_string(quote.close);
 	SmUtil::insert_decimal(value, symbol_->decimal());
 	CUGCell cell;

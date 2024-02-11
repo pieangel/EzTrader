@@ -1050,7 +1050,7 @@ int DarkHorse::ViClient::ab_account_profit_loss(task_arg&& arg)
 
 void ViClient::start_timer()
 {
-	SetTimer(1, 10, NULL);
+	SetTimer(1, 50, NULL);
 }
 
 void ViClient::stop_timer()
