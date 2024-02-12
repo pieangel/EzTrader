@@ -49,8 +49,10 @@ namespace DarkHorse {
 	void SymbolPositionControl::update_position(std::shared_ptr<Position> position)
 	{
 		try {
+			if (option_event_handler_) option_event_handler_(position);
+			if (fund_event_handler_) fund_event_handler_(position);
 			//LOGINFO(CMyLogger::getInstance(), "SymbolPositionControl update_position id = %d , account_no = %s, fund_name = %s", id_, position->account_no.c_str(), position->fund_name.c_str());
-			if (!position || position->order_source_type != position_type_) return;
+			if (!position || position->position_type != position_type_) return;
 			if (symbol_ && symbol_->SymbolCode() != position->symbol_code) return;
 			
 			if (position_type_ == OrderType::SubAccount) {
@@ -67,23 +69,6 @@ namespace DarkHorse {
 			}
 
 			if (event_handler_) event_handler_();
-			// For the option view and future view
-			if (vm_option_event_handler_) {
-				position_.symbol_code = position->symbol_code;
-				position_.symbol_id = mainApp.SymMgr()->get_symbol_id(position->symbol_code);
-				position_.account_no = position->account_no;
-				position_.account_id = mainApp.AcntMgr()->get_account_id(position->account_no);
-				position_.position_type = position_type_;
-				vm_option_event_handler_(position_);
-			}
-			if (vm_fund_event_handler_) {
-				position_.symbol_code = position->symbol_code;
-				position_.symbol_id = mainApp.SymMgr()->get_symbol_id(position->symbol_code);
-				position_.account_no = position->account_no;
-				position_.account_id = mainApp.AcntMgr()->get_account_id(position->account_no);
-				position_.position_type = position_type_;
-				vm_fund_event_handler_(position_);
-			}
 			if (out_system_event_handler_) out_system_event_handler_(out_system_id_);
 		}
 		catch (const std::exception& e) {

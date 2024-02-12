@@ -180,7 +180,7 @@ std::shared_ptr<Position> GroupPositionManager::create_account_group_position(co
 		group_position = std::make_shared<Position>();
 		group_position->account_no = account_no;
 		group_position->symbol_code = symbol_code;
-		group_position->order_source_type = OrderType::MainAccount;
+		group_position->position_type = OrderType::MainAccount;
 		group_position->is_group = true;
 		TotalPositionManager::set_symbol_id(group_position, symbol_code);
 		group_position_map_[symbol_code] = group_position;
@@ -200,7 +200,7 @@ std::shared_ptr<Position> GroupPositionManager::create_fund_group_position(const
 		group_position = std::make_shared<Position>();
 		group_position->fund_name = fund_name;
 		group_position->symbol_code = symbol_code;
-		group_position->order_source_type = OrderType::Fund;
+		group_position->position_type = OrderType::Fund;
 		group_position->is_group = true;
 		TotalPositionManager::set_symbol_id(group_position, symbol_code);
 		group_position_map_[symbol_code] = group_position;

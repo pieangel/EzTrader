@@ -372,7 +372,7 @@ void SmOrderPanel::OnBnClickedBtnLiq()
 	}
 	for (auto it = active_position_vector_.begin(); it != active_position_vector_.end(); it++) {
 		auto position = it->second;
-		auto account = mainApp.AcntMgr()->FindAccount(position->order_source_type == DarkHorse::OrderType::MainAccount ? position->account_no : position->parent_account_no);
+		auto account = mainApp.AcntMgr()->FindAccount(position->position_type == DarkHorse::OrderType::MainAccount ? position->account_no : position->parent_account_no);
 		if (position->open_quantity > 0) {
 			m_Grid.put_order(account, position->symbol_code, DarkHorse::SmPositionType::Sell, 0, abs(position->open_quantity), DarkHorse::SmPriceType::Market);
 		}

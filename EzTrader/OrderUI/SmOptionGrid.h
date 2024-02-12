@@ -37,7 +37,7 @@ namespace DarkHorse {
 using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
 using account_p = std::shared_ptr<DarkHorse::SmAccount>;
 using fund_p = std::shared_ptr<DarkHorse::SmFund>;
-
+using position_p = std::shared_ptr<DarkHorse::Position>;
 class VtOrderLeftWndHd;
 class VtProductSection;
 class VtOrderConfigManager;
@@ -168,6 +168,7 @@ public:
 	void set_view_mode(ViewMode view_mode);
 	int order_window_id() const { return order_window_id_; }
 	void order_window_id(int val) { order_window_id_ = val; }
+	void on_update_position_direct(position_p position);
 private:
 	void showValues();
 	void set_option_info(
@@ -181,6 +182,7 @@ private:
 	void set_call_put_area();
 	int order_window_id_ = 0;
 	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
+	void update_quote_direct(std::shared_ptr<DarkHorse::SmQuote> quote);
 	void update_quote();
 	void update_close(const DarkHorse::VmQuote& quote);
 	void update_position();
@@ -193,12 +195,13 @@ private:
 	void set_background_color(std::shared_ptr<DarkHorse::SmCell> cell, const DarkHorse::VmOption& option_info);
 	void set_background_color(const int row, const int col, const DarkHorse::VmOption& option_info);
 	void show_strike(const int row, const int col, const DarkHorse::VmOption& option_info);
-	void show_values();
+	//void show_values();
 	ViewMode view_mode_{ ViewMode::VM_Close };
 	void set_option_info(
 		const int option_market_index,
 		const std::string& year_month_name
 	);
+	void make_symbol_vectors();
 	void make_symbol_vec(bool call_side = true);
 	void init_strike_index();
 

@@ -15,6 +15,7 @@ namespace DarkHorse {
 	class SmAccount;
 	class SmFund;
 	class SmSymbol;
+	using position_p = std::shared_ptr<Position>;
 	class SymbolPositionControl
 	{
 	public:
@@ -55,6 +56,13 @@ namespace DarkHorse {
 		void set_vm_fund_event_handler(std::function<void(const VmPosition& position)> vm_fund_event_handler) {
 			vm_fund_event_handler_ = vm_fund_event_handler;
 		}
+
+		void set_option_event_handler(std::function<void(position_p position)> option_event_handler) {
+			option_event_handler_ = option_event_handler;
+		}
+		void set_fund_event_handler(std::function<void(position_p position)> fund_event_handler) {
+			fund_event_handler_ = fund_event_handler;
+		}
 		void reset_position();
 	private:
 		bool is_account_exist(const std::shared_ptr<Position>& position);
@@ -78,8 +86,10 @@ namespace DarkHorse {
 		void clear_position();
 		std::function<void()> event_handler_;
 		std::function<void(const int)> out_system_event_handler_;
-		std::function<void(std::shared_ptr<Position> position)> fund_option_event_handler_;
+		std::function<void(position_p position)> fund_option_event_handler_;
 		std::function<void(const VmPosition& position)> vm_option_event_handler_;
 		std::function<void(const VmPosition& position)> vm_fund_event_handler_;
+		std::function<void(position_p position)> option_event_handler_;
+		std::function<void(position_p position)> fund_event_handler_;
 	};
 }

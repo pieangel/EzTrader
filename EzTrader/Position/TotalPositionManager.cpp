@@ -83,7 +83,7 @@ DarkHorse::group_position_manager_p TotalPositionManager::create_fund_group_posi
 group_position_manager_p TotalPositionManager::find_add_group_position_manager(std::shared_ptr<Position> position)
 {
 	if (!position) return nullptr;
-	if (position->order_source_type == OrderType::SubAccount) {
+	if (position->position_type == OrderType::SubAccount) {
 		auto found = account_group_position_manager_map_.find(position->parent_account_no);
 		if (found != account_group_position_manager_map_.end()) {
 			return found->second;
@@ -92,7 +92,7 @@ group_position_manager_p TotalPositionManager::find_add_group_position_manager(s
 			return create_group_position_manager(position);
 		}
 	}
-	else if (position->order_source_type == OrderType::MainAccount) {
+	else if (position->position_type == OrderType::MainAccount) {
 		auto found = account_group_position_manager_map_.find(position->account_no);
 		if (found != account_group_position_manager_map_.end()) {
 			return found->second;
@@ -101,7 +101,7 @@ group_position_manager_p TotalPositionManager::find_add_group_position_manager(s
 			return create_group_position_manager(position);
 		}
 	}
-	else if (position->order_source_type == OrderType::Fund) {
+	else if (position->position_type == OrderType::Fund) {
 		auto found = fund_group_position_manager_map_.find(position->fund_name);
 		if (found != fund_group_position_manager_map_.end()) {
 			return found->second;
@@ -117,15 +117,15 @@ group_position_manager_p TotalPositionManager::create_group_position_manager(std
 {
 	if (!position) return nullptr;
 	auto group_position_manager = std::make_shared<GroupPositionManager>(*this);
-	if (position->order_source_type == OrderType::SubAccount) {
+	if (position->position_type == OrderType::SubAccount) {
 		group_position_manager->set_account_no(position->parent_account_no);
 		account_group_position_manager_map_[position->parent_account_no] = group_position_manager;
 	}
-	else if (position->order_source_type == OrderType::MainAccount) {
+	else if (position->position_type == OrderType::MainAccount) {
 		group_position_manager->set_account_no(position->account_no);
 		account_group_position_manager_map_[position->account_no] = group_position_manager;
 	}
-	else if (position->order_source_type == OrderType::Fund) {
+	else if (position->position_type == OrderType::Fund) {
 		group_position_manager->set_account_no(position->fund_name);
 		fund_group_position_manager_map_[position->fund_name] = group_position_manager;
 	}
@@ -226,7 +226,7 @@ void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 		position->average_price = average_price;
 		position->open_quantity = open_quantity * order_position;
 		position->pre_day_open_quantity = pre_open_qty;
-		position->order_source_type = OrderType::MainAccount;
+		position->position_type = OrderType::MainAccount;
 		//position->ordered_before = true;
 		//position->open_profit_loss = open_profit_loss;
 
@@ -250,7 +250,7 @@ void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
 		const std::string& symbol_code = arg["symbol_code"];
 		auto position = get_position(account_no, symbol_code);
 		if (position) {
-			position->order_source_type = OrderType::MainAccount;
+			position->position_type = OrderType::MainAccount;
 			position->trade_profit_loss = arg["trade_profit_loss"];
 			position->pure_trade_profit_loss = arg["pure_trade_profit_loss"];
 			position->trade_fee = arg["trade_fee"];
@@ -341,7 +341,7 @@ position_p TotalPositionManager::find_position_by_id(const int& position_id)
 void TotalPositionManager::update_group_position(std::shared_ptr<Position> position)
 {
 	if (!position) return;
-	if (position->order_source_type == OrderType::SubAccount) {
+	if (position->position_type == OrderType::SubAccount) {
 		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->parent_account_no);
 		auto account_group_position = group_position_manager->create_account_group_position(position->parent_account_no, position->symbol_code);
 		group_position_manager->update_group_position(account_group_position, position);
@@ -353,7 +353,7 @@ void TotalPositionManager::update_group_position(std::shared_ptr<Position> posit
 		group_position_manager->update_group_position(fund_group_position, position);
 		mainApp.CallbackMgr()->process_position_event(fund_group_position);
 	}
-	else if (position->order_source_type == OrderType::Fund) {
+	else if (position->position_type == OrderType::Fund) {
 		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->parent_account_no);
 		auto account_group_position = group_position_manager->create_account_group_position(position->parent_account_no, position->symbol_code);
 		group_position_manager->update_group_position(account_group_position, position);

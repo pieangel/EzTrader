@@ -92,6 +92,8 @@ public:
 	void RefreshProfitLoss();
 	void RefreshAsset();
 	void RefreshLayout();
+	void RefreshFutureGrid();
+	void RefreshOptionGrid();
 	void OnAccountChanged();
 private:
 	int _EventSeq = 0;

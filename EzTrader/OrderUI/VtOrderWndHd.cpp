@@ -1034,6 +1034,8 @@ bool VtOrderWndHd::InitFund()
 		_StaticAcntName.SetWindowText(_OrderConfigMgr->Fund()->Name().c_str());
 		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
 		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
+		_OrderConfigMgr->_HdLeftWnd->RefreshFutureGrid();
+		_OrderConfigMgr->_HdLeftWnd->RefreshOptionGrid();
 	}
 	
 	return true;
@@ -1109,6 +1111,8 @@ void VtOrderWndHd::InitAccount()
 		_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->Name().c_str());
 		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
 		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
+		_OrderConfigMgr->_HdLeftWnd->RefreshFutureGrid();
+		_OrderConfigMgr->_HdLeftWnd->RefreshOptionGrid();
 		CString pwd;
 		pwd.Format(_T("%s"), _OrderConfigMgr->Account()->Pwd().c_str());
 		_EditPwd.SetWindowText(pwd);

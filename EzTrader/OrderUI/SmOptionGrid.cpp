@@ -57,10 +57,10 @@ SmOptionGrid::SmOptionGrid()
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->symbol_type(DarkHorse::SymbolType::Domestic);
-	quote_control_->set_event_handler(std::bind(&SmOptionGrid::on_update_quote, this));
+	quote_control_->set_direct_event_handler(std::bind(&SmOptionGrid::update_quote_direct, this, _1));
 
 	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
-	position_control_->set_vm_option_event_handler(std::bind(&SmOptionGrid::on_update_position_vm, this, _1));
+	position_control_->set_option_event_handler(std::bind(&SmOptionGrid::on_update_position_direct, this, _1));
 
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
@@ -1052,6 +1052,44 @@ void SmOptionGrid::update_expected(std::shared_ptr<DarkHorse::SmQuote> quote)
 	}
 }
 
+void SmOptionGrid::update_quote_direct(std::shared_ptr<DarkHorse::SmQuote> quote)
+{
+	try {
+		//LOGINFO(CMyLogger::getInstance(), "update_close symbol code: %s", quote.symbol_code.c_str());
+		if (quote->symbol_code.empty()) {
+			//LOGINFO(CMyLogger::getInstance(), "update_close symbol code is empty");
+			return;
+		}
+		const std::string option_code = quote->symbol_code.substr(1, quote->symbol_code.length() - 1);
+		auto found = symbol_vector_index_map_.find(option_code);
+		if (found == symbol_vector_index_map_.end()) return;
+		if (quote->symbol_code.at(0) == '2') {
+			DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+			option_info.close = quote->close;
+			update_value_cell(quote->symbol_id, option_info);
+		}
+		else {
+			DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+			option_info.close = quote->close;
+			update_value_cell(quote->symbol_id, option_info);
+		}
+	}
+	catch (const std::out_of_range& e) {
+		// Handling the exception
+		const std::string error = e.what();
+		LOGINFO(DarkHorse::CMyLogger::getInstance(), "Caught std::out_of_range exception: %s", error.c_str());
+	}
+	catch (const std::exception& e) {
+		// Handling other exceptions derived from std::exception
+		const std::string error = e.what();
+		LOGINFO(DarkHorse::CMyLogger::getInstance(), "Caught exception: %s", error.c_str());
+	}
+	catch (...) {
+		// Catch-all block for any other exceptions
+		LOGINFO(DarkHorse::CMyLogger::getInstance(), "Caught unknown exception");
+	}
+}
+
 void SmOptionGrid::update_close(const DarkHorse::VmQuote& quote)
 {
 	try {
@@ -1159,8 +1197,7 @@ void SmOptionGrid::set_option_view(
 		return;
 	}
 	set_option_info(option_market_index, year_month_name);
-	make_symbol_vec(true);
-	make_symbol_vec(false);
+	make_symbol_vectors();
 	register_symbols(option_market_index);
 	InitGrid();
 	init_strike_index();
@@ -1212,14 +1249,9 @@ void SmOptionGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 	_Fund = val;
 	order_type_ = DarkHorse::OrderType::Fund;
 	position_control_->set_fund(_Fund);
-	for (auto& option_info : call_symbol_vector_) {
-		get_option_position_info(option_info);
-		update_value_cell(option_info.symbol_id, option_info);
-	}
-	for (auto& option_info : put_symbol_vector_) {
-		get_option_position_info(option_info);
-		update_value_cell(option_info.symbol_id, option_info);
-	}
+	
+	make_symbol_vectors();
+	showValues();
 	enable_show_ = true;
 }
 
@@ -1231,15 +1263,9 @@ void SmOptionGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 		order_type_ = DarkHorse::OrderType::SubAccount;
 	else
 		order_type_ = DarkHorse::OrderType::MainAccount;
-
-	for (auto& option_info : call_symbol_vector_) {
-		get_option_position_info(option_info);
-		update_value_cell(option_info.symbol_id, option_info);
-	}
-	for (auto& option_info : put_symbol_vector_) {
-		get_option_position_info(option_info);
-		update_value_cell(option_info.symbol_id, option_info);
-	}
+	
+	make_symbol_vectors();
+	showValues();
 	enable_show_ = true;
 }
 
@@ -1273,8 +1299,33 @@ void SmOptionGrid::OnOrderEvent(const std::string& account_no, const std::string
 void SmOptionGrid::set_view_mode(ViewMode view_mode)
 {
 	view_mode_ = view_mode;
-	show_values();
+	showValues();
 	Invalidate();
+}
+
+void SmOptionGrid::on_update_position_direct(position_p position)
+{
+	try {
+		if (position->symbol_code.empty()) return;
+
+		const std::string option_code = position->symbol_code.substr(1, position->symbol_code.length() - 1);
+		auto found = symbol_vector_index_map_.find(option_code);
+		if (found == symbol_vector_index_map_.end()) return;
+		if (position->symbol_code.at(0) == '2') {
+			DarkHorse::VmOption& option_info = call_symbol_vector_[found->second];
+			option_info.position = position->open_quantity;
+			update_value_cell(position->symbol_id, option_info);
+		}
+		else {
+			DarkHorse::VmOption& option_info = put_symbol_vector_[found->second];
+			option_info.position = position->open_quantity;
+			update_value_cell(position->symbol_id, option_info);
+		}
+	}
+	catch (const std::exception& e) {
+		const std::string error = e.what();
+		LOGINFO(DarkHorse::CMyLogger::getInstance(), "error = %s", error.c_str());
+	}
 }
 
 void SmOptionGrid::set_strike_start_index(const int distance)
@@ -1347,7 +1398,7 @@ void SmOptionGrid::show_value(const int row, const int col, const DarkHorse::VmO
 	else {
 		value = get_position_text(option_info);
 	}
-	//set_background_color(cell, option_info);
+	set_background_color(row, col, option_info);
 	//cell->Text(value);
 	QuickSetText(row, col, value.c_str());
 }
@@ -1395,23 +1446,23 @@ void SmOptionGrid::show_strike(const int row, const int col, const DarkHorse::Vm
 	QuickSetText(row, col, option_info.strike.c_str());
 }
 
-void SmOptionGrid::show_values()
-{
-	if (call_symbol_vector_.empty() || put_symbol_vector_.empty()) return;
-
-	for (int i = 1; i < _maxRow; i++) {
-		int new_strike_index = strike_start_index_ + i - 1;
-		const int vec_size = static_cast<int>(call_symbol_vector_.size());
-		if (new_strike_index >= vec_size)
-			new_strike_index = vec_size - 1;
-		if (new_strike_index < 0)
-			new_strike_index = 0;
-		const DarkHorse::VmOption& call_info = call_symbol_vector_[new_strike_index];
-		const DarkHorse::VmOption& put_info = put_symbol_vector_[new_strike_index];
-		show_value(i, 0, call_info);
-		show_value(i, 2, put_info);
-	}
-}
+// void SmOptionGrid::show_values()
+// {
+// 	if (call_symbol_vector_.empty() || put_symbol_vector_.empty()) return;
+// 
+// 	for (int i = 1; i < _maxRow; i++) {
+// 		int new_strike_index = strike_start_index_ + i - 1;
+// 		const int vec_size = static_cast<int>(call_symbol_vector_.size());
+// 		if (new_strike_index >= vec_size)
+// 			new_strike_index = vec_size - 1;
+// 		if (new_strike_index < 0)
+// 			new_strike_index = 0;
+// 		const DarkHorse::VmOption& call_info = call_symbol_vector_[new_strike_index];
+// 		const DarkHorse::VmOption& put_info = put_symbol_vector_[new_strike_index];
+// 		show_value(i, 0, call_info);
+// 		show_value(i, 2, put_info);
+// 	}
+// }
 
 void SmOptionGrid::showValues()
 {
@@ -1465,6 +1516,12 @@ void SmOptionGrid::set_option_info(
 	option_info.symbol_id = symbol->Id();
 	option_info.symbol_p = symbol;
 	option_info.symbol_code = symbol->SymbolCode();
+}
+
+void SmOptionGrid::make_symbol_vectors()
+{
+	make_symbol_vec(true);
+	make_symbol_vec(false);
 }
 
 void SmOptionGrid::make_symbol_vec(bool call_side)

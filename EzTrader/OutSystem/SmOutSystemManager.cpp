@@ -42,6 +42,7 @@ namespace DarkHorse {
 
 	SmOutSystemManager::~SmOutSystemManager()
 	{
+		StopProcess();
 	}
 
 	std::shared_ptr<SmOutSystem> SmOutSystemManager::create_out_system(

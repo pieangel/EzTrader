@@ -869,12 +869,13 @@ void CMainFrame::OnClose()
 		
 		mainApp.Client()->Enable(false);
 		mainApp.Client()->UnRegAll();
-
+		/*
 		mainApp.HogaMgr()->StopAllHogaProcess();
 		mainApp.HogaMgr()->StopProcess();
 		mainApp.QuoteMgr()->StopAllQuoteProcess();
 		mainApp.QuoteMgr()->StopProcess();
-		mainApp.order_request_manager()->stop_handle_order_request();
+		*/
+		//mainApp.order_request_manager()->stop_handle_order_request();
 		//SystemConfig config;
 		//config.app_name = "DarkHorse";
 		//config.version = 1.0;
@@ -887,7 +888,7 @@ void CMainFrame::OnClose()
 		mainApp.SaveMgr()->save_fund("fund_list.json");
 		mainApp.SaveMgr()->save_out_system("out_system_list.json");
 		mainApp.SaveMgr()->save_usd_system("usd_system_list.json");
-
+		
 		mainApp.SaveMgr()->save_dm_account_order_windows("dm_account_order_windows", dm_account_order_wnd_map_);
 		mainApp.SaveMgr()->save_dm_fund_order_windows("dm_fund_order_windows", dm_fund_order_wnd_map_);
 		mainApp.SaveMgr()->save_dm_mini_jango_windows("dm_mini_jango_windows.json", mini_jango_wnd_map_);
@@ -911,10 +912,10 @@ void CMainFrame::OnClose()
 			usd_system_dlg_ = nullptr;
 		}
 
-		mainApp.TaskReqMgr()->StopProcess();
-		mainApp.file_watch_monitor()->Stop();
-		mainApp.out_system_manager()->StopProcess();
-
+		//mainApp.TaskReqMgr()->StopProcess();
+		//mainApp.file_watch_monitor()->Stop();
+		//mainApp.out_system_manager()->StopProcess();
+		
 		std::vector<int> date_time = SmUtil::GetLocalDateTime();
 
 		CString msg;

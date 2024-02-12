@@ -49,10 +49,10 @@ SmFutureGrid::SmFutureGrid()
 {
 	quote_control_ = std::make_shared<DarkHorse::QuoteControl>();
 	quote_control_->symbol_type(SymbolType::Domestic);
-	quote_control_->set_event_handler(std::bind(&SmFutureGrid::on_update_quote, this));
+	quote_control_->set_direct_event_handler(std::bind(&SmFutureGrid::update_quote_direct, this, _1));
 
 	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
-	position_control_->set_vm_fund_event_handler(std::bind(&SmFutureGrid::on_update_position_vm_future, this, _1));
+	position_control_->set_fund_event_handler(std::bind(&SmFutureGrid::on_update_position_direct, this, _1));
 
 	CString strLog;
 	strLog.Format("DmFutureView futur_view id = [%d], position_control_id = [%d]", id_, position_control_->get_id());
@@ -61,7 +61,7 @@ SmFutureGrid::SmFutureGrid()
 	mainApp.event_hub()->subscribe_expected_event_handler
 	(
 		id_,
-		std::bind(&SmFutureGrid::update_expected, this, std::placeholders::_1)
+		std::bind(&SmFutureGrid::update_expected_direct, this, std::placeholders::_1)
 	);
 
 	mainApp.event_hub()->subscribe_order_event_handler
@@ -650,7 +650,7 @@ void SmFutureGrid::ShowExpected(symbol_p sym, int row)
 	*/
 }
 
-void SmFutureGrid::update_expected(std::shared_ptr<DarkHorse::SmQuote> quote)
+void SmFutureGrid::update_expected_direct(std::shared_ptr<DarkHorse::SmQuote> quote)
 {
 	if (view_mode_ != ViewMode::VM_Expected) return;
 
@@ -658,6 +658,18 @@ void SmFutureGrid::update_expected(std::shared_ptr<DarkHorse::SmQuote> quote)
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.expected = quote->expected;
+	show_value(found->second, 2, future_info);
+	enable_show_ = true;
+}
+
+void SmFutureGrid::update_quote_direct(std::shared_ptr<DarkHorse::SmQuote> quote)
+{
+	if (view_mode_ != ViewMode::VM_Close) return;
+
+	auto found = symbol_row_index_map_.find(quote->symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.close = quote->close;
 	show_value(found->second, 2, future_info);
 	enable_show_ = true;
 }
@@ -882,6 +894,15 @@ void SmFutureGrid::on_update_position()
 	show_value(found->second, 2, future_info);
 
 	enable_show_ = true;
+}
+
+void SmFutureGrid::on_update_position_direct(position_p position)
+{
+	auto found = symbol_row_index_map_.find(position->symbol_code);
+	if (found == symbol_row_index_map_.end()) return;
+	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
+	future_info.position = position->open_quantity;
+	show_value(found->second, 2, future_info);
 }
 
 void SmFutureGrid::on_update_quote()

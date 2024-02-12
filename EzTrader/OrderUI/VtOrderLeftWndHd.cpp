@@ -332,13 +332,33 @@ void VtOrderLeftWndHd::OnReceiveAccountInfo()
 
 void VtOrderLeftWndHd::RefreshProfitLoss()
 {
-	_ProfitLossGrid.InitGrid();
+	if (_OrderConfigMgr && _ProfitLossGrid.GetSafeHwnd()) {
+		if (_OrderConfigMgr->Type() == 0) {
+			_ProfitLossGrid.Account(_OrderConfigMgr->Account());
+
+		}
+		else {
+			_ProfitLossGrid.Fund(_OrderConfigMgr->Fund());
+
+		}
+		_ProfitLossGrid.InitGrid();
+	}
 }
 
 void VtOrderLeftWndHd::RefreshAsset()
 {
-	if (_AssetGrid.GetSafeHwnd())
+	if (_OrderConfigMgr&& _AssetGrid.GetSafeHwnd()) {
+		
+		if (_OrderConfigMgr->Type() == 0) {
+			_AssetGrid.Account(_OrderConfigMgr->Account());
+
+		}
+		else {
+			_AssetGrid.Fund(_OrderConfigMgr->Fund());
+
+		}
 		_AssetGrid.InitGrid();
+	}
 }
 
 void VtOrderLeftWndHd::RefreshLayout()
@@ -357,6 +377,36 @@ void VtOrderLeftWndHd::RefreshLayout()
 		_SymbolFutureGrid.InitGrid();
 		_ProfitLossGrid.InitGrid();
 		_AssetGrid.InitGrid();
+	}
+}
+
+void VtOrderLeftWndHd::RefreshFutureGrid()
+{
+	if (_OrderConfigMgr && _AssetGrid.GetSafeHwnd()) {
+
+		if (_OrderConfigMgr->Type() == 0) {
+			_SymbolFutureGrid.Account(_OrderConfigMgr->Account());
+
+		}
+		else {
+			_SymbolFutureGrid.Fund(_OrderConfigMgr->Fund());
+
+		}
+	}
+}
+
+void VtOrderLeftWndHd::RefreshOptionGrid()
+{
+	if (_OrderConfigMgr && _AssetGrid.GetSafeHwnd()) {
+
+		if (_OrderConfigMgr->Type() == 0) {
+			_SymbolOptionGrid.Account(_OrderConfigMgr->Account());
+
+		}
+		else {
+			_SymbolOptionGrid.Fund(_OrderConfigMgr->Fund());
+
+		}
 	}
 }
 

@@ -21,6 +21,7 @@ namespace DarkHorse {
 	{
 		try {
 			if (!quote) return;
+			if (direct_event_handler_) direct_event_handler_(quote);
 			if (symbol_id_ != 0 && quote->symbol_id != symbol_id_) return;
 			quote_.symbol_code = quote->symbol_code;
 			quote_.symbol_id = quote->symbol_id;

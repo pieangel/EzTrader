@@ -7,6 +7,7 @@
 
 namespace DarkHorse {
 	struct SmQuote;
+	using quote_p = std::shared_ptr<SmQuote>;
 class QuoteControl
 {
 public:
@@ -27,6 +28,9 @@ public:
 	void set_event_handler(std::function<void()> event_handler) {
 		event_handler_= event_handler;
 	}
+	void set_direct_event_handler(std::function<void(quote_p quote)> direct_event_handler) {
+		direct_event_handler_ = direct_event_handler;
+	}
 	DarkHorse::SymbolType symbol_type() const { return symbol_type_; }
 	void symbol_type(DarkHorse::SymbolType val) { symbol_type_ = val; }
 private:
@@ -36,6 +40,7 @@ private:
 	VmQuote quote_;
 	void subscribe_quote_control();
 	std::function<void()> event_handler_;
+	std::function<void(quote_p quote)> direct_event_handler_;
 };
 }
 

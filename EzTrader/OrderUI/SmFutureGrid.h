@@ -25,13 +25,14 @@ namespace DarkHorse {
 	struct SmQuote;
 	class SymbolPositionControl;
 	struct Order;
+	struct Position;
 }
 
 using symbol_p = std::shared_ptr<DarkHorse::SmSymbol>;
 using account_p = std::shared_ptr<DarkHorse::SmAccount>;
 using fund_p = std::shared_ptr<DarkHorse::SmFund>;
 using order_p = std::shared_ptr<DarkHorse::Order>;
-
+using position_p = std::shared_ptr<DarkHorse::Position>;
 class VtOrderLeftWndHd;
 class VtProductSection;
 class VtOrderConfigManager;
@@ -103,13 +104,15 @@ public:
 	void OnExpected(symbol_p sym);
 	void ShowExpected(symbol_p sym, int row);
 public:
-	void update_expected(std::shared_ptr<DarkHorse::SmQuote> quote);
+	void update_expected_direct(std::shared_ptr<DarkHorse::SmQuote> quote);
+	void update_quote_direct(std::shared_ptr<DarkHorse::SmQuote> quote);
 	std::shared_ptr<DarkHorse::SmFund> Fund() const { return _Fund; }
 	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
 	void init_dm_future();
 	void update_quote();
 	void set_view_mode(ViewMode view_mode);
 	void on_update_position_vm_future(const VmPosition& position);
+	void on_update_position_direct(position_p position);
 public:
 	void refresh_values();
 	void update_order(order_p order, DarkHorse::OrderEvent order_event);
