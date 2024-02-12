@@ -51,8 +51,6 @@ VtOrderLeftWndHd::VtOrderLeftWndHd(CWnd* pParent )
 	: CDialog(IDD_ORDER_LEFT_HD, pParent)
 {
 	_OrderConfigMgr = nullptr;
-	_FutureSymbolMode = 1;
-	_Mode = 1;
 
 	_EventSeq = 0;
 	//_DefaultWidth = MainBeetle::GetHorWidthByScaleFactor(174);
@@ -109,11 +107,13 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
+	
+
 	_SymbolOptionGrid.LeftWnd(this);
 	_SymbolOptionGrid.OrderConfigMgr(_OrderConfigMgr);
 
 	_SymbolFutureGrid.OrderConfigMgr(_OrderConfigMgr);
-	_SymbolFutureGrid.Mode(_FutureSymbolMode);
+	_SymbolFutureGrid.Mode(_ShowValueMode);
 	// TODO:  Add extra initialization here
 	//_SymbolFutureGrid.AttachGrid(this, IDC_SYMBOL_FUTURE);
 	_ProfitLossGrid.OrderConfigMgr(_OrderConfigMgr);
@@ -126,6 +126,7 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	else {
 		_AssetGrid.ShowWindow(SW_HIDE);
 	}
+	
 	_SymbolOptionGrid.Init();
 	_SymbolFutureGrid.Init();
 	_SymbolFutureGrid.init_dm_future();
@@ -136,19 +137,7 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	set_option_view();
 
 
-	if (_FutureSymbolMode == 0)
-	{
-		((CButton*)GetDlgItem(IDC_RADIO_BALANCE))->SetCheck(BST_CHECKED);
-	}
-	else if (_FutureSymbolMode == 1)
-	{
-		((CButton*)GetDlgItem(IDC_RADIO_CURRENT))->SetCheck(BST_CHECKED);
-	}
-	else
-	{
-		((CButton*)GetDlgItem(IDC_RADIO_EXPECT))->SetCheck(BST_CHECKED);
-	}
-
+	
 	CRect rcRect;
 	combo_option_market_.SetDroppedWidth(150);
 
@@ -156,6 +145,21 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	ScreenToClient(&rcRect);
 
 	SetTimer(1, 50, NULL);
+
+	if (_ShowValueMode == 0)
+	{
+		((CButton*)GetDlgItem(IDC_RADIO_BALANCE))->SetCheck(BST_CHECKED);
+		_SymbolOptionGrid.set_view_mode(ViewMode::VM_Position);
+		_SymbolFutureGrid.set_view_mode(ViewMode::VM_Position);
+	}
+	else if (_ShowValueMode == 1)
+	{
+		((CButton*)GetDlgItem(IDC_RADIO_CURRENT))->SetCheck(BST_CHECKED);
+	}
+	else
+	{
+		((CButton*)GetDlgItem(IDC_RADIO_EXPECT))->SetCheck(BST_CHECKED);
+	}
 
 	//mainApp.CallbackMgr().SubscribeAccountWndCallback(GetSafeHwnd());
 
@@ -262,7 +266,6 @@ void VtOrderLeftWndHd::OnBnClickedButton2()
 
 void VtOrderLeftWndHd::OnBnClickedRadioBalance()
 {
-	_Mode = 0;
 	_SymbolOptionGrid.set_view_mode(ViewMode::VM_Position);
 	_SymbolFutureGrid.set_view_mode(ViewMode::VM_Position);
 }
@@ -271,7 +274,6 @@ void VtOrderLeftWndHd::OnBnClickedRadioBalance()
 void VtOrderLeftWndHd::OnBnClickedRadioCurrent()
 {
 	// TODO: Add your control notification handler code here
-	_Mode = 1;
 	_SymbolOptionGrid.set_view_mode(ViewMode::VM_Close);
 	_SymbolFutureGrid.set_view_mode(ViewMode::VM_Close);
 }
@@ -280,7 +282,6 @@ void VtOrderLeftWndHd::OnBnClickedRadioCurrent()
 void VtOrderLeftWndHd::OnBnClickedRadioExpect()
 {
 	// TODO: Add your control notification handler code here
-	_Mode = 2;
 	_SymbolOptionGrid.set_view_mode(ViewMode::VM_Expected);
 	_SymbolFutureGrid.set_view_mode(ViewMode::VM_Expected);
 }
@@ -293,9 +294,6 @@ LRESULT VtOrderLeftWndHd::OnAccountChangedMessage(WPARAM wParam, LPARAM lParam)
 
 void VtOrderLeftWndHd::OnSymbolMaster(symbol_p sym)
 {
-	if (_Mode != 1)
-		return;
-
 	_SymbolOptionGrid.OnSymbolMaster(sym);
 }
 

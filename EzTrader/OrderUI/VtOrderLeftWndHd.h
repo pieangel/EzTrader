@@ -64,8 +64,7 @@ private:
 	void Begin();
 	void End();
 
-	int _FutureSymbolMode = 1;
-	int _Mode = 1;
+	int _ShowValueMode = 0;
 	void set_option_view();
 	// key : option year-month combo index, value : year-month name
 	std::map<int, std::string> option_yearmonth_index_map;
