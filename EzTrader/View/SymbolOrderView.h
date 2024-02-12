@@ -221,12 +221,19 @@ public:
 	void CenterWnd(SmOrderPanel* val) { _centerWnd = val; }
 	DarkHorse::SmOrderSettings OrderSettings() { return _OrderSettings; }
 	void orderCutEnabledByLoss(bool enable);
+	bool orderCutEnabledByLoss() const;
 	void orderCutEnabledByProfit(bool enable);
+	bool orderCutEnabledByProfit() const;
 	void setOrderLossCutTick(int tick);
+	int getOrderLossCutTick();
 	void setOrderProfitCutTick(int tick);
+	int getOrderProfitCutTick();
 	void setCutOrderType(DarkHorse::SmPriceType price_type);
+	int getCutOrderType();
+	int getCutOrderSlipTick();
 	void setCutOrderSlipTick(int tick);
 	void setStopOrderSlipTick(int tick);
+	int getStopOrderSlipTick();
 private:
 	SmOrderPanel* _centerWnd = nullptr;
 	std::vector<bool> _OrderGridColOption;

@@ -1356,9 +1356,19 @@ void SymbolOrderView::orderCutEnabledByLoss(bool enable)
 	_OrderSettings.LossCut = enable;
 }
 
+bool SymbolOrderView::orderCutEnabledByLoss() const
+{
+	return _OrderSettings.LossCut;
+}
+
 void SymbolOrderView::orderCutEnabledByProfit(bool enable)
 {
 	_OrderSettings.ProfitCut = enable;
+}
+
+bool SymbolOrderView::orderCutEnabledByProfit() const
+{
+	return _OrderSettings.ProfitCut;
 }
 
 void SymbolOrderView::setOrderLossCutTick(int tick)
@@ -1366,9 +1376,19 @@ void SymbolOrderView::setOrderLossCutTick(int tick)
 	_OrderSettings.LossCutTick = tick;
 }
 
+int SymbolOrderView::getOrderLossCutTick()
+{
+	return _OrderSettings.LossCutTick;
+}
+
 void SymbolOrderView::setOrderProfitCutTick(int tick)
 {
 	_OrderSettings.ProfitCutTick = tick;
+}
+
+int SymbolOrderView::getOrderProfitCutTick()
+{
+	return _OrderSettings.ProfitCutTick;
 }
 
 void SymbolOrderView::setCutOrderType(DarkHorse::SmPriceType price_type)
@@ -1376,9 +1396,24 @@ void SymbolOrderView::setCutOrderType(DarkHorse::SmPriceType price_type)
 	_OrderSettings.PriceType = price_type;
 }
 
+int SymbolOrderView::getCutOrderType()
+{
+	return static_cast<int>(_OrderSettings.PriceType);
+}
+
+int SymbolOrderView::getCutOrderSlipTick()
+{
+	return _OrderSettings.SlipTick;
+}
+
 void SymbolOrderView::setCutOrderSlipTick(int tick)
 {
 	_OrderSettings.SlipTick = tick;
+}
+
+int SymbolOrderView::getStopOrderSlipTick()
+{
+	return _OrderSettings.StopOrderSlipTick;
 }
 
 void SymbolOrderView::setStopOrderSlipTick(int tick)
@@ -1735,9 +1770,7 @@ void SymbolOrderView::init_hoga_control(const std::string& symbol_code)
 {
 	auto hoga = mainApp.HogaMgr()->get_hoga(symbol_code);
 }
-/// <summary>
-/// ������ ������ ����. 
-/// </summary>
+
 void SymbolOrderView::set_position() {
 	if (!position_control_ || !symbol_) return;
 	position_control_->reset_position();
@@ -1893,32 +1926,32 @@ int SymbolOrderView::find_row(const int value)
 	if (!product_control_ || price_to_row_.size() == 0)
 		return 0;
 	auto it = price_to_row_.find(value);
-	if (it != price_to_row_.end()) { // ���� ���̴� ���� �ȿ� ���� ��
+	if (it != price_to_row_.end()) { 
 		return it->second;
 	}
-	else { // ���� ���̴� ���� �ۿ� ���� ��
+	else {
 		const VmProduct& product = product_control_->get_product();
 		auto itr = price_to_row_.rbegin();
 		int big_value = itr->first;
 		int big_row = itr->second;
 		int thousand_row = 0;
-		// ������ 10�� ���� ã�� ���� - 10�̻��̸� �¼��� ���Ѵ�.
-		if (big_value >= 1000) { // �ֻ��� ���� 10���� �̻��� ����
+		
+		if (big_value >= 1000) {
 			int delta = big_value - 1000;
 			int delta_row = delta / product.int_tick_size;
 			thousand_row = big_row + delta_row;
 		}
-		else { // �ֻ��� ���� 10�̸��� ����
+		else { 
 			int delta = 1000 - big_value;
 			thousand_row = big_row - delta;
 		}
 
-		if (value >= 1000) { // ������ 10 �̻��� �ִ� ���� - ������ ƽũ�� ��ŭ ����
+		if (value >= 1000) {
 			int delta = value - 1000;
 			int delta_row = delta / product.int_tick_size;
 			return thousand_row - delta_row;
 		}
-		else { // ������ 10 �̸��� ���� - ������ �������� 1�� ����
+		else { 
 			int delta = 1000 - value;
 			return thousand_row + delta;
 		}

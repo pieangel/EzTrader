@@ -286,7 +286,6 @@ BOOL VtOrderConfigDlg::OnInitDialog()
 		strValue.Format(_T("%d"), _CenterWnd->OrderTypeSlip());
 		_EditOrderTypeSlip.SetWindowText(strValue);
 
-		//RecalateLayout();
 	}
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE

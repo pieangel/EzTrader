@@ -1478,18 +1478,17 @@ BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 
 bool SmOrderPanel::EnableCutProfit() const
 {
-	return false;
+	return m_Grid.orderCutEnabledByProfit();
 }
 
 void SmOrderPanel::EnableCutProfit(bool val)
 {
-	m_Grid.orderCutEnabledByLoss(val);
+	m_Grid.orderCutEnabledByProfit(val);
 }
 
 bool SmOrderPanel::EnableCutLoss() const
 {
-	//return m_Grid.CutMgr()->EnableCutLoss();
-	return false;
+	return m_Grid.orderCutEnabledByLoss();
 }
 
 void SmOrderPanel::EnableCutLoss(bool val)
@@ -1497,10 +1496,9 @@ void SmOrderPanel::EnableCutLoss(bool val)
 	m_Grid.orderCutEnabledByLoss(val);
 }
 
-int SmOrderPanel::CutProfit() const
+int SmOrderPanel::CutProfit() 
 {
-	//return m_Grid.CutMgr()->CutProfit();
-	return 2;
+	return m_Grid.getOrderProfitCutTick();
 }
 
 void SmOrderPanel::CutProfit(int val)
@@ -1508,10 +1506,9 @@ void SmOrderPanel::CutProfit(int val)
 	m_Grid.setOrderProfitCutTick(val);
 }
 
-int SmOrderPanel::CutLoss() const
+int SmOrderPanel::CutLoss()
 {
-	//return m_Grid.CutMgr()->CutLoss();
-	return 2;
+	return m_Grid.getOrderLossCutTick();
 }
 
 void SmOrderPanel::CutLoss(int val)
@@ -1519,10 +1516,9 @@ void SmOrderPanel::CutLoss(int val)
 	m_Grid.setOrderLossCutTick(val);
 }
 
-int SmOrderPanel::OrderType() const
+int SmOrderPanel::OrderType() 
 {
-	//return m_Grid.CutMgr()->OrderType();
-	return 2;
+	return m_Grid.getCutOrderType();
 }
 
 void SmOrderPanel::OrderType(int val)
@@ -1530,10 +1526,9 @@ void SmOrderPanel::OrderType(int val)
 	m_Grid.setCutOrderType(val == 0 ? DarkHorse::SmPriceType::Market : DarkHorse::SmPriceType::Price);
 }
 
-int SmOrderPanel::OrderTypeSlip() const
+int SmOrderPanel::OrderTypeSlip()
 {
-	//return m_Grid.CutMgr()->OrderTypeSlip();
-	return 2;
+	return m_Grid.getCutOrderSlipTick();
 }
 
 void SmOrderPanel::OrderTypeSlip(int val)

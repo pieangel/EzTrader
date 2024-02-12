@@ -304,19 +304,19 @@ public:
 
 	void EnableCutLoss(bool val);
 
-	int CutProfit() const;
+	int CutProfit() ;
 
 	void CutProfit(int val);
 
-	int CutLoss() const;
+	int CutLoss() ;
 
 	void CutLoss(int val);
 
-	int OrderType() const;
+	int OrderType() ;
 
 	void OrderType(int val);
 
-	int OrderTypeSlip() const;
+	int OrderTypeSlip() ;
 
 	void OrderTypeSlip(int val);
 
