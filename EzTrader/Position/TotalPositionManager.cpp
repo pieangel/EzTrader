@@ -257,6 +257,7 @@ void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
 			position->open_profit_loss = arg["open_profit_loss"];
 			//position-> = arg["unsettled_fee"];
 			//position-> = arg["pure_unsettled_profit_loss"];
+			update_group_position(position);
 			mainApp.CallbackMgr()->process_position_event(position);
 		}
 	}

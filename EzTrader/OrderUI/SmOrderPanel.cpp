@@ -32,7 +32,7 @@
 #include "../Task/SmTaskRequestManager.h"
 #include "../Order/SmOrderSettings.h"
 #include "../Controller/SymbolPositionControl.h"
-#include "../Position/TotalPositionManager.h""
+#include "../Position/TotalPositionManager.h"
 #include "../Position/AccountPositionManager.h"
 #include "../Position/GroupPositionManager.h"
 #include "../Fund/SmFund.h"

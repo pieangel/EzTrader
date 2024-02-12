@@ -23,5 +23,10 @@ struct OrderContext {
 	int parent_account_id{ -1 };
 	int close;
 	int virtual_filled_price;
+	// order number for the simulation
+	std::string simul_order_no;
+	bool accepted = false;
+	bool unfilled = false;
+	bool filled = false;
 };
 }

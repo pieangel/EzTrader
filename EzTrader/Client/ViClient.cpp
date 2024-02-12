@@ -41,6 +41,8 @@
 #include "../Order/OrderProcess/TotalOrderManager.h"
 #include "../Symbol/SmProduct.h"
 #include "../Symbol/SmProductYearMonth.h"
+#include "../Util/IdGenerator.h"
+#include "../Util/VtStringUtil.h"
 #include <format>
 
 #define ROUNDING(x, dig)	( floor((x) * pow(float(10), dig) + 0.5f) / pow(float(10), dig) )
@@ -183,6 +185,8 @@ void ViClient::OnTimer(UINT_PTR nIDEvent)
 	if (auto wp = _Client.lock()) {
 		wp->OnDmSymbolHoga(std::move(hoga));
 	}
+
+	check_simulation_order();
 }
 
 
@@ -1051,11 +1055,13 @@ int DarkHorse::ViClient::ab_account_profit_loss(task_arg&& arg)
 void ViClient::start_timer()
 {
 	SetTimer(1, 50, NULL);
+	//_simulation = true;
 }
 
 void ViClient::stop_timer()
 {
 	KillTimer(1);
+	_simulation = false;
 }
 
 int DarkHorse::ViClient::ab_symbol_profit_loss(task_arg&& arg)
@@ -2585,6 +2591,10 @@ void ViClient::dm_new_order(order_request_p order_req)
 	int nRqID = m_CommAgent.CommJumunSvr(sTrCode, sInput);
 	LOGINFO(CMyLogger::getInstance(), "req_id[%d], code[%s], order_info[%s]", nRqID, sTrCode, sInput);
 	order_request_map[nRqID] = order_req;
+
+	if (_simulation) {
+		_simulation_order.insert(std::make_pair(order_req->request_id, order_req));
+	}
 }
 
 void ViClient::new_order(order_request_p order_req)
@@ -5682,6 +5692,182 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 	handle_order_event(std::move(order_info));
 }
 
+void ViClient::check_simulation_order()
+{
+	if (!_simulation) return;
+	if (_simulation_order.empty()) return;
+	for (auto& order : _simulation_order) {
+		auto order_request = order.second;
+		const std::string& symbol_code = order_request->symbol_code;
+		std::shared_ptr<SmSymbol> symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		if (!symbol) continue;;
+		std::shared_ptr<SmQuote> quote = mainApp.QuoteMgr()->find_quote(symbol_code);
+		if (!quote) continue;
+		if (order_request->position_type == SmPositionType::Buy) {
+			if (quote->close < order_request->order_price) {
+				on_dm_order_filled(order_request, quote);
+			}
+			else {
+				on_dm_order_accepted(order_request);
+			}
+		}
+		else if (order_request->position_type == SmPositionType::Sell) {
+			if (quote->close > order_request->order_price) {
+				on_dm_order_filled(order_request, quote);
+			}
+			else {
+				on_dm_order_accepted(order_request);
+			}
+		}
+	}
+}
+
+void ViClient::create_dm_order_unfilled_cancel_order(order_request_p order_req)
+{
+
+}
+
+void ViClient::create_dm_order_unfilled_change_order(order_request_p order_req)
+{
+
+}
+
+void ViClient::create_dm_order_accepted_cancel_order(order_request_p order_req)
+{
+
+}
+
+void ViClient::create_dm_order_accepted_change_order(order_request_p order_req)
+{
+
+}
+
+void ViClient::create_dm_order_accepted_new_order(order_request_p order_req)
+{
+	const int order_no = IdGenerator::get_id();
+	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::OE_Accepted;
+	order_info["account_no"] = order_req->account_no;
+	order_info["order_no"] = std::to_string(order_no);
+	order_info["symbol_code"] = order_req->symbol_code;
+	order_info["order_price"] = order_req->order_price;
+	order_info["order_amount"] = order_req->order_amount;
+	order_info["position_type"] = order_req->position_type == SmPositionType::Buy ? "1" : "2";
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	//order_info["original_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	//order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	auto date_time = VtStringUtil::GetCurrentDateTime();
+	order_info["order_time"] = date_time.second;
+	order_info["order_date"] = date_time.first;
+	order_info["order_type"] = "1";
+	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+	order_info["custom_info"] = "";
+
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
+	order_req->order_context.simul_order_no = std::to_string(order_no);
+	order_req->order_context.accepted = true;
+	//return order_no;
+}
+
+void ViClient::create_dm_order_unfilled_new_order(order_request_p order_req)
+{
+	const int order_no = IdGenerator::get_id();
+	nlohmann::json order_info;
+	order_info["order_event"] = OrderEvent::OE_Unfilled;
+	order_info["account_no"] = order_req->account_no;
+	order_info["order_no"] = std::to_string(order_no);
+	order_info["symbol_code"] = order_req->symbol_code;
+	order_info["order_price"] = order_req->order_price;
+	order_info["order_amount"] = order_req->order_amount;
+	order_info["position_type"] = order_req->position_type == SmPositionType::Buy ? "1" : "2";
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	order_info["original_order_no"] = "";
+	order_info["first_order_no"] = "";
+	//order_info["order_type"] = static_cast<const char*>(strMan.Trim());
+	order_info["remain_count"] = 0;
+	order_info["cancelled_count"] = 0;
+	order_info["modified_count"] = 0;
+	order_info["filled_count"] = 0;
+	order_info["order_sequence"] = 1;
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+
+	//order_info["filled_price"] = static_cast<const char*>(strFilledPrice.Trim());
+	//order_info["filled_amount"] = static_cast<const char*>(strFilledAmount.Trim());
+
+	//order_info["filled_date"] = static_cast<const char*>(strFilledDate.Trim());
+	//order_info["filled_time"] = static_cast<const char*>(strFilledTime.Trim());
+
+	order_info["custom_info"] = "";
+
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
+
+	order_req->order_context.unfilled = true;
+	order_req->order_context.simul_order_no = std::to_string(order_no);
+}
+
+void ViClient::create_dm_order_filled(order_request_p order_req, quote_p quote)
+{
+	nlohmann::json order_info;
+	const std::string& order_no = order_req->order_context.simul_order_no;
+	order_info["order_event"] = OrderEvent::OE_Filled;
+	order_info["account_no"] = order_req->account_no;
+	order_info["order_no"] = order_no;
+	order_info["symbol_code"] = order_req->symbol_code;
+	order_info["order_price"] = order_req->order_price;
+	order_info["order_amount"] = order_req->order_amount;
+	order_info["position_type"] = order_req->position_type == SmPositionType::Buy ? "1" : "2";
+	//order_info["price_type"] = static_cast<const char*>(strPriceType.Trim());
+	//order_info["ori_order_no"] = static_cast<const char*>(strOriOrderNo.Trim());
+	//order_info["first_order_no"] = static_cast<const char*>(strFirstOrderNo.Trim());
+	//order_info["order_date"] = static_cast<const char*>(strOrderDate.Trim());
+	//order_info["order_time"] = static_cast<const char*>(strOrderTime.Trim());
+
+	order_info["filled_price"] = quote->close;
+	order_info["filled_count"] = order_req->order_amount;
+
+	LOGINFO(CMyLogger::getInstance(), "order_no = %s, account_no = %s, symbol_code = %s, filled_amount = %d", order_no.c_str(), order_req->account_no.c_str(), order_req->symbol_code.c_str(), order_req->order_amount);
+
+	auto date_time = VtStringUtil::GetCurrentDateTime();
+	order_info["filled_date"] = date_time.second;
+	order_info["filled_time"] = date_time.first;
+
+	order_info["custom_info"] = "";
+
+	//mainApp.order_processor()->add_order_event(std::move(order_info));
+	handle_order_event(std::move(order_info));
+
+	order_req->order_context.filled = true;
+
+	remove_order_request_from_simulation(order_req->request_id);
+}
+
+void ViClient::on_dm_order_accepted(order_request_p order_req)
+{
+	//if (!order_req->order_context.accepted)
+	//	create_dm_order_accepted_new_order(order_req);
+	if (!order_req->order_context.unfilled)
+		create_dm_order_unfilled_new_order(order_req);
+}
+
+void ViClient::on_dm_order_unfilled(order_request_p order_req)
+{
+	
+}
+
+void ViClient::on_dm_order_filled(order_request_p order_req, quote_p quote)
+{
+	if (!order_req->order_context.filled)
+		create_dm_order_filled(order_req, quote);
+}
 
 void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG& nRealType)
 {
@@ -5767,7 +5953,6 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 	handle_order_event(std::move(order_info));
 }
 
-
 void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& nRealType)
 {
 	CString strAccountNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "°èÁÂ¹øÈ£");
@@ -5841,6 +6026,13 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 
 	//mainApp.order_processor()->add_order_event(std::move(order_info));
 	handle_order_event(std::move(order_info));
+}
+
+void ViClient::remove_order_request_from_simulation(const int& order_request_id)
+{
+	auto found = _simulation_order.find(order_request_id);
+	if (found == _simulation_order.end()) return;
+	_simulation_order.erase(found);
 }
 
 void DarkHorse::ViClient::on_ab_future_quote(const CString& strKey, const LONG& nRealType)

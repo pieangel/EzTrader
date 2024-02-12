@@ -32,6 +32,14 @@ namespace DarkHorse {
 	typedef std::map<std::string, std::any> task_arg;
 	struct OrderRequest;
 	using order_request_p = std::shared_ptr<OrderRequest>;
+	class SmSymbol;
+	using symbol_p = std::shared_ptr<SmSymbol>;
+	class SmAccount;
+	using account_p = std::shared_ptr<SmAccount>;
+	
+	struct SmQuote;
+	using quote_p = std::shared_ptr<SmQuote>;
+
 	class ViClient : public CDialog
 	{
 
@@ -270,6 +278,28 @@ namespace DarkHorse {
 		std::map<int, order_request_p> order_request_map;
 		std::set<std::string> _RegSymbolSet;
 		std::set<std::string> _RegAccountSet;
+
+
+		bool _simulation{ false };
+		// key : order request id, value : order request object.
+		std::map<int, order_request_p> _simulation_order;
+		// 아래 함수는 시뮬레이션 모드를 위하여 있는 함수들임. 
+		// 국내 주문 접수확인
+		void on_dm_order_accepted(order_request_p order_req);
+		// 국내 주문 미체결 
+		void on_dm_order_unfilled(order_request_p order_req);
+		// 국내 주문 체결
+		void on_dm_order_filled(order_request_p order_req, quote_p quote);
+		// Check the order request id for the simulation mode.
+		void check_simulation_order();
+		void create_dm_order_accepted_new_order(order_request_p order_req);
+		void create_dm_order_unfilled_new_order(order_request_p order_req);
+		void create_dm_order_accepted_change_order(order_request_p order_req);
+		void create_dm_order_unfilled_change_order(order_request_p order_req);
+		void create_dm_order_accepted_cancel_order(order_request_p order_req);
+		void create_dm_order_unfilled_cancel_order(order_request_p order_req);
+		void create_dm_order_filled(order_request_p order_req, quote_p quote);
+		void remove_order_request_from_simulation(const int& order_request_id);
 	};
 
 }
