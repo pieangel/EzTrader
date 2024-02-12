@@ -61,6 +61,7 @@ BEGIN_MESSAGE_MAP(AbOrderGridConfigDlg, CDialog)
 	ON_EN_CHANGE(IDC_EDIT_TICK_COUNT, &AbOrderGridConfigDlg::OnEnChangeEditTickCount)
 	ON_EN_CHANGE(IDC_EDIT_CELL_HEIGHT, &AbOrderGridConfigDlg::OnEnChangeEditCellHeight)
 	ON_BN_CLICKED(IDC_CHECK_FILTER_HOGA, &AbOrderGridConfigDlg::OnBnClickedCheckFilterHoga)
+	ON_BN_CLICKED(IDC_CHECK_STOP_AS_REAL, &AbOrderGridConfigDlg::OnBnClickedCheckStopAsReal)
 END_MESSAGE_MAP()
 
 
@@ -329,3 +330,9 @@ void AbOrderGridConfigDlg::OnBnClickedCheckFilterHoga()
 }
 
 
+
+
+void AbOrderGridConfigDlg::OnBnClickedCheckStopAsReal()
+{
+	// TODO: Add your control notification handler code here
+}

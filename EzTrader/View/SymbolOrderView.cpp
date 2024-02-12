@@ -1416,6 +1416,17 @@ int SymbolOrderView::getStopOrderSlipTick()
 	return _OrderSettings.StopOrderSlipTick;
 }
 
+void SymbolOrderView::setStopAsRealOrder(bool enable)
+{
+	_OrderSettings.stop_as_real_order = enable;
+	set_stop_as_real_order(enable);
+}
+
+bool SymbolOrderView::getStopAsRealOrder()
+{
+	return _OrderSettings.stop_as_real_order;
+}
+
 void SymbolOrderView::setStopOrderSlipTick(int tick)
 {
 	_OrderSettings.StopOrderSlipTick = tick;

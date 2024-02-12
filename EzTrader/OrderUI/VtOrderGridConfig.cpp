@@ -61,7 +61,7 @@ BEGIN_MESSAGE_MAP(VtOrderGridConfig, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_COUNTCOL, &VtOrderGridConfig::OnBnClickedCheckShowCountcol)
 	ON_EN_CHANGE(IDC_EDIT_TICK_COUNT, &VtOrderGridConfig::OnEnChangeEditTickCount)
 	ON_EN_CHANGE(IDC_EDIT_CELL_HEIGHT, &VtOrderGridConfig::OnEnChangeEditCellHeight)
-	ON_BN_CLICKED(IDC_CHECK_FILTER_HOGA, &VtOrderGridConfig::OnBnClickedCheckFilterHoga)
+	ON_BN_CLICKED(IDC_CHECK_FILTER_HOGA, &VtOrderGridConfig::OnBnClickedCheckStopAsReal)
 END_MESSAGE_MAP()
 
 
@@ -316,7 +316,7 @@ void VtOrderGridConfig::OnEnChangeEditCellHeight()
 }
 
 
-void VtOrderGridConfig::OnBnClickedCheckFilterHoga()
+void VtOrderGridConfig::OnBnClickedCheckStopAsReal()
 {
 	if (!_CenterWnd)
 		return;
@@ -325,5 +325,5 @@ void VtOrderGridConfig::OnBnClickedCheckFilterHoga()
 		flag = true;
 	else
 		flag = false;
-	_CenterWnd->UseHogaSiseFilter(flag);
+	_CenterWnd->setStopAsRealOrder(flag);
 }

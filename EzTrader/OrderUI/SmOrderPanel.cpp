@@ -1551,6 +1551,16 @@ void SmOrderPanel::FixedCenter(bool val)
 
 
 
+bool SmOrderPanel::getStopAsRealOrder()
+{
+	return m_Grid.getStopAsRealOrder();
+}
+
+void SmOrderPanel::setStopAsRealOrder(bool val)
+{
+	m_Grid.setStopAsRealOrder(val);
+}
+
 BOOL SmOrderPanel::OnEraseBkgnd(CDC* pDC)
 {
 

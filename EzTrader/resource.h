@@ -706,6 +706,7 @@
 #define IDC_STATIC_GRID                 1531
 #define IDC_EDIT_STOP                   1532
 #define IDC_SPIN_STOP                   1533
+#define IDC_CHECK_STOP_AS_REAL          1534
 #define ID_VIEW_CUSTOMIZE               32770
 #define ID_VIEW_TOOLBARS                32771
 #define ID_VIEW_WORKSPACE               32772
@@ -852,7 +853,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        32960
 #define _APS_NEXT_COMMAND_VALUE         32960
-#define _APS_NEXT_CONTROL_VALUE         1534
+#define _APS_NEXT_CONTROL_VALUE         1535
 #define _APS_NEXT_SYMED_VALUE           33060
 #endif
 #endif

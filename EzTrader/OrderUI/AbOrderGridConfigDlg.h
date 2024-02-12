@@ -58,4 +58,5 @@ public:
 	afx_msg void OnEnChangeEditCellHeight();
 	afx_msg void OnBnClickedCheckFilterHoga();
 	CButton _CheckFilterHoga;
+	afx_msg void OnBnClickedCheckStopAsReal();
 };

@@ -87,6 +87,8 @@ public:
 	void OrderByRemain(bool val) { _OrderByRemain = val; }
 	bool ShowOrderCountArea() const { return _ShowOrderCountArea; }
 	void ShowOrderCountArea(bool val) { _ShowOrderCountArea = val; }
+	bool getStopAsRealOrder();
+	void setStopAsRealOrder(bool val);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -247,6 +249,7 @@ private:
 	bool _ShowRemainConfig = true;
 	bool _ShowOrderCountArea = true;
 	bool _UseHogaSiseFilter = false;
+	bool _StopAsReal = false;
 
 	symbol_p  _Symbol;
 	int _OrderAmount;

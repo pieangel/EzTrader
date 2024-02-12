@@ -16,5 +16,7 @@ struct SmOrderSettings {
 	int StopOrderSlipTick{ 2 };
 	// Loss Cut / Profit Cut Price Type
 	SmPriceType PriceType = SmPriceType::Price;
+	// Stop Order as Real Order
+	bool stop_as_real_order{ true };
 };
 }

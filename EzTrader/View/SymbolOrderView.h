@@ -234,6 +234,8 @@ public:
 	void setCutOrderSlipTick(int tick);
 	void setStopOrderSlipTick(int tick);
 	int getStopOrderSlipTick();
+	void setStopAsRealOrder(bool enable);
+	bool getStopAsRealOrder();
 private:
 	SmOrderPanel* _centerWnd = nullptr;
 	std::vector<bool> _OrderGridColOption;
