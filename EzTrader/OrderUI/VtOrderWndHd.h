@@ -76,7 +76,7 @@ public:
 	static int _MaxWidth;
 private:
 	bool destroyed_ = false;
-	void AddItemToComboBox(CComboBox& comboBox, account_p item)
+	void AddItemToComboBox(const int index, CComboBox& comboBox, account_p item)
 	{
 		// Add the std::shared_ptr to the vector
 		combo_account_vector.push_back(item);
@@ -84,7 +84,7 @@ private:
 		acntName.append(_T(":"));
 		acntName.append(item->Name());
 		// Add item to the combo box and store the index in the combo box
-		int index = comboBox.AddString(acntName.c_str()); // Replace with appropriate text
+		//int index = comboBox.AddString(acntName.c_str()); // Replace with appropriate text
 		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_account_vector.size() - 1));
 	}
 
@@ -102,13 +102,13 @@ private:
 	std::vector<account_p> combo_account_vector;
 
 
-	void AddItemToComboBox(CComboBox& comboBox, fund_p item)
+	void AddItemToComboBox(const int index, CComboBox& comboBox, fund_p item)
 	{
 		// Add the std::shared_ptr to the vector
 		combo_fund_vector.push_back(item);
 
 		// Add item to the combo box and store the index in the combo box
-		int index = comboBox.AddString(item->Name().c_str()); // Replace with appropriate text
+		//int index = comboBox.AddString(item->Name().c_str()); // Replace with appropriate text
 		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_fund_vector.size() - 1));
 	}
 

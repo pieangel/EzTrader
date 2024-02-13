@@ -1020,7 +1020,7 @@ bool VtOrderWndHd::InitFund()
 			_OrderConfigMgr->Fund(fund);
 		}
 		//_ComboAcnt.SetItemDataPtr(index, fund.get());
-		AddItemToComboBox(_ComboAcnt, fund);
+		AddItemToComboBox(index, _ComboAcnt, fund);
 	}
 
 	if (selIndex == -1) { // 정해진 펀드가 없을 때 맨처음 펀드 선택
@@ -1060,21 +1060,21 @@ void VtOrderWndHd::InitAccount()
 	for (auto it = main_account_vector.begin(); it != main_account_vector.end(); ++it) {
 		account_p acnt = *it;
 		acntName = acnt->No();
-		acntName.append(_T(" "));
+		acntName.append(_T(":"));
 		acntName.append(acnt->Name());
 		index = _ComboAcnt.AddString(acntName.c_str());
 		//comboMap[acnt->No()] = std::make_pair(index, acnt);
-		AddItemToComboBox(_ComboAcnt, acnt);
+		AddItemToComboBox(index, _ComboAcnt, acnt);
 		//_ComboAcnt.SetItemDataPtr(index, acnt.get());
 		const std::vector<account_p>& sub_account_vector = acnt->get_sub_accounts();
 		for (auto it = sub_account_vector.begin(); it != sub_account_vector.end(); it++) {
 			auto sub_account = *it;
 			acntName = sub_account->No();
-			acntName.append(_T(" "));
+			acntName.append(_T(":"));
 			acntName.append(sub_account->Name());
 			index = _ComboAcnt.AddString(acntName.c_str());
 			//comboMap[sub_account->No()] = std::make_pair(index, sub_account);
-			AddItemToComboBox(_ComboAcnt, acnt);
+			AddItemToComboBox(index, _ComboAcnt, acnt);
 			//_ComboAcnt.SetItemDataPtr(index, sub_account.get());
 		}
 	}
@@ -1453,10 +1453,13 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 			_OrderConfigMgr->Account(acnt);
 			_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->Name().c_str());
 
+			
+
 			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 				SmOrderPanel* centerWnd = *it;
 				centerWnd->ChangeAccount(_OrderConfigMgr->Account());
 			}
+			_OrderConfigMgr->_HdLeftWnd->OnAccountChanged();
 			if (!acnt->is_subaccount() && !acnt->Pwd().empty()) {
 				// Register the new account to the Event Map.
 				RegisterRealtimeAccount(acnt);
@@ -1502,6 +1505,11 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 
 	if (_LeftWnd) {
 		_LeftWnd.OnAccountChanged();
+		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
+		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
+		_OrderConfigMgr->_HdLeftWnd->RefreshFutureGrid();
+		_OrderConfigMgr->_HdLeftWnd->RefreshOptionGrid();
+
 	}
 }
 
@@ -1838,11 +1846,12 @@ void VtOrderWndHd::OnEnChangeEditPwd()
 
 void VtOrderWndHd::OnCbnDropdownComboAccountHd()
 {
-	//InitAccount();
+	/*
 	if (_OrderConfigMgr->Type() == 0)
 		InitAccount();
 	else
 		InitFund();
+		*/
 }
 
 void VtOrderWndHd::SaveToXml(pugi::xml_node& node_order_window)

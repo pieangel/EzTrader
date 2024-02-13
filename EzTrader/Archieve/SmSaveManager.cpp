@@ -1312,30 +1312,33 @@ namespace DarkHorse {
 					json subAccounts = accountData["sub_accounts"];
 					for (json::iterator subIt = subAccounts.begin(); subIt != subAccounts.end(); ++subIt) {
 						json subAccountData = *subIt;
-						std::string t_account_no = subAccountData["account_no"];
-						std::string t_name = SmUtil::Utf8ToMultiByte(subAccountData["name"]);
-						std::string t_account_type = subAccountData["account_type"];
-						bool t_used_for_fund = subAccountData["used_for_fund"];
-						int t_seung_su = subAccountData["seung_su"];
-						double t_ratio = subAccountData["ratio"];
-						bool t_is_sub_account = subAccountData["is_sub_account"];
-						std::string t_fund_name = SmUtil::Utf8ToMultiByte(subAccountData["fund_name"]);
-						std::string t_parent_account_no = subAccountData["parent_account_no"];
+						std::string sub_account_no = subAccountData["account_no"];
+						std::string sub_name = SmUtil::Utf8ToMultiByte(subAccountData["name"]);
+						std::string sub_account_type = subAccountData["account_type"];
+						bool sub_used_for_fund = subAccountData["used_for_fund"];
+						int sub_seung_su = subAccountData["seung_su"];
+						double sub_ratio = subAccountData["ratio"];
+						bool sub_is_sub_account = subAccountData["is_sub_account"];
+						std::string fund_name = SmUtil::Utf8ToMultiByte(subAccountData["fund_name"]);
+						std::string parent_account_no = subAccountData["parent_account_no"];
 
-						if (t_parent_account_no != account_no) continue;
+						if (parent_account_no != account_no) continue;
 
-						auto sub_account = account->CreateSubAccount(
-							t_account_no, 
-							t_name, 
+						auto sub_account = mainApp.AcntMgr()->FindAccount(sub_account_no);
+						if (sub_account) continue;
+
+						sub_account = account->CreateSubAccount(
+							sub_account_no, 
+							sub_name, 
 							account->id(),
-							t_account_type
+							sub_account_type
 						);
 
-						sub_account->SeungSu(t_seung_su);
-						sub_account->Ratio(t_ratio);
-						sub_account->is_subaccount(t_is_sub_account);
-						sub_account->fund_name(t_fund_name);
-						sub_account->UsedForFund(t_used_for_fund);
+						sub_account->SeungSu(sub_seung_su);
+						sub_account->Ratio(sub_ratio);
+						sub_account->is_subaccount(sub_is_sub_account);
+						sub_account->fund_name(fund_name);
+						sub_account->UsedForFund(sub_used_for_fund);
 					}
 				}
 

@@ -43,7 +43,7 @@ void AbOrderGridConfigDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_SHOW_PLCONFIGWND, _CheckShowPLConfigWnd);
 	DDX_Control(pDX, IDC_CHECK_SHOW_STOPCOL, _CheckShowStopCol);
 	DDX_Control(pDX, IDC_CHECK_SHOW_TICKWND, _CheckShowTickWnd);
-	DDX_Control(pDX, IDC_CHECK_FILTER_HOGA, _CheckFilterHoga);
+	DDX_Control(pDX, IDC_CHECK_STOP_AS_REAL, _CheckStopAsRealOrder);
 }
 
 
@@ -272,10 +272,10 @@ BOOL AbOrderGridConfigDlg::OnInitDialog()
 	}
 
 	if (_CenterWnd->UseHogaSiseFilter()) {
-		_CheckFilterHoga.SetCheck(BST_CHECKED);
+		_CheckStopAsRealOrder.SetCheck(BST_CHECKED);
 	}
 	else {
-		_CheckFilterHoga.SetCheck(BST_UNCHECKED);
+		_CheckStopAsRealOrder.SetCheck(BST_UNCHECKED);
 	}
 
 	// TODO:  Add extra initialization here
@@ -322,7 +322,7 @@ void AbOrderGridConfigDlg::OnBnClickedCheckFilterHoga()
 	if (!_CenterWnd)
 		return;
 	bool flag = false;
-	if (_CheckFilterHoga.GetCheck() == BST_CHECKED)
+	if (_CheckStopAsRealOrder.GetCheck() == BST_CHECKED)
 		flag = true;
 	else
 		flag = false;

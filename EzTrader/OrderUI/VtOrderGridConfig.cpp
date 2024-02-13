@@ -44,7 +44,7 @@ void VtOrderGridConfig::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_SHOW_PLCONFIGWND, _CheckShowPLConfigWnd);
 	DDX_Control(pDX, IDC_CHECK_SHOW_STOPCOL, _CheckShowStopCol);
 	DDX_Control(pDX, IDC_CHECK_SHOW_TICKWND, _CheckShowTickWnd);
-	DDX_Control(pDX, IDC_CHECK_FILTER_HOGA, _CheckFilterHoga);
+	DDX_Control(pDX, IDC_CHECK_STOP_AS_REAL, _stopAsRealOrder);
 }
 
 
@@ -61,7 +61,7 @@ BEGIN_MESSAGE_MAP(VtOrderGridConfig, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_COUNTCOL, &VtOrderGridConfig::OnBnClickedCheckShowCountcol)
 	ON_EN_CHANGE(IDC_EDIT_TICK_COUNT, &VtOrderGridConfig::OnEnChangeEditTickCount)
 	ON_EN_CHANGE(IDC_EDIT_CELL_HEIGHT, &VtOrderGridConfig::OnEnChangeEditCellHeight)
-	ON_BN_CLICKED(IDC_CHECK_FILTER_HOGA, &VtOrderGridConfig::OnBnClickedCheckStopAsReal)
+	ON_BN_CLICKED(IDC_CHECK_STOP_AS_REAL, &VtOrderGridConfig::OnBnClickedCheckStopAsReal)
 END_MESSAGE_MAP()
 
 
@@ -270,11 +270,11 @@ BOOL VtOrderGridConfig::OnInitDialog()
 		((CButton*)GetDlgItem(IDC_CHECK_SHOW_PLCONFIGWND))->SetCheck(BST_UNCHECKED);
 	}
 
-	if (_CenterWnd->UseHogaSiseFilter()) {
-		_CheckFilterHoga.SetCheck(BST_CHECKED);
+	if (_CenterWnd->getStopAsRealOrder()) {
+		_stopAsRealOrder.SetCheck(BST_CHECKED);
 	}
 	else {
-		_CheckFilterHoga.SetCheck(BST_UNCHECKED);
+		_stopAsRealOrder.SetCheck(BST_UNCHECKED);
 	}
 
 	// TODO:  Add extra initialization here
@@ -321,7 +321,7 @@ void VtOrderGridConfig::OnBnClickedCheckStopAsReal()
 	if (!_CenterWnd)
 		return;
 	bool flag = false;
-	if (_CheckFilterHoga.GetCheck() == BST_CHECKED)
+	if (_stopAsRealOrder.GetCheck() == BST_CHECKED)
 		flag = true;
 	else
 		flag = false;
