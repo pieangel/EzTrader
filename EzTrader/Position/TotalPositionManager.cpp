@@ -231,16 +231,37 @@ void TotalPositionManager::on_symbol_position(nlohmann::json&& arg)
 		//position->open_profit_loss = open_profit_loss;
 
 		update_group_position(position);
-		auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
-		auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
-		// Set the flag to true to indicate that the order has been placed before.
-		symbol_order_manager->set_ordered_before(true);
-		
+		set_ordered_before(account_no, symbol_code);
 	}
 	catch (const std::exception& e) {
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
+}
+
+void TotalPositionManager::write_log(const std::string& function_name, position_p position)
+{
+	if (!position) return;
+
+	LOGINFO(CMyLogger::getInstance(), "[%s] 계좌[%s],[부모계좌번호[%s], 펀드이름[%s], 종목[%s], 포지션타입[%d], 잔고[%d], 평균가[%.2f], 청산손익[%.2f], SubPosition Count[%d]",
+		function_name.c_str(),
+		position->account_no.c_str(),
+		position->parent_account_no.c_str(),
+		position->fund_name.c_str(),
+		position->symbol_code.c_str(),
+		(int)position->position_type,
+		position->open_quantity,
+		position->average_price,
+		position->trade_profit_loss,
+		position->sub_positions.size());
+}
+
+void TotalPositionManager::set_ordered_before(const std::string& account_no, const std::string& symbol_code)
+{
+	auto account_order_manager = mainApp.total_order_manager()->get_account_order_manager(account_no);
+	auto symbol_order_manager = account_order_manager->get_symbol_order_manager(symbol_code);
+	// Set the flag to true to indicate that the order has been placed before.
+	symbol_order_manager->set_ordered_before(true);
 }
 
 void TotalPositionManager::on_symbol_profit_loss(nlohmann::json&& arg)
@@ -337,38 +358,43 @@ position_p TotalPositionManager::find_position_by_id(const int& position_id)
 	else
 		return nullptr;
 }
-
+ 
 void TotalPositionManager::update_group_position(std::shared_ptr<Position> position)
 {
 	if (!position) return;
 	if (position->position_type == OrderType::SubAccount) {
-		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->parent_account_no);
-		auto account_group_position = group_position_manager->create_account_group_position(position->parent_account_no, position->symbol_code);
-		group_position_manager->update_group_position(account_group_position, position);
-		mainApp.CallbackMgr()->process_position_event(account_group_position);
+		update_group_position(0, position->parent_account_no, position);
 		auto sub_account = mainApp.AcntMgr()->FindAccount(position->account_no);
 		if (!sub_account || sub_account->fund_name().empty()) return;
-		group_position_manager = find_add_fund_group_position_manager(sub_account->fund_name());
-		auto fund_group_position = group_position_manager->create_fund_group_position(position->fund_name, position->symbol_code);
-		group_position_manager->update_group_position(fund_group_position, position);
-		mainApp.CallbackMgr()->process_position_event(fund_group_position);
+		update_group_position(1, sub_account->fund_name(), position);
 	}
 	else if (position->position_type == OrderType::Fund) {
-		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->parent_account_no);
-		auto account_group_position = group_position_manager->create_account_group_position(position->parent_account_no, position->symbol_code);
-		group_position_manager->update_group_position(account_group_position, position);
-		mainApp.CallbackMgr()->process_position_event(account_group_position);
-		group_position_manager = find_add_fund_group_position_manager(position->fund_name);
-		auto fund_group_position = group_position_manager->create_fund_group_position(position->fund_name, position->symbol_code);
-		group_position_manager->update_group_position(fund_group_position, position);
-		mainApp.CallbackMgr()->process_position_event(fund_group_position);
+		update_group_position(0, position->parent_account_no, position);
+		update_group_position(1, position->fund_name, position);
 	}
 	else {
-		group_position_manager_p group_position_manager = find_add_account_group_position_manager(position->account_no);
-		auto account_group_position = group_position_manager->create_account_group_position(position->account_no, position->symbol_code);
-		group_position_manager->update_group_position(account_group_position, position);
-		mainApp.CallbackMgr()->process_position_event(account_group_position);
+		update_group_position(0, position->account_no, position);
 	}
+}
+
+void TotalPositionManager::update_group_position(const int target, const std::string& target_name, std::shared_ptr<Position> position)
+{
+	if (!position) return;
+
+	group_position_manager_p group_position_manager;
+
+	if (target == 0) {
+		group_position_manager = find_add_account_group_position_manager(target_name);
+	}
+	else {
+		group_position_manager = find_add_fund_group_position_manager(target_name);
+	}
+	auto group_position = group_position_manager->create_group_position(0, position->account_no, position->symbol_code);
+	group_position_manager->update_group_position(group_position, position);
+	// 로그 추가 필요. 
+	mainApp.CallbackMgr()->process_position_event(group_position);
+
+	write_log("update_group_position", group_position);
 }
 
 }

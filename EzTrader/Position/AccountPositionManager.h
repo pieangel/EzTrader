@@ -37,6 +37,7 @@ public:
 	void update_position(position_p position, VmPosition& dest_position);
 	void get_active_positions(std::map<std::string, position_p>& position_vector);
 private:
+	void write_log(const std::string& function_name, position_p position);
 	std::mutex mutex_; // Mutex for thread synchronization
 	void set_symbol_id(position_p position, const std::string& symbol_code);
 	void set_account_id(position_p position, const std::string& account_no);

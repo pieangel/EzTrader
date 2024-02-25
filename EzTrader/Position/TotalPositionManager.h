@@ -54,11 +54,16 @@ public:
 	static void set_account_id(position_p position, const std::string& account_no);
 	void update_account_profit_loss(const std::string& account_no);
 	position_p find_position_by_id(const int& position_id);
+	// target : 1 for fund, 0 for account
+	// target_name : fund name or account no
+	void update_group_position(const int target, const std::string& target_name, std::shared_ptr<Position> position);
 	void update_group_position(std::shared_ptr<Position> position);
 	group_position_manager_p find_fund_group_position_manager(const std::string& fund_name);
 	group_position_manager_p find_account_group_position_manager(const std::string& account_no);
 	account_position_manager_p find_position_manager(const std::string& account_no);
 private:
+	void write_log(const std::string& function_name, position_p position);
+	void set_ordered_before(const std::string& account_no, const std::string& symbol_code);
 	//std::mutex mutex_; // Mutex for thread synchronization
 	group_position_manager_p find_add_account_group_position_manager(const std::string& account_no);
 	group_position_manager_p create_account_group_position_manager(const std::string& account_no);

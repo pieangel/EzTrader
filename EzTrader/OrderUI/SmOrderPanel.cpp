@@ -1427,11 +1427,13 @@ void SmOrderPanel::ChangeSymbol(symbol_p symbol)
 		return;
 	_TickGrid.Clear();
 	ClearPosition();
+	/*
 	DhTaskArg arg;
 	arg.detail_task_description = symbol->SymbolCode();
 	arg.task_type = DhTaskType::DmSymbolMaster;
 	arg.parameter_map["symbol_code"] = symbol->SymbolCode();
 	mainApp.TaskReqMgr()->AddTask(std::move(arg));
+	*/
 
 	// 실시간 시세와 호가 등록을 해지해 준다.
 	//UnregisterRealtimeSymbol();

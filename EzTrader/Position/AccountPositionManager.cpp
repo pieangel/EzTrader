@@ -18,6 +18,7 @@
 #include "../Log/MyLogger.h"
 #include "TotalPositionManager.h"
 #include "../Event/SmCallbackManager.h"
+#include "../Log/MyLogger.h"
 namespace DarkHorse {
 
 AccountPositionManager::AccountPositionManager(TotalPositionManager& total_position_manager, const std::string& account_no)
@@ -83,7 +84,12 @@ void AccountPositionManager::update_account_profit_loss()
 	account_profit_loss_->trade_fee = trade_fee;
 	account_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
 
-	//LOGINFO(CMyLogger::getInstance(), "update_account_profit_loss :: account_no[%s], 당일매매손익[%.2f], 당일평가손익[%.2f], 수수료[%.2f], 당일총손익[%.2f]", account_no_.c_str(), trade_profit_loss, open_profit_loss, trade_fee, pure_trade_profit_loss);
+// 	LOGINFO(CMyLogger::getInstance(), "update_account_profit_loss :: account_no[%s], 당일매매손익[%.2f], 당일평가손익[%.2f], 수수료[%.2f], 당일총손익[%.2f]", 
+// 		account_no_.c_str(), 
+// 		trade_profit_loss, 
+// 		open_profit_loss, 
+// 		trade_fee, 
+// 		pure_trade_profit_loss);
 
 }
 // update the position with the order.
@@ -112,7 +118,7 @@ void AccountPositionManager::update_position(order_p order)
 	const double traded_profit_loss = calculate_traded_profit_loss(order, position, symbol->decimal(), symbol->seung_su());
 	const double new_average_price = calculate_average_price(order, position, new_position_count, unsettled_count);
 
-	LOGINFO(CMyLogger::getInstance(), "position_count = [%d], unsettled_count = [%d], trade_profit_loss = [%.2f], average_price = [%.2f]", new_position_count, unsettled_count, traded_profit_loss, new_average_price);
+	//LOGINFO(CMyLogger::getInstance(), "position_count = [%d], unsettled_count = [%d], trade_profit_loss = [%.2f], average_price = [%.2f]", new_position_count, unsettled_count, traded_profit_loss, new_average_price);
 	
 	position->trade_profit_loss += traded_profit_loss;
 	position->open_quantity = new_position_count;
@@ -126,8 +132,8 @@ void AccountPositionManager::update_position(order_p order)
 		order->order_state = SmOrderState::Settled;
 	else
 		mainApp.event_hub()->process_stop_order_event(order);
-	LOGINFO(CMyLogger::getInstance(), "symbol position  open qty = [%d], average_price = [%.2f], open pl = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
-
+	//LOGINFO(CMyLogger::getInstance(), "symbol position  open qty = [%d], average_price = [%.2f], open pl = [%.2f]", position->open_quantity, position->average_price, position->open_profit_loss);
+	write_log("update_position", position);
 	update_account_profit_loss();
 	mainApp.CallbackMgr()->process_position_event(position);
 
@@ -181,6 +187,23 @@ void AccountPositionManager::get_active_positions(std::map<std::string, position
 		if (position->open_quantity != 0)
 			position_vector[it->first] = it->second;
 	}
+}
+
+void AccountPositionManager::write_log(const std::string& function_name, position_p position)
+{
+	if (!position) return;
+
+	LOGINFO(CMyLogger::getInstance(), "[%s] 계좌[%s],[부모계좌번호[%s], 펀드이름[%s], 종목[%s], 포지션타입[%d], 잔고[%d], 평균가[%.2f], 청산손익[%.2f], SubPosition Count[%d]",
+		function_name.c_str(),
+		position->account_no.c_str(),
+		position->parent_account_no.c_str(),
+		position->fund_name.c_str(),
+		position->symbol_code.c_str(),
+		(int)position->position_type,
+		position->open_quantity,
+		position->average_price,
+		position->trade_profit_loss,
+		position->sub_positions.size());
 }
 
 void AccountPositionManager::set_symbol_id(position_p position, const std::string& symbol_code)

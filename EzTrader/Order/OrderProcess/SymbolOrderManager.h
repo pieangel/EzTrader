@@ -43,6 +43,7 @@ private:
 	std::mutex mutex_; // Mutex for thread synchronization
 	// 이전에 주문이 나갔는지 여부. 한번이라도 나갔다면 true, 아니면 false.
 	bool ordered_before_{ false };
+	void write_log(const std::string& function_name, order_p order);
 	void on_order_accepted(order_p order, OrderEvent order_event);
 	void on_order_unfilled(order_p order, OrderEvent order_event);
 	void on_order_filled(order_p order, OrderEvent order_event);

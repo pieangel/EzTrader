@@ -2199,8 +2199,8 @@ void SymbolOrderView::put_order(
 
 	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
 
-	std::shared_ptr<OrderRequest> order_req = nullptr;
-	order_req = OrderRequestManager::make_order_request(
+	std::shared_ptr<OrderRequest> order_request = nullptr;
+	order_request = OrderRequestManager::make_order_request(
 		parent_account ? parent_account->No() : account->No(),
 		mainApp.AcntMgr()->get_password(account->No()),
 		price,
@@ -2210,23 +2210,33 @@ void SymbolOrderView::put_order(
 		SmOrderType::New,
 		price_type,
 		fill_condition_);
-	if (order_req) {
-		order_req->request_type = order_request_type_;
-		order_req->order_context.order_control_id = id_;
-		order_req->order_context.order_source_type = OrderType::MainAccount;
+	if (order_request) {
+		order_request->request_type = order_request_type_;
+		order_request->order_context.order_control_id = id_;
+		order_request->order_context.order_source_type = OrderType::MainAccount;
 		if (parent_account) {
-			order_req->order_context.parent_account_id = parent_account->id();
-			order_req->order_context.parent_account_no = parent_account->No();
-			order_req->order_context.sub_account_no = account->No();
-			order_req->order_context.order_source_type = OrderType::SubAccount;
+			order_request->order_context.parent_account_id = parent_account->id();
+			order_request->order_context.parent_account_no = parent_account->No();
+			order_request->order_context.sub_account_no = account->No();
+			order_request->order_context.order_source_type = OrderType::SubAccount;
 		}
 		if (fund_) {
-			order_req->order_context.order_source_type = OrderType::Fund;
-			order_req->order_context.fund_id = fund_->Id();
-			order_req->order_context.fund_name = fund_->Name();
+			order_request->order_context.order_source_type = OrderType::Fund;
+			order_request->order_context.fund_id = fund_->Id();
+			order_request->order_context.fund_name = fund_->Name();
 		}
-		SetProfitLossCut(order_req);
-		mainApp.order_request_manager()->add_order_request(order_req);
+		SetProfitLossCut(order_request);
+		mainApp.order_request_manager()->add_order_request(order_request);
+
+		LOGINFO(CMyLogger::getInstance(), "put_order 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문구분[%d], 주문수량[%d]",
+			order_request->account_no.c_str(),
+			order_request->order_context.sub_account_no.c_str(),
+			order_request->order_context.fund_name.c_str(),
+			order_request->order_context.parent_account_no.c_str(),
+			order_request->order_context.signal_name.c_str(),
+			order_request->symbol_code.c_str(),
+			(int)order_request->position_type,
+			order_request->order_amount);
 	}
 }
 
@@ -2466,7 +2476,7 @@ void SymbolOrderView::cancel_order(std::vector<std::shared_ptr<DarkHorse::Order>
 	for (auto it = order_vec.begin(); it != order_vec.end(); ++it) {
 		const auto& order = *it;
 		auto parent_account = mainApp.AcntMgr()->get_parent_account(order->account_no);
-		auto order_req = OrderRequestManager::make_cancel_order_request(
+		auto order_request = OrderRequestManager::make_cancel_order_request(
 			mainApp.AcntMgr()->get_account_no(order->account_no),
 			mainApp.AcntMgr()->get_password(order->account_no),
 			order->symbol_code,
@@ -2477,23 +2487,35 @@ void SymbolOrderView::cancel_order(std::vector<std::shared_ptr<DarkHorse::Order>
 			SmOrderType::Cancel,
 			order->price_type,
 			fill_condition_);
-		order_req->order_context.order_source_type = OrderType::MainAccount;
+		order_request->order_context.order_source_type = OrderType::MainAccount;
 		if (parent_account) {
-			order_req->order_context.parent_account_id = parent_account->id();
-			order_req->order_context.parent_account_no = parent_account->No();
-			order_req->order_context.sub_account_no = order->account_no;
-			order_req->order_context.order_source_type = OrderType::SubAccount;
+			order_request->order_context.parent_account_id = parent_account->id();
+			order_request->order_context.parent_account_no = parent_account->No();
+			order_request->order_context.sub_account_no = order->account_no;
+			order_request->order_context.order_source_type = OrderType::SubAccount;
 		}
 		if (fund_) {
-			order_req->order_context.order_source_type = OrderType::Fund;
-			order_req->order_context.fund_id = fund_->Id();
-			order_req->order_context.fund_name = fund_->Name();
+			order_request->order_context.order_source_type = OrderType::Fund;
+			order_request->order_context.fund_id = fund_->Id();
+			order_request->order_context.fund_name = fund_->Name();
 		}
-		SetProfitLossCut(order_req);
-		order_req->request_type = order_request_type_;
-		order_req->price_type = price_type_;
-		order_req->order_context.order_control_id = id_;
-		mainApp.order_request_manager()->add_order_request(order_req);
+		SetProfitLossCut(order_request);
+		order_request->original_order_no = order->order_no;
+		order_request->request_type = order_request_type_;
+		order_request->price_type = price_type_;
+		order_request->order_context.order_control_id = id_;
+		mainApp.order_request_manager()->add_order_request(order_request);
+
+		LOGINFO(CMyLogger::getInstance(), "change_order 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문구분[%d], 주문수량[%d], 원주문번호[%s]",
+			order_request->account_no.c_str(),
+			order_request->order_context.sub_account_no.c_str(),
+			order_request->order_context.fund_name.c_str(),
+			order_request->order_context.parent_account_no.c_str(),
+			order_request->order_context.signal_name.c_str(),
+			order_request->symbol_code.c_str(),
+			(int)order_request->position_type,
+			order_request->order_amount,
+			order_request->original_order_no.c_str());
 	}
 }
 
@@ -2541,10 +2563,9 @@ void SymbolOrderView::change_order(const std::vector<std::shared_ptr<DarkHorse::
 {
 	for (auto it = order_vec.begin(); it != order_vec.end(); ++it) {
 		const auto& order = *it;
-		// �ܷ��� �������� ������ �ֹ� ������ ���ϰ� ���´�. 
 		if (order->remain_count == 0) continue;
 		auto parent_account = mainApp.AcntMgr()->get_parent_account(order->account_no);
-		auto order_req = OrderRequestManager::make_change_order_request(
+		auto order_request = OrderRequestManager::make_change_order_request(
 			mainApp.AcntMgr()->get_account_no(order->account_no),
 			mainApp.AcntMgr()->get_password(order->account_no),
 			order->symbol_code,
@@ -2555,26 +2576,37 @@ void SymbolOrderView::change_order(const std::vector<std::shared_ptr<DarkHorse::
 			SmOrderType::Modify,
 			order->price_type,
 			fill_condition_);
-		order_req->order_context.order_source_type = OrderType::MainAccount;
+		order_request->order_context.order_source_type = OrderType::MainAccount;
 		if (parent_account) {
-			order_req->order_context.parent_account_id = parent_account->id();
-			order_req->order_context.parent_account_no = parent_account->No();
-			order_req->order_context.sub_account_no = order->account_no;
-			order_req->order_context.order_source_type = OrderType::SubAccount;
+			order_request->order_context.parent_account_id = parent_account->id();
+			order_request->order_context.parent_account_no = parent_account->No();
+			order_request->order_context.sub_account_no = order->account_no;
+			order_request->order_context.order_source_type = OrderType::SubAccount;
 		}
 		if (fund_) {
-			order_req->order_context.order_source_type = OrderType::Fund;
-			order_req->order_context.fund_id = fund_->Id();
-			order_req->order_context.fund_name = fund_->Name();
+			order_request->order_context.order_source_type = OrderType::Fund;
+			order_request->order_context.fund_id = fund_->Id();
+			order_request->order_context.fund_name = fund_->Name();
 		}
-		SetProfitLossCut(order_req);
-		set_order_close(order_req);
-		order_req->request_type = order_request_type_;
-		order_req->price_type = price_type_;
-		order_req->order_context.virtual_filled_price = target_price;
-		order_req->order_context.order_control_id = id_;
-		//set_virtual_filled_value(order_req);
-		mainApp.order_request_manager()->add_order_request(order_req);
+		SetProfitLossCut(order_request);
+		set_order_close(order_request);
+		order_request->original_order_no = order->order_no;
+		order_request->request_type = order_request_type_;
+		order_request->price_type = price_type_;
+		order_request->order_context.virtual_filled_price = target_price;
+		order_request->order_context.order_control_id = id_;
+		mainApp.order_request_manager()->add_order_request(order_request);
+
+		LOGINFO(CMyLogger::getInstance(), "change_order 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문구분[%d], 주문수량[%d], 원주문번호[%s]",
+			order_request->account_no.c_str(),
+			order_request->order_context.sub_account_no.c_str(),
+			order_request->order_context.fund_name.c_str(),
+			order_request->order_context.parent_account_no.c_str(),
+			order_request->order_context.signal_name.c_str(),
+			order_request->symbol_code.c_str(),
+			(int)order_request->position_type,
+			order_request->order_amount, 
+			order_request->original_order_no.c_str());
 	}
 }
 

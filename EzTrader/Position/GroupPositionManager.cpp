@@ -211,4 +211,30 @@ std::shared_ptr<Position> GroupPositionManager::create_fund_group_position(const
 	return group_position;
 }
 
+std::shared_ptr<DarkHorse::Position> GroupPositionManager::create_group_position(const int target, const std::string& target_name, const std::string& symbol_code)
+{
+	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+	std::shared_ptr<Position> group_position = nullptr;
+	auto found = group_position_map_.find(symbol_code);
+	if (found == group_position_map_.end()) {
+		group_position = std::make_shared<Position>();
+		if (target == 0) {
+			group_position->account_no = target_name;
+			group_position->position_type = OrderType::MainAccount;
+		}
+		else {
+			group_position->fund_name = target_name;
+			group_position->position_type = OrderType::Fund;
+		}
+		group_position->symbol_code = symbol_code;
+		group_position->is_group = true;
+		TotalPositionManager::set_symbol_id(group_position, symbol_code);
+		group_position_map_[symbol_code] = group_position;
+	}
+	else {
+		group_position = found->second;
+	}
+	return group_position;
+}
+
 }

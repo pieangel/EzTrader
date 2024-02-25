@@ -1298,6 +1298,7 @@ void SmOptionGrid::OnOrderEvent(const std::string& account_no, const std::string
 
 void SmOptionGrid::set_view_mode(ViewMode view_mode)
 {
+	if (view_mode == view_mode_) return;
 	view_mode_ = view_mode;
 	showValues();
 	Invalidate();

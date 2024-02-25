@@ -734,6 +734,7 @@ void SmFutureGrid::update_quote()
 
 void SmFutureGrid::set_view_mode(ViewMode view_mode)
 {
+	if (view_mode == view_mode_) return;
 	view_mode_ = view_mode;
 	show_values();
 	Invalidate();
@@ -792,6 +793,7 @@ void SmFutureGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 		auto found = symbol_row_index_map_.find(future_info.symbol_p->SymbolCode());
 		if (found == symbol_row_index_map_.end()) continue;
 		show_value(found->second, 2, future_info);
+		LOGINFO(CMyLogger::getInstance(), "symbol_code[%s], remain=[%d]", future_info.symbol_p->SymbolCode().c_str(), future_info.position);
 	}
 
 	enable_show_ = true;

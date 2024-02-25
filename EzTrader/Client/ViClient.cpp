@@ -1055,7 +1055,7 @@ int DarkHorse::ViClient::ab_account_profit_loss(task_arg&& arg)
 void ViClient::start_timer()
 {
 	SetTimer(1, 50, NULL);
-	//_simulation = true;
+	_simulation = true;
 }
 
 void ViClient::stop_timer()
@@ -5688,8 +5688,8 @@ void DarkHorse::ViClient::on_dm_order_accepted(const CString& strKey, const LONG
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	//mainApp.order_processor()->add_order_event(std::move(order_info));
-	handle_order_event(std::move(order_info));
+	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//handle_order_event(std::move(order_info));
 }
 
 void ViClient::check_simulation_order()
@@ -5769,8 +5769,8 @@ void ViClient::create_dm_order_accepted_new_order(order_request_p order_req)
 
 	order_info["custom_info"] = "";
 
-	//mainApp.order_processor()->add_order_event(std::move(order_info));
-	handle_order_event(std::move(order_info));
+	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//handle_order_event(std::move(order_info));
 	order_req->order_context.simul_order_no = std::to_string(order_no);
 	order_req->order_context.accepted = true;
 	//return order_no;
@@ -5807,8 +5807,8 @@ void ViClient::create_dm_order_unfilled_new_order(order_request_p order_req)
 
 	order_info["custom_info"] = "";
 
-	//mainApp.order_processor()->add_order_event(std::move(order_info));
-	handle_order_event(std::move(order_info));
+	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//handle_order_event(std::move(order_info));
 
 	order_req->order_context.unfilled = true;
 	order_req->order_context.simul_order_no = std::to_string(order_no);
@@ -5841,12 +5841,11 @@ void ViClient::create_dm_order_filled(order_request_p order_req, quote_p quote)
 	order_info["filled_time"] = date_time.first;
 
 	order_info["custom_info"] = "";
+	
 
-	//mainApp.order_processor()->add_order_event(std::move(order_info));
-	handle_order_event(std::move(order_info));
-
+	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//handle_order_event(std::move(order_info));
 	order_req->order_context.filled = true;
-
 	remove_order_request_from_simulation(order_req->request_id);
 }
 
@@ -5949,8 +5948,8 @@ void DarkHorse::ViClient::on_dm_order_unfilled(const CString& strKey, const LONG
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	//mainApp.order_processor()->add_order_event(std::move(order_info));
-	handle_order_event(std::move(order_info));
+	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//handle_order_event(std::move(order_info));
 }
 
 void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& nRealType)
@@ -6024,8 +6023,8 @@ void DarkHorse::ViClient::on_dm_order_filled(const CString& strKey, const LONG& 
 
 	order_info["custom_info"] = static_cast<const char*>(strCustom.Trim());
 
-	//mainApp.order_processor()->add_order_event(std::move(order_info));
-	handle_order_event(std::move(order_info));
+	mainApp.order_processor()->add_order_event(std::move(order_info));
+	//handle_order_event(std::move(order_info));
 }
 
 void ViClient::remove_order_request_from_simulation(const int& order_request_id)

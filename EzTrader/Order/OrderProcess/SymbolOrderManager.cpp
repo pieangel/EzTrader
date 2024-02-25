@@ -48,12 +48,31 @@ DarkHorse::OrderBackGround SymbolOrderManager::get_order_background(const int po
 	}
 }
 
+void SymbolOrderManager::write_log(const std::string& function_name, order_p order)
+{
+	if (!order) return;
+	LOGINFO(CMyLogger::getInstance(), "[%s] 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문번호[%s], 주문구분[%d], 주문수량[%d], 체결수량[%d], 잔량[%d]",
+		function_name.c_str(),
+		order->account_no.c_str(),
+		order->order_context.sub_account_no.c_str(),
+		order->order_context.fund_name.c_str(),
+		order->order_context.parent_account_no.c_str(),
+		order->order_context.signal_name.c_str(),
+		order->symbol_code.c_str(),
+		order->order_no.c_str(),
+		(int)order->order_type,
+		order->order_amount,
+		order->filled_count,
+		order->remain_count);
+}
+
 void SymbolOrderManager::on_order_accepted(order_p order, OrderEvent order_event)
 {
 	order->order_state = SmOrderState::Accepted;
 	if (order->order_type != SmOrderType::Cancel) {
 		add_accepted_order(order);
 		mainApp.event_hub()->process_order_event(order, order_event);
+		write_log("on_order_accepted", order);
 	}
 }
 void SymbolOrderManager::on_order_unfilled(order_p order, OrderEvent order_event)
@@ -63,6 +82,7 @@ void SymbolOrderManager::on_order_unfilled(order_p order, OrderEvent order_event
 	else
 		add_accepted_order(order);
 	mainApp.event_hub()->process_order_event(order, order_event);
+	write_log("on_order_unfilled", order);
 }
 void SymbolOrderManager::on_order_filled(order_p order, OrderEvent order_event)
 {

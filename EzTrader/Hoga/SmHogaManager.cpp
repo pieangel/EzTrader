@@ -85,12 +85,16 @@ void SmHogaManager::ProcessHoga(nlohmann::json&& hoga)
 	try {
 		const std::string& symbol_code = hoga["symbol_code"];
 		const auto found = _HogaProcessorMap.find(symbol_code);
-		if (found != _HogaProcessorMap.end()) {
+		if (found != _HogaProcessorMap.end() && found->second) {
 			const std::shared_ptr<SmHogaProcessor>& hoga_processor = found->second;
 			hoga_processor->AddHoga(std::move(hoga));
 		}
 		else {
 			std::shared_ptr<SmHogaProcessor> hoga_processor = std::make_shared<SmHogaProcessor>();
+			if (!hoga_processor) {
+				LOGINFO(CMyLogger::getInstance(), "symbol_code[%s] : Hoga processor was not created!", symbol_code);
+				return;
+			}
 			_HogaProcessorMap[symbol_code] = hoga_processor;
 			hoga_processor->StartProcess();
 			hoga_processor->AddHoga(std::move(hoga));

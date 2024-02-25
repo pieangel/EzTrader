@@ -217,12 +217,22 @@ private:
 	position_control_p position_control_{ nullptr };
 	void AddItemToComboBox(CComboBox& comboBox, symbol_p item)
 	{
+		// Check if the item already exists in combo_symbol_vector
+		auto it = std::find(combo_symbol_vector.begin(), combo_symbol_vector.end(), item);
+		if (it != combo_symbol_vector.end()) {
+			// Item already exists, do not add it again
+			int index = std::distance(combo_symbol_vector.begin(), it);
+			comboBox.SetCurSel(index);
+			// Item already exists, do not add it again
+			return;
+		}
 		// Add the std::shared_ptr to the vector
 		combo_symbol_vector.push_back(item);
 
 		// Add item to the combo box and store the index in the combo box
 		int index = comboBox.AddString(item->SymbolCode().c_str()); // Replace with appropriate text
 		comboBox.SetItemDataPtr(index, reinterpret_cast<void*>(combo_symbol_vector.size() - 1));
+		comboBox.SetCurSel(index);
 	}
 
 	symbol_p GetSelectedItemDataPtr(const CComboBox& comboBox)

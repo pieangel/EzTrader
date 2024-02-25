@@ -37,6 +37,11 @@ namespace DarkHorse {
 		void get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss);
 		std::shared_ptr<Position> create_account_group_position(const std::string& account_no, const std::string symbol_code);
 		std::shared_ptr<Position> create_fund_group_position(const std::string& func_name, const std::string& symbol_code);
+		// create a group position for the symbol
+		// target : 1 for fund, 0 for account
+		// target_name : fund name or account no
+		// symbol_code : symbol code
+		std::shared_ptr<Position> create_group_position(const int target, const std::string& target_name, const std::string& symbol_code);
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position);
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position, VmPosition& dest_position);
 		std::shared_ptr<Position> find_group_position(const std::string& symbol_code);
