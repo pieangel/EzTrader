@@ -35,21 +35,20 @@ void TotalOrderManager::dispatch_order(const OrderEvent order_event, order_p ord
 }
 void TotalOrderManager::write_order_history(const OrderEvent order_event, order_p order)
 {
-	assert(order);
+	if (!order) return;
 
-// 	LOGINFO(CMyLogger::getInstance(), "order log order event[%d], 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 신호이름[%s], 종목[%s], 주문번호[%s], 주문구분[%d], 주문수량[%d], 체결수량[%d], 잔량[%d]\n",
-// 		(int)order_event,
-// 		order->account_no.c_str(),
-// 		order->order_context.sub_account_no.c_str(),
-// 		order->order_context.fund_name.c_str(),
-// 		order->order_context.signal_name.c_str(),
-// 		order->order_context.parent_account_no.c_str(),
-// 		order->symbol_code.c_str(),
-// 		order->order_no.c_str(),
-// 		(int)order->order_type,
-// 		order->order_amount,
-// 		order->filled_count,
-// 		order->remain_count);
+	LOGINFO(CMyLogger::getInstance(), "[write_order_history] 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문번호[%s], 주문구분[%d], 주문수량[%d], 체결수량[%d], 잔량[%d]",
+		order->account_no.c_str(),
+		order->order_context.sub_account_no.c_str(),
+		order->order_context.fund_name.c_str(),
+		order->order_context.parent_account_no.c_str(),
+		order->order_context.signal_name.c_str(),
+		order->symbol_code.c_str(),
+		order->order_no.c_str(),
+		(int)order->order_type,
+		order->order_amount,
+		order->filled_count,
+		order->remain_count);
 }
 
 account_order_manager_p TotalOrderManager::find_account_order_manager(const std::string& account_no) 
@@ -200,20 +199,6 @@ void TotalOrderManager::set_order_request_info(const std::string& custom_info, o
 	order->order_context.parent_account_no = order_request->order_context.parent_account_no;
 	order->order_context.fund_name = order_request->order_context.fund_name;
 	order->order_context.signal_name = order_request->order_context.signal_name;
-
-	LOGINFO(CMyLogger::getInstance(), "set_order_request_info 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문번호[%s], 주문구분[%d], 주문수량[%d], 체결수량[%d], 잔량[%d]", 
-		order_request->account_no.c_str(), 
-		order->order_context.sub_account_no.c_str(),
-		order->order_context.fund_name.c_str(),
-		order->order_context.parent_account_no.c_str(),
-		order->order_context.signal_name.c_str(),
-		order_request->symbol_code.c_str(), 
-		order->order_no.c_str(), 
-		(int)order->order_type, 
-		order->order_amount, 
-		order->filled_count, 
-		order->remain_count);
-
 }
 
 order_p TotalOrderManager::get_order(const std::string& order_no)
