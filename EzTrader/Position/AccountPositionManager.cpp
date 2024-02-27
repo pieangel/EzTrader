@@ -225,15 +225,21 @@ void AccountPositionManager::set_account_id(position_p position, const std::stri
 	position->account_id = account->id();
 }
 
+int AccountPositionManager::get_order_sign(order_p order)
+{
+	assert(order);
+	return order->position == SmPositionType::Buy ? 1 : -1;
+}
+
 int AccountPositionManager::calculate_position_count(order_p order, position_p position)
 {
-	const int order_filled_sign = order->position == SmPositionType::Buy ? 1 : -1;
+	const int order_filled_sign = get_order_sign(order);
 	const int signed_filled_count = order->filled_count * order_filled_sign;
 	return signed_filled_count + position->open_quantity;
 }
 int AccountPositionManager::calculate_unsettled_count(order_p order, position_p position)
 {
-	const int order_filled_sign = order->position == SmPositionType::Buy ? 1 : -1;
+	const int order_filled_sign = get_order_sign(order);
 	const int signed_filled_count = order->filled_count * order_filled_sign;
 	if (position->open_quantity == 0) return signed_filled_count;
 	if (position->open_quantity * signed_filled_count > 0) return signed_filled_count;
@@ -242,8 +248,9 @@ int AccountPositionManager::calculate_unsettled_count(order_p order, position_p 
 }
 int AccountPositionManager::calculate_traded_count(order_p order, position_p position)
 {
-	const int order_filled_sign = position->open_quantity > 0 ? 1 : -1;
+	const int order_filled_sign = get_order_sign(order);
 	const int signed_filled_count = order->filled_count * order_filled_sign;
+	LOGINFO(CMyLogger::getInstance(), "order_filled_sign = [%d], filled_count = [%d], open_quantity = [%d]", order_filled_sign, order->filled_count, position->open_quantity);
 	if (position->open_quantity * signed_filled_count >= 0) return 0;
 	return min(abs(position->open_quantity), abs(signed_filled_count));
 }
@@ -254,6 +261,7 @@ double AccountPositionManager::calculate_traded_profit_loss(order_p order, posit
 	double trade_profit_loss = price_gap * traded_count * symbol_seungsu; 
 	// 매도는 계산이 반대로 이루어짐. 
 	if (position->open_quantity < 0) trade_profit_loss *= -1;
+	LOGINFO(CMyLogger::getInstance(), "traded_count = [%d], filled_price = [%d], average_price = [%.2f], price_gap = [%.2f], trade_pf = [%.2f]", traded_count, order->filled_price, position->average_price, price_gap, trade_profit_loss);
 	return trade_profit_loss;
 }
 double AccountPositionManager::calculate_average_price(order_p order, position_p position, const int& new_open_quantity, const int& unsettled_count)
