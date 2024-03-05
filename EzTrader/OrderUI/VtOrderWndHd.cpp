@@ -1459,6 +1459,8 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 				SmOrderPanel* centerWnd = *it;
 				centerWnd->ChangeAccount(_OrderConfigMgr->Account());
 			}
+			_OrderConfigMgr->_HdLeftWnd->RefreshFutureGrid();
+			_OrderConfigMgr->_HdLeftWnd->RefreshOptionGrid();
 			_OrderConfigMgr->_HdLeftWnd->OnAccountChanged();
 			if (!acnt->is_subaccount() && !acnt->Pwd().empty()) {
 				// Register the new account to the Event Map.
@@ -1466,6 +1468,7 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 				//acnt->GetAccountInfoNFee(1);
 			}
 			
+			_DefaultAccountNo = _OrderConfigMgr->Account()->No();
 		}
 	}
 	else {
@@ -1500,6 +1503,7 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 				centerWnd->ChangeFund(_OrderConfigMgr->Fund());
 			}
 			
+			_DefaultAccountNo = _OrderConfigMgr->Fund()->Name();
 		}
 	}
 
@@ -1846,12 +1850,10 @@ void VtOrderWndHd::OnEnChangeEditPwd()
 
 void VtOrderWndHd::OnCbnDropdownComboAccountHd()
 {
-	/*
 	if (_OrderConfigMgr->Type() == 0)
 		InitAccount();
 	else
 		InitFund();
-		*/
 }
 
 void VtOrderWndHd::SaveToXml(pugi::xml_node& node_order_window)

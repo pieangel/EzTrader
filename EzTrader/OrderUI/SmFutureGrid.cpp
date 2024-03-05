@@ -52,7 +52,7 @@ SmFutureGrid::SmFutureGrid()
 	quote_control_->set_direct_event_handler(std::bind(&SmFutureGrid::update_quote_direct, this, _1));
 
 	position_control_ = std::make_shared<DarkHorse::SymbolPositionControl>();
-	position_control_->set_fund_event_handler(std::bind(&SmFutureGrid::on_update_position_direct, this, _1));
+	position_control_->set_future_event_handler(std::bind(&SmFutureGrid::on_update_position_direct, this, _1));
 
 	CString strLog;
 	strLog.Format("DmFutureView futur_view id = [%d], position_control_id = [%d]", id_, position_control_->get_id());
@@ -679,6 +679,7 @@ void SmFutureGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 	_Fund = val;
 	order_type_ = OrderType::Fund;
 	position_control_->set_fund(_Fund);
+	LOGINFO(CMyLogger::getInstance(), "fund[%s]", _Fund->Name().c_str());
 	for (auto& future_info : symbol_vec_) {
 		get_future_info(future_info);
 		if (!future_info.symbol_p) continue;
@@ -748,7 +749,7 @@ void SmFutureGrid::on_update_position_vm_future(const VmPosition& position)
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.position = position.open_quantity;
-	show_value(found->second, 2, future_info);
+	//show_value(found->second, 2, future_info);
 }
 
 void SmFutureGrid::refresh_values()
@@ -757,7 +758,6 @@ void SmFutureGrid::refresh_values()
 	if (enable_show_) {
 		if (view_mode_ == ViewMode::VM_Close) {
 			update_quote();
-			update_position();
 		}
 		else
 			update_position();
@@ -781,6 +781,8 @@ void SmFutureGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 {
 	_Account = val;
 	position_control_->set_account(_Account);
+
+	LOGINFO(CMyLogger::getInstance(), "account[%s]", _Account->No().c_str());
 
 	if (_Account->is_subaccount())
 		order_type_ = OrderType::SubAccount;
@@ -876,6 +878,15 @@ void SmFutureGrid::update_position()
 
 	const VmPosition& position = position_control_->get_position();
 
+	LOGINFO(CMyLogger::getInstance(), "position control :: °èÁÂ[%s],ÆÝµåÀÌ¸§[%s],Á¾¸ñ[%s]", 
+		position_control_->Account() ? position_control_->Account()->No().c_str() : "",
+		position_control_->Fund() ? position_control_->Fund()->Name().c_str() : "",
+		position_control_->Symbol() ? position_control_->Symbol()->SymbolNameKr().c_str() : "");
+
+	LOGINFO(CMyLogger::getInstance(), "_OrderConfigMgr :: Type[%d], °èÁÂ[%s],ÆÝµåÀÌ¸§[%s]", _OrderConfigMgr->Type(), 
+		_OrderConfigMgr->Account() ? _OrderConfigMgr->Account()->No().c_str() : "",
+		_OrderConfigMgr->Fund() ? _OrderConfigMgr->Fund()->Name().c_str() : "");
+
 	auto found = symbol_row_index_map_.find(position.symbol_code);
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
@@ -889,17 +900,34 @@ void SmFutureGrid::on_update_position()
 
 	const VmPosition& position = position_control_->get_position();
 
+	LOGINFO(CMyLogger::getInstance(), "_OrderConfigMgr :: Type[%d], °èÁÂ[%s],ÆÝµåÀÌ¸§[%s]", _OrderConfigMgr->Type(),
+		_OrderConfigMgr->Account() ? _OrderConfigMgr->Account()->No().c_str() : "",
+		_OrderConfigMgr->Fund() ? _OrderConfigMgr->Fund()->Name().c_str() : "");
+
 	auto found = symbol_row_index_map_.find(position.symbol_code);
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];
 	future_info.position = position.open_quantity;
-	show_value(found->second, 2, future_info);
+	//show_value(found->second, 2, future_info);
 
 	enable_show_ = true;
 }
 
 void SmFutureGrid::on_update_position_direct(position_p position)
 {
+
+// 	LOGINFO(CMyLogger::getInstance(), "_OrderConfigMgr :: Type[%d], °èÁÂ[%s],ÆÝµåÀÌ¸§[%s]", _OrderConfigMgr->Type(),
+// 		_OrderConfigMgr->Account() ? _OrderConfigMgr->Account()->No().c_str() : "",
+// 		_OrderConfigMgr->Fund() ? _OrderConfigMgr->Fund()->Name().c_str() : "");
+
+	if (!_OrderConfigMgr) return;
+	if (_OrderConfigMgr->Type() == 0 && _Account) {
+		if (position->account_no != _Account->No()) return;
+	}
+	else if (_OrderConfigMgr->Type() == 1 && _Fund) {
+		if (position->fund_name != _Fund->Name()) return;
+	}
+
 	auto found = symbol_row_index_map_.find(position->symbol_code);
 	if (found == symbol_row_index_map_.end()) return;
 	DarkHorse::VmFuture& future_info = symbol_vec_[found->second];

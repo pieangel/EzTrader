@@ -60,10 +60,13 @@ namespace DarkHorse {
 		void set_option_event_handler(std::function<void(position_p position)> option_event_handler) {
 			option_event_handler_ = option_event_handler;
 		}
-		void set_fund_event_handler(std::function<void(position_p position)> fund_event_handler) {
-			fund_event_handler_ = fund_event_handler;
+		void set_future_event_handler(std::function<void(position_p position)> future_event_handler) {
+			future_event_handler_ = future_event_handler;
 		}
 		void reset_position();
+		std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
+		std::shared_ptr<DarkHorse::SmFund> Fund() const { return fund_; }
+		std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return symbol_; }
 	private:
 		bool is_account_exist(const std::shared_ptr<Position>& position);
 		OrderType position_type_{ OrderType::None };
@@ -90,6 +93,6 @@ namespace DarkHorse {
 		std::function<void(const VmPosition& position)> vm_option_event_handler_;
 		std::function<void(const VmPosition& position)> vm_fund_event_handler_;
 		std::function<void(position_p position)> option_event_handler_;
-		std::function<void(position_p position)> fund_event_handler_;
+		std::function<void(position_p position)> future_event_handler_;
 	};
 }

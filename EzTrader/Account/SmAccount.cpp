@@ -70,7 +70,7 @@ namespace DarkHorse {
 	void SmAccount::make_default_sub_account()
 	{
 		if (!sub_accounts_.empty()) return;
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1; i++) {
 			const std::string& sub_account_no = _No + "_" + std::to_string(i+1);
 			auto sub_account = CreateSubAccount(sub_account_no, _Name, _id, _Type);
 		}

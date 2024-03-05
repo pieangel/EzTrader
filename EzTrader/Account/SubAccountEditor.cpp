@@ -98,6 +98,17 @@ void SubAccountEditor::set_sel_account_name()
 	_StaticSelAcntName.SetWindowText(sel_account_name);
 }
 
+void SubAccountEditor::update_main_account_grid(std::vector<std::shared_ptr<DarkHorse::SmAccount>>& account_vector)
+{
+	mainApp.AcntMgr()->get_main_account_vector(account_type_, account_vector);
+	if (account_vector.empty()) {
+		_EditSubAcntCode.SetWindowText(_T(""));
+		_EditSubAcntName.SetWindowText(_T(""));
+		return;
+	}
+	main_account_grid_.SetAccountList(account_vector);
+}
+
 void SubAccountEditor::set_account(std::shared_ptr<DarkHorse::SmAccount> account)
 {
 	if (!account) return;
@@ -121,13 +132,14 @@ void SubAccountEditor::set_sub_account(std::shared_ptr<DarkHorse::SmAccount> sub
 void SubAccountEditor::set_default_account()
 {
 	std::vector<std::shared_ptr<DarkHorse::SmAccount>> account_vector;
-	mainApp.AcntMgr()->get_main_account_vector(account_type_, account_vector);
-	if (account_vector.empty()) {
-		_EditSubAcntCode.SetWindowText(_T(""));
-		_EditSubAcntName.SetWindowText(_T(""));
-		return;
-	}
-	main_account_grid_.SetAccountList(account_vector);
+	update_main_account_grid(account_vector);
+// 	mainApp.AcntMgr()->get_main_account_vector(account_type_, account_vector);
+// 	if (account_vector.empty()) {
+// 		_EditSubAcntCode.SetWindowText(_T(""));
+// 		_EditSubAcntName.SetWindowText(_T(""));
+// 		return;
+// 	}
+// 	main_account_grid_.SetAccountList(account_vector);
 	//selected_account_ = account_vector[0];
 	//set_sub_account_grid();
 	set_account(account_vector[0]);
@@ -173,9 +185,13 @@ void SubAccountEditor::OnBnClickedBtnCreate()
 			AfxMessageBox(_T("동일한 계좌 번호를 가진 서브 계좌가 이미 있습니다. 다른 계좌 번호를 사용하십시오.!"));
 			return;
 		}
+		
 		auto subAcnt = selected_account_->CreateSubAccount((LPCTSTR)strAcntNo, (LPCTSTR)strAcntName, selected_account_->id(), selected_account_->Type());
 		set_sub_account_grid();
 	}
+
+	std::vector<std::shared_ptr<DarkHorse::SmAccount>> account_vector;
+	update_main_account_grid(account_vector);
 }
 
 
@@ -223,6 +239,9 @@ void SubAccountEditor::OnBnClickedBtnDelete()
 	mainApp.AcntMgr()->RemoveAccount(subAcnt->No());
 	selected_account_->remove_sub_account(subAcnt->No());
 	set_sub_account_grid();
+
+	std::vector<std::shared_ptr<DarkHorse::SmAccount>> account_vector;
+	update_main_account_grid(account_vector);
 }
 
 

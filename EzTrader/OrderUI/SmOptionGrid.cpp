@@ -41,6 +41,7 @@
 #include "../Position/Position.h"
 #include "../ViewModel/VmQuote.h"
 #include "../Util/IdGenerator.h"
+#include "../Log/MyLogger.h"
 
 #pragma warning(disable:4018)
 
@@ -51,6 +52,7 @@
 
 using namespace std;
 using namespace std::placeholders;
+using namespace DarkHorse;
 
 SmOptionGrid::SmOptionGrid()
 	: id_(DarkHorse::IdGenerator::get_id())
@@ -1307,6 +1309,18 @@ void SmOptionGrid::set_view_mode(ViewMode view_mode)
 void SmOptionGrid::on_update_position_direct(position_p position)
 {
 	try {
+// 		LOGINFO(CMyLogger::getInstance(), "_OrderConfigMgr :: Type[%d], °èÁÂ[%s],ÆÝµåÀÌ¸§[%s]", _OrderConfigMgr->Type(),
+// 			_OrderConfigMgr->Account() ? _OrderConfigMgr->Account()->No().c_str() : "",
+// 			_OrderConfigMgr->Fund() ? _OrderConfigMgr->Fund()->Name().c_str() : "");
+
+		if (!_OrderConfigMgr) return;
+		if (_OrderConfigMgr->Type() == 0 && _Account) {
+			if (position->account_no != _Account->No()) return;
+		}
+		else if (_OrderConfigMgr->Type() == 1 && _Fund) {
+			if (position->fund_name != _Fund->Name()) return;
+		}
+
 		if (position->symbol_code.empty()) return;
 
 		const std::string option_code = position->symbol_code.substr(1, position->symbol_code.length() - 1);

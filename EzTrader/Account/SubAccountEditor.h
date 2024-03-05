@@ -40,7 +40,7 @@ private:
 	std::string account_type_{"9"}; // 9: default account type
 	void set_sub_account_grid();
 	void set_sel_account_name();
-	
+	void update_main_account_grid(std::vector<std::shared_ptr<DarkHorse::SmAccount>>& account_vector);
 public:
 	CBCGPButton _BtnModify;
 	std::string account_type() const { return account_type_; }
