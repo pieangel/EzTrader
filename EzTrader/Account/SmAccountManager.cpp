@@ -56,6 +56,15 @@ namespace DarkHorse {
 		}
 	}
 
+	void SmAccountManager::get_account_vector(const std::string& account_type, std::vector<std::shared_ptr<SmAccount>>& acnt_vector)
+	{
+		acnt_vector.clear();
+		for (auto it = _AccountMap.begin(); it != _AccountMap.end(); it++) {
+			if (it->second->Type() == account_type)
+				acnt_vector.push_back(it->second);
+		}
+	}
+
 	void SmAccountManager::GetUnusedAccountForFund(const std::string& account_type, std::vector<std::shared_ptr<SmAccount>>& unused_acnt_vector)
 	{
 		std::vector<std::shared_ptr<SmAccount>> main_acnt_vector;

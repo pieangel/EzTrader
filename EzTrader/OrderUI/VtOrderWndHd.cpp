@@ -19,6 +19,8 @@
 #include "../Fund/SmFund.h"
 #include "../Account/SmAccountManager.h"
 #include "../Account/SmAccount.h"
+#include "../Task/SmTaskDefine.h"
+#include "../Task/SmTaskRequestManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -294,6 +296,22 @@ void VtOrderWndHd::RemoveRealTickWnd(VtRealTickWnd* realWnd)
 // 		delete realWnd;
 // 		_RealTickWndVector.erase(it);
 // 	}
+}
+
+void VtOrderWndHd::requestProfitLoss()
+{
+	auto account = _OrderConfigMgr->Account();
+
+	if (!account) return;
+	if (account->is_subaccount()) return;
+	DhTaskArg arg;
+	arg.detail_task_description = account->No();
+	arg.task_type = DhTaskType::AccountProfitLoss;
+	arg.parameter_map["account_no"] = account->No();
+	arg.parameter_map["password"] = account->Pwd();
+	arg.parameter_map["account_type"] = account->Type();
+
+	mainApp.TaskReqMgr()->AddTask(std::move(arg));
 }
 
 void VtOrderWndHd::BlockEvent()
@@ -1074,7 +1092,7 @@ void VtOrderWndHd::InitAccount()
 			acntName.append(sub_account->Name());
 			index = _ComboAcnt.AddString(acntName.c_str());
 			//comboMap[sub_account->No()] = std::make_pair(index, sub_account);
-			AddItemToComboBox(index, _ComboAcnt, acnt);
+			AddItemToComboBox(index, _ComboAcnt, sub_account);
 			//_ComboAcnt.SetItemDataPtr(index, sub_account.get());
 		}
 	}
@@ -1441,8 +1459,8 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 	*/
 	if (_OrderConfigMgr->Type() == 0) {
 		// 기존 주문 실시간 등록 해제
-		if (_Account)
-			UnregisterRealtimeAccount(_Account);
+		if (_OrderConfigMgr->Account())
+			UnregisterRealtimeAccount(_OrderConfigMgr->Account());
 		int curSel = _ComboAcnt.GetCurSel();
 		if (curSel != -1) {
 			account_p acnt = GetSelectedAccountPtr(_ComboAcnt);
@@ -1515,6 +1533,8 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 		_OrderConfigMgr->_HdLeftWnd->RefreshOptionGrid();
 
 	}
+
+	requestProfitLoss();
 }
 
 
@@ -1527,17 +1547,7 @@ void VtOrderWndHd::OnBnClickedBtnShowLeft()
 
 void VtOrderWndHd::OnBnClickedBtnGetAcntInfo()
 {
-	// TODO: Add your control notification handler code here
-	int curSel = _ComboAcnt.GetCurSel();
-	if (curSel != -1)
-	{
-		
-		account_p acnt = GetSelectedAccountPtr(_ComboAcnt);
-		if (acnt && !acnt->is_subaccount() && !acnt->Pwd().empty())
-			//acnt->GetAccountProfitLossDirect();
-		
-			int i = 0;
-	}
+	requestProfitLoss();
 }
 
 

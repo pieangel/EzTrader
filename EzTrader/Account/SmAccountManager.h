@@ -33,6 +33,7 @@ namespace DarkHorse {
 		}
 		void get_main_account_vector(std::vector<std::shared_ptr<SmAccount>>& main_acnt_vector);
 		void get_main_account_vector(const std::string& account_type, std::vector<std::shared_ptr<SmAccount>>& main_acnt_vector);
+		void get_account_vector(const std::string& account_type, std::vector<std::shared_ptr<SmAccount>>& acnt_vector);
 		void GetUnusedAccountForFund(const std::string& account_type, std::vector<std::shared_ptr<SmAccount>>& unused_acnt_vector);
 		std::shared_ptr<SmAccount> FindAccount(const std::string& account_no);
 		std::shared_ptr<SmAccount> FindAccountById(const int& account_id);

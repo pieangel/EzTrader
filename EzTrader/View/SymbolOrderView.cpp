@@ -550,7 +550,6 @@ void SymbolOrderView::update_hoga()
 		int row_index = FindRow(hoga.Ary[i].SellPrice);
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_CNT);
 		if (pCell && row_index > 1 && row_index < price_end_row_) {
-			pCell->Text(std::to_string(hoga.Ary[i].SellCnt));
 			switch (i) {
 			case 0: pCell->CellType(SmCellType::CT_SELL_HOGA1); break;
 			case 1: pCell->CellType(SmCellType::CT_SELL_HOGA2); break;
@@ -561,6 +560,11 @@ void SymbolOrderView::update_hoga()
 			}
 			//pCell->CellType(SmCellType::CT_HOGA_SELL);
 			_OldHogaSellRowIndex.insert(row_index);
+
+			if (_OrderGridColOption[2])
+				pCell->Text(std::to_string(hoga.Ary[i].SellCnt));
+			else
+				pCell->Text("");
 		}
 		pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_QTY);
 		if (pCell && row_index > 1 && row_index < price_end_row_) {
@@ -601,7 +605,10 @@ void SymbolOrderView::update_hoga()
 			case 4: pCell->CellType(SmCellType::CT_BUY_HOGA5); break;
 			default: break;
 			}
-			pCell->Text(std::to_string(hoga.Ary[i].BuyCnt));
+			if (_OrderGridColOption[2])
+				pCell->Text(std::to_string(hoga.Ary[i].BuyCnt));
+			else
+				pCell->Text("");
 		}
 	}
 

@@ -143,6 +143,7 @@ private:
 	bool _ShowRightWnd = true;
 	void RemoveRealTickWnd(VtRealTickWnd* realWnd);
 private:
+	void requestProfitLoss();
 	//int  _CenterWndCount;
 	int _WindowID;
 	void CreateChildWindows();
