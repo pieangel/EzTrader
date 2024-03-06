@@ -255,3 +255,8 @@ ModelManifest.xml
 
 #Setup Files
 /Setup/*.*
+*.vlstatus
+/.visuallint/PC-lint/EzTrader/Release_x86/js/jqplot/dist/docs/files/images/background.jpg
+*.html
+*.js
+*.css
