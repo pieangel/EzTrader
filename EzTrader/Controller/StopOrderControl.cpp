@@ -14,6 +14,9 @@
 #include "../Account/SmAccount.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Order/OrderRequest/OrderRequestManager.h"
+#include "../Log/MyLogger.h"
+#include "../View/SymbolOrderView.h""
+#include "../Fund/SmFund.h"
 
 
 namespace DarkHorse {
@@ -44,8 +47,8 @@ void StopOrderControl::clear()
 	if (event_handler_) event_handler_();
 }
 
-StopOrderControl::StopOrderControl()
-	: id_(IdGenerator::get_id())
+StopOrderControl::StopOrderControl(SymbolOrderView& symbol_order_view)
+	: symbol_order_view_(symbol_order_view), id_(IdGenerator::get_id())
 {
 	mainApp.event_hub()->subscribe_stop_order_event_handler
 	(
@@ -76,10 +79,10 @@ order_request_p StopOrderControl::make_profit_cut_order_request(order_p order)
 	if (!old_req || old_req->cut_mode == SmCutMode::None) return nullptr;
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	int profit_cut_price = order->filled_price;
-	std::shared_ptr<OrderRequest> profit_order_req = nullptr;
+	std::shared_ptr<OrderRequest> order_request = nullptr;
 	if (order->position == SmPositionType::Buy) {
 		profit_cut_price += old_req->profit_cut_tick * int_tick_size;
-		profit_order_req = OrderRequestManager::make_default_sell_order_request(
+		order_request = OrderRequestManager::make_default_sell_order_request(
 			account->No(), 
 			account->Pwd(), 
 			symbol->SymbolCode(), 
@@ -87,26 +90,58 @@ order_request_p StopOrderControl::make_profit_cut_order_request(order_p order)
 	}
 	else {
 		profit_cut_price -= old_req->profit_cut_tick * int_tick_size;
-		profit_order_req = OrderRequestManager::make_default_buy_order_request(
+		order_request = OrderRequestManager::make_default_buy_order_request(
 			account->No(), 
 			account->Pwd(), 
 			symbol->SymbolCode(), 
 			profit_cut_price);
 	}
 	if (account->Type() == "1") {
-		profit_order_req->request_type = OrderRequestType::Abroad;
-		profit_order_req->fill_condition = SmFilledCondition::Day;
+		order_request->request_type = OrderRequestType::Abroad;
+		order_request->fill_condition = SmFilledCondition::Day;
 	}
 	else {
-		profit_order_req->request_type = OrderRequestType::Domestic;
-		profit_order_req->fill_condition = SmFilledCondition::Fas;
+		order_request->request_type = OrderRequestType::Domestic;
+		order_request->fill_condition = SmFilledCondition::Fas;
 	}
-	profit_order_req->price_type = SmPriceType::Price;
-	profit_order_req->cut_mode = SmCutMode::None;
-	profit_order_req->cut_slip = old_req->cut_slip;
-	profit_order_req->profit_cut_tick = old_req->profit_cut_tick;
-	profit_order_req->order_amount = abs(order->unsettled_count);
-	return profit_order_req;
+	order_request->price_type = SmPriceType::Price;
+	order_request->cut_mode = SmCutMode::None;
+	order_request->cut_slip = old_req->cut_slip;
+	order_request->profit_cut_tick = old_req->profit_cut_tick;
+	order_request->order_amount = abs(order->unsettled_count);
+
+	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
+	if (order_request) {
+		order_request->request_type = symbol_order_view_.get_order_request_type();
+		order_request->order_context.order_control_id = id_;
+		order_request->order_context.order_source_type = OrderType::MainAccount;
+		if (parent_account) {
+			order_request->order_context.parent_account_id = parent_account->id();
+			order_request->order_context.parent_account_no = parent_account->No();
+			order_request->order_context.sub_account_no = account->No();
+			order_request->order_context.order_source_type = OrderType::SubAccount;
+		}
+		auto fund = symbol_order_view_.fund();
+		if (fund) {
+			order_request->order_context.order_source_type = OrderType::Fund;
+			order_request->order_context.fund_id = fund->Id();
+			order_request->order_context.fund_name = fund->Name();
+		}
+		//SetProfitLossCut(order_request);
+		//mainApp.order_request_manager()->add_order_request(order_request);
+
+		LOGINFO(CMyLogger::getInstance(), "put_order 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문구분[%d], 주문수량[%d]",
+			order_request->account_no.c_str(),
+			order_request->order_context.sub_account_no.c_str(),
+			order_request->order_context.fund_name.c_str(),
+			order_request->order_context.parent_account_no.c_str(),
+			order_request->order_context.signal_name.c_str(),
+			order_request->symbol_code.c_str(),
+			(int)order_request->position_type,
+			order_request->order_amount);
+	}
+
+	return order_request;
 }
 
 order_request_p StopOrderControl::make_loss_cut_order_request(order_p order)
@@ -121,10 +156,10 @@ order_request_p StopOrderControl::make_loss_cut_order_request(order_p order)
 	if (!old_req || old_req->cut_mode == SmCutMode::None) return nullptr;
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	int loss_cut_price = order->filled_price;
-	std::shared_ptr<OrderRequest> loss_order_req = nullptr;
+	std::shared_ptr<OrderRequest> order_request = nullptr;
 	if (order->position == SmPositionType::Buy) {
 		loss_cut_price -= old_req->loss_cut_tick * int_tick_size;
-		loss_order_req = OrderRequestManager::make_default_sell_order_request(
+		order_request = OrderRequestManager::make_default_sell_order_request(
 			account->No(), 
 			account->Pwd(), 
 			symbol->SymbolCode(), 
@@ -132,21 +167,54 @@ order_request_p StopOrderControl::make_loss_cut_order_request(order_p order)
 	}
 	else {
 		loss_cut_price += old_req->loss_cut_tick * int_tick_size;
-		loss_order_req = OrderRequestManager::make_default_buy_order_request(
+		order_request = OrderRequestManager::make_default_buy_order_request(
 			account->No(), 
 			account->Pwd(), 
 			symbol->SymbolCode(), 
 			loss_cut_price);
 	}
 	if (account->Type() == "1")
-		loss_order_req->request_type = OrderRequestType::Abroad;
+		order_request->request_type = OrderRequestType::Abroad;
 	else
-		loss_order_req->request_type = OrderRequestType::Domestic;
-	loss_order_req->cut_mode = SmCutMode::None;
-	loss_order_req->cut_slip = old_req->cut_slip;
-	loss_order_req->loss_cut_tick = old_req->loss_cut_tick;
-	loss_order_req->order_amount = abs(order->unsettled_count);
-	return loss_order_req;
+		order_request->request_type = OrderRequestType::Domestic;
+	order_request->cut_mode = SmCutMode::None;
+	order_request->cut_slip = old_req->cut_slip;
+	order_request->loss_cut_tick = old_req->loss_cut_tick;
+	order_request->order_amount = abs(order->unsettled_count);
+
+
+	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
+	if (order_request) {
+		order_request->request_type = symbol_order_view_.get_order_request_type();
+		order_request->order_context.order_control_id = id_;
+		order_request->order_context.order_source_type = OrderType::MainAccount;
+		if (parent_account) {
+			order_request->order_context.parent_account_id = parent_account->id();
+			order_request->order_context.parent_account_no = parent_account->No();
+			order_request->order_context.sub_account_no = account->No();
+			order_request->order_context.order_source_type = OrderType::SubAccount;
+		}
+		auto fund = symbol_order_view_.fund();
+		if (fund) {
+			order_request->order_context.order_source_type = OrderType::Fund;
+			order_request->order_context.fund_id = fund->Id();
+			order_request->order_context.fund_name = fund->Name();
+		}
+		//SetProfitLossCut(order_request);
+		//mainApp.order_request_manager()->add_order_request(order_request);
+
+		LOGINFO(CMyLogger::getInstance(), "put_order 계좌[%s],[서브계좌번호[%s], [부모계좌번호[%s], 펀드이름[%s], 시그널이름[%s], 종목[%s], 주문구분[%d], 주문수량[%d]",
+			order_request->account_no.c_str(),
+			order_request->order_context.sub_account_no.c_str(),
+			order_request->order_context.fund_name.c_str(),
+			order_request->order_context.parent_account_no.c_str(),
+			order_request->order_context.signal_name.c_str(),
+			order_request->symbol_code.c_str(),
+			(int)order_request->position_type,
+			order_request->order_amount);
+	}
+
+	return order_request;
 }
 
 void StopOrderControl::update_quote(std::shared_ptr<SmQuote> quote)

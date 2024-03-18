@@ -143,6 +143,10 @@ public:
 	void on_update_order();
 	void on_update_position();
 	void set_order_request_type(DarkHorse::OrderRequestType order_req_type);
+	DarkHorse::OrderRequestType get_order_request_type()
+	{
+		return order_request_type_;
+	}
 	void set_fill_condition(DarkHorse::SmFilledCondition fill_condition) {
 		fill_condition_ = fill_condition;
 	}

@@ -1,0 +1,22 @@
+{
+    "Fund1": {
+        "fund_type": "9",
+        "name": "Fund1",
+        "sub_accounts": null
+    },
+    "Fund2": {
+        "fund_type": "9",
+        "name": "Fund2",
+        "sub_accounts": null
+    },
+    "Fund3": {
+        "fund_type": "9",
+        "name": "Fund3",
+        "sub_accounts": null
+    },
+    "Fund4": {
+        "fund_type": "9",
+        "name": "Fund4",
+        "sub_accounts": null
+    }
+}

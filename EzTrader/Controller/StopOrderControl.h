@@ -5,7 +5,7 @@
 #include <mutex>
 #include <functional>
 #include "../Order/SmOrderConst.h"
-
+class SymbolOrderView;
 namespace DarkHorse {
 struct OrderRequest;
 class SmAccount;
@@ -49,7 +49,7 @@ public:
 	void set_stop_as_real_order(bool enable) {
 		stop_as_real_order_ = enable;
 	}
-	StopOrderControl();
+	StopOrderControl(SymbolOrderView& symbol_order_view);
 	~StopOrderControl();
 	void set_control_type(const SmPositionType control_type) {
 		control_type_ = control_type;
@@ -79,6 +79,7 @@ public:
 		order_control_id_ = id;
 	}
 private:
+	SymbolOrderView& symbol_order_view_;
 	bool stop_as_real_order_{false};
 	int symbol_id_{ 0 };
 	int symbol_int_tick_size_{ 1 };

@@ -177,10 +177,10 @@ SymbolOrderView::SymbolOrderView()
 
 	product_control_ = std::make_shared<DarkHorse::ProductControl>();
 
-	buy_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>();
+	buy_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>(*this);
 	buy_stop_order_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_buy_stop_order, this));
 	buy_stop_order_control_->set_order_control_id(id_);
-	sell_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>();
+	sell_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>(*this);
 	sell_stop_order_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_sell_stop_order, this));
 	sell_stop_order_control_->set_order_control_id(id_);
 	m_pGM = CBCGPGraphicsManager::CreateInstance();
