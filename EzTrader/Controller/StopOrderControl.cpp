@@ -79,20 +79,21 @@ order_request_p StopOrderControl::make_profit_cut_order_request(order_p order)
 	if (!old_req || old_req->cut_mode == SmCutMode::None) return nullptr;
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	int profit_cut_price = order->filled_price;
+	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
 	std::shared_ptr<OrderRequest> order_request = nullptr;
 	if (order->position == SmPositionType::Buy) {
 		profit_cut_price += old_req->profit_cut_tick * int_tick_size;
 		order_request = OrderRequestManager::make_default_sell_order_request(
-			account->No(), 
-			account->Pwd(), 
+			parent_account ? parent_account->No() : account->No(),
+			mainApp.AcntMgr()->get_password(account->No()),
 			symbol->SymbolCode(), 
 			profit_cut_price);
 	}
 	else {
 		profit_cut_price -= old_req->profit_cut_tick * int_tick_size;
 		order_request = OrderRequestManager::make_default_buy_order_request(
-			account->No(), 
-			account->Pwd(), 
+			parent_account ? parent_account->No() : account->No(),
+			mainApp.AcntMgr()->get_password(account->No()),
 			symbol->SymbolCode(), 
 			profit_cut_price);
 	}
@@ -110,7 +111,6 @@ order_request_p StopOrderControl::make_profit_cut_order_request(order_p order)
 	order_request->profit_cut_tick = old_req->profit_cut_tick;
 	order_request->order_amount = abs(order->unsettled_count);
 
-	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
 	if (order_request) {
 		order_request->request_type = symbol_order_view_.get_order_request_type();
 		order_request->order_context.order_control_id = id_;
@@ -154,22 +154,23 @@ order_request_p StopOrderControl::make_loss_cut_order_request(order_p order)
 
 	auto old_req = mainApp.order_request_manager()->find_order_request(order->order_request_id);
 	if (!old_req || old_req->cut_mode == SmCutMode::None) return nullptr;
+	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	int loss_cut_price = order->filled_price;
 	std::shared_ptr<OrderRequest> order_request = nullptr;
 	if (order->position == SmPositionType::Buy) {
 		loss_cut_price -= old_req->loss_cut_tick * int_tick_size;
 		order_request = OrderRequestManager::make_default_sell_order_request(
-			account->No(), 
-			account->Pwd(), 
+			parent_account ? parent_account->No() : account->No(),
+			mainApp.AcntMgr()->get_password(account->No()),
 			symbol->SymbolCode(), 
 			loss_cut_price);
 	}
 	else {
 		loss_cut_price += old_req->loss_cut_tick * int_tick_size;
 		order_request = OrderRequestManager::make_default_buy_order_request(
-			account->No(), 
-			account->Pwd(), 
+			parent_account ? parent_account->No() : account->No(),
+			mainApp.AcntMgr()->get_password(account->No()),
 			symbol->SymbolCode(), 
 			loss_cut_price);
 	}
@@ -182,8 +183,6 @@ order_request_p StopOrderControl::make_loss_cut_order_request(order_p order)
 	order_request->loss_cut_tick = old_req->loss_cut_tick;
 	order_request->order_amount = abs(order->unsettled_count);
 
-
-	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
 	if (order_request) {
 		order_request->request_type = symbol_order_view_.get_order_request_type();
 		order_request->order_context.order_control_id = id_;
