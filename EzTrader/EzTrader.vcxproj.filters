@@ -1138,6 +1138,30 @@
     <ClCompile Include="CeXDib.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="Account\VtAccountAssetDlg.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\VtAccountAssetGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\VtAssetPage.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\VtOrderAvailablePage.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\VtAssetGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\HdAccountPLDlg.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\HdAccountPLGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Account\HdProductRemainGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildFrm.h">
@@ -2571,6 +2595,30 @@
     <ClInclude Include="VtDefine.h" />
     <ClInclude Include="CeXDib.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\VtAccountAssetDlg.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\VtAccountAssetGrid.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\VtAssetPage.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\VtOrderAvailablePage.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\VtAssetGrid.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\HdAccountPLDlg.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\HdAccountPLGrid.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Account\HdProductRemainGrid.h">
+      <Filter>Account</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

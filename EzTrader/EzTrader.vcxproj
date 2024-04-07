@@ -222,6 +222,9 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Account\HdAccountPLDlg.h" />
+    <ClInclude Include="Account\HdAccountPLGrid.h" />
+    <ClInclude Include="Account\HdProductRemainGrid.h" />
     <ClInclude Include="Account\MainAccountGrid.h" />
     <ClInclude Include="Account\SmAccount.h" />
     <ClInclude Include="Account\SmAccountAsset.h" />
@@ -229,6 +232,11 @@
     <ClInclude Include="Account\SmAccountPwdDlg.h" />
     <ClInclude Include="Account\SubAccountEditor.h" />
     <ClInclude Include="Account\SubAccountGrid.h" />
+    <ClInclude Include="Account\VtAccountAssetDlg.h" />
+    <ClInclude Include="Account\VtAccountAssetGrid.h" />
+    <ClInclude Include="Account\VtAssetGrid.h" />
+    <ClInclude Include="Account\VtAssetPage.h" />
+    <ClInclude Include="Account\VtOrderAvailablePage.h" />
     <ClInclude Include="Archieve\SmSaveManager.h" />
     <ClInclude Include="BtnST.h" />
     <ClInclude Include="CeXDib.h" />
@@ -702,6 +710,9 @@
     <ClInclude Include="Yuanta\YaStockClient.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Account\HdAccountPLDlg.cpp" />
+    <ClCompile Include="Account\HdAccountPLGrid.cpp" />
+    <ClCompile Include="Account\HdProductRemainGrid.cpp" />
     <ClCompile Include="Account\MainAccountGrid.cpp" />
     <ClCompile Include="Account\SmAccount.cpp" />
     <ClCompile Include="Account\SmAccountAsset.cpp" />
@@ -709,6 +720,11 @@
     <ClCompile Include="Account\SmAccountPwdDlg.cpp" />
     <ClCompile Include="Account\SubAccountEditor.cpp" />
     <ClCompile Include="Account\SubAccountGrid.cpp" />
+    <ClCompile Include="Account\VtAccountAssetDlg.cpp" />
+    <ClCompile Include="Account\VtAccountAssetGrid.cpp" />
+    <ClCompile Include="Account\VtAssetGrid.cpp" />
+    <ClCompile Include="Account\VtAssetPage.cpp" />
+    <ClCompile Include="Account\VtOrderAvailablePage.cpp" />
     <ClCompile Include="Archieve\SmSaveManager.cpp" />
     <ClCompile Include="BtnST.cpp" />
     <ClCompile Include="CeXDib.cpp" />

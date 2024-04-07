@@ -180,11 +180,11 @@ order_p TotalOrderManager::make_order(const order_event& order_info)
 	return nullptr;
 }
 
-void TotalOrderManager::set_order_request_info(const std::string& custom_info, order_p order)
+order_request_p TotalOrderManager::set_order_request_info(const std::string& custom_info, order_p order)
 {
-	if (!order || custom_info.empty()) return;
+	if (!order || custom_info.empty()) return nullptr;
 	order_request_p order_request = mainApp.order_request_manager()->find_order_request(custom_info);
-	if (!order_request) return;
+	if (!order_request) return nullptr;
 	order->order_amount = order_request->order_amount;
 	order->order_type = order_request->order_type;
 	order->order_request_id = order_request->request_id;
@@ -199,6 +199,8 @@ void TotalOrderManager::set_order_request_info(const std::string& custom_info, o
 	order->order_context.parent_account_no = order_request->order_context.parent_account_no;
 	order->order_context.fund_name = order_request->order_context.fund_name;
 	order->order_context.signal_name = order_request->order_context.signal_name;
+
+	return order_request;
 }
 
 order_p TotalOrderManager::get_order(const std::string& order_no)

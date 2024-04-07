@@ -33,7 +33,7 @@ private:
 	order_p find_order(const std::string& order_no) ;
 	order_p create_order(const std::string& order_no);
 	order_p make_order(const order_event& order_info);
-	void set_order_request_info(const std::string& custom_info, order_p order);
+	order_request_p set_order_request_info(const std::string& custom_info, order_p order);
 	account_order_manager_p find_account_order_manager(const std::string& account_no);
 	account_order_manager_p create_account_order_manager(const std::string& account_no);
 	/// <summary>

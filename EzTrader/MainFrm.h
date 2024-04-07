@@ -45,6 +45,8 @@ class AbFundOrderWindow;
 class VtAutoSignalManagerDialog;
 class SmUSDSystemDialog;
 class VtOrderWndHd;
+class VtAccountAssetDlg;
+class HdAccountPLDlg;
 class CMainFrame : public CBCGPMDIFrameWnd
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -143,6 +145,9 @@ public:
 	std::shared_ptr< SmJangGoDialog> _FundJangoDialog = nullptr;
 	std::shared_ptr< SmFundCompMainDialog> _FundCompOrderDialog = nullptr;
 
+	std::shared_ptr< VtAccountAssetDlg> _AssetDialog = nullptr;
+
+
 	DmAccountOrderWindow* dm_account_order_wnd_p_ = nullptr;
 	std::shared_ptr<DmFundOrderWindow> dm_fund_order_wnd_p = nullptr;
 	std::map<HWND, DmAccountOrderWindow*> dm_account_order_wnd_map_;
@@ -155,6 +160,7 @@ public:
 	std::map<HWND, std::shared_ptr<SmOrderCompMainDialog>> _CompOrderWndMap;
 	std::map<HWND, std::shared_ptr<MiniJangoDialog>> _JangoWndMap;
 	std::map<HWND, std::shared_ptr<MiniJangoDialog>> mini_jango_wnd_map_;
+	std::map<HWND, std::shared_ptr<HdAccountPLDlg>> miniJangoWndMap_;
 	std::map<HWND, std::shared_ptr<SmFilledListDialog>> _FilledWndMap;
 
 	std::map<HWND, std::shared_ptr<AbFundOrderWindow>> _FundOrderWndMap;
@@ -162,6 +168,8 @@ public:
 	std::map<HWND, std::shared_ptr<SmFundCompMainDialog>> _FundCompOrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmTotalAssetDialog>> _AssetWndMap;
+
+	std::map<HWND, std::shared_ptr<VtAccountAssetDlg>> AccountAssetWndMap_;
 
 	std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>> total_asset_profit_loss_map_;
 

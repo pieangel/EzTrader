@@ -174,6 +174,10 @@
 #define IDD_ORDER_AVAILABLE             271
 #define IDD_CENTER_CONFIG_AB            272
 #define IDD_CENTER_CONFIG               273
+#define IDD_MINI_JANGO                  338
+#define IDD_ASSET                       358
+#define IDD_ACCOUNT_ASSET               365
+#define IDD_MINI_JANGO_FUND             377
 #define IDB_BITMAP_SET                  403
 #define IDC_STATIC_ID                   1003
 #define IDC_STATIC_PWD                  1004
@@ -181,8 +185,11 @@
 #define IDC_STATIC_CERT                 1006
 #define IDC_POSITION                    1007
 #define IDC_STATIC_CERT2                1008
+#define IDC_BTN_COMMIT                  1008
 #define IDC_BTN_CAN                     1009
+#define IDC_CHECK_THOUSAND              1009
 #define IDC_BTN_ADD_FAV                 1010
+#define IDC_CHECK_SUBACNT               1010
 #define IDC_BTN_ACCOUNT                 1011
 #define IDC_PROGRESS_DATA               1012
 #define IDC_RADIO_BALANCE               1013
@@ -225,7 +232,9 @@
 #define IDC_STATIC_SIGNAL_DEFINITION    1050
 #define IDC_BTN_APPLY                   1051
 #define IDC_EDIT_ACNT_PWD               1052
+#define IDC_STATIC_MINI_SUB             1052
 #define IDC_OVERLAY_LINE                1053
+#define IDC_STATIC_MINI_TOP             1053
 #define IDC_BTN_FUND_NEW                1054
 #define IDC_BTN_DELETE                  1055
 #define IDC_BTN_ORDER_ALL               1056
@@ -246,6 +255,7 @@
 #define IDC_BTN_AMOUNT2                 1071
 #define IDC_COMBO_PRICE_TYPE            1072
 #define IDC_BTN_FUND_EDIT               1073
+#define IDC_TAB_ACCOUNT_ASSET           1073
 #define IDC_BTN_SYS_ORDER               1074
 #define IDC_BTN_MON                     1075
 #define IDC_BTN_ADD_SYMBOL              1076
@@ -264,7 +274,9 @@
 #define IDC_CHECK_DATA_LABEL            1089
 #define IDC_STATIC_OPT_GRID             1090
 #define IDC_BTN_ADD                     1091
+#define IDC_COMBO_FUND                  1091
 #define IDC_COMBO_FUT_MARKET            1092
+#define IDC_CHECK_ACNT                  1092
 #define IDC_BUTTON4                     1093
 #define IDC_STATIC_FUT                  1094
 #define IDC_BTN_AMOUNT4                 1095

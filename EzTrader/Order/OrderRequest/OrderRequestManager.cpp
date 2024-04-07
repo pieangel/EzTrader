@@ -9,6 +9,7 @@
 #include "../OrderProcess/OrderProcessor.h"
 #include "../../Client/ViClient.h"
 #include "../../Util/VtStringUtil.h"
+#include "../../Util/SmUtil.h"
 
 namespace DarkHorse {
 int OrderRequestManager::id_ = 0;
@@ -1145,8 +1146,12 @@ order_request_p OrderRequestManager::find_order_request(const std::string& custo
 	const int zero_pos = custom_info.find_first_of('0');
 	const int order_request_position = custom_info.find_first_of('k');
 	const std::string order_request_string = custom_info.substr(zero_pos, order_request_position - zero_pos);
+
+	const int mac_address_pos = custom_info.find_first_of('m');
+	const std::string given_mac_address = custom_info.substr(order_request_position + 1, mac_address_pos - order_request_position - 1);
+	const std::string local_mac_address = SmUtil::GetMacAddress();
+	if (given_mac_address != local_mac_address) return nullptr;
 	const int order_request_id = std::stoi(order_request_string);
-	
 	return find_order_request(order_request_id);
 }
 }

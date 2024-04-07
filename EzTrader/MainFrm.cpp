@@ -88,6 +88,8 @@ using namespace hmdf;
 #include <string>
 #include "OutSystem/SmUSDSystemDialog.h"
 #include "OrderUi/VtOrderWndHd.h"
+#include "Account/VtAccountAssetDlg.h"
+#include "Account/HdAccountPLDlg.h"
 //using namespace hmdf;
 
 using namespace DarkHorse;
@@ -746,12 +748,15 @@ void CMainFrame::RemoveFundOrderWnd(HWND wnd)
 
 void CMainFrame::RemoveJangoWnd(HWND wnd)
 {
+	
+	/*
 	if (!wnd) return;
 
 	auto found = _JangoWndMap.find(wnd);
 	if (found == _JangoWndMap.end()) return;
 
 	_JangoWndMap.erase(found);
+	*/
 }
 
 void CMainFrame::RemoveFilledWnd(HWND wnd)
@@ -1159,9 +1164,16 @@ void CMainFrame::OnOpenSettings()
 
 void CMainFrame::OnAsset()
 {
-	std::shared_ptr< TotalAssetProfitLossDialog>  totalAssetDialog = std::make_shared<TotalAssetProfitLossDialog>();
-	totalAssetDialog->Create(IDD_TOTAL_ASSET, this);
-	total_asset_profit_loss_map_[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
+// 	std::shared_ptr< TotalAssetProfitLossDialog>  totalAssetDialog = std::make_shared<TotalAssetProfitLossDialog>();
+// 	totalAssetDialog->Create(IDD_TOTAL_ASSET, this);
+// 	total_asset_profit_loss_map_[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
+// 	totalAssetDialog->ShowWindow(SW_SHOW);
+	//VtAccountAssetDlg dlg;
+	//dlg.DoModal();
+
+	std::shared_ptr< VtAccountAssetDlg>  totalAssetDialog = std::make_shared<VtAccountAssetDlg>();
+	totalAssetDialog->Create(IDD_ACCOUNT_ASSET, this);
+	AccountAssetWndMap_[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
 	totalAssetDialog->ShowWindow(SW_SHOW);
 }
 
@@ -1193,10 +1205,16 @@ void CMainFrame::OnComplexOrder()
 
 void CMainFrame::OnOrderRemain()
 {
-	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>(this, "1");
+// 	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>(this, "1");
+// 	accountJangoDialog->Mode(0);
+// 	accountJangoDialog->Create(IDD_JANGO, this);
+// 	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+// 	accountJangoDialog->ShowWindow(SW_SHOW);
+
+	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "1");
 	accountJangoDialog->Mode(0);
-	accountJangoDialog->Create(IDD_JANGO, this);
-	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+	accountJangoDialog->Create(IDD_MINI_JANGO, this);
+	miniJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
 	accountJangoDialog->ShowWindow(SW_SHOW);
 }
 
@@ -1511,10 +1529,21 @@ void CMainFrame::OnThemeColorful()
 
 void CMainFrame::OnDomesticRemain()
 {
+	/*
+	HdAccountPLDlg dlg;
+	dlg.DoModal();
+
 	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>(this, "9");
 	accountJangoDialog->Mode(0);
 	accountJangoDialog->Create(IDD_JANGO, this);
 	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+	accountJangoDialog->ShowWindow(SW_SHOW);
+	*/
+
+	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "1");
+	accountJangoDialog->Mode(0);
+	accountJangoDialog->Create(IDD_MINI_JANGO, this);
+	miniJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
 	accountJangoDialog->ShowWindow(SW_SHOW);
 }
 

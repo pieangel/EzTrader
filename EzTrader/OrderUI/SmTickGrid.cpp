@@ -34,49 +34,16 @@ SmTickGrid::~SmTickGrid()
 
 void SmTickGrid::UnregisterAllCallback()
 {
-	//mainApp.CallbackMgr().UnsubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void SmTickGrid::RegisterQuoteCallback()
 {
-	//mainApp.CallbackMgr().SubscribeQuoteWndCallback(GetSafeHwnd());
 }
 
 void SmTickGrid::OnQuoteEvent(symbol_p sym)
 {
 	if (!sym || !_CenterWnd)
 		return;
-	/*
-	if (_CenterWnd->Symbol()->ShortCode.compare(sym->ShortCode) != 0)
-		return;
-
-	int i = 1;
-	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
-		VtQuoteItem item = *it;
-		CGridCellBase* pCell = nullptr;
-		pCell = GetCell(i, 0);
-		if (!pCell)
-			break;
-		pCell->SetText(item.Time.c_str());
-		InvalidateCellRect(i, 0);
-
-		std::string close = fmt::format("{:.{}f}", item.ClosePrice / std::pow(10, sym->Decimal), sym->Decimal);
-
-		pCell = GetCell(i, 1);
-		pCell->SetText(close.c_str());
-		InvalidateCellRect(i, 1);
-		CString qty;
-		qty.Format("%d", item.ContQty);
-		pCell = GetCell(i, 2);
-		pCell->SetText(qty);
-		if (item.MatchKind == 1)
-			pCell->SetTextClr(RGB(255, 0, 0));
-		else
-			pCell->SetTextClr(RGB(0, 0, 255));
-		InvalidateCellRect(i, 2);
-		i++;
-	}
-	*/
 }
 
 BEGIN_MESSAGE_MAP(SmTickGrid, CGridCtrl)
@@ -154,36 +121,7 @@ void SmTickGrid::OnReceiveQuote(symbol_p sym)
 		return;
 
 	int i = 1;
-	/*
-	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
-		VtQuoteItem item = *it;
-		CGridCellBase* pCell = nullptr;
-		pCell = GetCell(i, 0);
-		pCell->SetText(item.Time.c_str());
-		InvalidateCellRect(i, 0);
 
-		std::string close = fmt::format("{:.{}f}", item.ClosePrice / std::pow(10, sym->Decimal), sym->Decimal);
-
-		pCell = GetCell(i, 1);
-		pCell->SetText(close.c_str());
-		InvalidateCellRect(i, 1);
-		CString qty;
-		qty.Format("%d", item.ContQty);
-		pCell = GetCell(i, 2);
-		pCell->SetText(qty);
-		if (item.MatchKind == 1)
-			pCell->SetTextClr(RGB(255, 0, 0));
-		else
-			pCell->SetTextClr(RGB(0, 0, 255));
-		InvalidateCellRect(i, 2);
-		i++;
-		if (m_nRows == i)
-			break;
-	}
-
-	if (sym->Quote.QuoteItemQ.size() > m_nRows)
-		sym->Quote.QuoteItemQ.pop_back();
-		*/
 }
 
 void SmTickGrid::SetOrderConfigMgr(VtOrderConfigManager* val)
@@ -262,39 +200,7 @@ LRESULT SmTickGrid::OnQuoteChangedMessage(WPARAM wParam, LPARAM lParam)
 	symbol_p sym = _CenterWnd->Symbol();
 	if (!sym)
 		return 1;
-	/*
-	symbol_p symbol = (symbol_p)lParam;
-	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0) {
-		return 1;
-	}
 
-	int i = 1;
-	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
-		VtQuoteItem item = *it;
-		CGridCellBase* pCell = nullptr;
-		pCell = GetCell(i, 0);
-		if (!pCell)
-			break;
-		pCell->SetText(item.Time.c_str());
-		InvalidateCellRect(i, 0);
-
-		std::string close = fmt::format("{:.{}f}", item.ClosePrice / std::pow(10, sym->Decimal), sym->Decimal);
-
-		pCell = GetCell(i, 1);
-		pCell->SetText(close.c_str());
-		InvalidateCellRect(i, 1);
-		CString qty;
-		qty.Format("%d", item.ContQty);
-		pCell = GetCell(i, 2);
-		pCell->SetText(qty);
-		if (item.MatchKind == 1)
-			pCell->SetTextClr(RGB(255, 0, 0));
-		else
-			pCell->SetTextClr(RGB(0, 0, 255));
-		InvalidateCellRect(i, 2);
-		i++;
-	}
-	*/
 	return 1;
 }
 
@@ -308,33 +214,7 @@ void SmTickGrid::RefreshValues()
 		return;
 
 	int i = 1;
-	/*
-	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
-		VtQuoteItem item = *it;
-		CGridCellBase* pCell = nullptr;
-		pCell = GetCell(i, 0);
-		if (!pCell)
-			break;
-		pCell->SetText(item.Time.c_str());
-		InvalidateCellRect(i, 0);
 
-		std::string close = fmt::format("{:.{}f}", item.ClosePrice / std::pow(10, sym->Decimal), sym->Decimal);
-
-		pCell = GetCell(i, 1);
-		pCell->SetText(close.c_str());
-		InvalidateCellRect(i, 1);
-		CString qty;
-		qty.Format("%d", item.ContQty);
-		pCell = GetCell(i, 2);
-		pCell->SetText(qty);
-		if (item.MatchKind == 1)
-			pCell->SetTextClr(RGB(255, 0, 0));
-		else
-			pCell->SetTextClr(RGB(0, 0, 255));
-		InvalidateCellRect(i, 2);
-		i++;
-	}
-	*/
 	return;
 }
 
