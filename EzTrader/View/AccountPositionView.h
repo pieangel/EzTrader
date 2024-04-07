@@ -1,12 +1,3 @@
-/*
-#pragma once
-class AccountPositionView
-{
-};
-*/
-#pragma once
-
-
 
 #pragma once
 #include <BCGCBProInc.h>

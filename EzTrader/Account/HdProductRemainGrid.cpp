@@ -2,11 +2,50 @@
 #include "HdProductRemainGrid.h"
 #include "HdAccountPLDlg.h"
 #include <numeric>
+#include "../Global/SmTotalManager.h"
+#include "../Symbol/SmSymbol.h"
+#include "../Order/SmTotalOrderManager.h"
+#include "../Order/SmAccountOrderManager.h"
+#include "../Order/SmSymbolOrderManager.h"
+#include "../Global/SmTotalManager.h"
+#include "../Account/SmAccount.h"
+#include "../Position/TotalPositionManager.h"
+#include "../Position/AccountPositionManager.h"
+#include "../Position/SmPosition.h"
+#include "../Order/SmOrderRequest.h"
+#include "../Client/ViStockClient.h"
+#include "../Order/SmOrderRequestManager.h"
+#include "../Fund/SmFund.h"
 
+#include "../Event/SmCallbackManager.h"
+#include "../Order/OrderUi/DmAccountOrderWindow.h"
+#include "../Fund/SmFundOrderDialog.h"
+#include "../CompOrder/SmOrderCompMainDialog.h"
+#include "../CompOrder/SmFundCompMainDialog.h"
+#include "../Controller/AccountPositionControl.h"
+#include "../Position/Position.h"
+#include "../Util/VtStringUtil.h"
+#include "../Log/MyLogger.h"
+#include "../Event/EventHub.h"
+#include "../Util/IdGenerator.h"
+#include "../Symbol/SmSymbolManager.h"
+
+#include <format>
+
+#include <functional>
+
+using namespace std;
+using namespace std::placeholders;
+
+using namespace DarkHorse;
 
 HdProductRemainGrid::HdProductRemainGrid()
 {
 	_AcntPLDlg = nullptr;
+	account_position_control_ = std::make_shared<DarkHorse::AccountPositionControl>();
+	account_position_control_->set_single_position_event_handler(std::bind(&HdProductRemainGrid::on_update_single_position, this, _1));
+	account_position_control_->set_event_handler(std::bind(&HdProductRemainGrid::on_update_whole_position, this, _1));
+
 }
 
 
@@ -122,17 +161,7 @@ void HdProductRemainGrid::InitGrid()
 	RefreshCells(posMap);
 }
 
-void HdProductRemainGrid::OnReceiveQuote(VtSymbol* sym)
-{
-	if (!sym)
-		return;
-	InitGrid();
-}
 
-void HdProductRemainGrid::OnOrderFilledHd(VtOrder* order)
-{
-	InitGrid();
-}
 
 void HdProductRemainGrid::ClearValues()
 {
@@ -153,12 +182,12 @@ void HdProductRemainGrid::ClearValues()
 	}
 	*/
 }
-
+/*
 void HdProductRemainGrid::ShowPosition(VtPosition* posi, VtAccount* acnt, int index)
 {
 	if (!posi || !acnt)
 		return;
-	/*
+	
 	VtCellPos pos;
 	for (int i = 0; i < 4; i++) {
 		pos.Row = index;
@@ -236,9 +265,9 @@ void HdProductRemainGrid::ShowPosition(VtPosition* posi, VtAccount* acnt, int in
 		QuickSetTextColor(3, index, RGB(0, 0, 0));
 		QuickSetNumber(3, index, 0);
 	}
-	*/
+	
 }
-
+*/
 
 void HdProductRemainGrid::ClearOldValuse(std::map<VtCellPos, VtCellPos>& posMap)
 {
@@ -256,4 +285,423 @@ void HdProductRemainGrid::RefreshCells(std::map<VtCellPos, VtCellPos>& posMap)
 		VtCellPos pos = it->second;
 		QuickRedrawCell(pos.Col, pos.Row);
 	}
+}
+
+
+void HdProductRemainGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
+{
+	fund_ = val;
+
+	if (!account_position_control_) return;
+	account_position_control_->set_fund(fund_);
+	enable_position_show_ = true;
+	// 계좌 유형에 따라 표시 내용과 표시 간격을 바꾼다.
+	//SetColumnName(3, "평균단가");
+	//SetColumnWidth(0, column_widths_vector_[0]);
+	//set_column_widths(fund_->fund_type());
+	//set_column_names(fund_->fund_type());
+	update_account_position();
+}
+
+
+
+void HdProductRemainGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
+{
+	account_ = val;
+	if (!account_position_control_) return;
+	account_position_control_->set_account(account_);
+	enable_position_show_ = true;
+	// 계좌 유형에 따라 표시 내용과 표시 간격을 바꾼다.
+	//SetColumnName(3, "평균단가");
+	//SetColumnWidth(0, column_widths_vector_[0]);
+	//set_column_widths(account_->Type());
+	//set_column_names(account_->Type());
+	update_account_position();
+}
+
+
+
+void HdProductRemainGrid::UpdatePositionInfo()
+{
+
+}
+
+void HdProductRemainGrid::LiqSelPositions()
+{
+	_Mode == 0 ? LiqSelPositionsForAccount() : LiqSelPositionsForFund();
+	//ClearCheck();
+}
+
+void HdProductRemainGrid::LiqAll()
+{
+	_Mode == 0 ? LiqAllForAccount() : LiqAllForFund();
+	//ClearCheck();
+}
+
+void HdProductRemainGrid::on_update_single_position(const int position_id)
+{
+	/*
+	auto found = position_to_row_.find(position_id);
+	if (found == position_to_row_.end()) return;
+	std::string format_type;
+	if (account_) format_type = account_->Type();
+	else if (fund_) format_type = fund_->fund_type();
+	else return;
+
+	CBCGPGridRow* pRow = GetRow(found->second);
+	if (!pRow) return;
+	auto found2 = row_to_position_.find(found->second);
+	if (found2 == row_to_position_.end()) return;
+	auto position = found2->second;
+	if (format_type == "1")
+		update_ab_account_position(pRow, position, format_type);
+	else
+		update_dm_account_position(pRow, position, format_type);
+	Invalidate();
+	*/
+	enable_position_show_ = true;
+}
+
+void HdProductRemainGrid::on_update_whole_position(const int result)
+{
+	// 	if (result == 0) {
+	// 		ClearOldContents(0);
+	// 	}
+	enable_position_show_ = true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CBasicGridCtrl message handlers
+
+
+
+
+void HdProductRemainGrid::LiqSelPositionsForAccount()
+{
+	if (!account_) return;
+
+// 	for (auto it = row_to_position_.begin(); it != row_to_position_.end(); ++it) {
+// 		CBCGPGridRow* pRow = GetRow(it->first);
+// 		if (pRow->GetCheck()) {
+// 			std::shared_ptr<SmOrderRequest> order_req = nullptr;
+// 			if (it->second->open_quantity > 0)
+// 				order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account_->No(), account_->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
+// 			else if (it->second->open_quantity < 0)
+// 				order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account_->No(), account_->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
+// 			mainApp.Client()->NewOrder(order_req);
+// 		}
+// 	}
+}
+
+void HdProductRemainGrid::LiqSelPositionsForFund()
+{
+	if (!fund_) return;
+
+// 	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
+// 	for (auto it2 = account_vec.begin(); it2 != account_vec.end(); it2++) {
+// 		auto account = *it2;
+// 		for (auto it = row_to_position_.begin(); it != row_to_position_.end(); ++it) {
+// 			CBCGPGridRow* pRow = GetRow(it->first);
+// 			if (pRow->GetCheck()) {
+// 				std::shared_ptr<SmOrderRequest> order_req = nullptr;
+// 				if (it->second->open_quantity > 0)
+// 					order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account->No(), account->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
+// 				else if (it->second->open_quantity < 0)
+// 					order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account->No(), account->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
+// 				mainApp.Client()->NewOrder(order_req);
+// 			}
+// 		}
+// 	}
+}
+
+void HdProductRemainGrid::LiqAllForAccount()
+{
+	if (!account_) return;
+
+	for (auto it = row_to_position_.begin(); it != row_to_position_.end(); ++it) {
+		std::shared_ptr<SmOrderRequest> order_req = nullptr;
+		if (it->second->open_quantity > 0)
+			order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account_->No(), account_->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
+		else if (it->second->open_quantity < 0)
+			order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account_->No(), account_->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
+		mainApp.Client()->NewOrder(order_req);
+	}
+}
+
+void HdProductRemainGrid::LiqAllForFund()
+{
+	if (!fund_) return;
+
+	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
+	for (auto it2 = account_vec.begin(); it2 != account_vec.end(); it2++) {
+		auto account = *it2;
+		for (auto it = row_to_position_.begin(); it != row_to_position_.end(); ++it) {
+			std::shared_ptr<SmOrderRequest> order_req = nullptr;
+			if (it->second->open_quantity > 0)
+				order_req = SmOrderRequestManager::MakeDefaultSellOrderRequest(account->No(), account->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
+			else if (it->second->open_quantity < 0)
+				order_req = SmOrderRequestManager::MakeDefaultBuyOrderRequest(account->No(), account->Pwd(), it->second->symbol_code, 0, abs(it->second->open_quantity), DarkHorse::SmPriceType::Market);
+			mainApp.Client()->NewOrder(order_req);
+		}
+	}
+}
+
+void HdProductRemainGrid::update_account_position()
+{
+	if (!account_position_control_) return;
+
+	if (updating_) return;
+	updating_ = true;
+
+	row_to_position_.clear();
+	position_to_row_.clear();
+
+	std::string format_type;
+	if (account_) format_type = account_->Type();
+	else if (fund_) format_type = fund_->fund_type();
+	else return;
+
+	const std::map<std::string, position_p>& active_positions = account_position_control_->get_active_position_map();
+	int row = 0;
+	for (auto it = active_positions.begin(); it != active_positions.end(); ++it) {
+		const auto& position = it->second;
+		if (position->open_quantity == 0) continue;
+		if (format_type == "1")
+			ShowPosition(row, position, format_type);
+		else
+			ShowPosition(row, position, format_type);
+
+		_OldContentRowSet.insert(row);
+		row_to_position_[row] = position;
+		position_to_row_[position->id] = row;
+		row++;
+	}
+	//ClearOldContents(row);
+	_OldMaxRow = row;
+	updating_ = false;
+	enable_position_show_ = true;
+}
+
+void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::string& format_type)
+{
+	if (!posi )
+		return;
+
+	VtCellPos pos;
+	for (int i = 0; i < 4; i++) {
+		pos.Row = index;
+		pos.Col = i;
+		_OldPosMap[pos] = pos;
+	}
+
+	if (!posi) {
+		QuickSetText(0, index, _T(""));
+		QuickSetText(1, index, _T(""));
+		QuickSetText(2, index, _T(""));
+		QuickSetText(3, index, _T(""));
+		return;
+	}
+
+	if (posi->open_profit_loss == 0) {
+		QuickSetText(0, index, _T(""));
+		QuickSetText(1, index, _T(""));
+		QuickSetText(2, index, _T(""));
+		QuickSetText(3, index, _T(""));
+		return;
+	}
+
+	auto sym = mainApp.SymMgr()->FindSymbol(posi->symbol_code);
+	if (!sym)
+		return;
+
+	QuickSetText(0, index, posi->symbol_code.c_str());
+
+	if (posi->open_quantity > 0) {
+		QuickSetTextColor(1, index, RGB(255, 0, 0));
+		QuickSetTextColor(2, index, RGB(255, 0, 0));
+		QuickSetTextColor(3, index, RGB(255, 0, 0));
+	}
+	else if (posi->open_quantity > 0) {
+		QuickSetTextColor(1, index, RGB(0, 0, 255));
+		QuickSetTextColor(2, index, RGB(0, 0, 255));
+		QuickSetTextColor(3, index, RGB(0, 0, 255));
+		QuickSetNumber(1, index, std::abs(posi->open_quantity));
+	}
+
+	std::string symCode = posi->symbol_code;
+	if (symCode.find(_T("201")) != std::string::npos) { // coloring the call 
+		QuickSetBackColor(0, index, RGB(252, 226, 228));
+		QuickSetBackColor(1, index, RGB(252, 226, 228));
+		QuickSetBackColor(2, index, RGB(252, 226, 228));
+		QuickSetBackColor(3, index, RGB(252, 226, 228));
+	}
+
+	if (symCode.find(_T("301")) != std::string::npos) { // coloring the put 
+		QuickSetBackColor(0, index, RGB(218, 226, 245));
+		QuickSetBackColor(1, index, RGB(218, 226, 245));
+		QuickSetBackColor(2, index, RGB(218, 226, 245));
+		QuickSetBackColor(3, index, RGB(218, 226, 245));
+	}
+
+	CString strValue;
+	strValue.Format(_T("%d"), posi->open_quantity);
+	QuickSetText(1, index, strValue);
+	const int decimal = format_type == "1" ? 2 : 0;
+
+	std::string value_string = VtStringUtil::get_format_value(posi->average_price / pow(10, 2), decimal, true);
+	QuickSetText(2, index, value_string.c_str());
+
+	std::string open_pl = VtStringUtil::get_format_value(posi->open_profit_loss, decimal, true);
+
+	if (posi->open_profit_loss > 0) {
+		QuickSetTextColor(3, index, RGB(255, 0, 0));
+		QuickSetText(3, index, open_pl.c_str());
+	}
+	else if (posi->open_profit_loss < 0) {
+		QuickSetTextColor(3, index, RGB(0, 0, 255));
+		QuickSetText(3, index, open_pl.c_str());
+	}
+	else {
+		QuickSetTextColor(3, index, RGB(0, 0, 0));
+		QuickSetNumber(3, index, 0);
+	}
+
+}
+
+void HdProductRemainGrid::update_dm_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)
+{
+	pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
+	pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255));
+	pRow->GetItem(0)->SetTextColor(RGB(0, 0, 0));
+	if (position->open_quantity > 0) {
+		//pRow->GetItem(0)->SetBackgroundColor(RGB(255, 0, 0));
+		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
+		//pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
+		//pRow->GetItem(3)->SetBackgroundColor(RGB(255, 0, 0));
+
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(255, 0, 0));
+		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+
+	}
+	else if (position->open_quantity < 0) {
+		//pRow->GetItem(0)->SetBackgroundColor(RGB(0, 0, 255));
+		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
+		//pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
+		//pRow->GetItem(3)->SetBackgroundColor(RGB(0, 0, 255));
+
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(0, 0, 255));
+		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+	}
+	else {
+		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(0, 0, 0));
+	}
+
+	std::string open_quantity = VtStringUtil::get_format_value(position->open_quantity, 0, true);
+	pRow->GetItem(1)->SetValue(open_quantity.c_str(), TRUE);
+	pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
+	pRow->GetItem(1)->SetTextColor(RGB(0, 0, 0));
+	std::string value_string = VtStringUtil::get_format_value(position->average_price / pow(10, 2), 2, true);
+	pRow->GetItem(2)->SetValue(value_string.c_str(), TRUE);
+	pRow->GetItem(2)->SetBackgroundColor(RGB(255, 255, 255));
+	pRow->GetItem(2)->SetTextColor(RGB(0, 0, 0));
+	//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
+	const int decimal = format_type == "1" ? 2 : 0;
+	std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);
+
+	CBCGPGridItem* pItem = pRow->GetItem(3);
+	if (pItem) {
+		pItem->SetValue(open_pl.c_str(), TRUE);
+		if (position->open_profit_loss > 0) {
+			pItem->SetBackgroundColor(RGB(255, 255, 255));
+			pItem->SetTextColor(RGB(255, 0, 0));
+		}
+		else if (position->open_profit_loss < 0) {
+			pItem->SetBackgroundColor(RGB(255, 255, 255));
+			pItem->SetTextColor(RGB(0, 0, 255));
+		}
+		else {
+			pItem->SetBackgroundColor(RGB(255, 255, 255));
+			pItem->SetTextColor(RGB(0, 0, 0));
+		}
+	}
+
+}
+
+void HdProductRemainGrid::update_ab_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)
+{
+	pRow->GetItem(0)->SetValue(position->symbol_code.c_str(), TRUE);
+	pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255));
+	pRow->GetItem(0)->SetTextColor(RGB(0, 0, 0));
+	if (position->open_quantity > 0) {
+		pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
+		//pRow->GetItem(2)->SetBackgroundColor(RGB(255, 0, 0));
+		//pRow->GetItem(3)->SetBackgroundColor(RGB(255, 0, 0));
+
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(255, 0, 0));
+		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+
+		pRow->GetItem(1)->SetValue("매수", TRUE);
+	}
+	else if (position->open_quantity < 0) {
+		pRow->GetItem(1)->SetValue("매도", TRUE);
+		pRow->GetItem(0)->SetBackgroundColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetBackgroundColor(RGB(255, 255, 255));
+		//pRow->GetItem(2)->SetBackgroundColor(RGB(0, 0, 255));
+		//pRow->GetItem(3)->SetBackgroundColor(RGB(0, 0, 255));
+
+		//pRow->GetItem(0)->SetTextColor(RGB(255, 255, 255));
+		pRow->GetItem(1)->SetTextColor(RGB(0, 0, 255));
+		//pRow->GetItem(2)->SetTextColor(RGB(255, 255, 255));
+		//pRow->GetItem(3)->SetTextColor(RGB(255, 255, 255));
+	}
+	std::string open_quantity = VtStringUtil::get_format_value(position->open_quantity, 0, true);
+	pRow->GetItem(3)->SetValue(open_quantity.c_str(), TRUE);
+	pRow->GetItem(3)->SetBackgroundColor(RGB(255, 255, 255));
+	pRow->GetItem(3)->SetTextColor(RGB(0, 0, 0));
+	//const std::string open_pl = std::format("{0:.2f}", position->open_profit_loss);
+	const int decimal = format_type == "1" ? 2 : 0;
+	std::string open_pl = VtStringUtil::get_format_value(position->open_profit_loss, decimal, true);
+	if (position->open_profit_loss > 0) {
+		pRow->GetItem(2)->SetBackgroundColor(RGB(255, 255, 255));
+		pRow->GetItem(2)->SetTextColor(RGB(255, 0, 0));
+	}
+	else if (position->open_profit_loss < 0) {
+		pRow->GetItem(2)->SetBackgroundColor(RGB(255, 255, 255));
+		pRow->GetItem(2)->SetTextColor(RGB(0, 0, 255));
+	}
+	else {
+		pRow->GetItem(2)->SetBackgroundColor(_DefaultBackColor);
+		pRow->GetItem(2)->SetTextColor(RGB(0, 0, 0));
+	}
+	pRow->GetItem(2)->SetValue(open_pl.c_str(), TRUE);
+}
+
+void HdProductRemainGrid::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	
+}
+
+
+void HdProductRemainGrid::OnTimer(UINT_PTR nIDEvent)
+{
+	if (enable_position_show_) {
+		update_account_position();
+		//needDraw = true;
+		enable_position_show_ = false;
+	}
+
+	if (_EnableQuoteShow) {
+		UpdatePositionInfo();
+		_EnableQuoteShow = false;
+	}
+
+	VtGrid::OnTimer(nIDEvent);
 }
