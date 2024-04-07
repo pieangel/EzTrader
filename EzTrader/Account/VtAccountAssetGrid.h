@@ -1,7 +1,14 @@
 #pragma once
 #include "../UGrid/VtGrid.h"
 #include <vector>
-class VtAccount;
+#include <memory>
+namespace DarkHorse {
+	class SmSymbol;
+	class SmAccount;
+	class SmFund;
+	class AccountAssetControl;
+	class AccountProfitLossControl;
+}
 class VtAssetPage;
 class VtAccountAssetGrid : public VtGrid
 {
@@ -26,5 +33,39 @@ private:
 	std::vector<int> _ColWidVec;
 public:
 	void InitGrid();
+public:
+	std::shared_ptr<DarkHorse::SmFund> Fund() const { return fund_; }
+	void Fund(std::shared_ptr<DarkHorse::SmFund> val);
+	int Mode() const { return _Mode; }
+	void Mode(int val) { _Mode = val; }
+public:
+	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
+	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
+	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
+	void Symbol(std::shared_ptr<DarkHorse::SmSymbol> val) { _Symbol = val; }
+	void UpdateSymbolInfo();
+	void SetAssetInfo();
+	void OnQuoteEvent(const std::string& symbol_code);
+	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
+	void on_update_account_profit_loss();
+private:
+	void update_account_profit_loss();
+	void SetAccountAssetInfo();
+	void SetFundAssetInfo();
+	// 0 : account, 1 : fund
+	int _Mode = 0;
+	bool _EnableOrderShow = false;
+	bool _EnableQuoteShow = false;
+
+	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
+	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
+	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
+
+	std::shared_ptr<DarkHorse::AccountProfitLossControl> account_profit_loss_control_;
+	std::shared_ptr<DarkHorse::AccountAssetControl> asset_control_;
+
+	bool enable_account_profit_loss_show_ = false;
+public:
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 

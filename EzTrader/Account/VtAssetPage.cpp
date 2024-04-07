@@ -76,7 +76,7 @@ void VtAssetPage::InitAccount()
 	if (!_ComboAccountMap.empty()) {
 		_CurrentAccountIndex = selected_index;
 		_ComboAccount.SetCurSel(_CurrentAccountIndex);
-		//total_asset_profit_loss_view_.Account(_ComboAccountMap[_CurrentAccountIndex]);
+		_AssetGrid.Account(_ComboAccountMap[_CurrentAccountIndex]);
 	}
 }
 
@@ -93,7 +93,8 @@ BOOL VtAssetPage::OnInitDialog()
 	InitAccount();
 	_AssetGrid.AssetPage(this);
 	// TODO:  Add extra initialization here
-	//_AssetGrid.AttachGrid(this, IDC_STATIC_ASSET);
+	_AssetGrid.AttachGrid(this, IDC_STATIC_ASSET);
+	//_AssetGrid.InitGrid();
 
 	Init = true;
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -127,10 +128,10 @@ void VtAssetPage::OnCbnSelchangeComboAccount()
 	if (!account) return;
 	account_no_ = account->No();
 	type_ = account->Type();
-	//total_asset_profit_loss_view_.Account(account);
+	_AssetGrid.Account(account);
 
-	//total_asset_profit_loss_view_.SetAssetInfo();
-	//total_asset_profit_loss_view_.Invalidate();
+	_AssetGrid.InitGrid();
+	_AssetGrid.Invalidate();
 	DhTaskArg arg;
 	arg.detail_task_description = account->No();
 	arg.task_type = DhTaskType::AccountProfitLoss;

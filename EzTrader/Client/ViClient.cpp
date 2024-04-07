@@ -2709,7 +2709,7 @@ void DarkHorse::ViClient::ab_cancel_order(const std::shared_ptr<SmOrderRequest>&
 int ViClient::account_profit_loss(DhTaskArg&& arg)
 {
 	if (arg.task_type != DhTaskType::AccountProfitLoss) return -1;
-	if (!request_map_.empty()) return -1;
+	//if (!request_map_.empty()) return -1;
 	try {
 		if (arg.parameter_map["account_type"] == "1")
 			ab_account_profit_loss(arg);

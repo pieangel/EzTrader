@@ -206,13 +206,13 @@ void VtAccountAssetDlg::UnregisterAccountCallback()
 
 }
 
-void VtAccountAssetDlg::OnAccountEvent(VtAccount* account)
-{
-	if (_AssetPage.GetSafeHwnd())
-	{
-		_AssetPage.OnReceiveAccountInfo();
-	}
-}
+// void VtAccountAssetDlg::OnAccountEvent(VtAccount* account)
+// {
+// 	if (_AssetPage.GetSafeHwnd())
+// 	{
+// 		_AssetPage.OnReceiveAccountInfo();
+// 	}
+// }
 
 LRESULT VtAccountAssetDlg::OnAccountChangedMessage(WPARAM wParam, LPARAM lParam)
 {

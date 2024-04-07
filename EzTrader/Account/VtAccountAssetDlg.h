@@ -45,7 +45,7 @@ public:
 
 	void RegisterAccountCallback();
 	void UnregisterAccountCallback();
-	void OnAccountEvent(VtAccount* account);
+	//void OnAccountEvent(VtAccount* account);
 
 	afx_msg LRESULT OnAccountChangedMessage(WPARAM wParam, LPARAM lParam);
 };
