@@ -130,7 +130,7 @@ void VtAccountAssetGrid::QuickRedrawCell(int col, long row)
 
 void VtAccountAssetGrid::InitGrid()
 {
-	update_account_profit_loss();
+	enable_account_profit_loss_show_ = true;
 }
 
 
@@ -141,6 +141,17 @@ void VtAccountAssetGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 	if (!account_profit_loss_control_) return;
 	account_profit_loss_control_->set_fund(fund_);
 	asset_control_->set_fund(fund_);
+	//update_account_profit_loss();
+	enable_account_profit_loss_show_ = true;
+}
+
+void VtAccountAssetGrid::refresh()
+{
+	if (enable_account_profit_loss_show_) {
+		update_account_profit_loss();
+		Invalidate(FALSE);
+		enable_account_profit_loss_show_ = false;
+	}
 	enable_account_profit_loss_show_ = true;
 }
 
@@ -151,6 +162,7 @@ void VtAccountAssetGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	if (!account_profit_loss_control_) return;
 	account_profit_loss_control_->set_account(account_);
 	asset_control_->set_account(account_);
+	//update_account_profit_loss();
 	enable_account_profit_loss_show_ = true;
 }
 
@@ -183,13 +195,15 @@ void VtAccountAssetGrid::OnOrderEvent(const std::string& account_no, const std::
 
 void VtAccountAssetGrid::on_update_account_profit_loss()
 {
+
 	enable_account_profit_loss_show_ = true;
 }
 
 void VtAccountAssetGrid::update_account_profit_loss()
 {
 	if (!asset_control_ || !account_profit_loss_control_ || !account_) return;
-
+	if (updating_) return;
+	updating_ = true;
 	const VmAsset& asset = asset_control_->get_asset();
 	const VmAccountProfitLoss& account_profit_loss = account_profit_loss_control_->get_account_profit_loss();
 	const int decimal = account_->Type() == "1" ? 2 : 0;
@@ -263,11 +277,12 @@ void VtAccountAssetGrid::update_account_profit_loss()
 		for (int j = 0; j < _RowCount; ++j) {
 			if (i == 1 || i == 3) {
 				QuickSetAlignment(i, j, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
-				QuickRedrawCell(i, j);
 			}
+			QuickRedrawCell(i, j);
 		}
 	}
-	Invalidate(FALSE);
+
+	updating_ = false;
 }
 
 void VtAccountAssetGrid::SetAccountAssetInfo()

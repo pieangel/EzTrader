@@ -39,6 +39,7 @@ public:
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
 public:
+	void refresh();
 	std::shared_ptr<DarkHorse::SmAccount> Account() const { return account_; }
 	void Account(std::shared_ptr<DarkHorse::SmAccount> val);
 	std::shared_ptr<DarkHorse::SmSymbol> Symbol() const { return _Symbol; }
@@ -49,6 +50,7 @@ public:
 	void OnOrderEvent(const std::string& account_no, const std::string& symbol_code);
 	void on_update_account_profit_loss();
 private:
+	bool updating_ = false;
 	void update_account_profit_loss();
 	void SetAccountAssetInfo();
 	void SetFundAssetInfo();

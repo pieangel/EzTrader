@@ -44,12 +44,18 @@ BEGIN_MESSAGE_MAP(VtAssetPage, CDialog)
 	ON_BN_CLICKED(IDC_BTN_SEARCH, &VtAssetPage::OnBnClickedBtnSearch)
 	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &VtAssetPage::OnCbnSelchangeComboAccount)
 	ON_BN_CLICKED(IDC_BTN_COMMIT, &VtAssetPage::OnBnClickedBtnCommit)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
 // VtAssetPage message handlers
 
-
+void VtAssetPage::OnTimer(UINT_PTR nIDEvent)
+{
+	//LOGINFO(DarkHorse::CMyLogger::getInstance(), "OnTimer = %d", nIDEvent);
+	_AssetGrid.refresh();
+	CDialog::OnTimer(nIDEvent);
+}
 void VtAssetPage::InitAccount()
 {
 	std::vector<std::shared_ptr<DarkHorse::SmAccount>> account_vector;
@@ -95,7 +101,7 @@ BOOL VtAssetPage::OnInitDialog()
 	// TODO:  Add extra initialization here
 	_AssetGrid.AttachGrid(this, IDC_STATIC_ASSET);
 	//_AssetGrid.InitGrid();
-
+	SetTimer(1, 50, NULL);
 	Init = true;
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE

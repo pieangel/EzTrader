@@ -44,6 +44,7 @@ public:
 	void InitAccount();
 	virtual BOOL OnInitDialog();
 	CComboBox _ComboAccount;
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedBtnSearch();
 	afx_msg void OnCbnSelchangeComboAccount();
 	void OnReceiveAccountInfo();
