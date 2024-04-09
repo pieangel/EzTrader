@@ -153,6 +153,8 @@ public:
 	std::map<HWND, DmAccountOrderWindow*> dm_account_order_wnd_map_;
 	std::map<HWND, DmFundOrderWindow*> dm_fund_order_wnd_map_;
 
+	std::map<HWND, VtOrderWndHd*> dmAccountOrderWndMap_;
+
 	std::map<HWND, VtOrderWndHd*> dm_order_wnd_list_;
 
 	std::map<HWND, AbAccountOrderWindow*> _OrderWndMap;

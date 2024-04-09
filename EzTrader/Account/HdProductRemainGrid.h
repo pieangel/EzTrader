@@ -26,6 +26,7 @@ class HdAccountPLDlg;
 
 class HdProductRemainGrid : public VtGrid
 {
+	DECLARE_MESSAGE_MAP()
 public:
 	HdProductRemainGrid();
 	virtual ~HdProductRemainGrid();
@@ -81,7 +82,6 @@ private:
 	SmOrderCompMainDialog* _CompOrderWnd = nullptr;
 	// 0 : account , 1 : fund
 	int _Mode = 0;
-	void update_account_position();
 	void ShowPosition(int index, position_p position, const std::string& format_type);
 	void update_dm_account_position(CBCGPGridRow* row, position_p position, const std::string& format_type);
 	void update_ab_account_position(CBCGPGridRow* row, position_p position, const std::string& format_type);
@@ -104,7 +104,10 @@ private:
 	std::vector<int> dm_column_widths_vector_;
 	int id_{ 0 };
 	int main_window_id_ = 0;
+	void update_account_position();
+	void clear_row(const int row);
 public:
+	void refresh();
 	void set_order_window_id(int id) { main_window_id_ = id; };
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

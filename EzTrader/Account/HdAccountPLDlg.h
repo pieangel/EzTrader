@@ -85,4 +85,5 @@ public:
 	// 주문이 변했을 때 전달되는 메시지
 	afx_msg LRESULT OnOrderChangedMessage(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnAccountChangedMessage(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

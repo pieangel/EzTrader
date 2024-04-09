@@ -1211,7 +1211,7 @@ void CMainFrame::OnOrderRemain()
 // 	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
 // 	accountJangoDialog->ShowWindow(SW_SHOW);
 
-	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "1");
+	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "9");
 	accountJangoDialog->Mode(0);
 	accountJangoDialog->Create(IDD_MINI_JANGO, this);
 	miniJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
@@ -1449,9 +1449,9 @@ void CMainFrame::remove_dm_fund_order_window(HWND handle)
 
 void CMainFrame::OnDmAcntOrder()
 {
-	DmAccountOrderWindow* acnt_order_wnd = new DmAccountOrderWindow();
-	acnt_order_wnd->Create(IDD_DM_ACNT_ORDER_MAIN, this);
-	dm_account_order_wnd_map_[acnt_order_wnd->GetSafeHwnd()] = acnt_order_wnd;
+	VtOrderWndHd* acnt_order_wnd = new VtOrderWndHd();
+	acnt_order_wnd->Create(IDD_ORDER_WND_HD, this);
+	dm_order_wnd_list_[acnt_order_wnd->GetSafeHwnd()] = acnt_order_wnd;
 	acnt_order_wnd->ShowWindow(SW_SHOW);
 }
 
@@ -1540,7 +1540,7 @@ void CMainFrame::OnDomesticRemain()
 	accountJangoDialog->ShowWindow(SW_SHOW);
 	*/
 
-	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "1");
+	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "9");
 	accountJangoDialog->Mode(0);
 	accountJangoDialog->Create(IDD_MINI_JANGO, this);
 	miniJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
@@ -1550,7 +1550,7 @@ void CMainFrame::OnDomesticRemain()
 
 void CMainFrame::OnAbroadRemain()
 {
-	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>(this, "1");
+	std::shared_ptr<MiniJangoDialog> accountJangoDialog = std::make_shared<MiniJangoDialog>(this, "9");
 	accountJangoDialog->Mode(0);
 	accountJangoDialog->Create(IDD_JANGO, this);
 	mini_jango_wnd_map_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;

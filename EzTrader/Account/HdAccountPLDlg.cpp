@@ -16,6 +16,7 @@
 #include "../Task/SmTaskArg.h"
 #include "../Global/SmTotalManager.h"
 #include "../Task/SmTaskRequestManager.h"
+#include "../Log/MyLogger.h"
 
 // HdAccountPLDlg dialog
 
@@ -60,11 +61,17 @@ BEGIN_MESSAGE_MAP(HdAccountPLDlg, CDialog)
 // 	ON_MESSAGE(WM_QUOTE_CHANGED, OnQuoteChangedMessage)
 // 	ON_MESSAGE(WM_ORDER_CHANGED, OnOrderChangedMessage)
 // 	ON_MESSAGE(WM_ACCOUNT_CHANGED, OnAccountChangedMessage)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
 // HdAccountPLDlg message handlers
-
+void HdAccountPLDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	//LOGINFO(DarkHorse::CMyLogger::getInstance(), "OnTimer = %d", nIDEvent);
+	_ProductGrid.refresh();
+	CDialog::OnTimer(nIDEvent);
+}
 
 BOOL HdAccountPLDlg::OnInitDialog()
 {
@@ -74,7 +81,7 @@ BOOL HdAccountPLDlg::OnInitDialog()
 	this->SetIcon(hIcon, FALSE);
 
 	// TODO:  Add extra initialization here
-	_Mode == 0 ? SetAccount() : SetFund();
+	
 	_ProductGrid.AcntPLDlg(this);
 	_AccountGrid.AcntPLDlg(this);
 	_AccountGrid.AttachGrid(this, IDC_STATIC_MINI_TOP);
@@ -86,6 +93,8 @@ BOOL HdAccountPLDlg::OnInitDialog()
 	GetWindowRect(rcWnd);
 	SetWindowPos(nullptr, 0, 0, 210, rcWnd.Height(), SWP_NOMOVE);
 	_ComboAccount.SetDroppedWidth(250);
+	_Mode == 0 ? SetAccount() : SetFund();
+	SetTimer(1, 100, NULL);
 // 	SmCallbackManager::GetInstance()->SubscribeQuoteWndCallback(GetSafeHwnd());
 // 	SmCallbackManager::GetInstance()->SubscribeOrderWndCallback(GetSafeHwnd());
 // 	SmCallbackManager::GetInstance()->SubscribeAccountWndCallback(GetSafeHwnd());
@@ -136,7 +145,7 @@ void HdAccountPLDlg::SetAccount()
 		auto account = mainApp.AcntMgr()->FindAccount(account_no);
 		if (account == nullptr) return;
 		_AccountGrid.Account(account);
-		//account_position_view_.Account(account);
+		_ProductGrid.Account(account);
 	}
 }
 
@@ -164,7 +173,7 @@ void HdAccountPLDlg::SetFund()
 		auto fund = mainApp.FundMgr()->FindFund(cur_fund_name);
 		if (fund == nullptr) return;
 		_AccountGrid.Fund(fund);
-		//account_position_view_.Fund(fund);
+		_ProductGrid.Fund(fund);
 	}
 }
 
@@ -277,7 +286,7 @@ int HdAccountPLDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void HdAccountPLDlg::OnClose()
 {
 	// TODO: Add your message handler code here and/or call default
-
+	KillTimer(1);
 	CDialog::OnClose();
 }
 
@@ -314,7 +323,7 @@ void HdAccountPLDlg::OnCbnSelchangeComboAccount()
 {
 	const int cur_sel = _ComboAccount.GetCurSel();
 	if (cur_sel < 0) return;
-
+	_Mode == 0 ? SetAccount() : SetFund();
 	_AccountGrid.ClearValues();
 	_ProductGrid.ClearValues();
 
@@ -325,7 +334,7 @@ void HdAccountPLDlg::OnCbnSelchangeComboAccount()
 		if (account == nullptr) return;
 		account_no_ = account_no;
 		_AccountGrid.Account(account);
-		//_ProductGrid.Account(account);
+		_ProductGrid.Account(account);
 
 		_AccountGrid.InitGrid();
 		_ProductGrid.InitGrid();
@@ -351,7 +360,7 @@ void HdAccountPLDlg::OnCbnSelchangeComboAccount()
 		if (fund == nullptr) return;
 		fund_name_ = cur_fund_name;
 		_AccountGrid.Fund(fund);
-		//_ProductGrid.Fund(fund);
+		_ProductGrid.Fund(fund);
 
 		_AccountGrid.InitGrid();
 		_ProductGrid.InitGrid();
@@ -374,7 +383,7 @@ void HdAccountPLDlg::OnSize(UINT nType, int cx, int cy)
 
 void HdAccountPLDlg::OnCbnDropdownComboAccount()
 {
-	_Mode == 0 ? SetAccount() : SetFund();
+	//_Mode == 0 ? SetAccount() : SetFund();
 	//_AccountGrid.InitGrid();
 	//_ProductGrid.InitGrid();
 }

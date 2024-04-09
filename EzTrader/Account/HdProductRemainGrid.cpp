@@ -89,6 +89,10 @@ void HdProductRemainGrid::OnSetup()
 	SetWindowPos(nullptr, 0, 0, std::accumulate(_ColWidthVector.begin(), _ColWidthVector.end(), 0), rcWnd.Height(), SWP_NOMOVE);
 }
 
+BEGIN_MESSAGE_MAP(HdProductRemainGrid, VtGrid)
+	ON_WM_TIMER()
+END_MESSAGE_MAP()
+
 void HdProductRemainGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
 {
 
@@ -141,23 +145,8 @@ void HdProductRemainGrid::InitGrid()
 
 	VtAccount* acnt = _AcntPLDlg->Account();
 	std::map<VtCellPos, VtCellPos> posMap;
-	ClearOldValuse(posMap);
-	int i = 0;
-	VtCellPos pos;
-	/*
-	for (auto it = acnt->PositionMap.begin(); it != acnt->PositionMap.end(); ++it) {
-		VtPosition* posi = it->second;
-		if (std::abs(posi->OpenQty) > 0) {
-			for (int c = 0; c < 4; c++) {
-				pos.Row = i;
-				pos.Col = c;
-				posMap[pos] = pos;
-			}
-			ShowPosition(posi, acnt, i++);
-		}
-	}
-	*/
-
+	//ClearOldValuse(posMap);
+	//update_account_position();
 	RefreshCells(posMap);
 }
 
@@ -165,22 +154,12 @@ void HdProductRemainGrid::InitGrid()
 
 void HdProductRemainGrid::ClearValues()
 {
-	if (!_AcntPLDlg || !_AcntPLDlg->Account())
-		return;
-
-	VtAccount* acnt = _AcntPLDlg->Account();
-	int index = 0;
-	/*
-	for (auto it = acnt->PositionMap.begin(); it != acnt->PositionMap.end(); ++it) {
-		VtPosition* posi = it->second;
-
-		QuickSetText(0, index, _T(""));
-		QuickSetText(1, index, _T(""));
-		QuickSetText(2, index, _T(""));
-		QuickSetText(3, index, _T(""));
-		index++;
+	for (int i = 0; i < _RowCount; i++) {
+		QuickSetText(0, i, _T(""));
+		QuickSetText(1, i, _T(""));
+		QuickSetText(2, i, _T(""));
+		QuickSetText(3, i, _T(""));
 	}
-	*/
 }
 /*
 void HdProductRemainGrid::ShowPosition(VtPosition* posi, VtAccount* acnt, int index)
@@ -300,7 +279,7 @@ void HdProductRemainGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 	//SetColumnWidth(0, column_widths_vector_[0]);
 	//set_column_widths(fund_->fund_type());
 	//set_column_names(fund_->fund_type());
-	update_account_position();
+	//update_account_position();
 }
 
 
@@ -316,7 +295,7 @@ void HdProductRemainGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 	//SetColumnWidth(0, column_widths_vector_[0]);
 	//set_column_widths(account_->Type());
 	//set_column_names(account_->Type());
-	update_account_position();
+	//update_account_position();
 }
 
 
@@ -359,6 +338,8 @@ void HdProductRemainGrid::on_update_single_position(const int position_id)
 		update_dm_account_position(pRow, position, format_type);
 	Invalidate();
 	*/
+	LOGINFO(CMyLogger::getInstance(), "on_update_single_position = %d", position_id);
+	//update_account_position();
 	enable_position_show_ = true;
 }
 
@@ -367,6 +348,8 @@ void HdProductRemainGrid::on_update_whole_position(const int result)
 	// 	if (result == 0) {
 	// 		ClearOldContents(0);
 	// 	}
+	LOGINFO(CMyLogger::getInstance(), "on_update_whole_position = %d", result);
+	//update_account_position();
 	enable_position_show_ = true;
 }
 
@@ -450,9 +433,9 @@ void HdProductRemainGrid::update_account_position()
 {
 	if (!account_position_control_) return;
 
-	if (updating_) return;
-	updating_ = true;
-
+	//if (updating_) return;
+	//updating_ = true;
+	//ClearValues();
 	row_to_position_.clear();
 	position_to_row_.clear();
 
@@ -462,10 +445,14 @@ void HdProductRemainGrid::update_account_position()
 	else return;
 
 	const std::map<std::string, position_p>& active_positions = account_position_control_->get_active_position_map();
-	int row = 0;
+	int row = 0, index = 0;
 	for (auto it = active_positions.begin(); it != active_positions.end(); ++it) {
 		const auto& position = it->second;
-		if (position->open_quantity == 0) continue;
+		if (position->open_quantity == 0) {
+			clear_row(index++);
+			continue;
+		}
+		index++;
 		if (format_type == "1")
 			ShowPosition(row, position, format_type);
 		else
@@ -478,56 +465,66 @@ void HdProductRemainGrid::update_account_position()
 	}
 	//ClearOldContents(row);
 	_OldMaxRow = row;
-	updating_ = false;
+	//updating_ = false;
 	enable_position_show_ = true;
+}
+
+void HdProductRemainGrid::clear_row(const int row)
+{
+	for (int i = 0; i < 4; i++) {
+		QuickSetText(i, row, _T(""));
+		QuickRedrawCell(i, row);
+
+	}
 }
 
 void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::string& format_type)
 {
-	if (!posi )
+	if (!posi) {
+		clear_row(index);
 		return;
+	}
+	if (updating_) return;
+	updating_ = true;
 
 	VtCellPos pos;
-	for (int i = 0; i < 4; i++) {
-		pos.Row = index;
-		pos.Col = i;
-		_OldPosMap[pos] = pos;
-	}
-
 	if (!posi) {
-		QuickSetText(0, index, _T(""));
-		QuickSetText(1, index, _T(""));
-		QuickSetText(2, index, _T(""));
-		QuickSetText(3, index, _T(""));
+		clear_row(index);
+		updating_ = false;
 		return;
 	}
-
-	if (posi->open_profit_loss == 0) {
-		QuickSetText(0, index, _T(""));
-		QuickSetText(1, index, _T(""));
-		QuickSetText(2, index, _T(""));
-		QuickSetText(3, index, _T(""));
-		return;
-	}
-
 	auto sym = mainApp.SymMgr()->FindSymbol(posi->symbol_code);
-	if (!sym)
+	if (!sym) {
+		updating_ = false;
+		clear_row(index);
 		return;
+	}
 
 	QuickSetText(0, index, posi->symbol_code.c_str());
-
+	pos.Col = 0;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
 	if (posi->open_quantity > 0) {
 		QuickSetTextColor(1, index, RGB(255, 0, 0));
 		QuickSetTextColor(2, index, RGB(255, 0, 0));
 		QuickSetTextColor(3, index, RGB(255, 0, 0));
+		QuickSetNumber(1, index, posi->open_quantity);
 	}
-	else if (posi->open_quantity > 0) {
+	else if (posi->open_quantity < 0) {
 		QuickSetTextColor(1, index, RGB(0, 0, 255));
 		QuickSetTextColor(2, index, RGB(0, 0, 255));
 		QuickSetTextColor(3, index, RGB(0, 0, 255));
-		QuickSetNumber(1, index, std::abs(posi->open_quantity));
+		QuickSetNumber(1, index, posi->open_quantity);
 	}
-
+	else {
+		QuickSetTextColor(1, index, RGB(0, 0, 0));
+		QuickSetTextColor(2, index, RGB(0, 0, 0));
+		QuickSetTextColor(3, index, RGB(0, 0, 0));
+		QuickSetNumber(1, index, posi->open_quantity);
+	}
+	pos.Col = 1;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
 	std::string symCode = posi->symbol_code;
 	if (symCode.find(_T("201")) != std::string::npos) { // coloring the call 
 		QuickSetBackColor(0, index, RGB(252, 226, 228));
@@ -546,9 +543,15 @@ void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::st
 	CString strValue;
 	strValue.Format(_T("%d"), posi->open_quantity);
 	QuickSetText(1, index, strValue);
+	pos.Col = 1;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
 	const int decimal = format_type == "1" ? 2 : 0;
 
 	std::string value_string = VtStringUtil::get_format_value(posi->average_price / pow(10, 2), decimal, true);
+	pos.Col = 2;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
 	QuickSetText(2, index, value_string.c_str());
 
 	std::string open_pl = VtStringUtil::get_format_value(posi->open_profit_loss, decimal, true);
@@ -563,9 +566,18 @@ void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::st
 	}
 	else {
 		QuickSetTextColor(3, index, RGB(0, 0, 0));
-		QuickSetNumber(3, index, 0);
+		QuickSetText(3, index, "0");
 	}
+	pos.Col = 3;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
 
+	QuickRedrawCell(0, index);
+	QuickRedrawCell(1, index);
+	QuickRedrawCell(2, index);
+	QuickRedrawCell(3, index);
+
+	updating_ = false;
 }
 
 void HdProductRemainGrid::update_dm_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)
@@ -684,6 +696,14 @@ void HdProductRemainGrid::update_ab_account_position(CBCGPGridRow* pRow, positio
 	pRow->GetItem(2)->SetValue(open_pl.c_str(), TRUE);
 }
 
+void HdProductRemainGrid::refresh()
+{
+	if (enable_position_show_) {
+		update_account_position();
+	}
+	enable_position_show_ = false;
+}
+
 void HdProductRemainGrid::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	
@@ -692,16 +712,5 @@ void HdProductRemainGrid::OnLButtonDown(UINT nFlags, CPoint point)
 
 void HdProductRemainGrid::OnTimer(UINT_PTR nIDEvent)
 {
-	if (enable_position_show_) {
-		update_account_position();
-		//needDraw = true;
-		enable_position_show_ = false;
-	}
-
-	if (_EnableQuoteShow) {
-		UpdatePositionInfo();
-		_EnableQuoteShow = false;
-	}
-
 	VtGrid::OnTimer(nIDEvent);
 }

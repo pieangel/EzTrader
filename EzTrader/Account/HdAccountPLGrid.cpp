@@ -130,7 +130,7 @@ void HdAccountPLGrid::InitGrid()
 {
 	if (!_AcntPLDlg)
 		return;
-
+	ClearValues();
 	update_account_profit_loss();
 }
 
@@ -154,6 +154,7 @@ void HdAccountPLGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 	fund_ = val;
 	if (!account_profit_loss_control_) return;
 	account_profit_loss_control_->set_fund(fund_);
+	update_fund_profit_loss();
 	enable_account_profit_loss_show_ = true;
 }
 
@@ -168,6 +169,7 @@ void HdAccountPLGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 
 	if (!account_profit_loss_control_) return;
 	account_profit_loss_control_->set_account(account_);
+	update_account_profit_loss();
 	enable_account_profit_loss_show_ = true;
 }
 

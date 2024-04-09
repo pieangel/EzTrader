@@ -138,7 +138,6 @@ private:
 	std::shared_ptr<DarkHorse::SmSymbol> _Symbol = nullptr;
 	std::shared_ptr<DarkHorse::SmAccount> account_ = nullptr;
 	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
-
 	std::set<int> _OldContentRowSet;
 	void ClearOldContents();
 	void ClearOldContents(const int& last_index);
