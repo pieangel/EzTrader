@@ -69,6 +69,7 @@ END_MESSAGE_MAP()
 void HdAccountPLDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	//LOGINFO(DarkHorse::CMyLogger::getInstance(), "OnTimer = %d", nIDEvent);
+	_AccountGrid.refresh();
 	_ProductGrid.refresh();
 	CDialog::OnTimer(nIDEvent);
 }

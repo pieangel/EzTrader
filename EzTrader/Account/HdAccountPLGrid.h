@@ -63,6 +63,7 @@ private:
 	std::shared_ptr<DarkHorse::SmFund> fund_ = nullptr;
 	std::shared_ptr<DarkHorse::AccountProfitLossControl> account_profit_loss_control_;
 public:
+	void refresh();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };

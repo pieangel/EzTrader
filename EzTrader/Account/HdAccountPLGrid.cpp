@@ -131,7 +131,7 @@ void HdAccountPLGrid::InitGrid()
 	if (!_AcntPLDlg)
 		return;
 	ClearValues();
-	update_account_profit_loss();
+	enable_account_profit_loss_show_ = true;
 }
 
 void HdAccountPLGrid::ClearValues()
@@ -154,7 +154,7 @@ void HdAccountPLGrid::Fund(std::shared_ptr<DarkHorse::SmFund> val)
 	fund_ = val;
 	if (!account_profit_loss_control_) return;
 	account_profit_loss_control_->set_fund(fund_);
-	update_fund_profit_loss();
+	//update_fund_profit_loss();
 	enable_account_profit_loss_show_ = true;
 }
 
@@ -169,7 +169,7 @@ void HdAccountPLGrid::Account(std::shared_ptr<DarkHorse::SmAccount> val)
 
 	if (!account_profit_loss_control_) return;
 	account_profit_loss_control_->set_account(account_);
-	update_account_profit_loss();
+	//update_account_profit_loss();
 	enable_account_profit_loss_show_ = true;
 }
 
@@ -212,8 +212,8 @@ void HdAccountPLGrid::update_account_profit_loss()
 {
 	if (!account_profit_loss_control_) return;
 	if (!account_) return;
-	//if (updating_) return;
-	//updating_ = true;
+	if (updating_) return;
+	updating_ = true;
 	std::string format_type("0");
 	if (account_) format_type = account_->Type();
 	if (fund_) format_type = fund_->fund_type();
@@ -275,14 +275,15 @@ void HdAccountPLGrid::update_account_profit_loss()
 	QuickRedrawCell(0, 2);
 	QuickRedrawCell(0, 3);
 
-	//updating_ = false;
-	enable_account_profit_loss_show_ = true;
+	updating_ = false;
 }
 
 void HdAccountPLGrid::update_fund_profit_loss()
 {
 	if (!fund_) return;
 
+	if (updating_) return;
+	updating_ = true;
 	const std::vector<std::shared_ptr<SmAccount>>& account_vec = fund_->GetAccountVector();
 
 	double open_pl = 0.0, settled_pl = 0.0, fee = 0.0, pure_pl = 0.0;
@@ -351,7 +352,15 @@ void HdAccountPLGrid::update_fund_profit_loss()
 	QuickRedrawCell(0, 3);
 
 	updating_ = false;
-	enable_account_profit_loss_show_ = true;
+}
+
+void HdAccountPLGrid::refresh()
+{
+	if (enable_account_profit_loss_show_) {
+		update_account_profit_loss();
+		enable_account_profit_loss_show_ = false;
+	}
+	enable_account_profit_loss_show_ = false;
 }
 
 void HdAccountPLGrid::OnTimer(UINT_PTR nIDEvent)
