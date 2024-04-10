@@ -47,6 +47,7 @@
 #include "../Symbol/SmSymbolManager.h"
 #include "../OrderUI/VtOrderWndHd.h"
 #include "../OrderUI/VtOrderConfigManager.h"
+#include "../Account/HdAccountPLDlg.h"
 
 #include <iostream>
 #include <filesystem>
@@ -2222,6 +2223,103 @@ namespace DarkHorse {
 			map_to_restore[account_order_window->GetSafeHwnd()] = account_order_window;
 			account_order_window->MoveWindow(left, top, width, height, TRUE);
 			account_order_window->ShowWindow(SW_SHOW);
+		}
+	}
+
+	void SmSaveManager::save_dm_mini_jango_windows2(const std::string& filename, const std::map<HWND, std::shared_ptr<HdAccountPLDlg>>& map_to_save)
+	{
+		if (map_to_save.empty()) return;
+
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath = get_config_path(id);
+		appPath.append(_T("\\"));
+		appPath.append(filename);
+		std::string full_file_name = appPath;
+
+		json dialog_data;
+
+		for (const auto& pair : map_to_save) {
+			HWND hwnd = pair.first;
+
+			RECT rect;
+			GetWindowRect(hwnd, &rect);
+
+			json dialog_json;
+			dialog_json["x"] = rect.left;
+			dialog_json["y"] = rect.top;
+			dialog_json["width"] = rect.right - rect.left;
+			dialog_json["height"] = rect.bottom - rect.top;
+			dialog_json["mode"] = pair.second->Mode();
+			dialog_json["type"] = pair.second->Type();
+			if (pair.second->Mode() == 0) // for account
+				dialog_json["accoount_no"] = pair.second->account_no();
+			else
+				dialog_json["fund_name"] = pair.second->fund_name();
+
+			dialog_data.push_back(dialog_json);
+		}
+
+		std::ofstream file(full_file_name);
+		file << dialog_data.dump(4);
+		file.close();
+	}
+
+	void SmSaveManager::restore_dm_mini_jango_windows_from_json2(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<HdAccountPLDlg>>& map_to_restore)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath = get_config_path(id);
+		appPath.append(_T("\\"));
+		appPath.append(filename);
+		std::string full_file_name = appPath;
+
+		// 		std::string full_file_name;
+		// 		full_file_name = SmConfigManager::GetApplicationPath();
+		// 		full_file_name.append(_T("\\user\\"));
+		// 		full_file_name.append(filename);
+
+		if (!fs::exists(full_file_name))
+			return;
+
+		std::ifstream file(full_file_name);
+		json dialog_data;
+		file >> dialog_data;
+		file.close();
+
+		for (const auto& dialog_json : dialog_data) {
+			const int x = dialog_json["x"].get<int>();
+			const int y = dialog_json["y"].get<int>();
+			const int width = dialog_json["width"].get<int>();
+			const int height = dialog_json["height"].get<int>();
+			bool old_version = true;
+			if (dialog_json.contains("type"))
+				old_version = false;
+
+			const int mode = dialog_json["mode"].get<int>();
+			const std::string type = dialog_json["type"].get<std::string>();
+			std::string target;
+			if (mode == 0)
+				target = dialog_json["accoount_no"].get<std::string>();
+			else
+				target = dialog_json["fund_name"].get<std::string>();
+
+			// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
+			std::shared_ptr<HdAccountPLDlg>  totalAssetDialog;
+			if (!old_version)
+				totalAssetDialog = std::make_shared<HdAccountPLDlg>(parent_window, "9", mode, target);
+			else
+				totalAssetDialog = std::make_shared<HdAccountPLDlg>(parent_window);
+			totalAssetDialog->Create(IDD_MINI_JANGO, parent_window);
+			map_to_restore[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
+			totalAssetDialog->MoveWindow(x, y, width, height, TRUE);
+			totalAssetDialog->ShowWindow(SW_SHOW);
 		}
 	}
 

@@ -4,13 +4,11 @@
 #include "afxwin.h"
 #include "../Xml/pugixml.hpp"
 #include <string>
+#include <memory>
 // HdAccountPLDlg dialog
 namespace DarkHorse {
 	;
 }
-class VtAccount;
-class VtSymbol;
-struct VtOrder;
 
 class HdAccountPLDlg : public CDialog
 {
@@ -19,6 +17,7 @@ class HdAccountPLDlg : public CDialog
 public:
 	HdAccountPLDlg(CWnd* pParent = NULL);   // standard constructor
 	HdAccountPLDlg(CWnd* pParent, std::string type);   // standard constructor
+	HdAccountPLDlg(CWnd* pParent, const std::string& type, const int mode, const std::string& target);
 	virtual ~HdAccountPLDlg();
 
 // Dialog Data
@@ -44,7 +43,6 @@ public:
 
 private:
 	HdAccountPLGrid _AccountGrid;
-	VtAccount* _Account;
 	HdProductRemainGrid _ProductGrid;
 	void SetAccount();
 	void SetFund();
@@ -67,14 +65,12 @@ public:
 	std::string _DefaultAccount;
 	CComboBox _ComboAccount;
 	void InitAccount();
-	VtAccount* Account() const { return _Account; }
-	void Account(VtAccount* val);
 	void SetDefaultAccount();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnClose();
-	void OnReceiveQuote(VtSymbol* sym);
-	void OnOrderFilledHd(VtOrder* order);
-	void OnSymbolMaster(VtSymbol* sym);
+// 	void OnReceiveQuote(VtSymbol* sym);
+// 	void OnOrderFilledHd(VtOrder* order);
+// 	void OnSymbolMaster(VtSymbol* sym);
 	void OnReceiveAccountInfo();
 	afx_msg void OnCbnSelchangeComboAccount();
 	afx_msg void OnSize(UINT nType, int cx, int cy);

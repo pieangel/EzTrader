@@ -25,15 +25,25 @@ IMPLEMENT_DYNAMIC(HdAccountPLDlg, CDialog)
 HdAccountPLDlg::HdAccountPLDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(IDD_MINI_JANGO, pParent)
 {
-	_Account = nullptr;
 	
 }
 
 HdAccountPLDlg::HdAccountPLDlg(CWnd* pParent, std::string type)
 	: CDialog(IDD_MINI_JANGO, pParent), type_(type)
 {
-	_Account = nullptr;
 
+}
+
+HdAccountPLDlg::HdAccountPLDlg(CWnd* pParent, const std::string& type, const int mode, const std::string& target)
+	: CDialog(IDD_MINI_JANGO, pParent), type_(type), _Mode(mode)
+{
+	if (mode == 0)
+	{
+		account_no_ = target;
+	}
+	else {
+		fund_name_ = target;
+	}
 }
 
 HdAccountPLDlg::~HdAccountPLDlg()
@@ -147,6 +157,7 @@ void HdAccountPLDlg::SetAccount()
 		if (account == nullptr) return;
 		_AccountGrid.Account(account);
 		_ProductGrid.Account(account);
+		account_no_ = account_no;
 	}
 }
 
@@ -175,6 +186,7 @@ void HdAccountPLDlg::SetFund()
 		if (fund == nullptr) return;
 		_AccountGrid.Fund(fund);
 		_ProductGrid.Fund(fund);
+		fund_name_ = cur_fund_name;
 	}
 }
 
@@ -214,54 +226,9 @@ void HdAccountPLDlg::LoadFromXml(pugi::xml_node& window_node)
 void HdAccountPLDlg::InitAccount()
 {
 	_ComboAccount.ResetContent();
-	/*
-	VtGlobal* global = VtGlobal::GetInstance();
-	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	
-	std::string acntName;
-	std::map<std::string, int> comboMap;
-	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
-		VtAccount* acnt = it->second;
-		acntName = acnt->AccountNo;
-		acntName.append(_T(" "));
-		acntName.append(acnt->AccountName);
-		int index = _ComboAccount.AddString(acntName.c_str());
-		_ComboAccount.SetItemDataPtr(index, acnt);
-		comboMap[acnt->AccountNo] = index;
-		if (acnt->AccountLevel() == 0) {
-			std::vector<VtAccount*>& subAcntList = acnt->GetSubAccountList();
-			for (auto it = subAcntList.begin(); it != subAcntList.end(); ++it) {
-				VtAccount* subAcnt = *it;
-				acntName = subAcnt->AccountNo;
-				acntName.append(_T(" "));
-				acntName.append(subAcnt->AccountName);
-				index = _ComboAccount.AddString(acntName.c_str());
-				_ComboAccount.SetItemDataPtr(index, subAcnt);
-				comboMap[subAcnt->AccountNo] = index;
-			}
-		}
-	}
-	
-	if (comboMap.size() == 0)
-		return;
-	
-	int selAcnt = 0;
-	auto it = comboMap.find(_DefaultAccount);
-	it == comboMap.end() ? selAcnt = 0 : selAcnt = it->second;
-	_ComboAccount.SetCurSel(selAcnt);
-	_Account = (VtAccount*)_ComboAccount.GetItemDataPtr(selAcnt);
-	if (_Account->Enable() && _Account->hasValidPassword()) {
-		//for(int i = 0; i < 100; i++)
-		_Account->GetAccountInfoNFee(1);
-	}
-	*/
 }
 
 
-void HdAccountPLDlg::Account(VtAccount* val)
-{
-	_Account = val;
-}
 
 void HdAccountPLDlg::SetDefaultAccount()
 {
@@ -289,29 +256,6 @@ void HdAccountPLDlg::OnClose()
 	// TODO: Add your message handler code here and/or call default
 	KillTimer(1);
 	CDialog::OnClose();
-}
-
-void HdAccountPLDlg::OnReceiveQuote(VtSymbol* sym)
-{
-	if (!sym)
-		return;
-}
-
-
-void HdAccountPLDlg::OnOrderFilledHd(VtOrder* order)
-{
-}
-
-void HdAccountPLDlg::OnSymbolMaster(VtSymbol* sym)
-{
-	if (!sym)
-		return;
-
-	if (!_Account)
-		return;
-
-	//_Account->CalcOpenPL(sym);
-	//_Account->SumOpenPL();
 }
 
 void HdAccountPLDlg::OnReceiveAccountInfo()

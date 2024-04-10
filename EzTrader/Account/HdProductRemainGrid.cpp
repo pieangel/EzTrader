@@ -140,14 +140,9 @@ void HdProductRemainGrid::QuickRedrawCell(int col, long row)
 
 void HdProductRemainGrid::InitGrid()
 {
-	if (!_AcntPLDlg || !_AcntPLDlg->Account())
+	if (!_AcntPLDlg )
 		return;
 
-	VtAccount* acnt = _AcntPLDlg->Account();
-	std::map<VtCellPos, VtCellPos> posMap;
-	//ClearOldValuse(posMap);
-	//update_account_position();
-	RefreshCells(posMap);
 }
 
 
