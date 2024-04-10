@@ -12,6 +12,7 @@ class VtAccountAssetDlg : public CDialog
 
 public:
 	VtAccountAssetDlg(CWnd* pParent = NULL);   // standard constructor
+	VtAccountAssetDlg(CWnd* pParent, const std::string& type, const std::string& account_no);   // standard constructor
 	virtual ~VtAccountAssetDlg();
 
 // Dialog Data
@@ -24,6 +25,11 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	std::string account_no();
+	void account_no(std::string val);
+	std::string type();
+	void type(std::string val);
+
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);
 

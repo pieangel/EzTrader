@@ -38,7 +38,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	std::string account_no() const { return account_no_; }
-	void account_no(std::string val) { account_no_ = val; }
+	void account_no(std::string val);
 	std::string type() const { return type_; }
 	void type(std::string val) { type_ = val; }
 	void InitAccount();

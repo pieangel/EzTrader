@@ -13,6 +13,7 @@ class MiniJangoDialog;
 class TotalAssetProfitLossDialog;
 class HdAccountPLDlg;
 class VtOrderWndHd;
+class VtAccountAssetDlg;
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
@@ -80,6 +81,8 @@ namespace DarkHorse {
 		void save_dm_mini_jango_windows(const std::string& filename, const std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_save);
 		void save_dm_mini_jango_windows2(const std::string& filename, const std::map<HWND, std::shared_ptr<HdAccountPLDlg>>& map_to_save);
 		void save_total_asset_windows(const std::string& filename, const std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_save);
+		void save_total_asset_windows2(const std::string& filename, const std::map<HWND, std::shared_ptr<VtAccountAssetDlg>>& map_to_save);
+		void restore_total_asset_windows_from_json2(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<VtAccountAssetDlg>>& map_to_restore);
 		void restore_total_asset_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_restore);
 		void restore_dm_mini_jango_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_restore);
 		void restore_dm_mini_jango_windows_from_json2(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<HdAccountPLDlg>>& map_to_restore);

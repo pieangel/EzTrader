@@ -897,14 +897,14 @@ void CMainFrame::OnClose()
 		mainApp.SaveMgr()->save_dm_account_order_windows2("dm_account_order_windows", dm_order_wnd_list_);
 		mainApp.SaveMgr()->save_dm_fund_order_windows("dm_fund_order_windows", dm_fund_order_wnd_map_);
 		mainApp.SaveMgr()->save_dm_mini_jango_windows2("dm_mini_jango_windows.json", miniJangoWndMap_);
-		mainApp.SaveMgr()->save_total_asset_windows("dm_total_asset_windows.json", total_asset_profit_loss_map_);
+		mainApp.SaveMgr()->save_total_asset_windows2("dm_total_asset_windows.json", AccountAssetWndMap_);
 
 		for (auto it = dm_order_wnd_list_.begin(); it != dm_order_wnd_list_.end(); it++) {
 			it->second->DestroyWindow();
 			//delete it->second;
 		}
 
-		total_asset_profit_loss_map_.clear();
+		AccountAssetWndMap_.clear();
 		if (auto_signal_manager_dlg_) {
 			auto_signal_manager_dlg_->DestroyWindow();
 			delete auto_signal_manager_dlg_;
@@ -954,7 +954,7 @@ void CMainFrame::StartLoad()
 	mainApp.SaveMgr()->restore_dm_account_order_windows2(this, "dm_account_order_windows", dm_order_wnd_list_);
 	mainApp.SaveMgr()->restore_dm_fund_order_windows(this, "dm_fund_order_windows", dm_fund_order_wnd_map_);
 	mainApp.SaveMgr()->restore_dm_mini_jango_windows_from_json2(this, "dm_mini_jango_windows.json", miniJangoWndMap_);
-	mainApp.SaveMgr()->restore_total_asset_windows_from_json(this, "dm_total_asset_windows.json", total_asset_profit_loss_map_);
+	mainApp.SaveMgr()->restore_total_asset_windows_from_json2(this, "dm_total_asset_windows.json", AccountAssetWndMap_);
 	//mainApp.SystemMgr()->AddSystem("KillNasdaq");
 	//mainApp.SystemMgr()->AddSystem("KillKospi");
 

@@ -27,7 +27,19 @@ VtAssetPage::~VtAssetPage()
 
 void VtAssetPage::SetAccount(std::string acntNo)
 {
-	
+	auto account = mainApp.AcntMgr()->FindAccount(acntNo);
+	if (!account)
+		return;
+
+	// Finding the account index directly without using a loop
+	auto it = std::find_if(_ComboAccountMap.begin(), _ComboAccountMap.end(),
+		[&](const auto& pair) { return pair.second == account; });
+
+	if (it != _ComboAccountMap.end()) {
+		int account_index = it->first;
+		_ComboAccount.SetCurSel(account_index);
+		account_no_ = acntNo;
+	}
 }
 
 void VtAssetPage::DoDataExchange(CDataExchange* pDX)
@@ -56,6 +68,13 @@ void VtAssetPage::OnTimer(UINT_PTR nIDEvent)
 	_AssetGrid.refresh();
 	CDialog::OnTimer(nIDEvent);
 }
+
+void VtAssetPage::account_no(std::string val)
+{
+	account_no_ = val;
+	SetAccount(account_no_);
+}
+
 void VtAssetPage::InitAccount()
 {
 	std::vector<std::shared_ptr<DarkHorse::SmAccount>> account_vector;

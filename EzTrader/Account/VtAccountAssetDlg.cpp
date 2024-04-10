@@ -22,6 +22,13 @@ VtAccountAssetDlg::VtAccountAssetDlg(CWnd* pParent /*=NULL*/)
 	
 }
 
+VtAccountAssetDlg::VtAccountAssetDlg(CWnd* pParent, const std::string& type, const std::string& account_no)
+	: CDialog(IDD_ACCOUNT_ASSET, pParent)
+{
+	_AssetPage.type(type);
+	_AssetPage.account_no(account_no);
+}
+
 VtAccountAssetDlg::~VtAccountAssetDlg()
 {
 // 	HdWindowManager* wndMgr = HdWindowManager::GetInstance();
@@ -50,6 +57,26 @@ END_MESSAGE_MAP()
 
 // VtAccountAssetDlg message handlers
 
+
+std::string VtAccountAssetDlg::account_no()
+{
+	return _AssetPage.account_no();
+}
+
+void VtAccountAssetDlg::account_no(std::string val)
+{
+	_AssetPage.account_no(val);
+}
+
+std::string VtAccountAssetDlg::type()
+{
+	return _AssetPage.type();
+}
+
+void VtAccountAssetDlg::type(std::string val)
+{
+	_AssetPage.type(val);
+}
 
 void VtAccountAssetDlg::SaveToXml(pugi::xml_node& window_node)
 {
