@@ -19,6 +19,7 @@
 #include "../Symbol/SmSymbol.h"
 #include "../View/SymbolOrderView.h"
 #include "../View/SymbolTickView.h"
+#include "../Json/json.hpp"
 
 namespace DarkHorse {
 	class SmSymbol;
@@ -94,6 +95,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	void restoreConfig(const nlohmann::json& centerWndInfo);
 	void OnEntered();
 	void OnSymbolMaster(symbol_p sym);
 	void InitSymbol();
@@ -138,6 +140,7 @@ public:
 	void SetShowPLConfigWnd(bool flag);
 	void InitAll();
 	void Activated(bool flag);
+	void SetActivated(bool flag);
 	void ResetByCenterRow();
 	void ChangeFocus();
 	int GetWindowWidth();

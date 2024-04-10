@@ -45,6 +45,8 @@
 #include "../Util/SmUtil.h"
 #include "../Symbol/SmSymbol.h"
 #include "../Symbol/SmSymbolManager.h"
+#include "../OrderUI/VtOrderWndHd.h"
+#include "../OrderUI/VtOrderConfigManager.h"
 
 #include <iostream>
 #include <filesystem>
@@ -2079,6 +2081,148 @@ namespace DarkHorse {
 			}
 		}
 		*/
+	}
+
+	void SmSaveManager::save_dm_account_order_windows2(const std::string& filename, const std::map<HWND, VtOrderWndHd*>& map_to_save)
+	{
+		if (map_to_save.empty()) return;
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath = get_config_path(id);
+		appPath.append(_T("\\"));
+
+		std::string full_file_name = filename;
+		full_file_name.append("_");
+		full_file_name.append(VtStringUtil::getTimeStr());
+		full_file_name.append(".json");
+
+		appPath.append(full_file_name);
+
+		nlohmann::json jsonData;
+
+		// Convert order_window_map_ to JSON
+		for (const auto& [wnd_handle, orderWindow] : map_to_save) {
+			nlohmann::json account_wnd_json;
+			RECT rect;
+			GetWindowRect(wnd_handle, &rect);
+			VtOrderConfigManager* orderConfigMgr = orderWindow->OrderConfigMgr();
+
+			if (!orderConfigMgr) continue;
+			// 주문창 타입에 따라 계좌번호 혹은 펀드 이름 저장
+			if (orderConfigMgr->Type() == 0) {
+				if (orderConfigMgr->Account()) {
+					account_wnd_json["account_no"] = orderConfigMgr->Account()->No();
+				}
+			}
+			else {
+				if (orderConfigMgr->Fund()) {
+					account_wnd_json["fund_name"] = orderConfigMgr->Fund()->Name();
+				}
+			}
+			account_wnd_json["order_window_type"] = orderConfigMgr->Type();
+			account_wnd_json["left"] = rect.left;
+			account_wnd_json["top"] = rect.top;
+			account_wnd_json["right"] = rect.right;
+			account_wnd_json["bottom"] = rect.bottom;
+			account_wnd_json["width"] = rect.right - rect.left;
+			account_wnd_json["height"] = rect.bottom - rect.top;
+
+			account_wnd_json["show_left_window"] = orderWindow->GetShowLeftWnd();
+			account_wnd_json["show_right_window"] = orderWindow->GetShowRightWnd();
+
+			account_wnd_json["account_no"] = orderConfigMgr->Account()->No();
+			account_wnd_json["center_window_count"] = orderWindow->GetCenterWndCount();
+
+			const std::vector<SmOrderPanel*>& center_window_map = orderWindow->GetCenterWndVector();
+			// Convert center_window_map_ to JSON
+			nlohmann::json centerWindowMapJson;
+			for (const auto&  centerWindow : center_window_map) {
+				nlohmann::json centerWindowJson;
+				centerWindowJson["symbol_code"] = centerWindow->Symbol()->SymbolCode();
+				bool val = centerWindow->m_Grid.OrderGridColOption()[0];
+				centerWindowJson["show_order_area"] = val;
+				val = centerWindow->m_Grid.OrderGridColOption()[1];
+				centerWindowJson["show_stop_area"] = val;
+				val = centerWindow->m_Grid.OrderGridColOption()[2];
+				centerWindowJson["show_count_area"] = val;
+				centerWindowJson["show_tick_window"] = centerWindow->ShowTickWnd();
+				centerWindowJson["tick_window_pos"] = centerWindow->TickWndPos();
+				centerWindowJson["order_amount"] = centerWindow->OrderAmount();
+				centerWindowJson["order_area_width"] = centerWindow->m_Grid.OrderWidth();
+				centerWindowJson["order_row_height"] = centerWindow->m_Grid.CellHeight();
+				centerWindowJson["show_profitloss_config"] = centerWindow->ShowRemainConfig();
+
+				centerWindowMapJson.push_back(centerWindowJson);
+			}
+
+			account_wnd_json["center_window_map"] = centerWindowMapJson;
+
+			jsonData.push_back(account_wnd_json);
+		}
+
+
+
+		std::ofstream file(appPath);
+		file << jsonData.dump(4);
+		file.close();
+	}
+
+	void SmSaveManager::restore_dm_account_order_windows2(CWnd* parent_window, const std::string& filename, std::map<HWND, VtOrderWndHd*>& map_to_restore)
+	{
+		std::string id = mainApp.LoginMgr()->id();
+		// 아이디가 없으면 그냥 반환한다.
+		if (id.length() == 0)
+			return;
+
+		std::string appPath = get_config_path(id);
+
+		std::string full_file_name = filename;
+		full_file_name.append("_");
+		std::string latest_file = find_latestfile_with_prefix(appPath, full_file_name);
+		if (latest_file.empty()) return;
+		appPath.append("\\");
+		appPath.append(latest_file);
+		std::ifstream file(appPath);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file for restore: " << latest_file << std::endl;
+			return;
+		}
+
+		nlohmann::json jsonData;
+		try {
+			file >> jsonData;
+		}
+		catch (const nlohmann::json::parse_error& e) {
+			std::cerr << "Failed to parse JSON file: " << e.what() << std::endl;
+			file.close();
+			return;
+		}
+		file.close();
+
+		// Clear existing data in map_to_restore
+		map_to_restore.clear();
+
+		// Restore data from jsonData
+		for (const auto& account_wnd_json : jsonData) {
+			std::string accountNo = account_wnd_json["account_no"].get<std::string>();
+			size_t centerWindowCount = account_wnd_json["center_window_count"].get<int>();
+
+			int left = account_wnd_json["left"].get<int>();
+			int top = account_wnd_json["top"].get<int>();
+			int width = account_wnd_json["width"].get<int>();
+			int height = account_wnd_json["height"].get<int>();
+
+			const nlohmann::json& centerWindowMapJson = account_wnd_json["center_window_map"];
+			
+			VtOrderWndHd* account_order_window = new VtOrderWndHd(parent_window, account_wnd_json, centerWindowMapJson);
+			account_order_window->Create(IDD_ORDER_WND_HD, parent_window);
+			map_to_restore[account_order_window->GetSafeHwnd()] = account_order_window;
+			account_order_window->MoveWindow(left, top, width, height, TRUE);
+			account_order_window->ShowWindow(SW_SHOW);
+		}
 	}
 
 }

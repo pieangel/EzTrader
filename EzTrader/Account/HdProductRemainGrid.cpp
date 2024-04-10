@@ -477,7 +477,7 @@ void HdProductRemainGrid::clear_row(const int row)
 
 	}
 }
-
+/*
 void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::string& format_type)
 {
 	if (!posi) {
@@ -493,8 +493,8 @@ void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::st
 		updating_ = false;
 		return;
 	}
-	auto sym = mainApp.SymMgr()->FindSymbol(posi->symbol_code);
-	if (!sym) {
+	auto symbol = mainApp.SymMgr()->FindSymbol(posi->symbol_code);
+	if (!symbol) {
 		updating_ = false;
 		clear_row(index);
 		return;
@@ -548,7 +548,8 @@ void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::st
 	_OldPosMap[pos] = pos;
 	const int decimal = format_type == "1" ? 2 : 0;
 
-	std::string value_string = VtStringUtil::get_format_value(posi->average_price / pow(10, 2), decimal, true);
+
+	std::string value_string = VtStringUtil::get_format_value(posi->average_price / pow(10, symbol->decimal()), symbol->decimal(), true);
 	pos.Col = 2;
 	pos.Row = index;
 	_OldPosMap[pos] = pos;
@@ -579,6 +580,90 @@ void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::st
 
 	updating_ = false;
 }
+*/
+
+void HdProductRemainGrid::ShowPosition(int index, position_p posi, const std::string& format_type)
+{
+	if (!posi || updating_) {
+		clear_row(index);
+		return;
+	}
+
+	updating_ = true;
+
+	VtCellPos pos;
+	auto symbol = mainApp.SymMgr()->FindSymbol(posi->symbol_code);
+	if (!symbol) {
+		updating_ = false;
+		clear_row(index);
+		return;
+	}
+
+	QuickSetText(0, index, posi->symbol_code.c_str());
+	pos.Col = 0;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
+
+	int open_quantity = posi->open_quantity;
+	COLORREF text_color = RGB(0, 0, 0); // Default text color
+	if (open_quantity > 0) {
+		text_color = RGB(255, 0, 0); // Red for positive quantity
+	}
+	else if (open_quantity < 0) {
+		text_color = RGB(0, 0, 255); // Blue for negative quantity
+	}
+
+	QuickSetTextColor(1, index, text_color);
+	QuickSetTextColor(2, index, text_color);
+	QuickSetTextColor(3, index, open_quantity != 0 ? text_color : RGB(0, 0, 0)); // Set text color for quantity
+
+	QuickSetNumber(1, index, open_quantity);
+
+	// Set background color based on symbol code
+	COLORREF back_color = RGB(255, 255, 255); // Default background color
+	std::string symCode = posi->symbol_code;
+	if (symCode.find(_T("201")) != std::string::npos) { // Call
+		back_color = RGB(252, 226, 228);
+	}
+	else if (symCode.find(_T("301")) != std::string::npos) { // Put
+		back_color = RGB(218, 226, 245);
+	}
+	QuickSetBackColor(0, index, back_color);
+	QuickSetBackColor(1, index, back_color);
+	QuickSetBackColor(2, index, back_color);
+	QuickSetBackColor(3, index, back_color);
+
+	CString strValue;
+	strValue.Format(_T("%d"), open_quantity);
+	QuickSetText(1, index, strValue);
+	pos.Col = 1;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
+
+	const int decimal = format_type == "1" ? 2 : 0;
+	std::string value_string = VtStringUtil::get_format_value(posi->average_price / pow(10, symbol->decimal()), symbol->decimal(), true);
+	QuickSetText(2, index, value_string.c_str());
+	pos.Col = 2;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
+
+	std::string open_pl = VtStringUtil::get_format_value(posi->open_profit_loss, decimal, true);
+	COLORREF pl_text_color = posi->open_profit_loss > 0 ? RGB(255, 0, 0) : (posi->open_profit_loss < 0 ? RGB(0, 0, 255) : RGB(0, 0, 0));
+	QuickSetTextColor(3, index, pl_text_color);
+	QuickSetText(3, index, open_pl.c_str());
+	pos.Col = 3;
+	pos.Row = index;
+	_OldPosMap[pos] = pos;
+
+	// Redraw cells
+	QuickRedrawCell(0, index);
+	QuickRedrawCell(1, index);
+	QuickRedrawCell(2, index);
+	QuickRedrawCell(3, index);
+
+	updating_ = false;
+}
+
 
 void HdProductRemainGrid::update_dm_account_position(CBCGPGridRow* pRow, position_p position, const std::string& format_type)
 {

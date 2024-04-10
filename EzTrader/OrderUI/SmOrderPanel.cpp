@@ -840,6 +840,42 @@ CRect SmOrderPanel::GetClientArea(int resourceID)
 	return rcWnd;
 }
 
+void SmOrderPanel::restoreConfig(const nlohmann::json& centerWndInfo)
+{
+	std::string symbol_code = centerWndInfo["symbol_code"].get<std::string>();
+
+	bool show_order_area = centerWndInfo["show_order_area"].get<bool>();
+	show_order_area ? m_Grid.OrderGridColOption()[0] = true : m_Grid.OrderGridColOption()[0] = false;
+	bool show_stop_area = centerWndInfo["show_stop_area"].get<bool>();
+	show_stop_area ? m_Grid.OrderGridColOption()[1] = true : m_Grid.OrderGridColOption()[1] = false;
+	bool show_count_area = centerWndInfo["show_count_area"].get<bool>();
+	show_count_area ? m_Grid.OrderGridColOption()[2] = true : m_Grid.OrderGridColOption()[2] = false;
+	bool show_tick_window = centerWndInfo["show_tick_window"].get<bool>();
+	show_tick_window ? _ShowTickWnd = true : _ShowTickWnd = false;
+	_TickWndPos = centerWndInfo["tick_window_pos"].get<int>();
+	_OrderAmount = centerWndInfo["order_amount"].get<int>();
+	int order_area_width = centerWndInfo["order_area_width"].get<int>();
+	int order_area_height = centerWndInfo["order_row_height"].get<int>();
+	m_Grid.OrderWidth(order_area_width);
+	m_Grid.CellHeight(order_area_height);
+	bool show_profitloss_config = centerWndInfo["show_profitloss_config"].get<bool>();
+	show_profitloss_config ? _ShowRemainConfig = true : _ShowRemainConfig = false;
+	// 주문창 그리드 속성 대입
+	_ShowOrderArea = m_Grid.OrderGridColOption()[0];
+	_ShowStopArea = m_Grid.OrderGridColOption()[1];
+	_ShowOrderCountArea = m_Grid.OrderGridColOption()[2];
+
+	// 심볼 대입
+
+	_DefaultSymbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+	/*
+	// 저장된 심볼은 목록으로 만들어 심볼 마스터 요청한다.
+	std::vector<VtSymbol*>& symvec = mainApp.SaveMgr().GetSymbolVector();
+	if (_DefaultSymbol)
+		symvec.push_back(_DefaultSymbol);
+		*/
+}
+
 void SmOrderPanel::OnEntered()
 {
 	if (_CurBtn)
@@ -870,6 +906,7 @@ void SmOrderPanel::OnSymbolMaster(symbol_p sym)
 void SmOrderPanel::InitSymbol()
 {
 	// 기본 심볼 설정
+	AddSymbolToCombo(_DefaultSymbol);
 	symbol_p sym = _DefaultSymbol;
 
 	symbol_to_index_.clear();
@@ -1273,6 +1310,11 @@ void SmOrderPanel::Activated(bool flag)
 		_StaticProductName.Invalidate();
 		_StaticProduct.Invalidate();
 	}
+}
+
+void SmOrderPanel::SetActivated(bool flag)
+{
+	_Activated = flag;
 }
 
 void SmOrderPanel::ResetByCenterRow()

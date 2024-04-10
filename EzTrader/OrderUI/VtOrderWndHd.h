@@ -9,6 +9,7 @@
 #include "../Xml/pugixml.hpp"
 #include "../Fund/SmFund.h"
 #include "../Account/SmAccount.h"
+#include "../Json/json.hpp"
 
 namespace DarkHorse {
 	class SmFund;
@@ -43,6 +44,7 @@ class VtOrderWndHd : public CDialog
 
 public:
 	VtOrderWndHd(CWnd* pParent = NULL);   // standard constructor
+	VtOrderWndHd(CWnd* pParent, const nlohmann::json window_info, const nlohmann::json center_wnd_info_list);
 	virtual ~VtOrderWndHd();
 
 // Dialog Data
@@ -68,6 +70,12 @@ public:
 	int GetCenterWndCount() {
 		return _CenterWndVector.size();
 	}
+	const std::vector<SmOrderPanel*>& GetCenterWndVector() {
+		return _CenterWndVector;
+	}
+	bool _Restored = false;
+	nlohmann::json _WindowInfo;
+	nlohmann::json _CenterWndInfoList;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -75,6 +83,7 @@ protected:
 public:
 	static int _MaxWidth;
 private:
+	void restoreConfig();
 	bool destroyed_ = false;
 	void AddItemToComboBox(const int index, CComboBox& comboBox, account_p item)
 	{

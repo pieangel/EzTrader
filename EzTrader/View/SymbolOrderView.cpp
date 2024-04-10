@@ -159,9 +159,9 @@ void SymbolOrderView::Clear()
 SymbolOrderView::SymbolOrderView()
 	: id_(IdGenerator::get_id())
 {
-	_OrderGridColOption.push_back(true);
-	_OrderGridColOption.push_back(true);
-	_OrderGridColOption.push_back(true);
+	//_OrderGridColOption.push_back(true);
+	//_OrderGridColOption.push_back(true);
+	//_OrderGridColOption.push_back(true);
 	_BuyStopOrderMgr = std::make_shared<DarkHorse::SmStopOrderManager>();
 	_SellStopOrderMgr = std::make_shared<DarkHorse::SmStopOrderManager>();
 	//_BuyOrderViewer = std::make_shared<SmOrderViewer>();

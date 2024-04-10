@@ -242,6 +242,8 @@ void VtProductRemainGrid::OnSetup()
 	SetColTitle(4);
 	RegisterOrderallback();
 	RegisterQuoteCallback();
+
+	_Init = true;
 }
 
 void VtProductRemainGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
@@ -442,6 +444,7 @@ void VtProductRemainGrid::InitPosition()
 
 void VtProductRemainGrid::ClearPosition()
 {
+	if (!_Init) return;
 	QuickSetText(0, 0, _T(""));
 	QuickSetText(1, 0, _T(""));
 	QuickSetText(2, 0, _T(""));

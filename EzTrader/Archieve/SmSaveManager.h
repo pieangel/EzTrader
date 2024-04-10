@@ -11,6 +11,7 @@ class DmAccountOrderWindow;
 class DmFundOrderWindow;
 class MiniJangoDialog;
 class TotalAssetProfitLossDialog;
+class VtOrderWndHd;
 namespace DarkHorse {
 	class SmSymbol;
 	class SmAccount;
@@ -73,12 +74,14 @@ namespace DarkHorse {
 		void GetWindowSymbolList(std::set<std::string>& symbol_list);
 		void SaveAccountPasswords(const std::map<int, std::shared_ptr<DarkHorse::SmAccount>>& account_map);
 		void LoadAccountPasswords();
+		void save_dm_account_order_windows2(const std::string& filename, const std::map<HWND, VtOrderWndHd*>& map_to_save);
 		void save_dm_account_order_windows(const std::string& filename, const std::map<HWND, DmAccountOrderWindow*>& map_to_save);
 		void save_dm_mini_jango_windows(const std::string& filename, const std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_save);
 		void save_total_asset_windows(const std::string& filename, const std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_save);
 		void restore_total_asset_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<TotalAssetProfitLossDialog>>& map_to_restore);
 		void restore_dm_mini_jango_windows_from_json(CWnd* parent_window, const std::string& filename, std::map<HWND, std::shared_ptr<MiniJangoDialog>>& map_to_restore);
 		void restore_dm_account_order_windows(CWnd* parent_window, const std::string& filename, std::map<HWND, DmAccountOrderWindow*>& map_to_restore);
+		void restore_dm_account_order_windows2(CWnd* parent_window, const std::string& filename, std::map<HWND, VtOrderWndHd*>& map_to_restore);
 		void save_account(const std::string& filename);
 		void save_fund(const std::string& filename);
 		void restore_fund(const std::string& filename);

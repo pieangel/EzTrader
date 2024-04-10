@@ -121,6 +121,7 @@ private:
 	std::shared_ptr<DarkHorse::SmAccount> account_{ nullptr };
 	std::shared_ptr<DarkHorse::SmFund> fund_{ nullptr };
 private:
+	bool _Init = false;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	// 모드 : 0 : 국내, 1 : 해외
 	int _Mode = 0;

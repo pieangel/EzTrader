@@ -70,6 +70,29 @@ VtOrderWndHd::VtOrderWndHd(CWnd* pParent /*=NULL*/)
 	_LayoutMgr = new VtLayoutManager(this);
 }
 
+VtOrderWndHd::VtOrderWndHd(CWnd* pParent, const nlohmann::json window_info, const nlohmann::json center_wnd_info_list)
+	: CDialog(IDD_ORDER_WND_HD, pParent), _WindowInfo(window_info), _CenterWndInfoList(center_wnd_info_list)
+{
+	_Restored = true;
+	_OrderConfigMgr = new VtOrderConfigManager();
+	_OrderConfigMgr->SetDefaultAccount();
+	_OrderConfigMgr->SetDefaultSymbol();
+
+	_LeftWnd.OrderConfigMgr(_OrderConfigMgr);
+	_RightWnd.OrderConfigMgr(_OrderConfigMgr);
+
+	_Fund = nullptr;
+	_Account = nullptr;
+	_MaxWidth = 0;
+	_WindowID = 0;
+	_ShowLeftWnd = true;
+	_ShowRightWnd = true;
+	_Sizing = false;
+	ClickedRightExtend = false;
+	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, 0);
+	_LayoutMgr = new VtLayoutManager(this);
+}
+
 VtOrderWndHd::~VtOrderWndHd()
 {
 	if (_OrderConfigMgr) {
@@ -99,6 +122,53 @@ void VtOrderWndHd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_PWD, _EditPwd);
 }
 
+
+void VtOrderWndHd::restoreConfig()
+{
+	if (!_Restored) return;
+
+	if (!_OrderConfigMgr)
+		return;
+	int order_window_type = _WindowInfo["order_window_type"];
+	_OrderConfigMgr->Type(order_window_type);
+	if (order_window_type == 0) {
+		_DefaultAccountNo = _WindowInfo["account_no"];
+	}
+	else {
+		_DefaultFundName = _WindowInfo["fund_name"];
+	}
+
+	// 윈도우 위치 대입
+	_XPos = _WindowInfo["left"];
+	_YPos = _WindowInfo["top"];
+	// 윈도우 너이 대입
+	_WindowWidth = _WindowInfo["width"];
+	// 윈도우 높이 대입
+	_WindowHeight = _WindowInfo["height"];
+	_ShowLeftWnd = _WindowInfo["show_left_window"];
+	_ShowRightWnd = _WindowInfo["show_right_window"];
+	
+	const int centerWindowCount = _WindowInfo["center_window_count"];
+	if (centerWindowCount == 0) return;
+	
+	int index = 0;
+	for (const auto& centerWndInfo : _CenterWndInfoList) {
+		SmOrderPanel* centerWnd = new SmOrderPanel();
+		// 중앙창 모든 옵션 복원
+		centerWnd->restoreConfig(centerWndInfo);
+		centerWnd->ParentDlg(this);
+		centerWnd->OrderConfigMgr(_OrderConfigMgr);
+		centerWnd->Create(IDD_ORDER_PANEL, this);
+		
+		if (index == 0) {
+			centerWnd->SetActivated(true);
+		}
+		index++;
+		// 중앙창 목록에 추가
+		_CenterWndVector.push_back(centerWnd);
+	}
+	
+}
 
 void VtOrderWndHd::RegisterRealtimeAccount(account_p acnt)
 {
@@ -181,6 +251,7 @@ BOOL VtOrderWndHd::OnInitDialog()
 
 	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
 
+	restoreConfig();
 
 	_BtnAddWnd.SetIcon(IDI_PLUS, 16, 16, IDI_PLUS, 16, 16);
 	_BtnAddWnd.OffsetColor(BTNST_COLOR_BK_IN, 30);
@@ -224,14 +295,6 @@ BOOL VtOrderWndHd::OnInitDialog()
 	ReposChildWindowsForward();
 	RepositionControl();
 	ShowHideCtrl();
-
-	//VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
-	//_OrderWindowEvent += delegate(orderDlgMgr, &VtOrderDialogManager::OnOrderWndEventReceived);
-
-// 	VtOrderWndHdEventArgs arg;
-// 	arg.pOrderWnd = this;
-// 	arg.type = VtOrderWindowEventType::Created;
-// 	FireOrderWindowEvent(std::move(arg));
 
 	SetWindows();
 
@@ -459,6 +522,7 @@ void VtOrderWndHd::CreateChildWindows()
 		centerWnd->Create(IDD_ORDER_PANEL, this);
 		_CenterWndVector.push_back(centerWnd);
 	}
+	/*
 	else { // 주문창 객체가 외부에서 만들어 질때
 		for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 			SmOrderPanel* centerWnd = *it;
@@ -467,7 +531,7 @@ void VtOrderWndHd::CreateChildWindows()
 			centerWnd->Create(IDD_ORDER_PANEL, this);
 		}
 	}
-
+	*/
 	// 자식 윈도우들을 만든다.
 	_LeftWnd.Create(IDD_ORDER_LEFT_HD, this);
 	_RightWnd.Create(IDD_ORDER_RIGHT_HD, this);
