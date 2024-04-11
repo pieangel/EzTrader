@@ -3,7 +3,7 @@
 #include "afxwin.h"
 #include "../ShadeButtonST.h"
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <memory>
 // VtAssetPage dialog
 namespace DarkHorse {
@@ -27,7 +27,7 @@ private:
 	VtAccountAssetGrid _AssetGrid;
 
 	// key : combo index, value : account object.
-	std::map<int, std::shared_ptr<DarkHorse::SmAccount>> _ComboAccountMap;
+	std::unordered_map<int, std::shared_ptr<DarkHorse::SmAccount>> _ComboAccountMap;
 	int _CurrentAccountIndex{ 0 };
 	std::string account_no_;
 	std::string type_;

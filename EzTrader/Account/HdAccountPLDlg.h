@@ -4,6 +4,7 @@
 #include "afxwin.h"
 #include "../Xml/pugixml.hpp"
 #include <string>
+#include <unordered_map>
 #include <memory>
 // HdAccountPLDlg dialog
 namespace DarkHorse {
@@ -49,8 +50,8 @@ private:
 	std::string account_no_;
 	std::string fund_name_;
 	// key : combo index, value : account object.
-	std::map<int, std::string> _ComboAccountMap;
-	std::map<int, std::string> _ComboFundMap;
+	std::unordered_map<int, std::string> _ComboAccountMap;
+	std::unordered_map<int, std::string> _ComboFundMap;
 	int _CurrentAccountIndex{ 0 };
 	// 0 : account, 1 : fund
 	int _Mode = 0;

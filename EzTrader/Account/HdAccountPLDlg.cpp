@@ -174,6 +174,7 @@ void HdAccountPLDlg::SetFund()
 		account_info.append(fund->Name());
 		const int index = _ComboAccount.AddString(account_info.c_str());
 		_ComboFundMap[index] = fund->Name();
+		//_AccountComboMap[fund->Name()] = index;
 		if (fund_name_ == fund->Name())
 			selected_index = index;
 	}
@@ -225,7 +226,7 @@ void HdAccountPLDlg::LoadFromXml(pugi::xml_node& window_node)
 
 void HdAccountPLDlg::InitAccount()
 {
-	_ComboAccount.ResetContent();
+	//_ComboAccount.ResetContent();
 }
 
 
@@ -268,7 +269,6 @@ void HdAccountPLDlg::OnCbnSelchangeComboAccount()
 {
 	const int cur_sel = _ComboAccount.GetCurSel();
 	if (cur_sel < 0) return;
-	_Mode == 0 ? SetAccount() : SetFund();
 	_AccountGrid.ClearValues();
 	_ProductGrid.ClearValues();
 

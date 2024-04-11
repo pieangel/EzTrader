@@ -140,9 +140,7 @@ void HdProductRemainGrid::QuickRedrawCell(int col, long row)
 
 void HdProductRemainGrid::InitGrid()
 {
-	if (!_AcntPLDlg )
-		return;
-
+	update_account_position();
 }
 
 
@@ -150,10 +148,11 @@ void HdProductRemainGrid::InitGrid()
 void HdProductRemainGrid::ClearValues()
 {
 	for (int i = 0; i < _RowCount; i++) {
-		QuickSetText(0, i, _T(""));
-		QuickSetText(1, i, _T(""));
-		QuickSetText(2, i, _T(""));
-		QuickSetText(3, i, _T(""));
+		for (int j = 0; j < _ColCount; j++) {
+			QuickSetText(j, i, _T(""));
+			QuickSetBackColor(j, i, RGB(255, 255, 255));
+			QuickRedrawCell(j, i);
+		}
 	}
 }
 /*
@@ -333,7 +332,7 @@ void HdProductRemainGrid::on_update_single_position(const int position_id)
 		update_dm_account_position(pRow, position, format_type);
 	Invalidate();
 	*/
-	LOGINFO(CMyLogger::getInstance(), "on_update_single_position = %d", position_id);
+	//LOGINFO(CMyLogger::getInstance(), "on_update_single_position = %d", position_id);
 	//update_account_position();
 	enable_position_show_ = true;
 }
@@ -343,7 +342,7 @@ void HdProductRemainGrid::on_update_whole_position(const int result)
 	// 	if (result == 0) {
 	// 		ClearOldContents(0);
 	// 	}
-	LOGINFO(CMyLogger::getInstance(), "on_update_whole_position = %d", result);
+	//LOGINFO(CMyLogger::getInstance(), "on_update_whole_position = %d", result);
 	//update_account_position();
 	enable_position_show_ = true;
 }
@@ -430,7 +429,6 @@ void HdProductRemainGrid::update_account_position()
 
 	//if (updating_) return;
 	//updating_ = true;
-	//ClearValues();
 	row_to_position_.clear();
 	position_to_row_.clear();
 
@@ -461,15 +459,14 @@ void HdProductRemainGrid::update_account_position()
 	//ClearOldContents(row);
 	_OldMaxRow = row;
 	//updating_ = false;
-	enable_position_show_ = true;
 }
 
 void HdProductRemainGrid::clear_row(const int row)
 {
 	for (int i = 0; i < 4; i++) {
 		QuickSetText(i, row, _T(""));
+		QuickSetBackColor(i, row, RGB(255, 255, 255));
 		QuickRedrawCell(i, row);
-
 	}
 }
 /*
@@ -780,8 +777,9 @@ void HdProductRemainGrid::refresh()
 {
 	if (enable_position_show_) {
 		update_account_position();
+		enable_position_show_ = false;
 	}
-	enable_position_show_ = false;
+	//enable_position_show_ = true;
 }
 
 void HdProductRemainGrid::OnLButtonDown(UINT nFlags, CPoint point)

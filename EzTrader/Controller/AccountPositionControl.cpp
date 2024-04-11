@@ -13,6 +13,7 @@
 #include "../Fund/SmFund.h"
 #include "../Position/GroupPositionManager.h"
 #include "../Event/SmCallbackManager.h"
+#include "../Log/MyLogger.h"
 namespace DarkHorse {
 using account_position_manager_p = std::shared_ptr<AccountPositionManager>;
 using group_position_manager_p = std::shared_ptr<GroupPositionManager>;
@@ -126,6 +127,7 @@ void AccountPositionControl::trigger_event(const int result)
 
 void AccountPositionControl::load_position()
 {
+	position_map_.clear();
 	if (position_type_ == OrderType::None) return;
 	if (position_type_ == OrderType::SubAccount) {
 		if (!account_) return;
@@ -141,9 +143,16 @@ void AccountPositionControl::load_position()
 	}
 	else {
 		if (!account_) return;
+		//LOGINFO(CMyLogger::getInstance(), "1111account_::code = [%s]", account_->No().c_str());
 		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(account_->No());
-		if (!position_manager) { reset_account_position(); trigger_event(0); return; }
+		if (!position_manager) { 
+			//LOGINFO(CMyLogger::getInstance(), "empty position_manager account::code = [%s]", "empty");
+			reset_account_position(); 
+			trigger_event(0); return; 
+		}
+		//LOGINFO(CMyLogger::getInstance(), "2222account_::code = [%s]", account_->No().c_str());
 		position_manager->get_active_positions(position_map_);
+		//LOGINFO(CMyLogger::getInstance(), "3333account_::code = [%s]", account_->No().c_str());
 	}
 	trigger_event(1);
 }

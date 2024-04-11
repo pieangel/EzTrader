@@ -26,6 +26,9 @@ namespace DarkHorse {
 		void set_fund_name(const std::string& fund_name) {
 			fund_name_ = fund_name;
 		}
+		std::string get_account_no() {
+			return account_no_;
+		}
 		void set_account_no(const std::string& account_no) {
 			account_no_ = account_no;
 		}
