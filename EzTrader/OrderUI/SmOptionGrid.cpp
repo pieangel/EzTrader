@@ -813,6 +813,7 @@ void SmOptionGrid::QuickSetText(int row, int col, LPCTSTR text)
 	CGridCellBase* pCell = GetCell(row, col);
 	if (pCell) {
 		pCell->SetText(text);
+		QuickRedrawCell(col, row);
 	}
 }
 
@@ -832,6 +833,11 @@ void SmOptionGrid::QuickSetTextColor(int row, int col, COLORREF color)
 	if (pCell) {
 		pCell->SetTextClr(color);
 	}
+}
+
+void SmOptionGrid::QuickRedrawCell(int col, long row)
+{
+	InvalidateCellRect(row, col);
 }
 
 void SmOptionGrid::SetEqualRow(int equalRow)
@@ -1416,6 +1422,7 @@ void SmOptionGrid::show_value(const int row, const int col, const DarkHorse::VmO
 	set_background_color(row, col, option_info);
 	//cell->Text(value);
 	QuickSetText(row, col, value.c_str());
+	
 }
 
 // set the background color of the cell according to the order status

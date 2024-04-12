@@ -964,6 +964,12 @@ void CMainFrame::StartLoad()
 		//symbol_code_vec.push_back(it->second->SymbolCode());
 		mainApp.Client()->RegisterSymbol(it->second->SymbolCode());
 	}
+
+	std::vector < std::shared_ptr<DarkHorse::SmSymbol>> symbol_list;
+	mainApp.SymMgr()->GetRecentSymbolVector(symbol_list);
+	for (auto it = symbol_list.begin(); it != symbol_list.end(); ++it) {
+		mainApp.Client()->RegisterSymbol((*it)->SymbolCode());
+	}
 	mainApp.SaveMgr()->restore_system_config("system_config.json");
 
 	mainApp.file_watch_monitor()->AddMonDir(mainApp.config_manager()->system_config().yes_path.c_str(), true);

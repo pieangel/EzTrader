@@ -109,6 +109,7 @@ public:
 	void SetCurrent2();
 	void SetExpected2();
 private:
+	void QuickRedrawCell(int col, long row);
 	int _SelectedProduct = 0;
 	//std::vector<SmRunInfo> _RunInfo;
 	CCellID _EqualCell;
