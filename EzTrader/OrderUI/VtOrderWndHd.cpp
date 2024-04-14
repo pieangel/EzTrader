@@ -70,6 +70,29 @@ VtOrderWndHd::VtOrderWndHd(CWnd* pParent /*=NULL*/)
 	_LayoutMgr = new VtLayoutManager(this);
 }
 
+VtOrderWndHd::VtOrderWndHd(CWnd* pParent , const int order_window_type)
+	: CDialog(IDD_ORDER_WND_HD, pParent)
+{
+	_OrderConfigMgr = new VtOrderConfigManager();
+	_OrderConfigMgr->SetDefaultAccount();
+	_OrderConfigMgr->SetDefaultSymbol();
+	_OrderConfigMgr->Type(order_window_type);
+
+	_LeftWnd.OrderConfigMgr(_OrderConfigMgr);
+	_RightWnd.OrderConfigMgr(_OrderConfigMgr);
+
+	_Fund = nullptr;
+	_Account = nullptr;
+	_MaxWidth = 0;
+	_WindowID = 0;
+	_ShowLeftWnd = true;
+	_ShowRightWnd = true;
+	_Sizing = false;
+	ClickedRightExtend = false;
+	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, 0);
+	_LayoutMgr = new VtLayoutManager(this);
+}
+
 VtOrderWndHd::VtOrderWndHd(CWnd* pParent, const nlohmann::json window_info, const nlohmann::json center_wnd_info_list)
 	: CDialog(IDD_ORDER_WND_HD, pParent), _WindowInfo(window_info), _CenterWndInfoList(center_wnd_info_list)
 {

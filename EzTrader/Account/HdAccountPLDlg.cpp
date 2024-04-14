@@ -34,6 +34,12 @@ HdAccountPLDlg::HdAccountPLDlg(CWnd* pParent, std::string type)
 
 }
 
+HdAccountPLDlg::HdAccountPLDlg(CWnd* pParent, const std::string& type, const int mode)
+	: CDialog(IDD_MINI_JANGO, pParent), type_(type), _Mode(mode)
+{
+	
+}
+
 HdAccountPLDlg::HdAccountPLDlg(CWnd* pParent, const std::string& type, const int mode, const std::string& target)
 	: CDialog(IDD_MINI_JANGO, pParent), type_(type), _Mode(mode)
 {

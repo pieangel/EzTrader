@@ -895,8 +895,9 @@ void CMainFrame::OnClose()
 		mainApp.SaveMgr()->save_usd_system("usd_system_list.json");
 		
 		mainApp.SaveMgr()->save_dm_account_order_windows2("dm_account_order_windows", dm_order_wnd_list_);
-		mainApp.SaveMgr()->save_dm_fund_order_windows("dm_fund_order_windows", dm_fund_order_wnd_map_);
-		mainApp.SaveMgr()->save_dm_mini_jango_windows2("dm_mini_jango_windows.json", miniJangoWndMap_);
+		mainApp.SaveMgr()->save_dm_account_order_windows2("dm_fund_order_windows", dm_fund_order_wnd_map_);
+		mainApp.SaveMgr()->save_dm_mini_jango_windows2("dm_mini_jango_windows.json", accountJangoWndMap_);
+		mainApp.SaveMgr()->save_dm_mini_jango_windows2("dm_mini_jango_windows.json", fundJangoWndMap_);
 		mainApp.SaveMgr()->save_total_asset_windows2("dm_total_asset_windows.json", AccountAssetWndMap_);
 
 		for (auto it = dm_order_wnd_list_.begin(); it != dm_order_wnd_list_.end(); it++) {
@@ -952,8 +953,9 @@ void CMainFrame::StartLoad()
 	mainApp.SaveMgr()->restore_out_system("out_system_list.json");
 	mainApp.SaveMgr()->restore_usd_system("usd_system_list.json");
 	mainApp.SaveMgr()->restore_dm_account_order_windows2(this, "dm_account_order_windows", dm_order_wnd_list_);
-	mainApp.SaveMgr()->restore_dm_fund_order_windows(this, "dm_fund_order_windows", dm_fund_order_wnd_map_);
-	mainApp.SaveMgr()->restore_dm_mini_jango_windows_from_json2(this, "dm_mini_jango_windows.json", miniJangoWndMap_);
+	mainApp.SaveMgr()->restore_dm_account_order_windows2(this, "dm_fund_order_windows", dm_fund_order_wnd_map_);
+	mainApp.SaveMgr()->restore_dm_mini_jango_windows_from_json2(this, "dm_mini_jango_windows.json", accountJangoWndMap_);
+	mainApp.SaveMgr()->restore_dm_mini_jango_windows_from_json2(this, "dm_mini_jango_windows.json", fundJangoWndMap_);
 	mainApp.SaveMgr()->restore_total_asset_windows_from_json2(this, "dm_total_asset_windows.json", AccountAssetWndMap_);
 	//mainApp.SystemMgr()->AddSystem("KillNasdaq");
 	//mainApp.SystemMgr()->AddSystem("KillKospi");
@@ -1220,7 +1222,7 @@ void CMainFrame::OnOrderRemain()
 	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "9");
 	accountJangoDialog->Mode(0);
 	accountJangoDialog->Create(IDD_MINI_JANGO, this);
-	miniJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+	accountJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
 	accountJangoDialog->ShowWindow(SW_SHOW);
 }
 
@@ -1482,8 +1484,19 @@ void CMainFrame::OnEnableSimulationFilledOrder()
 
 void CMainFrame::OnDmFundOrder()
 {
+	//DmFundOrderWindow* fund_order_wnd = new DmFundOrderWindow();
+	//fund_order_wnd->Create(IDD_DM_FUND_ORDER_MAIN, this);
+	//dm_fund_order_wnd_map_[fund_order_wnd->GetSafeHwnd()] = fund_order_wnd;
+	//fund_order_wnd->ShowWindow(SW_SHOW);
+	/*
 	DmFundOrderWindow* fund_order_wnd = new DmFundOrderWindow();
 	fund_order_wnd->Create(IDD_DM_FUND_ORDER_MAIN, this);
+	dm_fund_order_wnd_map_[fund_order_wnd->GetSafeHwnd()] = fund_order_wnd;
+	fund_order_wnd->ShowWindow(SW_SHOW);
+	*/
+
+	VtOrderWndHd* fund_order_wnd = new VtOrderWndHd(this, 1);
+	fund_order_wnd->Create(IDD_ORDER_WND_HD, this);
 	dm_fund_order_wnd_map_[fund_order_wnd->GetSafeHwnd()] = fund_order_wnd;
 	fund_order_wnd->ShowWindow(SW_SHOW);
 }
@@ -1549,7 +1562,7 @@ void CMainFrame::OnDomesticRemain()
 	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "9");
 	accountJangoDialog->Mode(0);
 	accountJangoDialog->Create(IDD_MINI_JANGO, this);
-	miniJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+	accountJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
 	accountJangoDialog->ShowWindow(SW_SHOW);
 }
 
@@ -1566,11 +1579,19 @@ void CMainFrame::OnAbroadRemain()
 
 void CMainFrame::OnDmFundRemain()
 {
+	/*
 	std::shared_ptr< MiniJangoDialog> fundJangoDialog = std::make_shared<MiniJangoDialog>(this, "9");
 	fundJangoDialog->Mode(1);
 	fundJangoDialog->Create(IDD_JANGO, this);
 	_JangoWndMap[fundJangoDialog->GetSafeHwnd()] = fundJangoDialog;
 	fundJangoDialog->ShowWindow(SW_SHOW);
+	*/
+
+	std::shared_ptr<HdAccountPLDlg> accountJangoDialog = std::make_shared<HdAccountPLDlg>(this, "9");
+	accountJangoDialog->Mode(1);
+	accountJangoDialog->Create(IDD_MINI_JANGO, this);
+	fundJangoWndMap_[accountJangoDialog->GetSafeHwnd()] = accountJangoDialog;
+	accountJangoDialog->ShowWindow(SW_SHOW);
 }
 
 

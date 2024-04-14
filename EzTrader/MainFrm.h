@@ -151,18 +151,19 @@ public:
 	DmAccountOrderWindow* dm_account_order_wnd_p_ = nullptr;
 	std::shared_ptr<DmFundOrderWindow> dm_fund_order_wnd_p = nullptr;
 	std::map<HWND, DmAccountOrderWindow*> dm_account_order_wnd_map_;
-	std::map<HWND, DmFundOrderWindow*> dm_fund_order_wnd_map_;
-
+	//std::map<HWND, DmFundOrderWindow*> dm_fund_order_wnd_map_;
+	std::map<HWND, VtOrderWndHd*> dm_fund_order_wnd_map_;
 	std::map<HWND, VtOrderWndHd*> dmAccountOrderWndMap_;
 
 	std::map<HWND, VtOrderWndHd*> dm_order_wnd_list_;
-
+	std::map<HWND, VtOrderWndHd*> dm_fund_wnd_list_;
 	std::map<HWND, AbAccountOrderWindow*> _OrderWndMap;
 
 	std::map<HWND, std::shared_ptr<SmOrderCompMainDialog>> _CompOrderWndMap;
 	std::map<HWND, std::shared_ptr<MiniJangoDialog>> _JangoWndMap;
 	std::map<HWND, std::shared_ptr<MiniJangoDialog>> mini_jango_wnd_map_;
-	std::map<HWND, std::shared_ptr<HdAccountPLDlg>> miniJangoWndMap_;
+	std::map<HWND, std::shared_ptr<HdAccountPLDlg>> accountJangoWndMap_;
+	std::map<HWND, std::shared_ptr<HdAccountPLDlg>> fundJangoWndMap_;
 	std::map<HWND, std::shared_ptr<SmFilledListDialog>> _FilledWndMap;
 
 	std::map<HWND, std::shared_ptr<AbFundOrderWindow>> _FundOrderWndMap;

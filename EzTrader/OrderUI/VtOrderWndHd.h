@@ -44,6 +44,7 @@ class VtOrderWndHd : public CDialog
 
 public:
 	VtOrderWndHd(CWnd* pParent = NULL);   // standard constructor
+	VtOrderWndHd(CWnd* pParent, const int order_window_type);   // standard constructor
 	VtOrderWndHd(CWnd* pParent, const nlohmann::json window_info, const nlohmann::json center_wnd_info_list);
 	virtual ~VtOrderWndHd();
 

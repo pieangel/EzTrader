@@ -18,6 +18,7 @@ class HdAccountPLDlg : public CDialog
 public:
 	HdAccountPLDlg(CWnd* pParent = NULL);   // standard constructor
 	HdAccountPLDlg(CWnd* pParent, std::string type);   // standard constructor
+	HdAccountPLDlg(CWnd* pParent, const std::string& type, const int mode);
 	HdAccountPLDlg(CWnd* pParent, const std::string& type, const int mode, const std::string& target);
 	virtual ~HdAccountPLDlg();
 

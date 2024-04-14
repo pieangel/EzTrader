@@ -1006,9 +1006,16 @@ void SmOrderPanel::SetProductName(symbol_p symbol)
 
 void SmOrderPanel::InitPosition()
 {
-	_ProductRemainGrid.Account(_OrderConfigMgr->Account());
-	_ProductRemainGrid.InitPosition();
-	position_control_->set_account(_OrderConfigMgr->Account());
+	if (_OrderConfigMgr->Type() == 0) {
+		_ProductRemainGrid.Account(_OrderConfigMgr->Account());
+		_ProductRemainGrid.InitPosition();
+		position_control_->set_account(_OrderConfigMgr->Account());
+	}
+	else {
+		_ProductRemainGrid.fund(_OrderConfigMgr->Fund());
+		_ProductRemainGrid.InitPosition();
+		position_control_->set_fund(_OrderConfigMgr->Fund());
+	}
 	on_update_position();
 }
 
@@ -1266,8 +1273,10 @@ void SmOrderPanel::InitAll()
 	// 주문 그리드 셀들을 설정한다.
 	m_Grid.Init();
 	_TickGrid.Init();
-	m_Grid.Account(_OrderConfigMgr->Account());
-	m_Grid.fund(_OrderConfigMgr->Fund());
+	if (_OrderConfigMgr->Type() == 0)
+		m_Grid.Account(_OrderConfigMgr->Account());
+	else
+		m_Grid.fund(_OrderConfigMgr->Fund());
 	// 그리드 컬럼 옵션을 설정해 준다.
 	m_Grid.ShowHideOrderGrid();
 	_Init = true;

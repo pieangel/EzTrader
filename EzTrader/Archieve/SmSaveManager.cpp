@@ -2133,8 +2133,6 @@ namespace DarkHorse {
 
 			account_wnd_json["show_left_window"] = orderWindow->GetShowLeftWnd();
 			account_wnd_json["show_right_window"] = orderWindow->GetShowRightWnd();
-
-			account_wnd_json["account_no"] = orderConfigMgr->Account()->No();
 			account_wnd_json["center_window_count"] = orderWindow->GetCenterWndCount();
 
 			const std::vector<SmOrderPanel*>& center_window_map = orderWindow->GetCenterWndVector();
@@ -2208,7 +2206,6 @@ namespace DarkHorse {
 
 		// Restore data from jsonData
 		for (const auto& account_wnd_json : jsonData) {
-			std::string accountNo = account_wnd_json["account_no"].get<std::string>();
 			size_t centerWindowCount = account_wnd_json["center_window_count"].get<int>();
 
 			int left = account_wnd_json["left"].get<int>();
@@ -2298,10 +2295,6 @@ namespace DarkHorse {
 			const int y = dialog_json["y"].get<int>();
 			const int width = dialog_json["width"].get<int>();
 			const int height = dialog_json["height"].get<int>();
-			bool old_version = true;
-			if (dialog_json.contains("type"))
-				old_version = false;
-
 			const int mode = dialog_json["mode"].get<int>();
 			const std::string type = dialog_json["type"].get<std::string>();
 			std::string target;
@@ -2311,15 +2304,12 @@ namespace DarkHorse {
 				target = dialog_json["fund_name"].get<std::string>();
 
 			// Create a new instance of DmAccountOrderWindow and associate it with a new HWND
-			std::shared_ptr<HdAccountPLDlg>  totalAssetDialog;
-			if (!old_version)
-				totalAssetDialog = std::make_shared<HdAccountPLDlg>(parent_window, "9", mode, target);
-			else
-				totalAssetDialog = std::make_shared<HdAccountPLDlg>(parent_window);
-			totalAssetDialog->Create(IDD_MINI_JANGO, parent_window);
-			map_to_restore[totalAssetDialog->GetSafeHwnd()] = totalAssetDialog;
-			totalAssetDialog->MoveWindow(x, y, width, height, TRUE);
-			totalAssetDialog->ShowWindow(SW_SHOW);
+			std::shared_ptr<HdAccountPLDlg>  jangoDialog;
+			jangoDialog = std::make_shared<HdAccountPLDlg>(parent_window, type, mode, target);
+			jangoDialog->Create(IDD_MINI_JANGO, parent_window);
+			map_to_restore[jangoDialog->GetSafeHwnd()] = jangoDialog;
+			jangoDialog->MoveWindow(x, y, width, height, TRUE);
+			jangoDialog->ShowWindow(SW_SHOW);
 		}
 	}
 
