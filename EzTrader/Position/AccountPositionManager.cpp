@@ -47,12 +47,15 @@ position_p AccountPositionManager::find_position(const std::string& symbol_code)
 
 position_p AccountPositionManager::create_position(const std::string& symbol_code)
 {
-	std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
 	position_p position = std::make_shared<Position>();
 	position->symbol_code = symbol_code;
 	position->account_no = account_no_;
 	position->id = IdGenerator::get_id();
-	position_map_[symbol_code] = position;
+	{
+		std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex
+		position_map_[symbol_code] = position;
+
+	}
 	return position;
 }
 

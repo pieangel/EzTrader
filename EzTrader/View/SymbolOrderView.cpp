@@ -1952,6 +1952,7 @@ int SymbolOrderView::find_row(const int value)
 	}
 	else {
 		const VmProduct& product = product_control_->get_product();
+		if (product.int_tick_size == 0) return 0;
 		auto itr = price_to_row_.rbegin();
 		int big_value = itr->first;
 		int big_row = itr->second;

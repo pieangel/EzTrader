@@ -87,6 +87,7 @@ void HdProductRemainGrid::OnSetup()
 	CRect rcWnd;
 	GetWindowRect(rcWnd);
 	SetWindowPos(nullptr, 0, 0, std::accumulate(_ColWidthVector.begin(), _ColWidthVector.end(), 0), rcWnd.Height(), SWP_NOMOVE);
+	_OldMaxRow = _RowCount;
 }
 
 BEGIN_MESSAGE_MAP(HdProductRemainGrid, VtGrid)
@@ -313,14 +314,12 @@ void HdProductRemainGrid::LiqAll()
 
 void HdProductRemainGrid::on_update_single_position(const int position_id)
 {
-	/*
-	auto found = position_to_row_.find(position_id);
-	if (found == position_to_row_.end()) return;
-	std::string format_type;
-	if (account_) format_type = account_->Type();
-	else if (fund_) format_type = fund_->fund_type();
-	else return;
+	LOGINFO(CMyLogger::getInstance(), "position_id = %d", position_id);
+	//auto position = mainApp.total_position_manager()->find_position_by_id(position_id);
+	//if (!position) return;
+	//LOGINFO(CMyLogger::getInstance(), "account [%s], symbol_code [%s], position_count = [%d], average_price = [%.2f]", position->account_no.c_str(), position->symbol_code.c_str(), position->open_quantity, position->average_price);
 
+	/*
 	CBCGPGridRow* pRow = GetRow(found->second);
 	if (!pRow) return;
 	auto found2 = row_to_position_.find(found->second);
@@ -423,12 +422,9 @@ void HdProductRemainGrid::LiqAllForFund()
 	}
 }
 
-void HdProductRemainGrid::update_account_position()
-{
+void HdProductRemainGrid::update_account_position() {
 	if (!account_position_control_) return;
 
-	//if (updating_) return;
-	//updating_ = true;
 	row_to_position_.clear();
 	position_to_row_.clear();
 
@@ -438,27 +434,20 @@ void HdProductRemainGrid::update_account_position()
 	else return;
 
 	const std::map<std::string, position_p>& active_positions = account_position_control_->get_active_position_map();
-	int row = 0, index = 0;
-	for (auto it = active_positions.begin(); it != active_positions.end(); ++it) {
-		const auto& position = it->second;
-		if (position->open_quantity == 0) {
-			clear_row(index++);
-			continue;
-		}
-		index++;
-		if (format_type == "1")
-			ShowPosition(row, position, format_type);
-		else
-			ShowPosition(row, position, format_type);
-
+	int row = 0;
+	for (const auto& [key, position] : active_positions) {
+		if (position->open_quantity == 0) continue;
+		ShowPosition(row, position, format_type);
 		_OldContentRowSet.insert(row);
 		row_to_position_[row] = position;
 		position_to_row_[position->id] = row;
-		row++;
+		++row;
 	}
-	//ClearOldContents(row);
+
+	// Clear remaining rows if necessary
+	for (int i = row; i < _OldMaxRow; ++i)
+		clear_row(i);
 	_OldMaxRow = row;
-	//updating_ = false;
 }
 
 void HdProductRemainGrid::clear_row(const int row)

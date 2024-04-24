@@ -46,26 +46,26 @@ void AccountPositionControl::update_position(position_p position)
 	if (position_type_ == OrderType::SubAccount) {
 		if (!account_ || account_->No() != position->account_no) return;
 		auto position_manager = mainApp.total_position_manager()->find_position_manager(position->account_no);
-		if (!position_manager) { trigger_event(0); return; }
+		if (!position_manager) { trigger_event(position->id); return; }
 		//position_manager->get_active_positions(position_map_);
 		add_position(position);
 	}
 	else if (position_type_ == OrderType::Fund) {
 		if (!fund_ || fund_->Name() != position->fund_name) return;
 		auto position_manager = mainApp.total_position_manager()->find_fund_group_position_manager(position->fund_name);
-		if (!position_manager) { trigger_event(0); return; }
+		if (!position_manager) { trigger_event(position->id); return; }
 		//position_manager->get_active_positions(position_map_);
 		add_position(position);
 	}
 	else{
 		if (!account_ || account_->No() != position->account_no) return;
 		auto position_manager = mainApp.total_position_manager()->find_account_group_position_manager(position->account_no);
-		if (!position_manager) { trigger_event(0); return; }
+		if (!position_manager) { trigger_event(position->id); return; }
 		//position_manager->get_active_positions(position_map_);
 		add_position(position);
 	}
 	
-	trigger_event(1);
+	//trigger_event(1);
 }
 
 void AccountPositionControl::update_profit_loss(quote_p quote)
