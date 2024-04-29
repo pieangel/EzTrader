@@ -79,7 +79,7 @@ order_request_p StopOrderControl::make_profit_cut_order_request(order_p order)
 	if (!old_req || old_req->cut_mode == SmCutMode::None) return nullptr;
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	int profit_cut_price = order->filled_price;
-	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
+	auto parent_account = account->parent_account().lock();
 	std::shared_ptr<OrderRequest> order_request = nullptr;
 	if (order->position == SmPositionType::Buy) {
 		profit_cut_price += old_req->profit_cut_tick * int_tick_size;
@@ -154,7 +154,7 @@ order_request_p StopOrderControl::make_loss_cut_order_request(order_p order)
 
 	auto old_req = mainApp.order_request_manager()->find_order_request(order->order_request_id);
 	if (!old_req || old_req->cut_mode == SmCutMode::None) return nullptr;
-	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
+	auto parent_account = account->parent_account().lock();
 	const int int_tick_size = static_cast<int>(symbol->TickSize() * pow(10, symbol->decimal()));
 	int loss_cut_price = order->filled_price;
 	std::shared_ptr<OrderRequest> order_request = nullptr;

@@ -2208,7 +2208,7 @@ void SymbolOrderView::put_order(
 	if (symbol_->SymbolCode() != symbol_code) return;
 	if (price < 0) return;
 
-	auto parent_account = mainApp.AcntMgr()->FindAccountById(account->parent_id());
+	auto parent_account = account->parent_account().lock();
 
 	std::shared_ptr<OrderRequest> order_request = nullptr;
 	order_request = OrderRequestManager::make_order_request(

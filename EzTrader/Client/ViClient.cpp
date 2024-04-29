@@ -318,7 +318,7 @@ void ViClient::OnGetBroadData(LPCTSTR strRecvKey, LONG nRealType)
 		on_dm_order_accepted(strRecvKey, nRealType); break;
 	case 262: // 국내 주문 미체결
 		on_dm_order_unfilled(strRecvKey, nRealType); break;
-	case 265: // 해외 주문 체결
+	case 265: // 국내 주문 체결
 		on_dm_order_filled(strRecvKey, nRealType); break;
 	case 183:
 		on_dm_order_position(strRecvKey, nRealType); break;
@@ -2798,46 +2798,7 @@ int ViClient::dm_account_profit_loss(DarkHorse::AccountProfitLossReq arg)
 void DarkHorse::ViClient::register_symbol(task_arg&& arg)
 {
 	const std::string symbol_code = std::any_cast<std::string>(arg["symbol_code"]);
-	CString strSymbolCode = symbol_code.c_str();
-	if (isdigit(strSymbolCode.GetAt(2))) {
-		int nRealType = 0;
-		int nResult = 0;
-		CString strKey = strSymbolCode;
-		TCHAR first = strSymbolCode.GetAt(0);
-		CString prefix = strSymbolCode.Left(3);
-		if (first == '1' || first == '4') {
-			if (prefix.Compare(_T("167")) == 0 || prefix.Compare(_T("175")) == 0) {
-				nRealType = 58;
-				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
-				nRealType = 71;
-				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
-			}
-			else {
-				nRealType = 51;
-				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
-				nRealType = 65;
-				nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
-			}
-		}
-		else if (first == '2' || first == '3') {
-			nRealType = 52;
-			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
-			nRealType = 66;
-			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
-		}
-		else {
-			nRealType = 82;
-			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
-		}
-	}
-	else {
-		std::string code = static_cast<const char*>(strSymbolCode);
-		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // 시세
-		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-		nRealType = 82; // 호가
-		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-	}
+	register_symbol(symbol_code);
 }
 
 
@@ -2997,6 +2958,7 @@ void DarkHorse::ViClient::unregister_account(task_arg&& arg)
 void DarkHorse::ViClient::register_symbol(const std::string& symbol_code)
 {
 	CString strSymbolCode = symbol_code.c_str();
+	LOGINFO(CMyLogger::getInstance(), "symbol_code = %s", strSymbolCode);
 	if (isdigit(strSymbolCode.GetAt(2))) {
 		int nRealType = 0;
 		int nResult = 0;
@@ -3042,12 +3004,30 @@ void DarkHorse::ViClient::register_symbol(const std::string& symbol_code)
 		nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 	}
 	else {
-		std::string code = static_cast<const char*>(strSymbolCode);
-		std::string key = VtStringUtil::PadRight(code, ' ', 32);
-		int nRealType = 76; // 시세
-		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
-		nRealType = 82; // 호가
-		m_CommAgent.CommSetBroad(key.c_str(), nRealType);
+		if (strSymbolCode.Find("AF") > 0) {
+			CString strKey = strSymbolCode;
+			int nRealType = 52;
+			int nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+			nRealType = 66;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+
+			nRealType = 79;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+			nRealType = 78;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+
+			// Expected.
+			nRealType = 310;
+			nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+		}
+		else {
+			std::string code = static_cast<const char*>(strSymbolCode);
+			std::string key = VtStringUtil::PadRight(code, ' ', 32);
+			int nRealType = 76; // 시세
+			m_CommAgent.CommSetBroad(key.c_str(), nRealType);
+			nRealType = 82; // 호가
+			m_CommAgent.CommSetBroad(key.c_str(), nRealType);
+		}
 	}
 }
 
@@ -5196,6 +5176,10 @@ void DarkHorse::ViClient::on_dm_option_quote(const CString& strKey, const LONG& 
 	CString	strOpen = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "시가");
 	CString	strHigh = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "고가");
 	CString	strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
+
+	if (strSymbolCode.Find("AF") >= 0)
+		LOGINFO(CMyLogger::getInstance(), "on_dm_option_quote 종목[%s] \n", strSymbolCode.Trim());
+
 
 	nlohmann::json quote;
 

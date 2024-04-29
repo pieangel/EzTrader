@@ -314,7 +314,7 @@ void HdProductRemainGrid::LiqAll()
 
 void HdProductRemainGrid::on_update_single_position(const int position_id)
 {
-	LOGINFO(CMyLogger::getInstance(), "position_id = %d", position_id);
+	//LOGINFO(CMyLogger::getInstance(), "position_id = %d", position_id);
 	//auto position = mainApp.total_position_manager()->find_position_by_id(position_id);
 	//if (!position) return;
 	//LOGINFO(CMyLogger::getInstance(), "account [%s], symbol_code [%s], position_count = [%d], average_price = [%.2f]", position->account_no.c_str(), position->symbol_code.c_str(), position->open_quantity, position->average_price);

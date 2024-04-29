@@ -596,7 +596,7 @@ void DmAccountOrderWindow::SetAccountInfo(std::shared_ptr<DarkHorse::SmAccount> 
 	_Account = account;
 	std::shared_ptr<SmAccount> parent_account = nullptr;
 	if (_Account->is_subaccount()) {
-		parent_account = mainApp.AcntMgr()->FindAccountById(_Account->parent_id());
+		parent_account = account->parent_account().lock();
 		_LeftWnd->SetAccount(parent_account);
 		_RightWnd->SetAccount(parent_account);
 	}
