@@ -1,0 +1,56 @@
+[
+    {
+        "account_no": "07793001",
+        "bottom": 1047,
+        "center_window_count": 1,
+        "center_window_map": [
+            {
+                "order_amount": 1,
+                "order_area_width": 60,
+                "order_row_height": 20,
+                "show_count_area": true,
+                "show_order_area": true,
+                "show_profitloss_config": true,
+                "show_stop_area": true,
+                "show_tick_window": false,
+                "symbol_code": "101V6000",
+                "tick_window_pos": 0
+            }
+        ],
+        "height": 848,
+        "left": 430,
+        "order_window_type": 0,
+        "right": 1040,
+        "show_left_window": true,
+        "show_right_window": false,
+        "top": 199,
+        "width": 610
+    },
+    {
+        "account_no": "07793001",
+        "bottom": 1317,
+        "center_window_count": 1,
+        "center_window_map": [
+            {
+                "order_amount": 1,
+                "order_area_width": 60,
+                "order_row_height": 20,
+                "show_count_area": true,
+                "show_order_area": true,
+                "show_profitloss_config": true,
+                "show_stop_area": true,
+                "show_tick_window": false,
+                "symbol_code": "3AF38342",
+                "tick_window_pos": 0
+            }
+        ],
+        "height": 1000,
+        "left": 1794,
+        "order_window_type": 0,
+        "right": 2555,
+        "show_left_window": true,
+        "show_right_window": true,
+        "top": 317,
+        "width": 761
+    }
+]

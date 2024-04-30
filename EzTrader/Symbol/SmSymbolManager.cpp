@@ -571,7 +571,7 @@ int SmSymbolManager::get_symbol_id(const std::string& symbol_code)
 	return -1;
 }
 
-void SmSymbolManager::GetRecentSymbolVector(std::vector<std::shared_ptr<SmSymbol>>& symbol_list)
+void SmSymbolManager::GetDmRecentSymbolVector(std::vector<std::shared_ptr<SmSymbol>>& symbol_list)
 {
 	for (auto it = _MarketMap.begin(); it != _MarketMap.end(); ++it) {
 		const auto market = it->second;
@@ -579,7 +579,7 @@ void SmSymbolManager::GetRecentSymbolVector(std::vector<std::shared_ptr<SmSymbol
 		for (auto it2 = product_map.begin(); it2 != product_map.end(); ++it2) {
 			const auto product = it2->second;
 			const auto symbol = GetRecentSymbol(product->ProductCode());
-			if (!symbol) continue;
+			if (!symbol || symbol->symbol_type() != SymbolType::Domestic) continue;
 			symbol_list.push_back(symbol);
 		}
 	}

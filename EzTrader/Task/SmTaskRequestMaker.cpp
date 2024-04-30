@@ -127,7 +127,7 @@ std::shared_ptr<DarkHorse::SmTaskInfo> SmTaskRequestMaker::MakeMasterFileDownloa
 std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeSymbolMasterRequest()
 {
 	std::vector < std::shared_ptr<SmSymbol>> symbol_list;
-	mainApp.SymMgr()->GetRecentSymbolVector(symbol_list);
+	mainApp.SymMgr()->GetDmRecentSymbolVector(symbol_list);
 
 	std::shared_ptr<SmTaskInfo> task_info = std::make_shared<SmTaskInfo>();
 	task_info->TaskType = SmTaskType::SymbolMaster;
@@ -164,7 +164,7 @@ task_arg DarkHorse::SmTaskRequestMaker::MakeSymbolMasterRequest(const std::strin
 std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeSymbolQuoteRequest()
 {
 	std::vector < std::shared_ptr<SmSymbol>> symbol_list;
-	mainApp.SymMgr()->GetRecentSymbolVector(symbol_list);
+	mainApp.SymMgr()->GetDmRecentSymbolVector(symbol_list);
 
 	std::shared_ptr<SmTaskInfo> task_info = std::make_shared<SmTaskInfo>();
 	task_info->TaskType = SmTaskType::SymbolQuote;
@@ -200,7 +200,7 @@ task_arg DarkHorse::SmTaskRequestMaker::MakeSymbolQuoteRequest(const std::string
 std::shared_ptr<DarkHorse::SmTaskInfo> DarkHorse::SmTaskRequestMaker::MakeSymbolHogaRequest()
 {
 	std::vector < std::shared_ptr<SmSymbol>> symbol_list;
-	mainApp.SymMgr()->GetRecentSymbolVector(symbol_list);
+	mainApp.SymMgr()->GetDmRecentSymbolVector(symbol_list);
 
 	std::shared_ptr<SmTaskInfo> task_info = std::make_shared<SmTaskInfo>();
 	task_info->TaskType = SmTaskType::SymbolHoga;

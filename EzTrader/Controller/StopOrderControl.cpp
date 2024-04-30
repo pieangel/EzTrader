@@ -15,7 +15,7 @@
 #include "../Symbol/SmSymbol.h"
 #include "../Order/OrderRequest/OrderRequestManager.h"
 #include "../Log/MyLogger.h"
-#include "../View/SymbolOrderView.h""
+#include "../View/SymbolOrderView.h"
 #include "../Fund/SmFund.h"
 
 

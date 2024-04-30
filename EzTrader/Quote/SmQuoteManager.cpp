@@ -85,16 +85,26 @@ void SmQuoteManager::ProcessQuote(nlohmann::json&& quote)
 {
 	try {
 		const std::string& symbol_code = quote["symbol_code"];
+		auto symbol = mainApp.SymMgr()->FindSymbol(symbol_code);
+		if (!symbol) return;
+		//LOGINFO(CMyLogger::getInstance(), "symbol_code[%s] : Quote processor was not created0000!", symbol_code);
+
  		const auto found = _QuoteProcessorMap.find(symbol_code);
 		if (found != _QuoteProcessorMap.end()) {
 			const std::shared_ptr<SmQuoteProcessor>& quote_processor = found->second;
 			quote_processor->AddQuote(std::move(quote));
 		}
 		else {
+			//LOGINFO(CMyLogger::getInstance(), "symbol_code[%s] : Quote processor was not created1!", symbol_code);
 			std::shared_ptr<SmQuoteProcessor> quote_processor = std::make_shared<SmQuoteProcessor>();
+			if (!quote_processor) {
+				LOGINFO(CMyLogger::getInstance(), "symbol_code[%s] : Quote processor was not created!", symbol_code);
+				return;
+			}
 			_QuoteProcessorMap[symbol_code] = quote_processor;
 			quote_processor->StartProcess();
 			quote_processor->AddQuote(std::move(quote));
+			//LOGINFO(CMyLogger::getInstance(), "symbol_code[%s] : Quote processor was not created1!", symbol_code);
 		}
 	}
 	catch (const std::exception& e) {

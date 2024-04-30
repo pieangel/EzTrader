@@ -365,7 +365,7 @@ void TotalPositionManager::update_group_position(std::shared_ptr<Position> posit
 	if (position->position_type == OrderType::SubAccount) {
 		// 이미 본계좌에서 계산이 되었기 때문에 추가로 계산되는 것을 방지하기 위해서 
 		// 주석 처리 한다. 
-		//update_group_position(0, position->parent_account_no, position);
+		update_group_position(0, position->parent_account_no, position);
 		auto sub_account = mainApp.AcntMgr()->FindAccount(position->account_no);
 		if (!sub_account || sub_account->fund_name().empty()) return;
 		update_group_position(1, sub_account->fund_name(), position);

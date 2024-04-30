@@ -118,6 +118,16 @@ struct  MyData {
 #define new DEBUG_NEW
 #endif
 
+void CMainFrame::registerAbSymbol()
+{
+	const std::map<int, std::shared_ptr<DarkHorse::SmSymbol>>& favorite_map = mainApp.SymMgr()->GetFavoriteMap();
+	//std::vector<std::string> symbol_code_vec;
+	for (auto it = favorite_map.begin(); it != favorite_map.end(); ++it) {
+		//symbol_code_vec.push_back(it->second->SymbolCode());
+		mainApp.Client()->RegisterSymbol(it->second->SymbolCode());
+	}
+}
+
 void CMainFrame::add_dm_order_wnd(DmAccountOrderWindow* wnd)
 {
 	if (!wnd) return;
@@ -960,18 +970,10 @@ void CMainFrame::StartLoad()
 	//mainApp.SystemMgr()->AddSystem("KillNasdaq");
 	//mainApp.SystemMgr()->AddSystem("KillKospi");
 
-	const std::map<int, std::shared_ptr<DarkHorse::SmSymbol>>& favorite_map = mainApp.SymMgr()->GetFavoriteMap();
-	//std::vector<std::string> symbol_code_vec;
-	for (auto it = favorite_map.begin(); it != favorite_map.end(); ++it) {
-		//symbol_code_vec.push_back(it->second->SymbolCode());
-		mainApp.Client()->RegisterSymbol(it->second->SymbolCode());
-	}
-
-	std::vector < std::shared_ptr<DarkHorse::SmSymbol>> symbol_list;
-	mainApp.SymMgr()->GetRecentSymbolVector(symbol_list);
-	for (auto it = symbol_list.begin(); it != symbol_list.end(); ++it) {
-		mainApp.Client()->RegisterSymbol((*it)->SymbolCode());
-	}
+	registerAbSymbol();
+	
+	registerDmSymbol();
+	
 	mainApp.SaveMgr()->restore_system_config("system_config.json");
 
 	mainApp.file_watch_monitor()->AddMonDir(mainApp.config_manager()->system_config().yes_path.c_str(), true);
@@ -1680,4 +1682,14 @@ void CMainFrame::OnSimulOrderwndtest()
 	acnt_order_wnd->Create(IDD_ORDER_WND_HD, this);
 	dm_order_wnd_list_[acnt_order_wnd->GetSafeHwnd()] = acnt_order_wnd;
 	acnt_order_wnd->ShowWindow(SW_SHOW);
+}
+
+void CMainFrame::registerDmSymbol()
+{
+	std::vector < std::shared_ptr<DarkHorse::SmSymbol>> symbol_list;
+	mainApp.SymMgr()->GetDmRecentSymbolVector(symbol_list);
+	for (auto it = symbol_list.begin(); it != symbol_list.end(); ++it) {
+		mainApp.Client()->RegisterSymbol((*it)->SymbolCode());
+	}
+	//throw std::logic_error("The method or operation is not implemented.");
 }

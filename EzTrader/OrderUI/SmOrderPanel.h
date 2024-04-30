@@ -240,6 +240,7 @@ private:
 
 	symbol_p GetSelectedItemDataPtr(const CComboBox& comboBox)
 	{
+		if (!comboBox.GetSafeHwnd()) return nullptr;
 		int index = comboBox.GetCurSel();
 		if (index != CB_ERR)
 		{

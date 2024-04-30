@@ -88,7 +88,7 @@ namespace DarkHorse {
 		void AddSymbol(std::shared_ptr<SmSymbol> symbol);
 		std::shared_ptr<SmSymbol> FindSymbol(const std::string& symbol_code) const;
 		int get_symbol_id(const std::string& symbol_code);
-		void GetRecentSymbolVector(std::vector<std::shared_ptr<SmSymbol>>& symbol_list);
+		void GetDmRecentSymbolVector(std::vector<std::shared_ptr<SmSymbol>>& symbol_list);
 		std::shared_ptr<SmSymbol> GetRecentSymbol(const std::string& product_code);
 		std::string GetRecentSymbolCode(const std::string& product_code);
 		std::string GetNextSymbolCode(const std::string& product_code);

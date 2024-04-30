@@ -101,6 +101,7 @@ protected:
 	virtual CBCGPMDIChildWnd* CreateDocumentWindow(LPCTSTR lpcszDocName, CObject* /*pObj*/);
 
 public:
+	void registerAbSymbol();
 	void add_dm_order_wnd(DmAccountOrderWindow* wnd);
 	void start_login();
 	void start_timer(int milisecond);
@@ -255,4 +256,6 @@ public:
 	afx_msg void OnSimulYestest();
 	void copyLastLineAndAppend(const std::string& filename);
 	afx_msg void OnSimulOrderwndtest();
+private:
+	void registerDmSymbol();
 };
