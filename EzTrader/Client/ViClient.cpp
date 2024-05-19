@@ -3769,6 +3769,7 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 		symbol_profit_loss["pure_trade_profit_loss"] = _ttof(strTotalProfit.Trim());
 		symbol_profit_loss["trade_fee"] = _ttof(strFee.Trim());
 		symbol_profit_loss["open_profit_loss"] = _ttof(strOpenProfit.Trim());
+		symbol_profit_loss["main_account_only"] = true;
 		//symbol_profit_loss["unsettled_fee"] = 0;
 		//symbol_profit_loss["pure_unsettled_profit_loss"] = 0;
 
@@ -3777,7 +3778,7 @@ void DarkHorse::ViClient::on_dm_account_profit_loss(const CString& server_trade_
 
 	}
 
-	mainApp.total_position_manager()->update_account_profit_loss(account_no);
+	//mainApp.total_position_manager()->update_account_profit_loss(account_no);
 
 	on_task_complete(server_request_id);
 }
@@ -4355,12 +4356,12 @@ void DarkHorse::ViClient::on_ab_symbol_profit_loss(const CString& sTrCode, const
 		symbol_profit_loss["open_profit_loss"] = _ttof(strSymbolOpenProfitLoss.Trim());
 		symbol_profit_loss["unsettled_fee"] = _ttof(strSymbolUnsettledFee.Trim());
 		symbol_profit_loss["pure_unsettled_profit_loss"] = _ttof(strSymbolUnsettledPureProfitLoss.Trim());
-
+		symbol_profit_loss["main_account_only"] = true;
 
 		mainApp.total_position_manager()->on_symbol_profit_loss(std::move(symbol_profit_loss));
 	}
 
-	mainApp.total_position_manager()->update_account_profit_loss(account_no);
+	//mainApp.total_position_manager()->update_account_profit_loss(account_no);
 	on_task_complete(nRqID);
 }
 
@@ -4428,6 +4429,7 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 		symbol_profit_loss["pure_trade_profit_loss"] = _ttof(strTotalProfit.Trim());
 		symbol_profit_loss["trade_fee"] = _ttof(strFee.Trim());
 		symbol_profit_loss["open_profit_loss"] = _ttof(strOpenProfit.Trim());
+		symbol_profit_loss["main_account_only"] = true;
 		//symbol_profit_loss["unsettled_fee"] = 0;
 		//symbol_profit_loss["pure_unsettled_profit_loss"] = 0;
 
@@ -4436,7 +4438,7 @@ void DarkHorse::ViClient::on_dm_symbol_profit_loss(const CString& server_trade_c
 
 	}
 
-	mainApp.total_position_manager()->update_account_profit_loss(account_no);
+	mainApp.total_position_manager()->adjust_account_profit_loss(account_no);
 
 	on_task_complete(server_request_id);
 }

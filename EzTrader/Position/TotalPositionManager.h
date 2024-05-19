@@ -53,11 +53,16 @@ public:
 	static void set_symbol_id(position_p position, const std::string& symbol_code);
 	static void set_account_id(position_p position, const std::string& account_no);
 	void update_account_profit_loss(const std::string& account_no);
+	void adjust_account_profit_loss(const std::string& account_no);
+	double get_sub_account_profit_loss(const std::string& account_no);
 	position_p find_position_by_id(const int& position_id);
 	// target : 1 for fund, 0 for account
 	// target_name : fund name or account no
-	void update_group_position(const int target, const std::string& target_name, std::shared_ptr<Position> position);
-	void update_group_position(std::shared_ptr<Position> position);
+	void update_group_position(const int target, const std::string& target_name, std::shared_ptr<Position> sub_position);
+	// the sub_position is the position of the sub account or main account.
+	// please note that the main account also is allowed to be a group position.
+	// the group position includes the main account position and the sub account positions.
+	void update_group_position(std::shared_ptr<Position> sub_position);
 	group_position_manager_p find_fund_group_position_manager(const std::string& fund_name);
 	group_position_manager_p find_account_group_position_manager(const std::string& account_no);
 	account_position_manager_p find_position_manager(const std::string& account_no);

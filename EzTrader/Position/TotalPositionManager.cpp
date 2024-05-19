@@ -346,8 +346,23 @@ void TotalPositionManager::set_account_id(position_p position, const std::string
 void TotalPositionManager::update_account_profit_loss(const std::string& account_no)
 {
 	account_position_manager_p position_manager = get_account_position_manager(account_no);
+	if (!position_manager) return;
 	position_manager->update_account_profit_loss();
 	mainApp.event_hub()->process_account_profit_loss_event();
+}
+
+void TotalPositionManager::adjust_account_profit_loss(const std::string& account_no)
+{
+	auto group_position_manager = find_account_group_position_manager(account_no);
+	if (!group_position_manager) return;
+	group_position_manager->adjust_sub_account_position_profit_loss();
+	mainApp.event_hub()->process_account_profit_loss_event();
+}
+
+double TotalPositionManager::get_sub_account_profit_loss(const std::string& account_no)
+{
+	account_position_manager_p position_manager = get_account_position_manager(account_no);
+	return 0.0;
 }
 
 position_p TotalPositionManager::find_position_by_id(const int& position_id)
@@ -359,29 +374,27 @@ position_p TotalPositionManager::find_position_by_id(const int& position_id)
 		return nullptr;
 }
  
-void TotalPositionManager::update_group_position(std::shared_ptr<Position> position)
+void TotalPositionManager::update_group_position(std::shared_ptr<Position> sub_position)
 {
-	if (!position) return;
-	if (position->position_type == OrderType::SubAccount) {
-		// 이미 본계좌에서 계산이 되었기 때문에 추가로 계산되는 것을 방지하기 위해서 
-		// 주석 처리 한다. 
-		update_group_position(0, position->parent_account_no, position);
-		auto sub_account = mainApp.AcntMgr()->FindAccount(position->account_no);
+	if (!sub_position) return;
+	if (sub_position->position_type == OrderType::SubAccount) {
+		update_group_position(0, sub_position->parent_account_no, sub_position);
+		auto sub_account = mainApp.AcntMgr()->FindAccount(sub_position->account_no);
 		if (!sub_account || sub_account->fund_name().empty()) return;
-		update_group_position(1, sub_account->fund_name(), position);
+		update_group_position(1, sub_account->fund_name(), sub_position);
 	}
-	else if (position->position_type == OrderType::Fund) {
-		update_group_position(0, position->parent_account_no, position);
-		update_group_position(1, position->fund_name, position);
+	else if (sub_position->position_type == OrderType::Fund) {
+		update_group_position(0, sub_position->parent_account_no, sub_position);
+		update_group_position(1, sub_position->fund_name, sub_position);
 	}
 	else {
-		update_group_position(0, position->account_no, position);
+		update_group_position(0, sub_position->account_no, sub_position);
 	}
 }
 
-void TotalPositionManager::update_group_position(const int target, const std::string& target_name, std::shared_ptr<Position> position)
+void TotalPositionManager::update_group_position(const int target, const std::string& target_name, std::shared_ptr<Position> sub_position)
 {
-	if (!position) return;
+	if (!sub_position) return;
 
 	group_position_manager_p group_position_manager;
 
@@ -391,8 +404,8 @@ void TotalPositionManager::update_group_position(const int target, const std::st
 	else {
 		group_position_manager = find_add_fund_group_position_manager(target_name);
 	}
-	auto group_position = group_position_manager->create_group_position(0, position->account_no, position->symbol_code);
-	group_position_manager->update_group_position(group_position, position);
+	auto group_position = group_position_manager->create_group_position(0, sub_position->account_no, sub_position->symbol_code);
+	group_position_manager->update_group_position(group_position, sub_position);
 	// 로그 추가 필요. 
 	mainApp.CallbackMgr()->process_position_event(group_position);
 

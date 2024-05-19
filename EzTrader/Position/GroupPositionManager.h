@@ -22,7 +22,7 @@ namespace DarkHorse {
 		GroupPositionManager(TotalPositionManager& total_position_manager);
 		~GroupPositionManager();
 		// update the group position according to the position. the sub account is not allowed to be a group position 
-		void update_group_position(const std::shared_ptr<Position>& group_position, const std::shared_ptr<Position>& position);
+		void update_group_position(const std::shared_ptr<Position>& group_position, const std::shared_ptr<Position>& sub_position);
 		void set_fund_name(const std::string& fund_name) {
 			fund_name_ = fund_name;
 		}
@@ -49,6 +49,8 @@ namespace DarkHorse {
 		void update_group_position_by_symbol(std::shared_ptr<Position> group_position, VmPosition& dest_position);
 		std::shared_ptr<Position> find_group_position(const std::string& symbol_code);
 		void get_active_positions(std::map<std::string, position_p>& position_vector);
+		void adjust_sub_account_position_profit_loss();
+		void adjust_group_position(std::shared_ptr<Position> group_position);
 	private:
 
 		std::mutex mutex_; // Mutex for thread synchronization

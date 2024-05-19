@@ -95,6 +95,46 @@ void AccountPositionManager::update_account_profit_loss()
 // 		pure_trade_profit_loss);
 
 }
+
+void AccountPositionManager::adjust_account_profit_loss()
+{
+	double trade_profit_loss{ 0.0f };       //매매(청산)손익
+	double open_profit_loss{ 0.0f };		//평가손익
+	double pure_trade_profit_loss{ 0.0f };  // 청산 순손익
+	double trade_fee{ 0.0f };               // 청산 수수료
+	double sub_account_trade_profit_loss{ 0.0f };       //매매(청산)손익
+	position_p main_account_position = nullptr;
+	for (auto it = position_map_.begin(); it != position_map_.end(); it++) {
+		auto position = it->second;
+		if (position->position_type == OrderType::MainAccount) {
+			main_account_position = position;
+		}
+		update_open_profit_loss(position);
+		trade_profit_loss += position->trade_profit_loss;
+		if (position->position_type != OrderType::MainAccount)
+		{
+			sub_account_trade_profit_loss += position->trade_profit_loss;
+		}
+		open_profit_loss += position->open_profit_loss;
+		trade_fee += position->trade_fee;
+		pure_trade_profit_loss += position->pure_trade_profit_loss;
+	}
+	if (main_account_position) {
+		main_account_position->trade_profit_loss -= sub_account_trade_profit_loss;
+	}
+	account_profit_loss_->trade_profit_loss = trade_profit_loss;
+	account_profit_loss_->open_profit_loss = open_profit_loss;
+	account_profit_loss_->trade_fee = trade_fee;
+	account_profit_loss_->pure_trade_profit_loss = pure_trade_profit_loss;
+
+	// 	LOGINFO(CMyLogger::getInstance(), "update_account_profit_loss :: account_no[%s], 당일매매손익[%.2f], 당일평가손익[%.2f], 수수료[%.2f], 당일총손익[%.2f]", 
+	// 		account_no_.c_str(), 
+	// 		trade_profit_loss, 
+	// 		open_profit_loss, 
+	// 		trade_fee, 
+	// 		pure_trade_profit_loss);
+}
+
 // update the position with the order.
 void AccountPositionManager::update_position(order_p order)
 {

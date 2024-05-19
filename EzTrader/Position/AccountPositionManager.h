@@ -32,6 +32,7 @@ public:
 // 	}
 	void get_account_profit_loss(VmAccountProfitLoss& dest_account_profit_loss);
 	void update_account_profit_loss();
+	void adjust_account_profit_loss();
 	position_p find_position(const std::string& symbol_code);
 	void update_position(position_p position);
 	void update_position(position_p position, VmPosition& dest_position);

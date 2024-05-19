@@ -112,10 +112,52 @@ void GroupPositionManager::get_active_positions(std::map<std::string, position_p
 	}
 }
 
-void GroupPositionManager::update_group_position(const std::shared_ptr<Position>& group_position, const std::shared_ptr<Position>& position)
+void GroupPositionManager::adjust_sub_account_position_profit_loss()
 {
-	if (!group_position || !position) return;
-	group_position->sub_positions[position->account_no] = position;
+	for (auto& sub_position : group_position_map_) {
+		auto position = sub_position.second;
+		adjust_group_position(position);
+	}
+}
+
+void GroupPositionManager::adjust_group_position(std::shared_ptr<Position> group_position)
+{
+	auto sub_positions = group_position->sub_positions;
+	double trade_profit_loss{ 0.0f };       //매매(청산)손익
+	double open_profit_loss{ 0.0f };		//평가손익
+	double pure_trade_profit_loss{ 0.0f };  // 청산 순손익
+	double trade_fee{ 0.0f };   // 청산 수수료
+	int open_quantity{ 0 };
+	double average_price{ 0.0f };
+	double sub_account_trade_profit_loss{ 0.0f };
+	position_p main_account_position = nullptr;
+	for (auto& sub_position : sub_positions) {
+		auto position = sub_position.second;
+		if (position->position_type == OrderType::MainAccount) {
+			main_account_position = position;
+		}
+		TotalPositionManager::calculate_symbol_open_profit_loss(position);
+		if (position->position_type != OrderType::MainAccount) {
+			sub_account_trade_profit_loss += position->trade_profit_loss;
+		}
+		trade_profit_loss += position->trade_profit_loss;
+		open_profit_loss += position->open_profit_loss;
+		trade_fee += position->trade_fee;
+		pure_trade_profit_loss += position->pure_trade_profit_loss;
+
+		open_quantity += position->open_quantity;
+		average_price += abs(position->open_quantity) * abs(position->average_price);
+	}
+
+	if (main_account_position) {
+		main_account_position->trade_profit_loss -= sub_account_trade_profit_loss;
+	}
+}
+
+void GroupPositionManager::update_group_position(const std::shared_ptr<Position>& group_position, const std::shared_ptr<Position>& sub_position)
+{
+	if (!group_position || !sub_position) return;
+	group_position->sub_positions[sub_position->account_no] = sub_position;
 	update_group_position_by_symbol(group_position);
 }
 
