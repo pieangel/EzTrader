@@ -5,8 +5,62 @@
 #include <cmath>
 #include "../Log/MyLogger.h"
 #include "../Graphic.h"
+#include <map>
 
 namespace DarkHorse {
+
+	// Define the static cell type map at file scope
+	static const std::map<SmCellType, std::pair<COLORREF, bool>> cellTypeMap = {
+		{SmCellType::CT_NORMAL, {RGB(0xff, 0xff, 0xff), false}},
+		{SmCellType::CT_ORDER_PRESENT, {RGB(139, 0, 0), false}},
+		{SmCellType::CT_ORDER_HAS_BEEN, {RGB(0, 100, 0), false}},
+		{SmCellType::CT_BUTTON_NORMAL, {RGB(0xd2, 0xe0, 0xed), false}},
+		{SmCellType::CT_BUTTON_BUY, {RGB(0xf0, 0x33, 0x3a), false}},
+		{SmCellType::CT_BUTTON_SELL, {RGB(0x13, 0x89, 0xf8), false}},
+		{SmCellType::CT_ORDER_BUY_BACK, {RGB(0xfc, 0xe3, 0xe4), false}},
+		{SmCellType::CT_ORDER_SELL_BACK, {RGB(0xda, 0xe2, 0xf5), false}},
+		{SmCellType::CT_QUOTE_CLOSE, {RGB(0xff, 0xff, 0x00), false}},
+		{SmCellType::CT_QUOTE_PRECLOSE, {RGB(0xff, 0xff, 0xff), false}},
+		{SmCellType::CT_QUOTE_OPEN, {RGB(0xff, 0xff, 0xff), true}},
+		{SmCellType::CT_QUOTE_HIGH, {RGB(0xff, 0xff, 0xff), true}},
+		{SmCellType::CT_QUOTE_LOW, {RGB(0x13, 0x89, 0xf8), true}},
+		{SmCellType::CT_POSITION_BUY, {RGB(255, 255, 255), true}},
+		{SmCellType::CT_POSITION_SELL, {RGB(0x13, 0x89, 0xf8), true}},
+		{SmCellType::CT_HOGA_SELL, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_SELL_HOGA1, {RGB(0x9f, 0xd6, 0xff), false}},
+		{SmCellType::CT_SELL_HOGA2, {RGB(0xb9, 0xe4, 0xff), false}},
+		{SmCellType::CT_SELL_HOGA3, {RGB(0xcc, 0xe6, 0xfa), false}},
+		{SmCellType::CT_SELL_HOGA4, {RGB(0xdd, 0xf3, 0xff), false}},
+		{SmCellType::CT_SELL_HOGA5, {RGB(0xe6, 0xf7, 0xff), false}},
+		{SmCellType::CT_HOGA_BUY, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_BUY_HOGA1, {RGB(0xfd, 0xad, 0xb0), false}},
+		{SmCellType::CT_BUY_HOGA2, {RGB(0xff, 0xc4, 0xc7), false}},
+		{SmCellType::CT_BUY_HOGA3, {RGB(0xff, 0xd6, 0xd4), false}},
+		{SmCellType::CT_BUY_HOGA4, {RGB(0xff, 0xe0, 0xe1), false}},
+		{SmCellType::CT_BUY_HOGA5, {RGB(0xff, 0xe8, 0xe8), false}},
+		{SmCellType::CT_CHECK, {RGB(255, 255, 255), false}}, // Assuming default color
+		{SmCellType::CT_TICK_BUY, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_TICK_SELL, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_REMAIN_BUY, {RGB(0x13, 0x89, 0xf8), false}},
+		{SmCellType::CT_REMAIN_SELL, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_MARK_BUY, {RGB(0xfc, 0xe2, 0xe4), false}},
+		{SmCellType::CT_MARK_SELL, {RGB(0xda, 0xe2, 0xf5), false}},
+		{SmCellType::CT_MARK_HILO, {RGB(0xff, 0xff, 0xff), false}},
+		{SmCellType::CT_MARK_NORMAL, {RGB(0xf2, 0xf2, 0xf2), false}},
+		{SmCellType::CT_OE, {RGB(212, 186, 188), false}},
+		{SmCellType::CT_PE, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_EE, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_CD, {RGB(252, 226, 228), false}},
+		{SmCellType::CT_PD, {RGB(218, 226, 245), false}},
+		{SmCellType::CT_DEFAULT, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_SP_PROFIT, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_SP_LOSS, {RGB(255, 255, 255), false}},
+		{SmCellType::CT_FUTURE, {RGB(0xd2, 0xe0, 0xed), false}},
+		{SmCellType::CT_OP_HEADER_CALL, {RGB(240, 51, 58), false}},
+		{SmCellType::CT_OP_HEADER_PUT, {RGB(19, 137, 255), false}},
+		{SmCellType::CT_OP_HEADER_CENTER, {RGB(0, 0, 0), false}}
+	};
+
 
 	void SmCell::draw(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res)
 	{
@@ -521,6 +575,7 @@ namespace DarkHorse {
 	{
 
 	}
+	
 	void SmCell::draw_cell_by_type(CGraphics* g)
 	{
 		CRect rect(_X, _Y, _X + _Width, _Y + _Height);
@@ -528,211 +583,37 @@ namespace DarkHorse {
 		CRect right_pos_rect(_X + _Width - mark_width, _Y, _X + _Width, _Y + _Height);
 		CRect left_pos_rect(_X, _Y, _X + mark_width, _Y + _Height);
 		int format = DT_CENTER | DT_VCENTER;
-		switch (_CellType)
+
+		auto it = cellTypeMap.find(_CellType);
+		if (it != cellTypeMap.end())
 		{
-		case SmCellType::CT_NORMAL:
-			g->DrawFillRectangle(RGB(0xff, 0xff, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_ORDER_PRESENT:
-			g->DrawFillRectangle(RGB(139, 0, 0), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_ORDER_HAS_BEEN:
-			g->DrawFillRectangle(RGB(0, 100, 0), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_BUTTON_NORMAL:
-			g->DrawFillRectangle(RGB(0xd2, 0xe0, 0xed), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_BUTTON_BUY:
-			g->DrawFillRectangle(RGB(0xf0, 0x33, 0x3a), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_BUTTON_SELL:
-			g->DrawFillRectangle(RGB(0x13, 0x89, 0xf8), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_ORDER_BUY_BACK:
-			g->DrawFillRectangle(RGB(0xfc, 0xe3, 0xe4), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_ORDER_SELL_BACK:
-			g->DrawFillRectangle(RGB(0xda, 0xe2, 0xf5), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_QUOTE_CLOSE:
-			g->DrawFillRectangle(RGB(0xff, 0xff, 0x00), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_QUOTE_PRECLOSE:
-			g->DrawFillRectangle(RGB(0xff, 0xff, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_QUOTE_OPEN:
-			g->DrawFillRectangle(RGB(0xff, 0xff, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			g->DrawRectangle(RGB(0, 0, 0), rect);
-			break;
-		case SmCellType::CT_QUOTE_HIGH:
-			g->DrawFillRectangle(RGB(0xff, 0xff, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			g->DrawRectangle(RGB(0, 0, 0), rect);
-			break;
-		case SmCellType::CT_QUOTE_LOW:
-			g->DrawFillRectangle(RGB(0x13, 0x89, 0xf8), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			g->DrawRectangle(RGB(0, 0, 0), rect);
-			break;
-		case SmCellType::CT_POSITION_BUY:
+			const auto& [fillColor, drawOutline] = it->second;
+			g->DrawFillRectangle(fillColor, rect);
+			switch (_CellType) {
+			case SmCellType::CT_BUTTON_SELL:
+			case SmCellType::CT_BUTTON_BUY:
+			//case SmCellType::CT_BUTTON_NORMAL:
+				g->DrawText(_Text.c_str(), RGB(255, 255, 255), rect, format);
+				break;
+			default:
+				g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
+				break;
+			}
+			if (drawOutline)
+			{
+				g->DrawRectangle(RGB(0, 0, 0), rect);
+			}
+		}
+		else
+		{
+			// Default behavior if _CellType is not found in the map
 			g->DrawFillRectangle(RGB(255, 255, 255), rect);
 			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			g->DrawRectangle(RGB(255, 0, 0), rect);
-			break;
-		case SmCellType::CT_POSITION_SELL:
-			g->DrawFillRectangle(RGB(0x13, 0x89, 0xf8), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			g->DrawRectangle(RGB(0, 0, 255), rect);
-			break;
-		case SmCellType::CT_HOGA_SELL:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_SELL_HOGA1:
-			g->DrawFillRectangle(RGB(0x9f, 0xd6, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_SELL_HOGA2:
-			g->DrawFillRectangle(RGB(0xb9, 0xe4, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_SELL_HOGA3:
-			g->DrawFillRectangle(RGB(0xcc, 0xe6, 0xfa), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_SELL_HOGA4:
-			g->DrawFillRectangle(RGB(0xdd, 0xf3, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_SELL_HOGA5:
-			g->DrawFillRectangle(RGB(0xe6, 0xf7, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_HOGA_BUY:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_BUY_HOGA1:
-			g->DrawFillRectangle(RGB(0xfd, 0xad, 0xb0), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_BUY_HOGA2:
-			g->DrawFillRectangle(RGB(0xff, 0xc4, 0xc7), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_BUY_HOGA3:
-			g->DrawFillRectangle(RGB(0xff, 0xd6, 0xd4), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_BUY_HOGA4:
-			g->DrawFillRectangle(RGB(0xff, 0xe0, 0xe1), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_BUY_HOGA5:
-			g->DrawFillRectangle(RGB(0xff, 0xe8, 0xe8), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_CHECK:
-			break;
-		case SmCellType::CT_TICK_BUY:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_TICK_SELL:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_REMAIN_BUY:
-			g->DrawFillRectangle(RGB(0x13, 0x89, 0xf8), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_REMAIN_SELL:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_MARK_BUY:
-			g->DrawFillRectangle(RGB(0xfc, 0xe2, 0xe4), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_MARK_SELL:
-			g->DrawFillRectangle(RGB(0xda, 0xe2, 0xf5), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_MARK_HILO:
-			g->DrawFillRectangle(RGB(0xff, 0xff, 0xff), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_MARK_NORMAL:
-			g->DrawFillRectangle(RGB(0xf2, 0xf2, 0xf2), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_OE:
-			g->DrawFillRectangle(RGB(212, 186, 188), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_PE:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_EE:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_CD:
-			g->DrawFillRectangle(RGB(252, 226, 228), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_PD:
-			g->DrawFillRectangle(RGB(218, 226, 245), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_DEFAULT:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_SP_PROFIT:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_SP_LOSS:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_FUTURE:
-			g->DrawFillRectangle(RGB(0xd2, 0xe0, 0xed), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_OP_HEADER_CALL:
-			g->DrawFillRectangle(RGB(240, 51, 58), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_OP_HEADER_PUT:
-			g->DrawFillRectangle(RGB(19, 137, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		case SmCellType::CT_OP_HEADER_CENTER:
-			g->DrawFillRectangle(RGB(0, 0, 0), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
-		default:
-			g->DrawFillRectangle(RGB(255, 255, 255), rect);
-			g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
-			break;
 		}
 
 		draw_option(g);
 	}
+
 	void SmCell::draw_order_buy(CGraphics* g)
 	{
 		CRect rect(_X, _Y, _X + _Width, _Y + _Height);

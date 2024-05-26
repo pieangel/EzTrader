@@ -109,6 +109,18 @@ public:
 		gpCreateDoubleBuffer(pDC, width, height);
 	}
 
+	void Resize(CWnd* win)
+    {
+		gpDeleteDoubleBuffer();
+        CClientDC dc(win);
+        CRect rc;
+        win->GetClientRect(&rc);
+
+        gpCreateDoubleBuffer(&dc, rc.Width(), rc.Height());
+
+        DrawFillRectangle(RGB(255, 255, 255), rc);
+	}
+
     void Render(CDC* pDC, int width, int height)
     {
         pDC->BitBlt(0, 0, width, height, &m_memDC, 0, 0, SRCCOPY);
@@ -235,6 +247,12 @@ public:
         CFont* pOldFont = nullptr;
 
         pOldFont = m_memDC.SelectObject(&m_font);
+
+        // Ensure that the format includes centering options
+        format |= DT_CENTER | DT_VCENTER;
+
+        // This flag ensures the text is clipped at the right/bottom edge of the rectangle
+        format |= DT_SINGLELINE | DT_END_ELLIPSIS;
 
         m_memDC.DrawText(text, -1, &rect, format);
 

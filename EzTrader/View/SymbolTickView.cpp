@@ -188,9 +188,9 @@ void SymbolTickView::OnPaint()
 
 	CPaintDC dc(this); // device context for painting
 
-	CRect rc;
-	::GetClientRect(GetSafeHwnd(), &rc);
-
+	CRect rect;
+	::GetClientRect(GetSafeHwnd(), &rect);
+	/*
 	g->DrawText(_T("Hello, World!"), RGB(255, 0, 0), 200, 20);
 
 	CFont font;
@@ -210,9 +210,16 @@ void SymbolTickView::OnPaint()
 
 	g->DrawFillRectangle(RGB(255, 0, 0), 400, 80, 500, 200);
 	g->DrawRectangle(RGB(0, 100, 100), 400, 210, 500, 300);
+	*/
+	g->DrawFillRectangle(RGB(255, 255, 255), rect);
+	rect.right -= 1;
+	rect.bottom -= 1;
 
+	_Grid->DrawGrid(g, rect);
+	_Grid->draw_cells(g, rect, true, false);
+	_Grid->DrawBorder(g, rect);
 	// Render what you have done!
-	g->Render(&dc, rc.Width(), rc.Height());
+	g->Render(&dc, rect.Width(), rect.Height());
 }
 
 void SymbolTickView::Init()

@@ -707,27 +707,29 @@ void DarkHorse::SmGrid::CreateGrids()
 void DarkHorse::SmGrid::DrawGrid(CGraphics* g, CRect& wnd_area)
 {
 	if (!g) return;
-	int y = 0;
-	int acc_grid_width = 0;
-	for (int row = 0; row <= _RowCount; row++) {
-		g->DrawLine(RGB(0xc0, 0xc0, 0xc0), 0, y, wnd_area.Width(), y, _GridLineWidth);
+
+	const COLORREF gridColor = RGB(0xc0, 0xc0, 0xc0);
+
+	auto getRowHeight = [&](int row) {
 		auto it = _RowHeightMap.find(row);
-		if (it == _RowHeightMap.end())
-			y += (_defaultRowHeight);
-		else
-			y += (it->second);
-		y += _RowGridLineHeight;
+		return (it == _RowHeightMap.end()) ? _defaultRowHeight : it->second;
+		};
+
+	auto getColWidth = [&](int col) {
+		auto it = _ColWidthMap.find(col);
+		return (it == _ColWidthMap.end()) ? DefaultColWidth : it->second;
+		};
+
+	int y = 0;
+	for (int row = 0; row <= _RowCount; ++row) {
+		g->DrawLine(gridColor, 0, y, wnd_area.Width(), y, _GridLineWidth);
+		y += getRowHeight(row) + _RowGridLineHeight;
 	}
 
 	int x = 0;
-	for (int col = 0; col <= _ColCount; col++) {
-		g->DrawLine(RGB(0xc0, 0xc0, 0xc0), x, 0, x, _GridHeight, _GridLineWidth);
-		auto it = _ColWidthMap.find(col);
-		if (it == _ColWidthMap.end())
-			x += (DefaultColWidth);
-		else
-			x += (it->second);
-		x += _ColGridWidth;
+	for (int col = 0; col <= _ColCount; ++col) {
+		g->DrawLine(gridColor, x, 0, x, _GridHeight, _GridLineWidth);
+		x += getColWidth(col) + _ColGridWidth;
 	}
 }
 void DarkHorse::SmGrid::DrawBorder(CGraphics* g, CRect& wnd_area, const bool& selected)

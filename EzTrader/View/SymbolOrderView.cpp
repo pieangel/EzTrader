@@ -94,6 +94,7 @@ BEGIN_MESSAGE_MAP(SymbolOrderView, CStatic)
 	ON_MESSAGE(WM_HOGA_RECEIVED, &SymbolOrderView::OnWmHogaReceived)
 	ON_MESSAGE(WM_ORDER_CHANGED, &SymbolOrderView::OnUmOrderChanged)
 	ON_WM_TIMER()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 BOOL SymbolOrderView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
@@ -1258,7 +1259,7 @@ int SymbolOrderView::GetMaxValueRowCount()
 
 void SymbolOrderView::set_order_area()
 {
-	for (int i = 1; i < _Grid->RowCount(); i++) {
+	for (int i = 1; i < _Grid->RowCount() - 1; i++) {
 		auto cell = _Grid->FindCell(i, DarkHorse::OrderHeader::SELL_ORDER);
 		if (cell) {
 			cell->CellType(SmCellType::CT_ORDER_SELL_BACK);
@@ -3176,4 +3177,14 @@ void SymbolOrderView::OnTimer(UINT_PTR nIDEvent)
 	if (needDraw) Invalidate(FALSE);
 
 	CStatic::OnTimer(nIDEvent);
+}
+
+
+void SymbolOrderView::OnSize(UINT nType, int cx, int cy)
+{
+	CStatic::OnSize(nType, cx, cy);
+
+	if (g && _InitResource) {
+		g->Resize(this);
+	}
 }
