@@ -12,7 +12,7 @@
 #define SM_INPLACE_CONTROL   8                  // ID of inplace edit controls
 
 
-
+class CGraphics;
 namespace DarkHorse {
 	
 	class SmCell;
@@ -143,11 +143,14 @@ namespace DarkHorse {
 		void CreateGrids();
 		//void CreatePositionGrids();
 		void DrawGrid(CBCGPGraphicsManager* pGM, CRect& wnd_area);
+		void DrawGrid(CGraphics* g, CRect& wnd_area);
+		void DrawBorder(CGraphics* g, CRect& wnd_area, const bool& selected = false);
 		void DrawBorder(CBCGPGraphicsManager* pGM, CRect& wnd_area, const bool& selected = false);
 		//void DrawOrderCells(CBCGPGraphicsManager* pGM, CRect& wnd_area);
 		//void DrawCells(CBCGPGraphicsManager* pGM, CRect& wnd_area);
 		void DrawCells(CBCGPGraphicsManager* pGM, CRect& wnd_area, const bool& use_hor_header = false, const bool& use_ver_header = false);
 		void draw_cells(CBCGPGraphicsManager* pGM, CRect& wnd_area, const bool& use_hor_header = false, const bool& use_ver_header = false);
+		void draw_cells(CGraphics* g, CRect& wnd_area, const bool& use_hor_header = false, const bool& use_ver_header = false);
 		void DrawSelectedCell(CBCGPGraphicsManager* pGM, const CBCGPBrush& fill_brush, const CBCGPBrush& select_brush, bool selected);
 		void SetRowHeight(const int& row, const int& height);
 		void SetColWidth(const int& col, const int& width);

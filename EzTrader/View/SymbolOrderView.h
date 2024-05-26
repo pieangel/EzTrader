@@ -94,8 +94,10 @@ public:
 	int FindValue(const int& row) const noexcept;
 	void Refresh();
 	void DrawHogaLine(const CRect& rect);
+	void DrawHogaLine(CGraphics* g, const CRect& rect);
 	void DrawFixedSelectedCell();
 	void DrawMovingOrder();
+	void DrawMovingOrder(CGraphics* g);
 	void SetUp();
 	void SetUp(std::shared_ptr<WinInfo> parent_win_info);
 	//int RecalRowCount();
@@ -294,6 +296,9 @@ private:
 
 	void draw_buy_stop_order();
 	void draw_sell_stop_order();
+
+	void draw_buy_stop_order(CGraphics* g);
+	void draw_sell_stop_order(CGraphics* g);
 
 	void clear_buy_stop_order();
 	void clear_sell_stop_order();

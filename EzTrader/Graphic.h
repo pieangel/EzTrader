@@ -325,4 +325,41 @@ public:
         gpEndBrush();
         gpEndPen();
     }
+
+    void draw_arrow
+    (
+        const CPoint& start_point,
+        const CPoint& end_point,
+        const double& stroke_width,
+        const int& head_width
+    )
+    {
+        DrawLine(RGB(0xff, 0x00, 0x00), start_point.x, start_point.y, end_point.x, end_point.y, (int)stroke_width);
+
+        const float head_length = (float)head_width; // , head_width = 6;
+
+        const float dx = static_cast<float>(end_point.x - start_point.x);
+        const float dy = static_cast<float>(end_point.y - start_point.y);
+        const float length = (sqrt)(dx * dx + dy * dy);
+
+        // ux,uy is a unit vector parallel to the line.
+        const float ux = dx / length;
+        const float uy = dy / length;
+
+        // vx,vy is a unit vector perpendicular to ux,uy
+        const float vx = -uy;
+        const float vy = ux;
+        const float half_width = 0.5f * head_width;
+
+        const CPoint arrow[3] =
+        {
+            end_point,
+            CPoint{ (int)(end_point.x - head_length * ux + half_width * vx),
+            (int)(end_point.y - head_length * uy + half_width * vy) },
+            CPoint{ (int)(end_point.x - head_length * ux - half_width * vx),
+            (int)(end_point.y - head_length * uy - half_width * vy) }
+        };
+
+        DrawTriangle(RGB(0xff, 0x00, 0x00), arrow);
+    }
 };

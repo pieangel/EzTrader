@@ -934,6 +934,25 @@ void SymbolOrderView::DrawHogaLine(const CRect& rect)
 		);
 }
 
+void SymbolOrderView::DrawHogaLine(CGraphics* g, const CRect& rect)
+{
+	if (!hoga_control_ || price_to_row_.empty()) return;
+
+	const VmHoga hoga = hoga_control_->get_hoga();
+
+	int row_index = FindRow(hoga.Ary[0].SellPrice);
+	auto pCell = _Grid->FindCell(row_index, DarkHorse::OrderHeader::SELL_CNT);
+	if (pCell && row_index > 1)
+		g->DrawLine(
+			RGB(0, 0, 0),
+			0,
+			pCell->Y() + pCell->Height() + 1,
+			rect.Width(),
+			pCell->Y() + pCell->Height() + 1,
+			2.0f
+		);
+}
+
 void SymbolOrderView::DrawFixedSelectedCell()
 {
 	const int row_index = FindRow(_SelectedValue.first);
@@ -980,6 +999,43 @@ void SymbolOrderView::DrawMovingOrder()
 			}
 
 			DrawArrow(start_point, end_point, 2.0f, 12);
+		}
+	}
+}
+
+
+void SymbolOrderView::DrawMovingOrder(CGraphics* g)
+{
+	if (!g) return;
+
+	if (_DraggingOrder) {
+
+		auto start_cell = _Grid->FindCellByPos(_StartX, _StartY);
+		if (!start_cell) return;
+		if (start_cell->Col() == DarkHorse::OrderHeader::BUY_ORDER ||
+			start_cell->Col() == DarkHorse::OrderHeader::SELL_ORDER ||
+			start_cell->Col() == DarkHorse::OrderHeader::SELL_STOP ||
+			start_cell->Col() == DarkHorse::OrderHeader::BUY_STOP) {
+
+
+			const CRect rect_start(start_cell->X(), start_cell->Y(), start_cell->X() + start_cell->Width(), start_cell->Y() + start_cell->Height());
+			const CPoint start_point = rect_start.CenterPoint();
+
+			const CPoint ex_point(_EndX, _EndY);
+
+			const auto it = _Grid->FindRowCol(_EndX, _EndY);
+			const auto end_cell = _Grid->FindCell(it.first, it.second);
+			CPoint end_point;
+			if (end_cell && end_cell->Col() == start_cell->Col()) {
+				const CRect rect_end(end_cell->X(), end_cell->Y(), end_cell->X() + end_cell->Width(), end_cell->Y() + end_cell->Height());
+				end_point = rect_end.CenterPoint();
+			}
+			else {
+				end_point.x = _EndX;
+				end_point.y = _EndY;
+			}
+
+			g->draw_arrow(start_point, end_point, 2.0f, 12);
 		}
 	}
 }
@@ -1895,6 +1951,27 @@ void SymbolOrderView::draw_sell_stop_order()
 	}
 }
 
+void SymbolOrderView::draw_buy_stop_order(CGraphics* g)
+{
+	if (!g) return;
+	for (size_t i = 0; i < buy_stop_order_rect_vector_.size(); ++i) {
+		CPoint start_point = buy_stop_order_rect_vector_[i].first.CenterPoint();
+		CPoint end_point = buy_stop_order_rect_vector_[i].second.CenterPoint();
+		g->draw_arrow(start_point, end_point, 1.0f, 6);
+	}
+}
+
+void SymbolOrderView::draw_sell_stop_order(CGraphics* g)
+{
+	if (!g) return;
+
+	for (size_t i = 0; i < sell_stop_order_rect_vector_.size(); ++i) {
+		CPoint start_point = sell_stop_order_rect_vector_[i].first.CenterPoint();
+		CPoint end_point = sell_stop_order_rect_vector_[i].second.CenterPoint();
+		g->draw_arrow(start_point, end_point, 1.0f, 6);
+	}
+}
+
 void SymbolOrderView::DrawArrow(const CBCGPPoint& start_point, const CBCGPPoint& end_point, const double& stroke_width, const int& head_width)
 {
 	//const double stroke_width = 2.0f;
@@ -2703,9 +2780,10 @@ void SymbolOrderView::OnPaint()
 	
 	CPaintDC dc(this); // device context for painting
 
-	CRect rc;
-	::GetClientRect(GetSafeHwnd(), &rc);
+	CRect rect;
+	::GetClientRect(GetSafeHwnd(), &rect);
 
+	/*
 	g->DrawText(_T("종목"), RGB(255, 0, 0), 200, 20);
 
 	CFont font;
@@ -2725,9 +2803,26 @@ void SymbolOrderView::OnPaint()
 
 	g->DrawFillRectangle(RGB(255, 0, 0), 400, 80, 500, 200);
 	g->DrawRectangle(RGB(0, 100, 100), 400, 210, 500, 300);
+	*/
+
+	g->DrawFillRectangle(RGB(255, 255, 255), rect);
+	rect.right -= 1;
+	rect.bottom -= 1;
+	_Grid->SetColHeaderTitles(_OrderTableHeader);
+	_Grid->DrawGrid(g, rect);
+	set_moving_rect();
+	set_fixed_selected_cell();
+	_Grid->draw_cells(g, rect);
+	_Grid->DrawBorder(g, rect, _Selected);
+	DrawMovingOrder(g);
+
+	draw_buy_stop_order(g);
+	draw_sell_stop_order(g);
+
+	DrawHogaLine(g,rect);
 
 	// Render what you have done!
-	g->Render(&dc, rc.Width(), rc.Height());
+	g->Render(&dc, rect.Width(), rect.Height());
 	
 }
 

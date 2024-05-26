@@ -5,7 +5,7 @@
 #include "../Order/SmOrderGridConst.h"
 #include "../Grid/InPlaceEdit.h"
 #include "SmRow.h"
-
+#include "../Graphic.h"
 int DarkHorse::SmGrid::IsInMergedCells(const int& row, const int& col)
 {
 	if (_MergedCellMap.empty()) return -1;
@@ -704,7 +704,38 @@ void DarkHorse::SmGrid::CreateGrids()
 	}
 }
 
+void DarkHorse::SmGrid::DrawGrid(CGraphics* g, CRect& wnd_area)
+{
+	if (!g) return;
+	int y = 0;
+	int acc_grid_width = 0;
+	for (int row = 0; row <= _RowCount; row++) {
+		g->DrawLine(RGB(0xc0, 0xc0, 0xc0), 0, y, wnd_area.Width(), y, _GridLineWidth);
+		auto it = _RowHeightMap.find(row);
+		if (it == _RowHeightMap.end())
+			y += (_defaultRowHeight);
+		else
+			y += (it->second);
+		y += _RowGridLineHeight;
+	}
 
+	int x = 0;
+	for (int col = 0; col <= _ColCount; col++) {
+		g->DrawLine(RGB(0xc0, 0xc0, 0xc0), x, 0, x, _GridHeight, _GridLineWidth);
+		auto it = _ColWidthMap.find(col);
+		if (it == _ColWidthMap.end())
+			x += (DefaultColWidth);
+		else
+			x += (it->second);
+		x += _ColGridWidth;
+	}
+}
+void DarkHorse::SmGrid::DrawBorder(CGraphics* g, CRect& wnd_area, const bool& selected)
+{
+	if (!g) return;
+
+	g->DrawRectangle(selected ? RGB(0xff, 0x00, 0x00) : RGB(0x6c, 0x6c, 0x6c), wnd_area, 2.0);
+}
 void DarkHorse::SmGrid::DrawGrid(CBCGPGraphicsManager* pGM, CRect& wnd_area)
 {
 	if (!pGM) return;
@@ -786,6 +817,20 @@ void DarkHorse::SmGrid::draw_cells(CBCGPGraphicsManager* pGM, CRect& wnd_area, c
 		for (auto col = row_cell_list.begin(); col != row_cell_list.end(); col++) {
 			const auto& cell = col->second;
 			cell->draw(pGM, _Res);
+		}
+	}
+}
+
+void DarkHorse::SmGrid::draw_cells( CGraphics* g, CRect& wnd_area, const bool& use_hor_header /*= false*/, const bool& use_ver_header /*= false*/)
+{
+	for (auto row = _RowMap.begin(); row != _RowMap.end(); row++) {
+		const auto& row_obj = row->second;
+		if (row_obj->RowIndex() >= _RowCount) continue;
+
+		const std::map<int, std::shared_ptr<SmCell>>& row_cell_list = row_obj->GetCellList();
+		for (auto col = row_cell_list.begin(); col != row_cell_list.end(); col++) {
+			const auto& cell = col->second;
+			cell->draw(g);
 		}
 	}
 }

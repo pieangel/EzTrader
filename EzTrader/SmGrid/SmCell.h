@@ -45,6 +45,7 @@ namespace DarkHorse {
 		int _MarkType = 0;
 	public:
 		void draw(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+		void draw(CGraphics* g);
 		void clear() {
 			_Text.clear();
 		}

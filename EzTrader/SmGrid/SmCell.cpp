@@ -23,6 +23,21 @@ namespace DarkHorse {
 		}
 	}
 
+	void SmCell::draw(CGraphics* g)
+	{
+		switch (_CellType)
+		{
+		case SmCellType::CT_ORDER_BUY_BACK: draw_cell_by_type(g);  break;
+		case SmCellType::CT_ORDER_SELL_BACK: draw_cell_by_type(g);  break;
+		case SmCellType::CT_HEADER: draw_header(g); break;
+		case SmCellType::CT_CHECK_HEADER: draw_check_header(g); break;
+		case SmCellType::CT_ORDER_BUY: draw_order_buy(g);  break;
+		case SmCellType::CT_ORDER_SELL: draw_order_sell(g);  break;
+		case SmCellType::CT_SELECTED: draw_moving_rect(g); break;
+		default: draw_cell_by_type(g);  break;
+		}
+	}
+
 	size_t SmCell::GetOrderReqCount()
 	{
 		size_t sum = 0;
@@ -731,7 +746,7 @@ namespace DarkHorse {
 		CPoint start_point(line_rect.right, line_rect.top + line_rect.Height() / 2.0);
 		CPoint end_point(line_rect.left, line_rect.top + line_rect.Height() / 2.0);
 
-		draw_arrow(g, start_point, end_point, 1.0, 6);
+		g->draw_arrow(start_point, end_point, 1.0, 6);
 
 		draw_option(g);
 	}
@@ -751,7 +766,7 @@ namespace DarkHorse {
 		CBCGPPoint start_point(line_rect.left, line_rect.top + line_rect.Height() / 2.0);
 		CBCGPPoint end_point(line_rect.right, line_rect.top + line_rect.Height() / 2.0);
 
-		draw_arrow(g,start_point, end_point, 1.0, 6);
+		g->draw_arrow(start_point, end_point, 1.0, 6);
 
 		draw_option(g);
 	}
@@ -767,28 +782,28 @@ namespace DarkHorse {
 	{
 		g->DrawLine(RGB(0xff, 0x00, 0x00), start_point.x, start_point.y, end_point.x, end_point.y, stroke_width);
 
-		const int head_length = head_width; // , head_width = 6;
+		const float head_length = head_width; // , head_width = 6;
 
 		const float dx = static_cast<float>(end_point.x - start_point.x);
 		const float dy = static_cast<float>(end_point.y - start_point.y);
-		const auto length = std::sqrt(dx * dx + dy * dy);
+		const float length = std::sqrt(dx * dx + dy * dy);
 
 		// ux,uy is a unit vector parallel to the line.
-		const auto ux = dx / length;
-		const auto uy = dy / length;
+		const float ux = dx / length;
+		const float uy = dy / length;
 
 		// vx,vy is a unit vector perpendicular to ux,uy
-		const auto vx = -uy;
-		const auto vy = ux;
-		const auto half_width = 0.5f * head_width;
+		const float vx = -uy;
+		const float vy = ux;
+		const float half_width = 0.5f * head_width;
 
 		const CPoint arrow[3] =
 		{
 			end_point,
-			CPoint{ (end_point.x - head_length * ux + half_width * vx),
-			(end_point.y - head_length * uy + half_width * vy) },
-			CPoint{ (end_point.x - head_length * ux - half_width * vx),
-			(end_point.y - head_length * uy - half_width * vy) }
+			CPoint{ (int)(end_point.x - head_length * ux + half_width * vx),
+			(int)(end_point.y - head_length * uy + half_width * vy) },
+			CPoint{ (int)(end_point.x - head_length * ux - half_width * vx),
+			(int)(end_point.y - head_length * uy - half_width * vy) }
 		};
 		
 		g->DrawTriangle(RGB(0xff, 0x00, 0x00), arrow);
