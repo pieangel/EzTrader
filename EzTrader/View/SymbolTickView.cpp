@@ -156,6 +156,7 @@ void SymbolTickView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 
 void SymbolTickView::OnPaint()
 {
+	/*
 	CPaintDC dc(this); // device context for painting
 
 	CBCGPMemDC memDC(dc, this);
@@ -179,6 +180,39 @@ void SymbolTickView::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
+	if (!_InitResource) {
+		g = new CGraphics(this);
+		_InitResource = true;
+	}
+
+	CPaintDC dc(this); // device context for painting
+
+	CRect rc;
+	::GetClientRect(GetSafeHwnd(), &rc);
+
+	g->DrawText(_T("Hello, World!"), RGB(255, 0, 0), 200, 20);
+
+	CFont font;
+	font.CreatePointFont(140, _T("Segoe UI"));
+	g->DrawText(_T("Hello, World!"), RGB(200, 100, 0), 200, 40, DT_SINGLELINE | DT_LEFT, &font);
+	g->DrawText(_T("Simple Graphics Class"), RGB(0, 200, 0), 200, 330, DT_SINGLELINE | DT_LEFT, &font);
+
+	g->DrawLine(RGB(255, 0, 0), 10, 10, 100, 100);
+	g->DrawLine(RGB(255, 0, 0), 40, 5, 100, 70, 5);
+
+	g->DrawEllipse(RGB(0, 0, 0), 140, 110, 210, 210);
+	g->DrawEllipse(RGB(0, 0, 0), 30, 110, 100, 210, 5);
+	g->DrawFillEllipse(RGB(0, 0, 0), RGB(0, 200, 0), 30, 230, 100, 330, 5);
+
+	g->DrawGradientFill(RGB(0, 255, 0), RGB(0, 200, 0), 230, 80, 100, 100, false);
+	g->DrawGradientFill(RGB(0, 0, 233), RGB(0, 0, 103), 230, 190, 100, 100, true);
+
+	g->DrawFillRectangle(RGB(255, 0, 0), 400, 80, 500, 200);
+	g->DrawRectangle(RGB(0, 100, 100), 400, 210, 500, 300);
+
+	// Render what you have done!
+	g->Render(&dc, rc.Width(), rc.Height());
 }
 
 void SymbolTickView::Init()

@@ -2620,6 +2620,7 @@
     <ClInclude Include="Account\HdProductRemainGrid.h">
       <Filter>Account</Filter>
     </ClInclude>
+    <ClInclude Include="Graphic.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\DarkHorse.ico">

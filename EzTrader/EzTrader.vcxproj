@@ -394,6 +394,7 @@
     <ClInclude Include="Fund\SmFundPositionArea.h" />
     <ClInclude Include="Global\SmConst.h" />
     <ClInclude Include="Global\SmTotalManager.h" />
+    <ClInclude Include="Graphic.h" />
     <ClInclude Include="GridDefine.h" />
     <ClInclude Include="Grid\CellRange.h" />
     <ClInclude Include="Grid\customcells.h" />

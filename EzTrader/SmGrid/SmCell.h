@@ -6,6 +6,7 @@
 #include "SmCellType.h"
 #include "SmGridResource.h"
 class CBCGPGraphicsManager;
+class CGraphics;
 namespace DarkHorse {
 	class SmOrder;
 	struct SmOrderRequest;
@@ -134,6 +135,30 @@ namespace DarkHorse {
 		void draw_cell_by_type(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
 		void draw_order_buy(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
 		void draw_order_sell(CBCGPGraphicsManager* pGM, const SmOrderGridResource& res);
+
+		void draw_moving_rect(CGraphics* g);
+		void draw_header(CGraphics* g);
+		void draw_check_header(CGraphics* g);
+		void draw_cell_by_type(CGraphics* g);
+		void draw_order_buy(CGraphics* g);
+		void draw_order_sell(CGraphics* g);
+
+		void draw_arrow
+		(
+			CGraphics* g,
+			const CPoint& start_point,
+			const CPoint& end_point,
+			const double& stroke_width,
+			const int& head_width
+		);
+
+		void draw_option(CGraphics* g);
+
+		// draw a circle by the position type.
+		void draw_position(CGraphics* g);
+		// display the quote sign by the value type as following high, low, open, close, yesterday close.
+		void draw_quote_sign(CGraphics* g);
+
 	};
 }
 

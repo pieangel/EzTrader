@@ -1090,7 +1090,7 @@ BOOL SmOrderPanel::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	ShowWindow(SW_HIDE);
-	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
+	//::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
 
 
 	_ConfigDlg = new VtOrderConfigDlg();

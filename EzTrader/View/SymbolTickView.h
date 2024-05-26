@@ -10,6 +10,7 @@ class SymbolTickView
 #include <string>
 
 #include "../SmGrid/SmGridResource.h"
+#include "../Graphic.h"
 namespace DarkHorse {
 	class SmGrid;
 	class SmSymbol;
@@ -77,6 +78,9 @@ private:
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+private:
+	bool _InitResource = false;
+	CGraphics* g = NULL;
 };
 
 

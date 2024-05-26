@@ -20,6 +20,8 @@ class SymbolOrderView
 #include "../Event/EventHubArg.h"
 #include "../Symbol/SymbolConst.h"
 #include "../Position/PositionConst.h"
+#include "../Graphic.h"
+
 //#include "../VtDefine.h"
 namespace DarkHorse {
 	class SmGrid;
@@ -53,8 +55,9 @@ class DmFundOrderWindow;
 class VtOrderConfigManager;
 class SmOrderPanel;
 class SmOrderPanelOut;
-class SymbolOrderView : public CBCGPStatic
+class SymbolOrderView : public CStatic
 {
+protected:
 public:
 	std::shared_ptr<WinInfo> Win_info() const { return win_info_; }
 	void Win_info(std::shared_ptr<WinInfo> val) { win_info_ = val; }
@@ -493,6 +496,9 @@ public:
 	afx_msg LRESULT OnWmHogaReceived(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUmOrderChanged(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+private:
+	bool _InitResource = false;
+	CGraphics* g = NULL;
 };
 
 

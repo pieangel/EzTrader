@@ -59,10 +59,12 @@
 #include "../OrderUI/VtOrderConfigManager.h"
 #include "../OrderUI/VtOrderWndHd.h"
 #include "../OrderUI/SmOrderPanel.h"
+#include <BCGPGraphicsManager.h>
 
 #include <sstream>
 #include <format>
 #include <functional>
+
 
 using namespace std;
 using namespace std::placeholders;
@@ -72,7 +74,7 @@ using namespace DarkHorse;
 
 const int extra_margin = 10;
 
-BEGIN_MESSAGE_MAP(SymbolOrderView, CBCGPStatic)
+BEGIN_MESSAGE_MAP(SymbolOrderView, CStatic)
 	//{{AFX_MSG_MAP(CBCGPTextPreviewCtrl)
 	ON_WM_PAINT()
 	ON_WM_MOUSEWHEEL()
@@ -130,7 +132,7 @@ BOOL SymbolOrderView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 	Invalidate();
 
-	return CBCGPStatic::OnMouseWheel(nFlags, zDelta, pt);
+	return CStatic::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 void SymbolOrderView::set_stop_as_real_order(bool enable)
@@ -186,7 +188,7 @@ SymbolOrderView::SymbolOrderView()
 	sell_stop_order_control_ = std::make_shared<DarkHorse::StopOrderControl>(*this);
 	sell_stop_order_control_->set_event_handler(std::bind(&SymbolOrderView::on_update_sell_stop_order, this));
 	sell_stop_order_control_->set_order_control_id(id_);
-	m_pGM = CBCGPGraphicsManager::CreateInstance();
+	//m_pGM = CBCGPGraphicsManager::CreateInstance();
 	mainApp.event_hub()->subscribe_symbol_master_event_handler
 	(
 		id_,
@@ -248,6 +250,7 @@ SymbolOrderView::SymbolOrderView()
 	_GridColMap[DarkHorse::SmOrderGridCol::CENTER] = 80;
 
 	// 기본 너비 : 410, 마진 : 12
+
 }
 
 void SymbolOrderView::on_update_symbol_master(std::shared_ptr<DarkHorse::SmSymbol> symbol)
@@ -267,6 +270,10 @@ SymbolOrderView::~SymbolOrderView()
 	mainApp.event_hub()->unsubscribe_symbol_master_event_handler( id_ );
 	
 	if (m_pGM != NULL) delete m_pGM;
+	if (g) {
+		delete g;
+		g = NULL;
+	}
 }
 
 void SymbolOrderView::on_update_quote()
@@ -985,7 +992,7 @@ void SymbolOrderView::SetUp()
 	//rect.right -= 1;
 	rect.bottom -= 1;
 
-	CreateResource();
+	//CreateResource();
 
 
 	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 60, 9);
@@ -1044,7 +1051,7 @@ void SymbolOrderView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 	//rect.right -= 1;
 	rect.bottom -= 1;
 
-	CreateResource();
+	//CreateResource();
 
 
 	_Grid = std::make_shared<DarkHorse::SmGrid>(_Resource, 60, 9);
@@ -2253,6 +2260,10 @@ void SymbolOrderView::put_order(
 
 void SymbolOrderView::CreateResource()
 {
+	if (m_pGM) {
+		m_pGM->SetDefaultGraphicsManagerType(CBCGPGraphicsManager::BCGP_GRAPHICS_MANAGER_GDI);
+		m_pGM->CleanResources(TRUE);
+	}
 	//_Resource.QMBuyBrush.SetOpacity(0.5);
 	//_Resource.QMSellBrush.SetOpacity(0.5);
 	//_Resource.QMHighLowBrush.SetOpacity(0.5);
@@ -2681,51 +2692,43 @@ void SymbolOrderView::ProcessButtonMsg(const BUTTON_ID& id)
 	}
 }
 
+
 void SymbolOrderView::OnPaint()
 {
 	if (_Editing) return;
-
+	if (!_InitResource) {
+		g = new CGraphics(this);
+		_InitResource = true;
+	}
+	
 	CPaintDC dc(this); // device context for painting
 
-	CBCGPMemDC memDC(dc, this);
-	CDC* pDC = &memDC.GetDC();
+	CRect rc;
+	::GetClientRect(GetSafeHwnd(), &rc);
 
-	CRect rect;
-	GetClientRect(rect);
+	g->DrawText(_T("종목"), RGB(255, 0, 0), 200, 20);
 
-	if (m_pGM == NULL) return;
+	CFont font;
+	font.CreatePointFont(90, _T("굴림"));
+	g->DrawText(_T("구분"), RGB(200, 100, 0), 200, 40, DT_SINGLELINE | DT_LEFT, &font);
+	g->DrawText(_T("잔고"), RGB(0, 200, 0), 200, 330, DT_SINGLELINE | DT_LEFT, &font);
 
-	try {
-		m_pGM->BindDC(pDC, rect);
-		if (!m_pGM->BeginDraw()) return;
+	g->DrawLine(RGB(255, 0, 0), 10, 10, 100, 100);
+	g->DrawLine(RGB(255, 0, 0), 40, 5, 100, 70, 5);
 
-		m_pGM->Clear();
+	g->DrawEllipse(RGB(0, 0, 0), 140, 110, 210, 210);
+	g->DrawEllipse(RGB(0, 0, 0), 30, 110, 100, 210, 5);
+	g->DrawFillEllipse(RGB(0, 0, 0), RGB(0, 200, 0), 30, 230, 100, 330, 5);
 
-		m_pGM->FillRectangle(rect, _Resource.GridNormalBrush);
-		rect.right -= 1;
-		rect.bottom -= 1;
-		_Grid->SetColHeaderTitles(_OrderTableHeader);
-		_Grid->DrawGrid(m_pGM, rect);
-		set_moving_rect();
-		set_fixed_selected_cell();
-		_Grid->draw_cells(m_pGM, rect);
-		//rect.right += 2;
-		//rect.bottom += 2;
-		_Grid->DrawBorder(m_pGM, rect, _Selected);
-		DrawMovingOrder();
+	g->DrawGradientFill(RGB(0, 255, 0), RGB(0, 200, 0), 230, 80, 100, 100, false);
+	g->DrawGradientFill(RGB(0, 0, 233), RGB(0, 0, 103), 230, 190, 100, 100, true);
 
-		draw_buy_stop_order();
-		draw_sell_stop_order();
+	g->DrawFillRectangle(RGB(255, 0, 0), 400, 80, 500, 200);
+	g->DrawRectangle(RGB(0, 100, 100), 400, 210, 500, 300);
 
-		DrawHogaLine(rect);
-
-
-		m_pGM->EndDraw();
-	}
-	catch (const std::exception& e) {
-		const std::string error = e.what();
-		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
-	}
+	// Render what you have done!
+	g->Render(&dc, rc.Width(), rc.Height());
+	
 }
 
 void SymbolOrderView::OnMouseMove(UINT nFlags, CPoint point)
@@ -2850,7 +2853,7 @@ void SymbolOrderView::OnLButtonDown(UINT nFlags, CPoint point)
 		SetCapture();
 	}
 
-	CBCGPStatic::OnLButtonDown(nFlags, point);
+	CStatic::OnLButtonDown(nFlags, point);
 }
 
 
@@ -2882,7 +2885,7 @@ void SymbolOrderView::OnRButtonDown(UINT nFlags, CPoint point)
 		}
 	}
 
-	CBCGPStatic::OnRButtonDown(nFlags, point);
+	CStatic::OnRButtonDown(nFlags, point);
 }
 
 
@@ -2910,7 +2913,7 @@ void SymbolOrderView::OnLButtonUp(UINT nFlags, CPoint point)
 				_DraggingOrder = false;
 				ReleaseCapture();
 				_MovingOrder = false;
-				CBCGPStatic::OnLButtonUp(nFlags, point);
+				CStatic::OnLButtonUp(nFlags, point);
 				return;
 			}
 			if (cell->Col() == _OrderStartCol) {
@@ -2945,13 +2948,13 @@ void SymbolOrderView::OnLButtonUp(UINT nFlags, CPoint point)
 	_EnableOrderShow = true;
 	_MovingOrder = false;
 	Invalidate();
-	CBCGPStatic::OnLButtonUp(nFlags, point);
+	CStatic::OnLButtonUp(nFlags, point);
 }
 
 
 int SymbolOrderView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if (CBCGPStatic::OnCreate(lpCreateStruct) == -1)
+	if (CStatic::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
 	// TODO:  Add your specialized creation code here
@@ -2982,7 +2985,7 @@ void SymbolOrderView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		put_order(SmPositionType::Buy, price);
 	}
 
-	CBCGPStatic::OnLButtonDblClk(nFlags, point);
+	CStatic::OnLButtonDblClk(nFlags, point);
 }
 
 LRESULT SymbolOrderView::OnWmSymbolMasterReceived(WPARAM wParam, LPARAM lParam)
@@ -3077,5 +3080,5 @@ void SymbolOrderView::OnTimer(UINT_PTR nIDEvent)
 	update_position();
 	if (needDraw) Invalidate(FALSE);
 
-	CBCGPStatic::OnTimer(nIDEvent);
+	CStatic::OnTimer(nIDEvent);
 }
