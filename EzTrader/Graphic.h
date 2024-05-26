@@ -119,6 +119,8 @@ public:
         gpCreateDoubleBuffer(&dc, rc.Width(), rc.Height());
 
         DrawFillRectangle(RGB(255, 255, 255), rc);
+
+        win->Invalidate();
 	}
 
     void Render(CDC* pDC, int width, int height)

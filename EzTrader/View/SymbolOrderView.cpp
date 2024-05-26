@@ -270,7 +270,7 @@ SymbolOrderView::~SymbolOrderView()
 	//KillTimer(1);
 	mainApp.event_hub()->unsubscribe_symbol_master_event_handler( id_ );
 	
-	if (m_pGM != NULL) delete m_pGM;
+	//if (m_pGM != NULL) delete m_pGM;
 	if (g) {
 		delete g;
 		g = NULL;

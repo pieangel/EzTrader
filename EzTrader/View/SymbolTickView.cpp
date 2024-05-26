@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(SymbolTickView, CBCGPStatic)
 	ON_WM_PAINT()
 	ON_WM_TIMER()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 SymbolTickView::SymbolTickView()
@@ -327,4 +328,14 @@ void SymbolTickView::OnTimer(UINT_PTR nIDEvent)
 void SymbolTickView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	//mainApp.event_hub()->trigger_symbol_order_view_event(1, center_window_id_, symbol_);
+}
+
+
+void SymbolTickView::OnSize(UINT nType, int cx, int cy)
+{
+	CBCGPStatic::OnSize(nType, cx, cy);
+
+	if (g && _InitResource) {
+		g->Resize(this);
+	}
 }
