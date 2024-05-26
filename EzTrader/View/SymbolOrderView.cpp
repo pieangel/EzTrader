@@ -2244,13 +2244,26 @@ void SymbolOrderView::clear_sell_stop_order()
 
 void SymbolOrderView::put_stop_order(const DarkHorse::SmPositionType& type, const int& price)
 {
-	if (!account_ || !symbol_) return;
+	if (order_type_ == OrderType::MainAccount || order_type_ == OrderType::SubAccount) {
+		put_stop_order(account_, type, price);
+	}
+	else if (order_type_ == OrderType::Fund) {
+		if (!fund_) return;
+		for (auto& account : fund_->GetAccountVector()) {
+			put_stop_order(account, type, price);
+		}
+	}
+}
+
+void SymbolOrderView::put_stop_order(std::shared_ptr<DarkHorse::SmAccount> account, const DarkHorse::SmPositionType& type, const int& price)
+{
+	if (!account || !symbol_) return;
 	if (price <= 0) return;
 
 	std::shared_ptr<SmOrderRequest> order_req = nullptr;
 	if (type == SmPositionType::Sell)
 		sell_stop_order_control_->add_stop_order_request(
-			account_,
+			account,
 			symbol_,
 			type,
 			price,
@@ -2258,7 +2271,7 @@ void SymbolOrderView::put_stop_order(const DarkHorse::SmPositionType& type, cons
 			_OrderSettings.StopOrderSlipTick
 		);
 	else buy_stop_order_control_->add_stop_order_request(
-		account_,
+		account,
 		symbol_,
 		type,
 		price,
@@ -2712,7 +2725,13 @@ void SymbolOrderView::change_order(const std::vector<std::shared_ptr<DarkHorse::
 
 void SymbolOrderView::change_stop(const std::shared_ptr<DarkHorse::SmCell>& src_cell, const std::shared_ptr<DarkHorse::SmCell>& tgt_cell, const int& src_price, const int& target_price)
 {
-	if (!src_cell || !account_) return;
+	if (order_type_ == OrderType::MainAccount || order_type_ == OrderType::SubAccount) {
+		if (!src_cell || !account_) return;
+	}
+	else if (order_type_ == OrderType::Fund) {
+		if (!src_cell || !fund_) return;
+	}
+
 	auto it_row = row_to_price_.find(src_cell->Row());
 	if (it_row == row_to_price_.end()) return;
 	price_order_request_map_p price_order_req_map = nullptr;

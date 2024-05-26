@@ -374,6 +374,7 @@ private:
 	int _CutMode = 0;
 	bool _MovingOrder = false;
 	void put_stop_order(const DarkHorse::SmPositionType& type, const int& price);
+	void put_stop_order(std::shared_ptr<DarkHorse::SmAccount> account, const DarkHorse::SmPositionType& type, const int& price);
 	
 	DmAccountOrderWindow* _MainDialog = nullptr;
 	DmFundOrderWindow* _FundDialog = nullptr;
