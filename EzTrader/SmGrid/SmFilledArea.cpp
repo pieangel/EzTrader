@@ -91,7 +91,7 @@ void SmFilledArea::SetUp()
 void SmFilledArea::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -123,6 +123,7 @@ void SmFilledArea::OnPaint()
 	
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void SmFilledArea::Fund(std::shared_ptr<DarkHorse::SmFund> val)

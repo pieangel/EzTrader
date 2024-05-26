@@ -82,6 +82,7 @@ void SmPositionArea::SetUp()
 
 void SmPositionArea::OnPaint()
 {
+	/*
 	try {
 		CPaintDC dc(this); // device context for painting
 
@@ -119,6 +120,7 @@ void SmPositionArea::OnPaint()
 		const std::string error = e.what();
 
 	}
+	*/
 }
 
 void SmPositionArea::Clear()

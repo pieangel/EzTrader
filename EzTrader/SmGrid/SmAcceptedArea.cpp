@@ -86,7 +86,7 @@ void SmAcceptedArea::SetUp()
 void SmAcceptedArea::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -117,6 +117,7 @@ void SmAcceptedArea::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void SmAcceptedArea::Account(std::shared_ptr<DarkHorse::SmAccount> val)

@@ -73,7 +73,7 @@ void SmQuoteArea::SetUp()
 void SmQuoteArea::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -104,6 +104,7 @@ void SmQuoteArea::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void SmQuoteArea::Clear()

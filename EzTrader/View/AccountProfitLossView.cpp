@@ -81,7 +81,7 @@ void AccountProfitLossView::SetUp()
 void AccountProfitLossView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -110,6 +110,7 @@ void AccountProfitLossView::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void AccountProfitLossView::Fund(std::shared_ptr<DarkHorse::SmFund> val)

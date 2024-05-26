@@ -91,7 +91,7 @@ void SmSymbolArea::SetUp()
 void SmSymbolArea::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -120,6 +120,7 @@ void SmSymbolArea::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void SmSymbolArea::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)

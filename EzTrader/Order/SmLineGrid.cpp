@@ -21,6 +21,7 @@ SmLineGrid::~SmLineGrid()
 
 void SmLineGrid::OnPaint()
 {
+	/*
 	CPaintDC dc(this); // device context for painting
 
 	CBCGPMemDC memDC(dc, this);
@@ -46,4 +47,5 @@ void SmLineGrid::OnPaint()
 
 	m_pGM->FillRectangle(rect, LineBrush);
 	m_pGM->EndDraw();
+	*/
 }

@@ -1525,7 +1525,7 @@ void SmOrderArea::OnPaint()
 	if (_Editing) return;
 
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -1574,6 +1574,7 @@ void SmOrderArea::OnPaint()
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
+	*/
 }
 
 void SmOrderArea::OnMouseMove(UINT nFlags, CPoint point)

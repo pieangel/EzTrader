@@ -86,7 +86,7 @@ void SmSymbolTableArea::SetUp()
 void SmSymbolTableArea::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -117,6 +117,7 @@ void SmSymbolTableArea::OnPaint()
 	DrawFixedSelectedCell();
 	DrawMovingRect();
 	m_pGM->EndDraw();
+	*/
 }
 
 void SmSymbolTableArea::OnMouseMove(UINT nFlags, CPoint point)

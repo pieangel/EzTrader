@@ -145,6 +145,7 @@ void SymbolPositionView::SetUp(std::shared_ptr<WinInfo> parent_win_info)
 
 void SymbolPositionView::OnPaint()
 {
+	/*
 	try {
 		CPaintDC dc(this); // device context for painting
 
@@ -182,6 +183,7 @@ void SymbolPositionView::OnPaint()
 		const std::string error = e.what();
 
 	}
+	*/
 }
 
 void SymbolPositionView::Clear()

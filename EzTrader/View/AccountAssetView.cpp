@@ -91,7 +91,7 @@ void AccountAssetView::SetUp()
 void AccountAssetView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -120,6 +120,7 @@ void AccountAssetView::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void AccountAssetView::Fund(std::shared_ptr<DarkHorse::SmFund> val)

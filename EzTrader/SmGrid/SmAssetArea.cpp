@@ -88,7 +88,7 @@ void SmAssetArea::SetUp()
 void SmAssetArea::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -119,6 +119,7 @@ void SmAssetArea::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void SmAssetArea::UpdateSymbolInfo()

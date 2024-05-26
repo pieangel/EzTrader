@@ -96,7 +96,7 @@ void SymbolInfoView::SetUp()
 void SymbolInfoView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -120,6 +120,7 @@ void SymbolInfoView::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void SymbolInfoView::Symbol(std::shared_ptr<DarkHorse::SmSymbol> val)

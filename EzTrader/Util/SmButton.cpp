@@ -53,7 +53,7 @@ void SmButton::SetTextRect(const CRect& rc)
 void SmButton::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -87,6 +87,7 @@ void SmButton::OnPaint()
 	if (_DrawText)  m_pGM->DrawText(_Text.c_str(), _TextRect, _Resource.TextFormat, _Resource.TextBrush);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void SmButton::OnMouseMove(UINT nFlags, CPoint point)

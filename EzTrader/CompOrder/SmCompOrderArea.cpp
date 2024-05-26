@@ -129,7 +129,7 @@ void SmCompOrderArea::SetUp()
 void SmCompOrderArea::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -178,6 +178,7 @@ void SmCompOrderArea::OnPaint()
 		const std::string error = e.what();
 		LOGINFO(CMyLogger::getInstance(), "error = %s", error.c_str());
 	}
+	*/
 }
 
 void SmCompOrderArea::SetMainOrderWnd(SmOrderCompMainDialog* wnd)

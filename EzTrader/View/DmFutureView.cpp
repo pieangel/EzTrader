@@ -293,7 +293,7 @@ void DmFutureView::SetUp()
 void DmFutureView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -316,6 +316,7 @@ void DmFutureView::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void DmFutureView::UpdateSymbolInfo()

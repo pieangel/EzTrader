@@ -95,7 +95,7 @@ void SmFavoriteArea::SetUp()
 void SmFavoriteArea::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-
+	/*
 	CBCGPMemDC memDC(dc, this);
 	CDC* pDC = &memDC.GetDC();
 
@@ -126,6 +126,7 @@ void SmFavoriteArea::OnPaint()
 	_Grid->DrawBorder(m_pGM, rect);
 
 	m_pGM->EndDraw();
+	*/
 }
 
 void SmFavoriteArea::UpdateSymbolInfo()

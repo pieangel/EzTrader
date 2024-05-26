@@ -90,6 +90,7 @@ void SmJangoPositionArea::SetUp()
 
 void SmJangoPositionArea::OnPaint()
 {
+	/*
 	try {
 		CPaintDC dc(this); // device context for painting
 
@@ -127,6 +128,7 @@ void SmJangoPositionArea::OnPaint()
 		const std::string error = e.what();
 
 	}
+	*/
 }
 
 void SmJangoPositionArea::Clear()
