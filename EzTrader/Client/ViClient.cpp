@@ -3297,7 +3297,6 @@ int DarkHorse::ViClient::ab_chart_data_short(SmTaskArg&& arg)
 		CString sInput = reqString.c_str();
 		CString strNextKey = _T("");
 
-		CString sReqFidInput = "000001002003004005006007008009010011012013014015";
 
 		int nRqID = m_CommAgent.CommRqData(DefAbsChartData2, sInput, sInput.GetLength(), strNextKey);
 		_ChartReqMap[nRqID] = req;

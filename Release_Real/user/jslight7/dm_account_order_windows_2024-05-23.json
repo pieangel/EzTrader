@@ -1,0 +1,80 @@
+[
+    {
+        "account_no": "07793001",
+        "bottom": 1123,
+        "center_window_count": 2,
+        "center_window_map": [
+            {
+                "order_amount": 1,
+                "order_area_width": 60,
+                "order_row_height": 20,
+                "show_count_area": true,
+                "show_order_area": true,
+                "show_profitloss_config": true,
+                "show_stop_area": true,
+                "show_tick_window": false,
+                "symbol_code": "101V6000",
+                "tick_window_pos": 0
+            },
+            {
+                "order_amount": 1,
+                "order_area_width": 60,
+                "order_row_height": 20,
+                "show_count_area": true,
+                "show_order_area": true,
+                "show_profitloss_config": true,
+                "show_stop_area": true,
+                "show_tick_window": false,
+                "symbol_code": "101V6000",
+                "tick_window_pos": 0
+            }
+        ],
+        "height": 1000,
+        "left": 146,
+        "order_window_type": 0,
+        "right": 1327,
+        "show_left_window": true,
+        "show_right_window": true,
+        "top": 123,
+        "width": 1181
+    },
+    {
+        "account_no": "07793001",
+        "bottom": 1235,
+        "center_window_count": 2,
+        "center_window_map": [
+            {
+                "order_amount": 1,
+                "order_area_width": 60,
+                "order_row_height": 20,
+                "show_count_area": true,
+                "show_order_area": true,
+                "show_profitloss_config": true,
+                "show_stop_area": true,
+                "show_tick_window": false,
+                "symbol_code": "101V6000",
+                "tick_window_pos": 0
+            },
+            {
+                "order_amount": 1,
+                "order_area_width": 60,
+                "order_row_height": 20,
+                "show_count_area": true,
+                "show_order_area": true,
+                "show_profitloss_config": true,
+                "show_stop_area": true,
+                "show_tick_window": false,
+                "symbol_code": "101V6000",
+                "tick_window_pos": 0
+            }
+        ],
+        "height": 1000,
+        "left": 793,
+        "order_window_type": 0,
+        "right": 1974,
+        "show_left_window": true,
+        "show_right_window": true,
+        "top": 235,
+        "width": 1181
+    }
+]
