@@ -65,7 +65,7 @@ void AccountPositionControl::update_position(position_p position)
 		add_position(position);
 	}
 	
-	//trigger_event(1);
+	trigger_event(1);
 }
 
 void AccountPositionControl::update_profit_loss(quote_p quote)

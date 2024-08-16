@@ -404,7 +404,7 @@ void TotalPositionManager::update_group_position(const int target, const std::st
 	else {
 		group_position_manager = find_add_fund_group_position_manager(target_name);
 	}
-	auto group_position = group_position_manager->create_group_position(0, sub_position->account_no, sub_position->symbol_code);
+	auto group_position = group_position_manager->create_group_position(target, target_name, sub_position->symbol_code);
 	group_position_manager->update_group_position(group_position, sub_position);
 	// 로그 추가 필요. 
 	mainApp.CallbackMgr()->process_position_event(group_position);

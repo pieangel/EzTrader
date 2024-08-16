@@ -296,11 +296,11 @@ void AccountPositionView::OnDestroy()
 void AccountPositionView::on_timer()
 {
 	bool needDraw = false;
-	if (enable_position_show_) {
+	//if (enable_position_show_) {
 		update_account_position();
 		needDraw = true;
 		enable_position_show_ = false;
-	}
+	//}
 	if (needDraw) Invalidate();
 }
 

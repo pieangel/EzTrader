@@ -764,10 +764,10 @@ void HdProductRemainGrid::update_ab_account_position(CBCGPGridRow* pRow, positio
 
 void HdProductRemainGrid::refresh()
 {
-	if (enable_position_show_) {
+	//if (enable_position_show_) {
 		update_account_position();
 		enable_position_show_ = false;
-	}
+	//}
 	//enable_position_show_ = true;
 }
 
