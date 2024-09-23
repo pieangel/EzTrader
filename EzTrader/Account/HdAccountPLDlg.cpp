@@ -334,7 +334,7 @@ void HdAccountPLDlg::OnSize(UINT nType, int cx, int cy)
 
 void HdAccountPLDlg::OnCbnDropdownComboAccount()
 {
-	//_Mode == 0 ? SetAccount() : SetFund();
+	_Mode == 0 ? SetAccount() : SetFund();
 	//_AccountGrid.InitGrid();
 	//_ProductGrid.InitGrid();
 }

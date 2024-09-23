@@ -23,9 +23,9 @@ namespace DarkHorse {
 		{SmCellType::CT_QUOTE_PRECLOSE, {RGB(0xff, 0xff, 0xff), false}},
 		{SmCellType::CT_QUOTE_OPEN, {RGB(0xff, 0xff, 0xff), true}},
 		{SmCellType::CT_QUOTE_HIGH, {RGB(0xff, 0xff, 0xff), true}},
-		{SmCellType::CT_QUOTE_LOW, {RGB(0x13, 0x89, 0xf8), true}},
-		{SmCellType::CT_POSITION_BUY, {RGB(255, 255, 255), true}},
-		{SmCellType::CT_POSITION_SELL, {RGB(0x13, 0x89, 0xf8), true}},
+		{SmCellType::CT_QUOTE_LOW, {RGB(0xff, 0xff, 0xff), true}},
+		{SmCellType::CT_POSITION_BUY, {RGB(0xff, 0xff, 0xff), true}},
+		{SmCellType::CT_POSITION_SELL, {RGB(0xff, 0xff, 0xff), true}},
 		{SmCellType::CT_HOGA_SELL, {RGB(255, 255, 255), false}},
 		{SmCellType::CT_SELL_HOGA1, {RGB(0x9f, 0xd6, 0xff), false}},
 		{SmCellType::CT_SELL_HOGA2, {RGB(0xb9, 0xe4, 0xff), false}},
@@ -622,7 +622,7 @@ namespace DarkHorse {
 		CRect line_rect(rect.left, rect.top, rect.right - text_width, rect.bottom);
 		int format = DT_CENTER | DT_VCENTER;
 		g->DrawFillRectangle(RGB(0xfc, 0xe3, 0xe4), rect);
-		g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
+		g->DrawText(_Text.c_str(), RGB(0, 0, 0), text_rect, format);
 
 		CPoint start_point(line_rect.right, line_rect.top + line_rect.Height() / 2.0);
 		CPoint end_point(line_rect.left, line_rect.top + line_rect.Height() / 2.0);
@@ -642,7 +642,7 @@ namespace DarkHorse {
 		//pGM->DrawText(_Text.c_str(), text_rect, res.TextFormat, res.TextBrush);
 		int format = DT_CENTER | DT_VCENTER;
 		g->DrawFillRectangle(RGB(0xda, 0xe2, 0xf5), rect);
-		g->DrawText(_Text.c_str(), RGB(0, 0, 0), rect, format);
+		g->DrawText(_Text.c_str(), RGB(0, 0, 0), text_rect, format);
 
 		CBCGPPoint start_point(line_rect.left, line_rect.top + line_rect.Height() / 2.0);
 		CBCGPPoint end_point(line_rect.right, line_rect.top + line_rect.Height() / 2.0);

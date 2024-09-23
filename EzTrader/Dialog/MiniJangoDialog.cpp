@@ -65,6 +65,7 @@ void MiniJangoDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(MiniJangoDialog, CBCGPDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &MiniJangoDialog::OnCbnSelchangeComboAccount)
+	ON_CBN_DROPDOWN(IDC_COMBO_ACCOUNT, &MiniJangoDialog::OnCbnDropdownComboAccount)
 	ON_WM_TIMER()
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
@@ -72,6 +73,10 @@ END_MESSAGE_MAP()
 
 // SmJangGoDialog message handlers
 
+void MiniJangoDialog::OnCbnDropdownComboAccount()
+{
+	_Mode == 0 ? SetAccount() : SetFund();
+}
 
 BOOL MiniJangoDialog::OnInitDialog()
 {
@@ -118,7 +123,7 @@ void MiniJangoDialog::OnTimer(UINT_PTR nIDEvent)
 void MiniJangoDialog::SetAccount()
 {
 	_StaticCombo.SetWindowText("°èÁÂ");
-
+	_ComboAccount.ResetContent();
 	std::vector<std::shared_ptr<SmAccount>> main_account_vector;
 	mainApp.AcntMgr()->get_main_account_vector(type_, main_account_vector);
 	if (main_account_vector.empty()) return;
@@ -165,6 +170,7 @@ void MiniJangoDialog::SetAccount()
 void MiniJangoDialog::SetFund()
 {
 	_StaticCombo.SetWindowText("ÆÝµå");
+	_ComboAccount.ResetContent();
 	const std::map<std::string, std::shared_ptr<SmFund>>& fund_map = mainApp.FundMgr()->GetFundMap();
 	int selected_index = 0;
 	for (auto it = fund_map.begin(); it != fund_map.end(); ++it) {
