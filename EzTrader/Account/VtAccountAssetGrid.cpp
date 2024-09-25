@@ -211,7 +211,7 @@ void VtAccountAssetGrid::update_account_profit_loss()
 	value = VtStringUtil::get_format_value(asset.entrust_total, decimal, true);
 	QuickSetTextColor(1, 0, RGB(0, 0, 0));
 	QuickSetText(1, 0, value.c_str());
-	value = VtStringUtil::get_format_value(account_profit_loss.open_profit_loss, decimal, true);
+	value = VtStringUtil::get_format_value(asset.open_trust_toal, decimal, true);
 	QuickSetTextColor(3, 0, RGB(0, 0, 0));
 	QuickSetText(3, 0, value.c_str());
 	if (account_profit_loss.open_profit_loss > 0) {

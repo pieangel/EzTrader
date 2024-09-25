@@ -1,0 +1,33 @@
+{
+    "Fund1": {
+        "fund_type": "9",
+        "name": "Fund1",
+        "sub_accounts": [
+            {
+                "account_no": "01586001_1"
+            },
+            {
+                "account_no": "01586001_2"
+            }
+        ]
+    },
+    "Fund2": {
+        "fund_type": "9",
+        "name": "Fund2",
+        "sub_accounts": [
+            {
+                "account_no": "01586001_3"
+            }
+        ]
+    },
+    "Fund3": {
+        "fund_type": "9",
+        "name": "Fund3",
+        "sub_accounts": null
+    },
+    "Fund4": {
+        "fund_type": "9",
+        "name": "Fund4",
+        "sub_accounts": null
+    }
+}

@@ -1026,8 +1026,13 @@ void SymbolOrderView::DrawMovingOrder(CGraphics* g)
 
 			const auto it = _Grid->FindRowCol(_EndX, _EndY);
 			const auto end_cell = _Grid->FindCell(it.first, it.second);
+			if (!end_cell) return;
+			if (start_cell->Row() == end_cell->Row()) return;
+
 			CPoint end_point;
-			if (end_cell && end_cell->Col() == start_cell->Col()) {
+			if (end_cell && 
+				start_cell->Row() != end_cell->Row() &&
+				end_cell->Col() == start_cell->Col()) {
 				const CRect rect_end(end_cell->X(), end_cell->Y(), end_cell->X() + end_cell->Width(), end_cell->Y() + end_cell->Height());
 				end_point = rect_end.CenterPoint();
 			}

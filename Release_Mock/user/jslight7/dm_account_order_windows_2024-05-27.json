@@ -1,0 +1,41 @@
+[
+    {
+        "account_no": "01586001",
+        "bottom": 1040,
+        "center_window_count": 2,
+        "center_window_map": [
+            {
+                "order_amount": 1,
+                "order_area_width": 60,
+                "order_row_height": 20,
+                "show_count_area": true,
+                "show_order_area": true,
+                "show_profitloss_config": true,
+                "show_stop_area": true,
+                "show_tick_window": false,
+                "symbol_code": "101V6000",
+                "tick_window_pos": 0
+            },
+            {
+                "order_amount": 1,
+                "order_area_width": 60,
+                "order_row_height": 20,
+                "show_count_area": true,
+                "show_order_area": true,
+                "show_profitloss_config": true,
+                "show_stop_area": true,
+                "show_tick_window": true,
+                "symbol_code": "101V6000",
+                "tick_window_pos": 0
+            }
+        ],
+        "height": 1000,
+        "left": 54,
+        "order_window_type": 0,
+        "right": 1408,
+        "show_left_window": true,
+        "show_right_window": true,
+        "top": 40,
+        "width": 1354
+    }
+]
